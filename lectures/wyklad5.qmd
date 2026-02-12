@@ -84,12 +84,12 @@ Uzyskanie wysokiej wyjaśnialności jest szczególnie trudne w przypadku algoryt
 
 Jedną z metod poprawy wyjaśnialności algorytmów jest **LIME** (*Local Interpretable Model-Agnostic Explanations*), opublikowana w 2016 roku. Metoda ta polega na wprowadzaniu niewielkich zmian w danych wejściowych i analizowaniu ich wpływu na wynik, co pozwala określić lokalne zasady podejmowania decyzji przez model.
 
-```{python}
+```python
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from lime.lime_tabular import LimeTabularExplainer
+#from lime.lime_tabular import LimeTabularExplainer
 
 # Wczytanie danych Iris
 from sklearn.datasets import load_iris
@@ -105,14 +105,14 @@ model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 # Tworzenie obiektu LIME do interpretacji modelu
-explainer = LimeTabularExplainer(X_train, feature_names=iris.feature_names, class_names=iris.target_names, discretize_continuous=True)
+# explainer = LimeTabularExplainer(X_train, feature_names=iris.feature_names, class_names=iris.target_names, discretize_continuous=True)
 
 # Interpretacja losowego przykładu ze zbioru testowego
-i = np.random.randint(0, len(X_test))  # Wybór losowego przykładu
-exp = explainer.explain_instance(X_test[i], model.predict_proba)
+# i = np.random.randint(0, len(X_test))  # Wybór losowego przykładu
+# exp = explainer.explain_instance(X_test[i], model.predict_proba)
 
 # Wyświetlenie interpretacji
-exp.show_in_notebook()
+# exp.show_in_notebook()
 
 ```
 
