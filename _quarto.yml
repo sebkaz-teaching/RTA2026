@@ -1,0 +1,67 @@
+project: 
+  type: website
+  output-dir: docs
+
+website: 
+  title: "Analiza danych w czasie rzeczywistym"
+  description: "Kurs analizy danych dla studentów SGH w Warszawie"
+  site-url: https://sebkaz-teaching.github.io/RTA_2025
+  sidebar:
+    style: "docked"
+    contents:
+      - index.qmd
+      - section : "Wykłady"
+        contents:
+        - href: lectures/wyklad1.qmd
+        - href: lectures/wyklad2.qmd
+        - href: lectures/wyklad3.qmd
+        - href: lectures/wyklad4.qmd
+        - href: lectures/wyklad5.qmd
+      - section : "Laboratoria"
+        contents:
+        - section: "Apache Kafka"
+          contents:
+            - href: kafka_codes/kafka1.ipynb
+            - href: kafka_codes/kafka2.ipynb
+            - href: kafka_codes/kafka3.ipynb
+        - section : "Python"
+          contents:
+          - href: labs/lab1.ipynb
+          - href: labs/lab2.ipynb
+          - href: labs/lab3.ipynb
+          - href: labs/lab4.ipynb
+          - href: labs/lab5.ipynb
+        - section : "Apache Spark"
+          contents:
+          - href: labs/lab6.ipynb
+          - href: labs/lab7.ipynb
+          - href: labs/lab8.ipynb
+          - href: labs/lab9.ipynb
+      
+        
+        
+  navbar:
+    left: 
+          - href: indexS.qmd
+            text: 222890-S
+          - href: sylabus.qmd
+            text: Sylabus
+          - href: info.qmd
+            text: Narzędzia
+          - href: ksiazki.qmd
+            text: Książki
+          
+  page-footer: "Copyright 2025, Sebastian Zając"
+format:
+  html:
+    page-layout: article
+    theme: minty
+    css: style.css
+    toc: true
+    toc-depth: 2
+    toc-title: "**Sections**"
+    self-contained-math: true
+    code-overflow: wrap
+    highlight-style: github-dark
+    code-block-background: true
+    link-external-newwindow: true

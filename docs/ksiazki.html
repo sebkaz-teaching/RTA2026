@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Książki i strony WWW – Analiza danych w czasie rzeczywistym</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc95f10abd972b9c41a78ec8992004fc.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d218d465d676f63e35746811398acdfc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Analiza danych w czasie rzeczywistym</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./indexS.html"> 
+<span class="menu-text">222890-S</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./sylabus.html"> 
+<span class="menu-text">Sylabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./info.html"> 
+<span class="menu-text">Narzędzia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./ksiazki.html" aria-current="page"> 
+<span class="menu-text">Książki</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Książki i strony WWW</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Informacje ogólne</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Wykłady</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 5</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Apache Kafka</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kafka_codes/kafka1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kafka_codes/kafka2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Producent w środowisku python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./kafka_codes/kafka3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Consumer w środowisku Python</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Python</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Środowisko produkcyjne z modelem ML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tworzenie API we Flasku – Wprowadzenie</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dane ustrukturyzowane</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">dane nieustruktyryzowane</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Optymalizacja modeli w Pythonie</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Apache Spark</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie do Apache Spark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zarzadzanie zrodlami danych strumieniowych i segmentacja klientow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Apache Spark z plikami RDD</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./labs/lab9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Przygotowanie danych</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title"><strong>Sections</strong></h2>
+   
+  <ul class="collapse">
+  <li><a href="#książki" id="toc-książki" class="nav-link active" data-scroll-target="#książki">Książki</a></li>
+  <li><a href="#strony-www" id="toc-strony-www" class="nav-link" data-scroll-target="#strony-www">Strony WWW</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Książki i strony WWW</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="książki" class="level2">
+<h2 class="anchored" data-anchor-id="książki">Książki</h2>
+<section id="stream-processing" class="level3">
+<h3 class="anchored" data-anchor-id="stream-processing">Stream Processing</h3>
+<ol type="1">
+<li><p>G. Maas, F. Garillot <em>Stream Processing with Apache Spark</em> <a href="http://helion.pl/view/111546/e_11pp.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~e_11pp_ebook">Kup e-book</a></p></li>
+<li><p>F. Hueske, V. Kalavri <em>Stream Processing with Apache Flink</em> <a href="http://helion.pl/view/111546/e_13f8.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~e_13f8_ebook">Kup e-book</a></p></li>
+</ol>
+<div id="bellemare">
+<ol start="3" type="1">
+<li>A. Bellemare <em>Mikrousługi oparte na zdarzeniach. Wykorzystanie danych w organizacji na dużą skalę</em> <a href="http://helion.pl/view/111546/miopzd">Zobacz opis</a> lub <a href="http://helion.pl/add111546~miopzd">Kup</a></li>
+</ol>
+</div>
+</section>
+<section id="machine-learning-with-pyton" class="level3">
+<h3 class="anchored" data-anchor-id="machine-learning-with-pyton">Machine Learning with Pyton</h3>
+<ol type="1">
+<li><p>W. McKinney <em>Python w analizie danych. Przetwarzanie danych za pomocą pakietów Pandas i NumPy oraz środowiska IPython. Wydanie II</em> <a href="http://helion.pl/view/111546/pytand.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~pytand">Kup książkę</a>, <a href="http://helion.pl/add111546~pytand_ebook">Kup e-book</a></p></li>
+<li><p>D. McIlwraith, H. Marmanis, D. Babenko <em>Inteligentna sieć. Algorytmy przyszłości. Wydanie II (ebook)</em> <a href="http://helion.pl/view/111546/intsi2.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~intsi2">Kup książkę</a>, <a href="http://helion.pl/add111546~intsi2_ebook">Kup e-book</a></p></li>
+<li><p>Joel Grus <em>Data science od podstaw. Analiza danych w Pythonie. Wydanie II</em>. <a href="http://helion.pl/view/111546/dascp2.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~dascp2">Kup książkę</a>, <a href="http://helion.pl/add111546~dascp2_ebook">Kup e-book</a>.</p></li>
+<li><p>John W. Foreman <em>Mistrz analizy danych. Od danych do wiedzy</em>. <a href="http://helion.pl/view/111546/mianda.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~mianda">Kup książkę</a>, <a href="http://helion.pl/add111546~mianda_ebook">Kup e-book</a>.</p></li>
+<li><p>A. Geron <em>Uczenie maszynowe z użyciem Scikit-Learn i TensorFlow. Wydanie II</em>. <a href="http://helion.pl/view/111546/uczem2.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~uczem2">Kup książkę</a>, <a href="http://helion.pl/add111546~uczem2_ebook">Kup e-book</a>.</p></li>
+<li><p>Alberto Boschetti, Luca Massaron <em>Python. Podstawy nauki o danych</em>. <a href="http://helion.pl/view/111546/pypod2.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~pypod2">Kup książkę</a>.</p></li>
+<li><p>Sebastian Raschka <em>Python. Uczenie maszynowe. Wydanie II</em>. <a href="http://helion.pl/view/111546/pythu2.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~pythu2">Kup książkę</a>.</p></li>
+<li><p>R. Schutt, C. O’Neil <em>Badanie danych. Raport z pierwszej lini działań</em>. <a href="http://helion.pl/view/111546/badada.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~badada">Kup książkę</a>.</p></li>
+<li><p>T. Segaran <em>Nowe usługi 2.0. Przewodnik po analizie zbiorów danych</em> <a href="http://helion.pl/view/111546/noweus.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~noweus">Kup książkę</a>, <a href="http://helion.pl/add111546~noweus_ebook">Kup e-book</a></p></li>
+</ol>
+</section>
+<section id="deep-learning" class="level3">
+<h3 class="anchored" data-anchor-id="deep-learning">Deep Learning</h3>
+<ol type="1">
+<li><p>F. Chollet <em>Deep Learning. Praca z językiem Python i biblioteką Keras.</em> <a href="http://helion.pl/view/111546/delepy.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~delepy">Kup książkę</a>, <a href="http://helion.pl/add111546~delepy_ebook">Kup e-book</a></p></li>
+<li><p>J. Patterson, A. Gibson <em>Deep Learning. Praktyczne wprowadzenie (ebook)</em> <a href="http://helion.pl/view/111546/deeple.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~deeple_ebook">Kup e-book</a></p></li>
+<li><p>V. Zocca, G. Spacagna, D. Slater, P. Roelants. <em>Deep Learning. Uczenie głębokie z językiem Python. Sztuczna inteligencja i sieci neuronowe</em> <a href="http://helion.pl/view/111546/deelea.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~deelea_ebook">Kup ebook</a></p></li>
+<li><p>D. Osinga <em>Deep Learning. Receptury</em> <a href="http://helion.pl/view/111546/delere.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~delere">Kup książkę</a>, <a href="http://helion.pl/add111546~delere_ebook">Kup e-book</a></p></li>
+<li><p>S. Weidman <em>Uczenie głębokie od zera. Podstawy implementacji w Pythonie</em> <a href="http://helion.pl/view/111546/uczgle.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~uczgle">Kup książkę</a>, <a href="http://helion.pl/add111546~uczgle_ebook">Kup e-book</a></p></li>
+<li><p>D. Foster <em>Deep learning i modelowanie generatywne. Jak nauczyć komputer malowania, pisania, komponowania i grania</em> <a href="http://helion.pl/view/111546/deelmg.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~deelmg">Kup książkę</a>, <a href="http://helion.pl/add111546~deelmg_ebook">Kup e-book</a></p></li>
+<li><p>J. Howard, S. Gugger <em>Deep learning dla programistów. Budowanie aplikacji AI za pomocą fastai i PyTorch</em> <a href="http://helion.pl/view/111546/delepr.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~delepr">Kup książkę</a>, <a href="http://helion.pl/add111546~delepr_ebook">Kup e-book</a></p></li>
+</ol>
+</section>
+<section id="apache-spark" class="level3">
+<h3 class="anchored" data-anchor-id="apache-spark">Apache SPARK</h3>
+<ol type="1">
+<li><p>J. S. Damji, B. Wenig, T. Das, D. Lee <em>Spark. Błyskawiczna analiza danych</em> <a href="http://helion.pl/view/111546/sparb2.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~sparb2">Kup</a></p></li>
+<li><p><em>Spark. Zaawansowana analiza danych (ebook)</em> <a href="http://helion.pl/view/111546/sparkz.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~sparkz_ebook">Kup e-book</a></p></li>
+<li><p>B. Chambers, M. Zaharia <em>Spark: The Definitive Guide. Big Data Processing Made Simple (ebook)</em> <a href="http://helion.pl/view/111546/e_0qdv.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~e_0qdv_ebook">Kup e-book</a></p></li>
+<li><p>J. Quddus <em>Machine Learning with Apache Spark Quick Start Guide (ebook)</em> <a href="http://helion.pl/view/111546/e_15el.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~e_15el._ebook">Kup e-book</a></p></li>
+</ol>
+</section>
+<section id="programowanie" class="level3">
+<h3 class="anchored" data-anchor-id="programowanie">Programowanie</h3>
+<ol type="1">
+<li><p>G. Coldwind <em>Zrozumieć programowanie</em> <a href="http://helion.pl/view/111546/e_1ott.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~e_1ott">Kup książkę</a>, <a href="http://helion.pl/add111546~e_1ott_ebook">Kup e-book</a></p></li>
+<li><p>A. Allain <em>C++. Przewodnik dla początkujących</em> <a href="http://helion.pl/view/111546/cppppo.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~cppppo">Kup książkę</a>, <a href="http://helion.pl/add111546~cppppo_ebook">Kup e-book</a></p></li>
+<li><p>S. Dasgupta, C. Papadimitriou, U. Vazirani <em>Algorytmy</em> PWN.</p></li>
+</ol>
+</section>
+<section id="docker" class="level3">
+<h3 class="anchored" data-anchor-id="docker">Docker</h3>
+<ol type="1">
+<li><p>J. Krochmalski <em>Docker. Projektowanie i wdrażanie aplikacji</em> <a href="http://helion.pl/view/111546/docpro.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~docpro">Kup książkę</a>, <a href="http://helion.pl/add111546~docpro_ebook">Kup e-book</a></p></li>
+<li><p>R. McKendrick, S. Gallagher <em>Docker. Programowanie aplikacji dla zaawansowanych. Wydanie II</em> <a href="http://helion.pl/view/111546/dockaz.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~dockaz">Kup książkę</a>, <a href="http://helion.pl/add111546~dockaz_ebook">Kup e-book</a></p></li>
+</ol>
+</section>
+<section id="github" class="level3">
+<h3 class="anchored" data-anchor-id="github">Github</h3>
+<ol type="1">
+<li>P. Bell, B. Beer <em>GitHub. Przyjazny przewodnik (ebook)</em> <a href="http://helion.pl/view/111546/github.html">Zobacz opis</a> lub <a href="http://helion.pl/add111546~github_ebook">Kup e-book</a></li>
+</ol>
+</section>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<ol type="1">
+<li><p>C. Althoff, <em>Programista Samouk. Profesjonalny przewodnik do samodzielnej nauki kodowania.</em> <a href="http://helion.pl/view/111546/proprs">Zobacz opis</a> lub <a href="http://helion.pl/add111546~proprs">Kup teraz</a>, <a href="http://helion.pl/add111546~proprs_ebook">Kup e-book</a></p></li>
+<li><p>A. Sweigart, <em>Automatyzacja nudnych zadań z pythonem</em>. <a href="http://helion.pl/view/111546/autopy">Zobacz opis</a> lub <a href="http://helion.pl/add111546~autopy">Kup książkę</a>, <a href="http://helion.pl/add111546~autopy_ebook">Kup e-book</a></p></li>
+<li><p>K. Reitz, T. Schlusser <em>Przewodnik po Pythonie. Dobre praktyki i praktyczne narzędzia</em>. <a href="http://helion.pl/view/111546/przepy">Zobacz opis</a> lub <a href="http://helion.pl/add111546~przepy">Kup teraz</a>, <a href="http://helion.pl/add111546~przepy_ebook">Kup e-book</a></p></li>
+</ol>
+</section>
+<section id="różne" class="level3">
+<h3 class="anchored" data-anchor-id="różne">Różne</h3>
+<ol type="1">
+<li><p>B.Tate, L. Carslon, C. Hiibs, <em>Ruby on Rails. Wprowadzenie. Wydanie II</em> <a href="http://helion.pl/view/111546/rubyw2">Zobacz opis</a> lub <a href="http://helion.pl/add111546~rubyw2_ebook">Kup e-book</a></p></li>
+<li><p>B. Frain, <em>Responsive Web Design. Projektowanie elastycznych witryn w HTML5 i CSS3</em>, <a href="http://helion.pl/view/111546/resweb">Zobacz opis</a> lub <a href="http://helion.pl/add111546~resweb_ebook">Kup e-book</a></p></li>
+<li><p>K. Beck, <em>TDD. Sztuda tworzenia</em>, <a href="http://helion.pl/view/111546/tddszv">Zobacz opis</a> lub <a href="http://helion.pl/add111546~tddszv">Kup teraz</a>, <a href="http://helion.pl/add111546~tddszv_ebook">Kup e-book</a></p></li>
+<li><p>B. Dayley, <em>Node.js, MongoDB, AngularJS. Kompendium wiedzy</em>, <a href="http://helion.pl/view/111546/tddszv">Zobacz opis</a> lub <a href="http://helion.pl/add111546~tddszv">Kup teraz</a>, <a href="http://helion.pl/add111546~tddszv_ebook">Kup e-book</a></p></li>
+</ol>
+</section>
+<section id="qauntum-computing" class="level3">
+<h3 class="anchored" data-anchor-id="qauntum-computing">Qauntum Computing</h3>
+<ol type="1">
+<li>A. Jacquier, O. Kondratyev, <em>Quantum Machine Learning and Optimisation in Finance. On the Road to Quantum Advantage</em>.</li>
+</ol>
+</section>
+</section>
+<section id="strony-www" class="level2">
+<h2 class="anchored" data-anchor-id="strony-www">Strony WWW</h2>
+<section id="software" class="level3">
+<h3 class="anchored" data-anchor-id="software">Software</h3>
+<ol type="1">
+<li><a href="https://github.com/">Github</a></li>
+<li><a href="https://git-scm.com/book/pl/v2">Git-instrukcja</a></li>
+<li><a href="http://www.python.org/downloads/">www.python.org</a></li>
+<li><a href="https://pypi.python.org/pypi">PyPI python libraries</a></li>
+<li><a href="http://continuum.io/downloads">Anaconda</a></li>
+<li><a href="https://docs.docker.com/get-docker/">Docker</a></li>
+</ol>
+</section>
+<section id="pakiety-python-dla-analiz-danych" class="level3">
+<h3 class="anchored" data-anchor-id="pakiety-python-dla-analiz-danych">Pakiety python dla analiz danych</h3>
+<ol type="1">
+<li><a href="http://www.numpy.org">NumPy</a></li>
+<li><a href="http://www.scipy.org">SciPy</a></li>
+<li><a href="http://pandas.pydata.org">Pandas</a></li>
+<li><a href="http://scikit-learn.org/stable">Scikit-learn</a></li>
+<li><a href="http://jupyter.org">Jupyter</a></li>
+<li><a href="http://matplotlib.org">Matplotlib</a></li>
+<li><a href="http://wwwcrummy.com/software/BeautifulSoup">Beautiful Soup</a></li>
+<li><a href="http://deeplearning.net/software/theano">Theano</a></li>
+<li><a href="http://keras.io">Keras</a></li>
+<li><a href="https://www.tensorflow.org">TensorFlow</a></li>
+<li><a href="https://docs.python.org/3/tutorial/venv.html">Virtual ENV</a></li>
+</ol>
+</section>
+<section id="edytory-tekstu" class="level3">
+<h3 class="anchored" data-anchor-id="edytory-tekstu">Edytory tekstu</h3>
+<ol type="1">
+<li><a href="https://notepad-plus-plus.org/download">Notepad++</a></li>
+<li><a href="https://www.sublimetext.com">Sublime Text</a></li>
+<li><a href="https://code.visualstudio.com">Visual Studio Code</a></li>
+</ol>
+</section>
+<section id="markdown" class="level3">
+<h3 class="anchored" data-anchor-id="markdown">Markdown</h3>
+<ol type="1">
+<li><a href="http://daringfireball.net/projects/markdown/">MD</a></li>
+</ol>
+</section>
+<section id="jupyter-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="jupyter-notebook">Jupyter notebook</h3>
+<ol type="1">
+<li><a href="https://github.com/jupyter/jupyter/wiki/A-gallery-of-interesting-Jupyter-Notebooks#accessing-an-ibm-quantum-computer-via-notebooks">Galeria ciekawych notatników</a></li>
+<li><a href="https://www.youtube.com/watch?v=HW29067qVWk">Intro</a></li>
+<li><a href="https://github.com/jupyter/jupyter/wiki/Jupyter-kernels">Kernels</a></li>
+<li><a href="https://towardsdatascience.com/bringing-the-best-out-of-jupyter-notebooks-for-data-science-f0871519ca29">Bringing the best out of jupyter for data science</a></li>
+<li><a href="https://towardsdatascience.com/jupyter-notebook-extensions-517fa69d2231">Jupyter extensions</a></li>
+<li><a href="https://www.youtube.com/watch?v=7jiPeIFXb6U">I don’t like notebooks</a></li>
+<li><a href="https://www.youtube.com/watch?v=NSiPeoDpwuI">Jupyter lab</a></li>
+<li><a href="https://towardsdatascience.com/speed-up-jupyter-notebooks-20716cbe2025">Speed up jupyter notebook</a></li>
+</ol>
+</section>
+<section id="przetwarzanie-danych" class="level3">
+<h3 class="anchored" data-anchor-id="przetwarzanie-danych">Przetwarzanie danych</h3>
+<ol type="1">
+<li><a href="https://www.datafix.com.au/cookbook/index.html">data cookbook</a></li>
+</ol>
+</section>
+<section id="zbiory-danych" class="level3">
+<h3 class="anchored" data-anchor-id="zbiory-danych">Zbiory danych</h3>
+<ul>
+<li><a href="https://oreil.ly/tIjl9">Internet Archive</a></li>
+<li><a href="http://reddit.com/r/datasets">Reddit</a></li>
+<li><a href="https://www.kdnuggets.com">KDnuggets</a></li>
+<li><a href="https://www.kaggle.com/datasets">Kaggle</a></li>
+<li><a href="https://en.wikipedia.org/wiki/List_of_datasets_for_machine_learning_research">List of datasets for machine learning research</a></li>
+<li><a href="https://oreil.ly/BXLA5">UCI Machine Learning Repo</a></li>
+<li><a href="https://github.com/toddmotto/public-apis">Public API</a></li>
+<li><a href="https://oreil.ly/Gpv8S">Google Datatset Search</a></li>
+</ul>
+</section>
+<section id="python-1" class="level3">
+<h3 class="anchored" data-anchor-id="python-1">Python</h3>
+<ol type="1">
+<li><a href="https://chrisalbon.com/">Chris Albon</a> Technical Notes on Using <strong>Data Science &amp; AI</strong></li>
+<li><a href="https://www.datacamp.com/community/tutorials/python-statistics-data-science">40+ Python Statistics For Data Science Resources</a></li>
+<li><a href="http://pbpython.com/">Practical Business Python</a></li>
+</ol>
+</section>
+<section id="kursy-ml" class="level3">
+<h3 class="anchored" data-anchor-id="kursy-ml">kursy ML</h3>
+<ol type="1">
+<li><a href="https://www.youtube.com/watch?v=PPLop4L2eGk&amp;list=PLLssT5z_DsK-h9vYZkQkYNWcItqhlRJLN">Kurs Machine Learning - Andrew Ng, Stanford</a></li>
+<li><a href="https://www.coursera.org/learn/machine-learning">Kurs Machine Learning - Andrew Ng, Stanford</a></li>
+<li><a href="https://www.tomasbeuzen.com/python-programming-for-data-science/README.html">Python programming for data science</a></li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/sebkaz-teaching\.github\.io\/RTA_2025");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2025, Sebastian Zając</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

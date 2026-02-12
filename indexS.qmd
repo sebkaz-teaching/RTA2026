@@ -1,0 +1,86 @@
+---
+title: "Informacje ogólne"
+---
+
+## Analiza danych w czasie rzeczywistym
+
+Kod: 222890-S
+
+Semestr zimowy 2024/2025,
+SGH Szkoła Główna Handlowa w Warszawie
+
+Szczegółowy opis znajdziesz w [sylabusie](/sylabus).
+Znajdziesz w nim opis wszystkich wykładów i ćwiczeń oraz proponowaną literaturę.
+
+Inne książki zamieszczone zostały w zakładce [książki](/ksiazki)
+
+## Kalendarz
+
+### Wykład
+
+Wykład jest realizowany w trybie stacjonarnym.
+Jest on NIEOBOWIĄZKOWY i odbywa się w Auli III bud G
+
+1. 22-02-2025 (sobota) 08:00-09:30 - Wykład 1
+2. 08-03-2025 (sobota) 08:00-09:30 - Wykład 2
+
+
+### Laboratoria
+
+#### Lab1
+22-03-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
+
+23-03-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
+
+#### Lab2
+05-04-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
+
+06-04-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
+
+#### Lab3
+26-04-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
+
+27-04-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
+
+#### Lab4
+17-05-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
+
+18-05-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16
+
+#### Lab5
+31-05-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
+
+01-06-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
+
+### Zaliczenie i Egzamin
+
+Wykłady zakończą się testem (podczas ostatnich zajęć) 20 pytań. 
+
+Aby zaliczyć test, należy zdobyć więcej niż 13 punktów – jest to warunek konieczny do uczestnictwa w ćwiczeniach.
+
+Laboratoria
+
+Podczas laboratoriów będą zadawane prace domowe, które należy przesyłać za pośrednictwem MS Teams.
+Każdy brak pracy domowej obniża końcową ocenę o 0,5 stopnia.
+
+#### Projekt
+
+Projekty należy realizować w grupach maksymalnie 5-osobowych.
+
+Wymagania projektu
+
+- Projekt powinien rozwiązywać realny problem biznesowy, który można opracować przy użyciu danych przetwarzanych w trybie online. (Nie wyklucza to użycia przetwarzania wsadowego, np. do generowania modelu).
+- Dane powinny być przesyłane do Apache Kafka, skąd będą poddawane dalszemu przetwarzaniu i analizie.
+- Można używać dowolnego języka programowania w każdym komponencie projektu.
+- Można wykorzystać narzędzia BI.
+- Źródłem danych może być dowolne API, sztucznie generowane dane, IoT itp.
+
+## Technologie
+
+Uczestnicząc w zajęciach musisz opanować i przynajmniej w podstawowym zakresie posługiwać się następującymi technologiami informatycznymi:
+
+1. [GIT](/info.html#git) 
+2. Python, Jupyter notebook, Jupyter lab, Colab
+3. [Docker](/info.html#docker)
+4. **Apache Spark**, **Apache Kafka**
+5. Databricks Community edition [Web page](https://community.cloud.databricks.com/login.html).

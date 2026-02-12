@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Wykład 2 – Analiza danych w czasie rzeczywistym</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dc95f10abd972b9c41a78ec8992004fc.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d218d465d676f63e35746811398acdfc.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Analiza danych w czasie rzeczywistym</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../indexS.html"> 
+<span class="menu-text">222890-S</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../sylabus.html"> 
+<span class="menu-text">Sylabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../info.html"> 
+<span class="menu-text">Narzędzia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../ksiazki.html"> 
+<span class="menu-text">Książki</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad2.html">Wykład 2</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Informacje ogólne</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Wykłady</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Wykład 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 5</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Apache Kafka</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../kafka_codes/kafka1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../kafka_codes/kafka2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Producent w środowisku python</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../kafka_codes/kafka3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Consumer w środowisku Python</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Python</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Środowisko produkcyjne z modelem ML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tworzenie API we Flasku – Wprowadzenie</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dane ustrukturyzowane</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">dane nieustruktyryzowane</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Optymalizacja modeli w Pythonie</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+ <span class="menu-text">Apache Spark</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wprowadzenie do Apache Spark</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zarzadzanie zrodlami danych strumieniowych i segmentacja klientow</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Apache Spark z plikami RDD</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Przygotowanie danych</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title"><strong>Sections</strong></h2>
+   
+  <ul class="collapse">
+  <li><a href="#ewolucja-danych" id="toc-ewolucja-danych" class="nav-link active" data-scroll-target="#ewolucja-danych">Ewolucja danych</a>
+  <ul class="collapse">
+  <li><a href="#dane-tabelaryczne-tabele-sql" id="toc-dane-tabelaryczne-tabele-sql" class="nav-link" data-scroll-target="#dane-tabelaryczne-tabele-sql">Dane tabelaryczne (tabele SQL)</a></li>
+  <li><a href="#dane-grafowe" id="toc-dane-grafowe" class="nav-link" data-scroll-target="#dane-grafowe">Dane grafowe</a></li>
+  <li><a href="#dane-półstrukturyzowane-json-xml-yaml" id="toc-dane-półstrukturyzowane-json-xml-yaml" class="nav-link" data-scroll-target="#dane-półstrukturyzowane-json-xml-yaml">Dane półstrukturyzowane (JSON, XML, YAML)</a></li>
+  <li><a href="#dane-tekstowe-nlp" id="toc-dane-tekstowe-nlp" class="nav-link" data-scroll-target="#dane-tekstowe-nlp">Dane tekstowe (NLP)</a></li>
+  <li><a href="#dane-multimedialne-obrazy-dźwięk-wideo" id="toc-dane-multimedialne-obrazy-dźwięk-wideo" class="nav-link" data-scroll-target="#dane-multimedialne-obrazy-dźwięk-wideo">Dane multimedialne (obrazy, dźwięk, wideo)</a></li>
+  <li><a href="#dane-strumieniowe" id="toc-dane-strumieniowe" class="nav-link" data-scroll-target="#dane-strumieniowe">Dane strumieniowe</a></li>
+  <li><a href="#dane-sensoryczne-i-iot" id="toc-dane-sensoryczne-i-iot" class="nav-link" data-scroll-target="#dane-sensoryczne-i-iot">Dane sensoryczne i IoT</a></li>
+  </ul></li>
+  <li><a href="#rzeczywisty-proces-generowania-danych" id="toc-rzeczywisty-proces-generowania-danych" class="nav-link" data-scroll-target="#rzeczywisty-proces-generowania-danych">Rzeczywisty proces generowania danych</a></li>
+  <li><a href="#duże-dane" id="toc-duże-dane" class="nav-link" data-scroll-target="#duże-dane">Duże dane</a>
+  <ul class="collapse">
+  <li><a href="#hadoop-map-reduce-skalowanie-obliczeń-na-big-data" id="toc-hadoop-map-reduce-skalowanie-obliczeń-na-big-data" class="nav-link" data-scroll-target="#hadoop-map-reduce-skalowanie-obliczeń-na-big-data">Hadoop Map-Reduce – Skalowanie obliczeń na Big Data</a></li>
+  <li><a href="#dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają" id="toc-dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają" class="nav-link" data-scroll-target="#dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają">🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają?</a></li>
+  <li><a href="#graficzne-przedstawienie-mapreduce" id="toc-graficzne-przedstawienie-mapreduce" class="nav-link" data-scroll-target="#graficzne-przedstawienie-mapreduce">Graficzne przedstawienie MapReduce</a></li>
+  <li><a href="#klasyczny-przykład-liczenie-słów-w-tekście" id="toc-klasyczny-przykład-liczenie-słów-w-tekście" class="nav-link" data-scroll-target="#klasyczny-przykład-liczenie-słów-w-tekście">💡 Klasyczny przykład: Liczenie słów w tekście</a></li>
+  <li><a href="#wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce" id="toc-wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce" class="nav-link" data-scroll-target="#wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce">🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce</a></li>
+  <li><a href="#wyzwanie-dla-ciebie" id="toc-wyzwanie-dla-ciebie" class="nav-link" data-scroll-target="#wyzwanie-dla-ciebie">🚀 Wyzwanie dla Ciebie!</a></li>
+  <li><a href="#big-data" id="toc-big-data" class="nav-link" data-scroll-target="#big-data">Big Data</a></li>
+  <li><a href="#modele-przetwarzania-danych" id="toc-modele-przetwarzania-danych" class="nav-link" data-scroll-target="#modele-przetwarzania-danych">Modele przetwarzania danych</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad2.html">Wykład 2</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Wykład 2</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>⏳ Czas trwania: 1,5h <em>🎯 Cel wykładu</em></p>
+<p>zrozumienie, jak dane ewoluowały w różnych branżach i jakie narzędzia są dziś wykorzystywane do ich analizy.</p>
+<hr>
+<p>Na tym wykładzie przedstawimy ewolucję analizy danych, pokazując, jak zmieniały się technologie i podejścia do przetwarzania danych na przestrzeni lat. Rozpoczniemy od klasycznych struktur tabelarycznych, przez bardziej zaawansowane modele grafowe i tekstowe, aż po nowoczesne podejście do strumieniowego przetwarzania danych.</p>
+<section id="ewolucja-danych" class="level1">
+<h1>Ewolucja danych</h1>
+<section id="dane-tabelaryczne-tabele-sql" class="level2">
+<h2 class="anchored" data-anchor-id="dane-tabelaryczne-tabele-sql">Dane tabelaryczne (tabele SQL)</h2>
+<p>Początkowo dane były przechowywane w postaci tabel, gdzie każda tabela zawierała zorganizowane informacje w kolumnach i wierszach (np. bazy danych SQL).<br>
+Modele takie doskonale nadawały się do danych <strong>ustrukturyzowanych</strong>.</p>
+<section id="cechy" class="level3">
+<h3 class="anchored" data-anchor-id="cechy">📌 Cechy:</h3>
+<p>✅ Dane podzielone na kolumny o stałej strukturze.<br>
+✅ Możliwość stosowania operacji CRUD (Create, Read, Update, Delete).<br>
+✅ Ścisłe reguły spójności i normalizacji.</p>
+</section>
+<section id="przykłady" class="level3">
+<h3 class="anchored" data-anchor-id="przykłady">📌 Przykłady:</h3>
+<p>➡️ Systemy bankowe, e-commerce, ERP, systemy CRM.</p>
+</section>
+<section id="przykładowy-kod-w-pythonie-sqlite" class="level3">
+<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-sqlite">🖥️ Przykładowy kod w Pythonie (SQLite):</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">':memory:'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">"INSERT INTO users (name, age) VALUES ('Alice', 30)"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">"SELECT * FROM users"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cursor.fetchall())</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>conn.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="dane-grafowe" class="level2">
+<h2 class="anchored" data-anchor-id="dane-grafowe">Dane grafowe</h2>
+<p>Wraz z rozwojem potrzeb biznesowych pojawiły się <strong>dane grafowe</strong>, w których relacje między obiektami są reprezentowane jako <strong>wierzchołki i krawędzie</strong>.</p>
+<section id="cechy-1" class="level3">
+<h3 class="anchored" data-anchor-id="cechy-1">📌 Cechy:</h3>
+<p>✅ Dane opisujące relacje i powiązania.<br>
+✅ Elastyczna struktura (grafy zamiast tabel).<br>
+✅ Możliwość analizy połączeń (np. algorytmy PageRank, centralność).</p>
+</section>
+<section id="przykłady-1" class="level3">
+<h3 class="anchored" data-anchor-id="przykłady-1">📌 Przykłady:</h3>
+<p>➡️ Sieci społecznościowe (Facebook, LinkedIn), wyszukiwarki (Google), systemy rekomendacji (Netflix, Amazon).</p>
+</section>
+<section id="przykładowy-kod-w-pythonie-graf-karate---networkx" class="level3">
+<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-graf-karate---networkx">🖥️ Przykładowy kod w Pythonie (Graf Karate - NetworkX):</h3>
+<div id="aa2b4e35" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>G <span class="op">=</span> nx.karate_club_graph()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>nx.draw(G, with_labels<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wyklad2_files/figure-html/cell-2-output-1.png" width="691" height="499" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="dane-półstrukturyzowane-json-xml-yaml" class="level2">
+<h2 class="anchored" data-anchor-id="dane-półstrukturyzowane-json-xml-yaml">Dane półstrukturyzowane (JSON, XML, YAML)</h2>
+<p>Dane te nie są w pełni ustrukturyzowane jak w bazach SQL, ale mają pewien schemat.</p>
+<section id="cechy-2" class="level3">
+<h3 class="anchored" data-anchor-id="cechy-2">📌 Cechy:</h3>
+<p>✅ Hierarchiczna struktura (np. klucz-wartość, obiekty zagnieżdżone).<br>
+✅ Brak ścisłego schematu (możliwość dodawania nowych pól).<br>
+✅ Popularność w systemach NoSQL i API.</p>
+</section>
+<section id="przykłady-2" class="level3">
+<h3 class="anchored" data-anchor-id="przykłady-2">📌 Przykłady:</h3>
+<p>➡️ Dokumenty w MongoDB, pliki konfiguracyjne, REST API, pliki logów.</p>
+</section>
+<section id="przykładowy-kod-w-pythonie-json" class="level3">
+<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-json">🖥️ Przykładowy kod w Pythonie (JSON):</h3>
+<div id="e9b8bdbb" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">'name'</span>: <span class="st">'Alice'</span>, <span class="st">'age'</span>: <span class="dv">30</span>, <span class="st">'city'</span>: <span class="st">'New York'</span>}</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>json_str <span class="op">=</span> json.dumps(data)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(json.loads(json_str))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'name': 'Alice', 'age': 30, 'city': 'New York'}</code></pre>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="dane-tekstowe-nlp" class="level2">
+<h2 class="anchored" data-anchor-id="dane-tekstowe-nlp">Dane tekstowe (NLP)</h2>
+<p>Tekst stał się kluczowym źródłem informacji, szczególnie w analizie opinii, chatbotach czy wyszukiwarkach.</p>
+<section id="cechy-3" class="level3">
+<h3 class="anchored" data-anchor-id="cechy-3">📌 Cechy:</h3>
+<p>✅ Nieustrukturyzowane dane wymagające przekształcenia.<br>
+✅ Stosowanie <strong>embeddingów</strong> (np. Word2Vec, BERT, GPT).<br>
+✅ Duże zastosowanie w analizie sentymentu i chatbotach.</p>
+</section>
+<section id="przykłady-3" class="level3">
+<h3 class="anchored" data-anchor-id="przykłady-3">📌 Przykłady:</h3>
+<p>➡️ Media społecznościowe, e-maile, chatboty, tłumaczenie maszynowe.</p>
+</section>
+<section id="przykładowy-kod-w-pythonie" class="level3">
+<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie">🖥️ Przykładowy kod w Pythonie:</h3>
+<div id="c6d9390c" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Przykładowe zdanie</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sentence <span class="op">=</span> <span class="st">"Sztuczna inteligencja zmienia świat."</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.embeddings(model<span class="op">=</span><span class="st">'llama3.2'</span>, prompt<span class="op">=</span>sentence)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>embedding <span class="op">=</span> response[<span class="st">'embedding'</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(embedding[:<span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[-1.6779385805130005, 3.0364203453063965, -6.6012187004089355, -1.7487436532974243]</code></pre>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="dane-multimedialne-obrazy-dźwięk-wideo" class="level2">
+<h2 class="anchored" data-anchor-id="dane-multimedialne-obrazy-dźwięk-wideo">Dane multimedialne (obrazy, dźwięk, wideo)</h2>
+<p>Nowoczesne systemy analizy danych wykorzystują również obrazy i dźwięk.</p>
+<section id="cechy-4" class="level3">
+<h3 class="anchored" data-anchor-id="cechy-4">📌 Cechy:</h3>
+<p>✅ Wymagają dużej mocy obliczeniowej (sztuczna inteligencja, deep learning).<br>
+✅ Przetwarzane przez modele CNN (obrazy) i RNN/Transformers (dźwięk).</p>
+</section>
+<section id="przykłady-4" class="level3">
+<h3 class="anchored" data-anchor-id="przykłady-4">📌 Przykłady:</h3>
+<p>➡️ Rozpoznawanie twarzy, analiza mowy, biometria, analiza treści wideo.</p>
+</section>
+<section id="przykładowy-kod-w-pythonie-obraz---opencv" class="level3">
+<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-obraz---opencv">🖥️ Przykładowy kod w Pythonie (Obraz - OpenCV):</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.imread(<span class="st">'cloud.jpeg'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="dane-strumieniowe" class="level2">
+<h2 class="anchored" data-anchor-id="dane-strumieniowe">Dane strumieniowe</h2>
+<p>Obecnie najbardziej dynamicznie rozwija się analiza <strong>danych strumieniowych</strong>, gdzie dane są analizowane na bieżąco, w miarę ich napływania.</p>
+<section id="cechy-5" class="level3">
+<h3 class="anchored" data-anchor-id="cechy-5">📌 Cechy:</h3>
+<p>✅ Przetwarzanie w czasie rzeczywistym.<br>
+✅ Wykorzystanie technologii takich jak Apache Kafka, Flink, Spark Streaming.</p>
+</section>
+<section id="przykłady-5" class="level3">
+<h3 class="anchored" data-anchor-id="przykłady-5">📌 Przykłady:</h3>
+<p>➡️ Transakcje bankowe (detekcja oszustw), analiza social media, IoT.</p>
+</section>
+<section id="przykładowy-kod-w-pythonie-strumieniowe-transakcje-bankowe" class="level3">
+<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-strumieniowe-transakcje-bankowe">🖥️ Przykładowy kod w Pythonie (Strumieniowe transakcje bankowe):</h3>
+<div id="ae3b9da8" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>transactions <span class="op">=</span> [{<span class="st">'id'</span>: <span class="dv">1</span>, <span class="st">'amount'</span>: <span class="dv">100</span>}, {<span class="st">'id'</span>: <span class="dv">2</span>, <span class="st">'amount'</span>: <span class="dv">200</span>}]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> transaction <span class="kw">in</span> transactions:</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Processing transaction: </span><span class="sc">{</span>transaction<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Processing transaction: {'id': 1, 'amount': 100}
+Processing transaction: {'id': 2, 'amount': 200}</code></pre>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="dane-sensoryczne-i-iot" class="level2">
+<h2 class="anchored" data-anchor-id="dane-sensoryczne-i-iot">Dane sensoryczne i IoT</h2>
+<p>Dane z czujników i urządzeń IoT są kolejnym krokiem w ewolucji.</p>
+<section id="cechy-6" class="level3">
+<h3 class="anchored" data-anchor-id="cechy-6">📌 Cechy:</h3>
+<p>✅ Często pochodzą z miliardów urządzeń (big data).<br>
+✅ Wymagają analizy brzegowej (<em>edge computing</em>).</p>
+</section>
+<section id="przykłady-6" class="level3">
+<h3 class="anchored" data-anchor-id="przykłady-6">📌 Przykłady:</h3>
+<p>➡️ Smart home, wearables, samochody autonomiczne, systemy przemysłowe.</p>
+</section>
+<section id="przykładowy-kod-w-pythonie-sensor---temperatura" class="level3">
+<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-sensor---temperatura">🖥️ Przykładowy kod w Pythonie (Sensor - temperatura):</h3>
+<div id="0413bfef" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_temperature():</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">round</span>(random.uniform(<span class="fl">20.0</span>, <span class="fl">25.0</span>), <span class="dv">2</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Current temperature: </span><span class="sc">{</span>get_temperature()<span class="sc">}</span><span class="ss">°C"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Current temperature: 21.52°C</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="rzeczywisty-proces-generowania-danych" class="level1">
+<h1>Rzeczywisty proces generowania danych</h1>
+<p>Dane generowane są w postaci nieograniczonej - pojawiają się na skutek ciągłych działań systemów. W swoim telefonie wygenerowałeś dziś (a nawet na tych zajęciach!) wiele danych. Czy na następnych zajęciach lub też jutro nie będziesz ich generował?</p>
+<blockquote class="blockquote">
+<p>Dane zawsze generowane są jako forma strumienia danych.</p>
+</blockquote>
+<p>📌 Systemy obsługujące strumienie danych:</p>
+<ul>
+<li>Hurtownie danych</li>
+<li>Systemy monitorujące działania urządzeń (IoT)</li>
+<li>Systemy transakcyjne</li>
+<li>Systemy analityczne stron www</li>
+<li>Reklamy on-line</li>
+<li>Media społecznościowe</li>
+<li>Systemy logowania</li>
+</ul>
+<blockquote class="blockquote">
+<p>Firma to organizacja, która generuje i odpowiada na ciągły strumień danych.</p>
+</blockquote>
+<p>W przetwarzaniu wsadowym źródłem (ale i wynikiem przetwarzania) danych jest <strong>plik</strong>.</p>
+<p>Jest on zapisywany raz i można się do niego odwołać (może na nim działać wiele procesów - zadań).</p>
+<p>Nazwa pliku to element identyfikujący zbiór rekordów.</p>
+<p>W przypadku strumienia zdarzenie jest generowane tylko raz przez tzw. producenta (zwanego też nadawcą lub dostawcą). Powstałe zdarzenie przetwarzane może być przez wielu tzw. konsumentów (odbiorców). Zdarzenia strumieniowe grupowane są w tzw. tematy (ang. topics).</p>
+</section>
+<section id="duże-dane" class="level1">
+<h1>Duże dane</h1>
+<p>Kiedy podjąć decyzję biznesową ?</p>
+<p><img alt="Batch Processing" src="../img/batch0.png" class="center"></p>
+<section id="hadoop-map-reduce-skalowanie-obliczeń-na-big-data" class="level2">
+<h2 class="anchored" data-anchor-id="hadoop-map-reduce-skalowanie-obliczeń-na-big-data">Hadoop Map-Reduce – Skalowanie obliczeń na Big Data</h2>
+<p>Kiedy mówimy o skalowalnym przetwarzaniu danych, pierwszym skojarzeniem może być Google.<br>
+Ale co tak naprawdę sprawia, że możemy wyszukiwać informacje w ułamku sekundy, przetwarzając petabajty danych?</p>
+<p>👉 Czy wiesz, że nazwa “Google” pochodzi od słowa “Googol”, czyli liczby równej 10¹⁰⁰?<br>
+To więcej niż liczba atomów w znanym Wszechświecie! 🌌</p>
+<section id="wyzwanie-czy-uda-ci-się-zapisać-liczbę-googol-do-końca-zajęć" class="level3">
+<h3 class="anchored" data-anchor-id="wyzwanie-czy-uda-ci-się-zapisać-liczbę-googol-do-końca-zajęć">🔥 Wyzwanie: Czy uda Ci się zapisać liczbę Googol do końca zajęć?</h3>
+<hr>
+</section>
+</section>
+<section id="dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają" class="level2">
+<h2 class="anchored" data-anchor-id="dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają">🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają?</h2>
+<p>Tradycyjne <strong>bazy danych SQL</strong> czy <strong>jednowątkowe algorytmy</strong> zawodzą, gdy skala danych przekracza pojedynczy komputer.<br>
+W tym miejscu pojawia się <strong>MapReduce</strong> – rewolucyjny model obliczeniowy stworzony przez Google.</p>
+<section id="rozwiązania-google-dla-big-data" class="level3">
+<h3 class="anchored" data-anchor-id="rozwiązania-google-dla-big-data">🛠️ Rozwiązania Google dla Big Data:</h3>
+<p>✅ <strong>Google File System (GFS)</strong> – rozproszony system plików.<br>
+✅ <strong>Bigtable</strong> – system do przechowywania ogromnych ilości ustrukturyzowanych danych.<br>
+✅ <strong>MapReduce</strong> – algorytm podziału pracy na wiele maszyn.</p>
+</section>
+</section>
+<section id="graficzne-przedstawienie-mapreduce" class="level2">
+<h2 class="anchored" data-anchor-id="graficzne-przedstawienie-mapreduce">Graficzne przedstawienie MapReduce</h2>
+<section id="mapowanie-rozdziela-zadania-map" class="level3">
+<h3 class="anchored" data-anchor-id="mapowanie-rozdziela-zadania-map">Mapowanie rozdziela zadania (Map)</h3>
+<p>Każde wejście dzielone jest na mniejsze części i przetwarzane równolegle.</p>
+<p>🌍 Wyobraź sobie, że masz <strong>książkę telefoniczną</strong> i chcesz znaleźć wszystkie osoby o nazwisku “Nowak”.<br>
+➡️ <strong>Podziel książkę na fragmenty i daj każdemu do przeanalizowania jeden fragment.</strong></p>
+</section>
+<section id="redukcja-zbiera-wyniki-reduce" class="level3">
+<h3 class="anchored" data-anchor-id="redukcja-zbiera-wyniki-reduce">Redukcja zbiera wyniki (Reduce)</h3>
+<p>Wszystkie częściowe wyniki są łączone w jedną, końcową odpowiedź.</p>
+<p>🔄 Wszyscy uczniowie zgłaszają swoje wyniki, a jeden student zbiera i podsumowuje odpowiedź.</p>
+<p><img alt="MapReduce w działaniu – rozdzielanie i agregowanie danych" src="../img/mapreduce_flow.png" class="center"></p>
+<hr>
+</section>
+</section>
+<section id="klasyczny-przykład-liczenie-słów-w-tekście" class="level2">
+<h2 class="anchored" data-anchor-id="klasyczny-przykład-liczenie-słów-w-tekście">💡 Klasyczny przykład: Liczenie słów w tekście</h2>
+<p>Załóżmy, że mamy miliony książek i chcemy policzyć, ile razy występuje każde słowo.</p>
+<section id="kod-mapreduce-w-pythonie-z-użyciem-multiprocessing" class="level3">
+<h3 class="anchored" data-anchor-id="kod-mapreduce-w-pythonie-z-użyciem-multiprocessing">🖥️ Kod MapReduce w Pythonie (z użyciem multiprocessing)</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> multiprocessing <span class="im">import</span> Pool</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Funkcja Map (podział tekstu na słowa)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> map_function(text):</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> text.split()</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Counter(words)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Funkcja Reduce (sumowanie wyników)</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reduce_function(counters):</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    total_count <span class="op">=</span> Counter()</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> counter <span class="kw">in</span> counters:</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        total_count.update(counter)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total_count</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>texts <span class="op">=</span> [</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"big data is amazing"</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"data science and big data"</span>,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"big data is everywhere"</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:    </span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Pool() <span class="im">as</span> pool:</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        mapped_results <span class="op">=</span> pool.<span class="bu">map</span>(map_function, texts)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    final_result <span class="op">=</span> reduce_function(mapped_results)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(final_result)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Counter({'data': 4, 'big': 3, 'is': 2, 'amazing': 1, 'science': 1, 'and': 1, 'everywhere': 1})</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="co-tu-się-dzieje" class="level3">
+<h3 class="anchored" data-anchor-id="co-tu-się-dzieje">🔹 Co tu się dzieje?</h3>
+<p>✅ Każdy fragment tekstu jest przetwarzany niezależnie (<strong>map</strong>).<br>
+✅ Wyniki są zbierane i sumowane (<strong>reduce</strong>).<br>
+✅ <strong>Efekt:</strong> Możemy przetwarzać <strong>terabajty tekstu równolegle</strong>!</p>
+<p><img alt="Batch Processing" src="../img/batch3.png" class="center"></p>
+<hr>
+</section>
+</section>
+<section id="wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce" class="level2">
+<h2 class="anchored" data-anchor-id="wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce">🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce</h2>
+<p>📊 <strong>Stare podejście</strong> – Jeden komputer wykonuje wszystko sekwencyjnie.<br>
+📊 <strong>Nowe podejście (MapReduce)</strong> – Każda maszyna liczy fragment i wyniki są agregowane.</p>
+<p><img alt="MapReduce Processing" src="../img/mapreduce_vs_classic.png" class="center"></p>
+<hr>
+</section>
+<section id="wyzwanie-dla-ciebie" class="level2">
+<h2 class="anchored" data-anchor-id="wyzwanie-dla-ciebie">🚀 Wyzwanie dla Ciebie!</h2>
+<p>🔹 <strong>Znajdź i uruchom swój własny algorytm MapReduce w dowolnym języku!</strong><br>
+🔹 <strong>Czy potrafisz zaimplementować własny MapReduce do innego zadania?</strong> (np. analiza logów, zliczanie kliknięć na stronie)</p>
+</section>
+<section id="big-data" class="level2">
+<h2 class="anchored" data-anchor-id="big-data">Big Data</h2>
+<p>Systemy Big data mogą być częścią (źródłem) dla hurtowni danych (np. Data Lake, Enterprise Data Hub)</p>
+<p>Ale Hurtownie danych nie są systemami Big Data!</p>
+<ol type="1">
+<li>Hurtownie danych</li>
+</ol>
+<ul>
+<li>przetrzymywanie danych wysoko strukturyzowanych</li>
+<li>skupione na analizach i procesie raportowania</li>
+<li>100% accuracy</li>
+</ul>
+<ol start="2" type="1">
+<li>Big Data</li>
+</ol>
+<ul>
+<li>dane o dowolnej strukturze</li>
+<li>służy do różnorodnych celów opartych na danych (analityka, data science …)</li>
+<li>poniżej 100% accuracy</li>
+</ul>
+<blockquote class="blockquote">
+<p><em>,,Big Data is like teenage sex: everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so every one claims they are doing it.’’</em> — Dan Ariely, Professor of Psychology and Behavioral Economics, Duke University</p>
+</blockquote>
+<section id="one-two-four-v" class="level3">
+<h3 class="anchored" data-anchor-id="one-two-four-v">one, two, … four V</h3>
+<ol type="1">
+<li><strong>Volume</strong> (Objętość) - rozmiar danych produkowanych na całym świecie przyrasta w tempie wykładniczym.</li>
+<li><strong>Velocity</strong> (Szybkość) - tempo produkowania danych, szybkości ich przesyłania i przetwarzania.</li>
+<li><strong>Variety</strong> (Zróżnicowanie) - tradycyjne dane kojarzą się nam z postacią alfanumeryczną złożoną z liter i cyfr. Obecnie mamy do dyspozycji obrazy, dźwięki, pliki wideo, strumienie danych z IoT</li>
+<li><strong>Veracity</strong> (Wiarygodność) - Czy dane są kompletne i poprawne? Czy obiektywnie odzwierciedlają rzeczywistość? Czy są podstawą do podejmowania decyzji?</li>
+<li><strong>Value</strong> - The value that the data actually holds. In the end, it’s all about cost and benefits.</li>
+</ol>
+<blockquote class="blockquote">
+<p><em>Celem obliczeń nie są liczby, lecz ich zrozumienie</em> R.W. Hamming 1962.</p>
+</blockquote>
+</section>
+</section>
+<section id="modele-przetwarzania-danych" class="level2">
+<h2 class="anchored" data-anchor-id="modele-przetwarzania-danych">Modele przetwarzania danych</h2>
+<p>Dane w biznesie przetwarzane są praktycznie od zawsze. W ciągu ostatnich dziesięcioleci ilość przetwarzanych danych systematycznie rośnie co wpływa na proces przygotowania i przetwarzania danych.</p>
+<section id="trochę-historii" class="level3">
+<h3 class="anchored" data-anchor-id="trochę-historii">Trochę historii</h3>
+<ul>
+<li>Lata 60-te : Kolekcje danych, bazy danych</li>
+<li>Lata 70-te : Relacyjne modele danych i ich implementacja w systemach OLTP</li>
+<li>1975 : Pierwsze komputery osobiste</li>
+<li>Lata 80-te : Zaawansowane modele danych, extended-relational, objective oriented, aplikacyjno-zorientowane itp.</li>
+<li>1983 : Początek internetu</li>
+<li>Lata 90-te : Data mining, hurtownie danych, systemy OLAP</li>
+<li>Później : NoSQL, Hadoop, SPARK, data lake</li>
+<li>2002 : AWS , 2005: Hadoop, Cloud computing</li>
+</ul>
+<p>Większość danych przechowywana jest w bazach lub hurtowniach danych. Standardowo dostęp do danych sprowadza się najczęściej do realizacji zapytań poprzez aplikację.</p>
+<p>Sposób wykorzystania i realizacji procesu dostępu do bazy danych nazywamy <strong>modelem przetwarzania</strong>. Najczęściej używane są dwie implementacje:</p>
+</section>
+<section id="model-tradycyjny" class="level3">
+<h3 class="anchored" data-anchor-id="model-tradycyjny">Model Tradycyjny</h3>
+<p><strong>Model tradycyjny</strong> - przetwarzanie transakcyjne w trybie on-line, OLTP (on-line transaction processing). Świetnie sprawdza się w przypadku obsługi bieżącej np. obsługa klienta, rejestr zamówień, obsługa sprzedaży itp. Wykorzystywany w systemach Enterprise Resource Planning (ERP) Systems, Customer Relationship Management (CRM) software, and web-based applications.</p>
+<p><img src="../img/baza1.png" class="center img-fluid"></p>
+<p>Model ten dostarcza efektywnych rozwiązań m.in do:</p>
+<ul>
+<li>efektywnego i bezpiecznego przechowywania danych,</li>
+<li>transakcyjnego odtwarzanie danych po awarii,</li>
+<li>optymalizacji dostępu do danych,</li>
+<li>zarządzania współbieżnością,</li>
+<li>przetwarzania zdarzeń -&gt; odczyt -&gt; zapis</li>
+</ul>
+<p>Co w przypadku gdy mamy do czynienia z:</p>
+<ul>
+<li>agregacjami danych z wielu systemów (np. dla wielu sklepów),</li>
+<li>raportowanie i podsumowania danych,</li>
+<li>optymalizacja złożonych zapytań,</li>
+<li>wspomaganie decyzji biznesowych.</li>
+</ul>
+<p>Badania nad tego typu zagadnieniami doprowadziły do sformułowania nowego modelu przetwarzania danych oraz nowego typu baz danych - <strong>Hurtownie Danych</strong> <em>(Data warehouse)</em>.</p>
+</section>
+<section id="model-olap" class="level3">
+<h3 class="anchored" data-anchor-id="model-olap">Model OLAP</h3>
+<p><strong>Przetwarzanie analityczne on-line OLAP (on-line analytic processing).</strong></p>
+<p>Wspieranie procesów analizy i dostarczanie narzędzi umożliwiających analizę wielowymiarową (<code>czas</code>, <code>miejsce</code>, <code>produkt</code>).</p>
+<p>Proces zrzucania danych z różnych systemów do jednej bazy nazywamy Extract-Transform-Load (ETL) (normalizacja i encoding and schema transaction).</p>
+<p>Analiza danych z hurtowni to przede wszystkim obliczanie <strong>agregatów</strong> (podsumowań) dotyczących wymiarów hurtowni. Proces ten jest całkowicie sterowany przez użytkownika.</p>
+<p><strong>Przykład</strong></p>
+<p>Załóżmy, że mamy dostęp do hurtowni danych gdzie przechowywane są informacje dotyczące sprzedaży produktów w supermarkecie. Jak przeanalizować zapytania:</p>
+<ol type="1">
+<li>Jaka jest łączna sprzedaż produktów w kolejnych kwartałach, miesiącach, tygodniach ?</li>
+<li>Jaka jest sprzedaż produktów z podziałem na rodzaje produktów ?</li>
+<li>Jaka jest sprzedaż produktów z podziałem na oddziały supermarketu ?</li>
+</ol>
+<p>Odpowiedzi na te pytania pozwalają określić <code>wąskie gardła</code> sprzedaży produktów przynoszących deficyt, zaplanować zapasy w magazynach czy porównać sprzedaż różnych grup w różnych oddziałach supermarketu.</p>
+<p>W ramach Hurtowni Danych najczęściej wykonuje się dwa rodzaje zapytań(oba w trybie batchowym): 1. Wykonywane okresowo w czasie zapytania raportowe obliczające biznesowe statystyki 2. Wykonywane ad-hoc zapytania wspomagające krytyczne decyzje biznesowe.</p>
+<p><img src="../img/baza2.png" class="center img-fluid"></p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/sebkaz-teaching\.github\.io\/RTA_2025");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2025, Sebastian Zając</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,432 @@
+---
+title:  Wykład 1
+
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+⏳ Czas trwania: 1,5h 
+
+*🎯 Cel wykładu*
+
+Zapoznanie studentów z podstawami **real-time analytics**, różnicami między trybami przetwarzania danych (**batch, streaming, real-time**) oraz kluczowymi zastosowaniami i wyzwaniami.
+
+## Czym jest analiza danych w czasie rzeczywistym?
+
+### Definicja i kluczowe koncepcje
+
+Analiza danych w czasie rzeczywistym (ang. *Real-Time Data Analytics*) to **proces** przetwarzania i analizy danych natychmiast po ich wygenerowaniu, bez konieczności przechowywania i oczekiwania na późniejsze przetworzenie. Celem jest uzyskanie **natychmiastowych** wniosków i reakcji na zmieniające się warunki w systemach biznesowych, technologicznych i naukowych.
+
+### Kluczowe cechy analizy danych w czasie rzeczywistym:
+
+1.  Niska latencja (ang. *low-latency*) – dane są analizowane w ciągu milisekund lub sekund od ich wygenerowania.
+2.  Streaming vs. Batch Processing – analiza danych może odbywać się w sposób ciągły (streaming) lub w z góry określonych interwałach (batch).
+3.  Integracja z IoT, AI i ML – real-time analytics często współpracuje z Internetem Rzeczy (IoT) oraz algorytmami sztucznej inteligencji.
+4.  Podejmowanie decyzji w czasie rzeczywistym – np. natychmiastowa detekcja oszustw w transakcjach bankowych.
+
+## Zastosowanie analizy danych w czasie rzeczywistym w biznesie
+
+### Finanse i bankowość
+
+-   **Wykrywanie oszustw** – analiza transakcji w czasie rzeczywistym pozwala na wykrycie anomalii wskazujących na oszustwa.
+-   **Automatyczny trading** – systemy HFT (High-Frequency Trading) analizują miliony danych w ułamkach sekundy.
+-   **Dynamiczne oceny kredytowe** – natychmiastowa analiza ryzyka kredytowego klienta.
+
+### E-commerce i marketing cyfrowy
+
+-   **Personalizacja ofert w czasie rzeczywistym** – dynamiczne rekomendacje produktów na podstawie aktualnego zachowania użytkownika.
+-   **Dynamiczne ceny** – np. Uber, Amazon i hotele stosują dynamiczne ustalanie cen na podstawie popytu.
+-   **Monitorowanie mediów społecznościowych** – analiza nastrojów klientów i natychmiastowa reakcja na negatywne komentarze.
+
+### Telekomunikacja i IoT
+
+-   **Monitorowanie infrastruktury sieciowej** – analiza logów w czasie rzeczywistym pozwala na wykrywanie awarii przed ich wystąpieniem.
+-   **Smart Cities** – analiza ruchu drogowego i natychmiastowa optymalizacja sygnalizacji świetlnej.
+-   **Analityka IoT** – urządzenia IoT generują strumienie danych, które można analizować w czasie rzeczywistym (np. inteligentne liczniki energii).
+
+### Ochrona zdrowia
+
+-   **Monitorowanie pacjentów** – analiza sygnałów z urządzeń medycznych w celu natychmiastowego wykrycia zagrożenia życia.
+-   **Analityka epidemiologiczna** – śledzenie rozprzestrzeniania się chorób na podstawie danych w czasie rzeczywistym.
+
+Analiza danych w czasie rzeczywistym to kluczowy element nowoczesnych systemów informatycznych, który umożliwia firmom podejmowanie decyzji szybciej i bardziej precyzyjnie. 
+Jest wykorzystywana w wielu branżach – od finansów, przez e-commerce, aż po ochronę zdrowia i IoT.
+
+## Różnice między Batch Processing, Near Real-Time Analytics, Real-Time Analytics
+
+Istnieją trzy główne podejścia do przetwarzania informacji:
+
+1.  Batch Processing (Przetwarzanie wsadowe)
+2.  Near Real-Time Analytics (Analiza niemal w czasie rzeczywistym)
+3.  Real-Time Analytics (Analiza w czasie rzeczywistym)
+
+Każde z nich różni się szybkością przetwarzania, wymaganiami technologicznymi oraz zastosowaniami biznesowymi.
+
+### Batch Processing – Przetwarzanie wsadowe
+
+📌 Definicja:
+
+Batch Processing polega na zbieraniu dużych ilości danych i ich przetwarzaniu w określonych odstępach czasu (np. co godzinę, codziennie, co tydzień).
+
+📌 Cechy:
+
+-   ✅ Wysoka wydajność dla dużych zbiorów danych
+
+-   ✅ Przetwarzanie danych po ich zgromadzeniu
+
+-   ✅ Nie wymaga natychmiastowej analizy
+
+-   ✅ Zwykle tańsze niż przetwarzanie w czasie rzeczywistym
+
+-   ❌ Opóźnienia – wyniki są dostępne dopiero po zakończeniu przetwarzania
+
+📌 Przykłady zastosowań:
+
+-   Generowanie raportów finansowych na koniec dnia/miesiąca
+-   Analiza trendów sprzedaży na podstawie historycznych danych
+-   Tworzenie modeli uczenia maszynowego offline
+
+📌 Przykładowe technologie:
+
+-   Hadoop MapReduce
+-   Apache Spark (w trybie batch)
+-   Google BigQuery
+
+``` python
+import pandas as pd  
+df = pd.read_csv("transactions.csv")  
+
+df['transaction_date'] = pd.to_datetime(df['transaction_date'])
+df['month'] = df['transaction_date'].dt.to_period('M')  # Ekstrakcja miesiąca
+
+# Agregacja danych - miesięczne sumy transakcji
+monthly_sales = df.groupby(['month'])['amount'].sum()
+
+# Zapis wyników do pliku (np. raportu)
+monthly_sales.to_csv("monthly_report.csv")  
+
+print("Raport zapisany!")
+```
+
+Gdybyś chciał utworzyć dane do przykładu
+
+``` python
+import pandas as pd
+import numpy as np
+
+np.random.seed(42)
+data = {
+    'transaction_id': [f'TX{str(i).zfill(4)}' for i in range(1, 1001)],
+    'amount': np.random.uniform(10, 10000, 1000), 
+    'transaction_date': pd.date_range(start="2025-01-01", periods=1000, freq='h'), 
+    'merchant': np.random.choice(['Merchant_A', 'Merchant_B', 'Merchant_C', 'Merchant_D'], 1000),
+    'card_type': np.random.choice(['Visa', 'MasterCard', 'AmEx'], 1000)
+}
+
+df = pd.DataFrame(data)
+csv_file = 'transactions.csv'
+df.to_csv(csv_file, index=False)
+```
+
+### Near Real-Time Analytics – Analiza niemal w czasie rzeczywistym
+
+📌 Definicja:
+
+Near Real-Time Analytics to analiza danych, która odbywa się z minimalnym opóźnieniem (zazwyczaj od kilku sekund do kilku minut). Jest stosowana tam, gdzie pełna analiza w czasie rzeczywistym nie jest konieczna, ale zbyt duże opóźnienia mogą wpłynąć na biznes.
+
+📌 Cechy:
+
+1.  ✅ Przetwarzanie danych w krótkich odstępach czasu (kilka sekund – minut)
+2.  ✅ Umożliwia szybkie podejmowanie decyzji, ale nie wymaga reakcji w milisekundach
+3.  ✅ Optymalny balans między kosztami a szybkością
+4.  ❌ Nie nadaje się do systemów wymagających natychmiastowej reakcji
+
+📌 Przykłady zastosowań:
+
+-   Monitorowanie transakcji bankowych i wykrywanie oszustw (np. analiza w ciągu 30 sekund)
+-   Dynamiczne dostosowywanie reklam online na podstawie zachowań użytkowników
+-   Analiza logów serwerów i sieci w celu wykrycia anomalii
+
+📌 Przykładowe technologie:
+
+-   Apache Kafka + Spark Streaming
+-   Elasticsearch + Kibana (np. analiza logów IT)
+-   Amazon Kinesis
+
+Przykład producenta danych realizującego tranzakcje wysyłane do systemu Apache Kafka.
+
+``` python
+from kafka import KafkaProducer
+import json
+import random
+import time
+from datetime import datetime
+
+# Ustawienia dla producenta
+bootstrap_servers = 'localhost:9092'
+topic = 'transactions' 
+
+# Funkcja generująca przykładowe dane transakcji
+def generate_transaction():
+    transaction = {
+        'transaction_id': f'TX{random.randint(1000, 9999)}',
+        'amount': round(random.uniform(10, 10000), 2),  # Kwota między 10 a 10 000
+        'transaction_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'merchant': random.choice(['Merchant_A', 'Merchant_B', 'Merchant_C', 'Merchant_D']),
+        'card_type': random.choice(['Visa', 'MasterCard', 'AmEx']),
+    }
+    return transaction
+
+producer = KafkaProducer(
+    bootstrap_servers=bootstrap_servers,
+    value_serializer=lambda v: json.dumps(v).encode('utf-8') 
+)
+
+
+for _ in range(1000):  
+    transaction = generate_transaction()
+    producer.send(topic, value=transaction) 
+    print(f"Sent: {transaction}")
+    time.sleep(1) 
+
+# Zakończenie działania producenta
+producer.flush()
+producer.close()
+```
+
+Przykład consumenta - programu sparawdzającego zbyt duże transakcje
+
+``` python
+from kafka import KafkaConsumer
+import json  
+
+# Konsumer do pobierania danych z Kafka
+consumer = KafkaConsumer(
+    'transactions',
+    bootstrap_servers='localhost:9092',
+    auto_offset_reset='earliest',
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+)
+
+# Pobieranie transakcji w niemal real-time i analiza
+for message in consumer:
+    transaction = message.value
+    if transaction["amount"] > 8000:
+        print(f"🚨 Wykryto dużą transakcję: {transaction}")
+```
+
+Przykładowy zestaw danych
+
+``` python
+{
+    "transaction_id": "TX1234",
+    "amount": 523.47,
+    "transaction_date": "2025-02-11 08:10:45",
+    "merchant": "Merchant_A",
+    "card_type": "Visa"
+}
+```
+
+### Real-Time Analytics – Analiza w czasie rzeczywistym
+
+📌 Definicja:
+
+Real-Time Analytics to natychmiastowa analiza danych i podejmowanie decyzji w ułamku sekundy (milisekundy do jednej sekundy). Wykorzystywana w systemach wymagających reakcji w czasie rzeczywistym, np. w transakcjach giełdowych, systemach IoT czy cyberbezpieczeństwie.
+
+📌 Cechy:
+
+1.  ✅ Bardzo niskie opóźnienie (milliseconds-seconds)
+2.  ✅ Umożliwia natychmiastową reakcję systemu
+3.  ✅ Wymaga wysokiej mocy obliczeniowej i skalowalnej architektury
+4.  ❌ Droższe i bardziej złożone technologicznie niż batch processing
+
+📌 Przykłady zastosowań:
+
+-   High-Frequency Trading (HFT) – analiza i podejmowanie decyzji w transakcjach giełdowych w milisekundach
+-   Autonomiczne samochody – analiza strumieni danych z kamer i sensorów w czasie rzeczywistym
+-   Cyberbezpieczeństwo – detekcja ataków w sieciach komputerowych w ułamku sekundy
+-   Analityka IoT – np. natychmiastowa detekcja anomalii w danych z czujników przemysłowych
+
+📌 Przykładowe technologie:
+
+-   Apache Flink
+-   Apache Storm
+-   Google Dataflow
+
+🔎 Porównanie:
+
+| Cecha | Batch Processing | Near Real-Time Analytics | Real-Time Analytics |
+|--------------------|------------------|------------------|------------------|
+| **Opóźnienie** | Minuty – godziny – dni | Sekundy – minuty | Milisekundy – sekundy |
+| **Typ przetwarzania** | Wsadowe (offline) | Strumieniowe (ale nie w pełni natychmiastowe) | Strumieniowe (prawdziwy real-time) |
+| **Koszt infrastruktury** | 📉 Niski | 📈 Średni | 📈📈 Wysoki |
+| **Złożoność implementacji** | 📉 Prosta | 📈 Średnia | 📈📈 Trudna |
+| **Przykłady zastosowań** | Raporty, ML offline, analizy historyczne | Monitorowanie transakcji, dynamiczne reklamy | HFT, IoT, detekcja oszustw w czasie rzeczywistym |
+
+📌 Kiedy stosować Batch Processing?
+
+1.  ✅ Gdy nie wymagasz natychmiastowej analizy
+2.  ✅ Gdy masz duże ilości danych, ale przetwarzane są one okresowo
+3.  ✅ Gdy chcesz obniżyć koszty
+
+📌 Kiedy stosować Near Real-Time Analytics?
+
+1.  ✅ Gdy wymagasz analizy w krótkim czasie (sekundy – minuty)
+2.  ✅ Gdy potrzebujesz bardziej aktualnych danych, ale nie w pełnym real-time
+3.  ✅ Gdy szukasz kompromisu między wydajnością a kosztami
+
+📌 Kiedy stosować Real-Time Analytics?
+
+1.  ✅ Gdy każda milisekunda ma znaczenie (np. giełda, autonomiczne pojazdy)
+2.  ✅ Gdy chcesz wykrywać oszustwa, anomalie lub incydenty natychmiast
+3.  ✅ Gdy system musi natychmiast reagować na zdarzenia
+
+Real-time analytics nie zawsze jest konieczne – w wielu przypadkach near real-time jest wystarczające i bardziej opłacalne. Kluczowe jest zrozumienie wymagań biznesowych przed wyborem odpowiedniego rozwiązania.
+
+## Dlaczego Real-Time Analytics jest ważne?
+
+Real-time analytics (analiza danych w czasie rzeczywistym) staje się coraz bardziej istotna w wielu branżach, ponieważ umożliwia organizacjom podejmowanie natychmiastowych decyzji na podstawie aktualnych danych. Oto kilka kluczowych powodów, dla których real-time analytics jest ważne:
+
+### Szybkie podejmowanie decyzji
+
+Real-time analytics pozwala firmom reagować na zmiany i wydarzenia w czasie rzeczywistym. Dzięki temu można podejmować decyzje szybciej, co jest kluczowe w dynamicznych środowiskach, takich jak:
+
+-   Marketing: Reklamy mogą być dostosowane do zachowań użytkowników w czasie rzeczywistym (np. personalizacja treści reklamowych).
+-   Finanse: Wykrywanie oszustw w czasie rzeczywistym, gdzie każda minuta może oznaczać różnicę w prewencji strat finansowych.
+
+### Monitorowanie w czasie rzeczywistym
+
+Firmy mogą monitorować kluczowe wskaźniki operacyjne na bieżąco. Przykłady:
+
+-   IoT (Internet of Things): Monitorowanie stanu maszyn i urządzeń w fabrykach, aby natychmiast wykrywać awarie i zapobiegać przestojom.
+-   Healthtech: Śledzenie parametrów życiowych pacjentów i wykrywanie anomalii, co może ratować życie.
+
+### Zwiększenie efektywności operacyjnej
+
+Real-time analytics umożliwia natychmiastowe wykrywanie i eliminowanie problemów operacyjnych, zanim staną się poważniejsze. Przykłady:
+
+-   Logistyka: Śledzenie przesyłek i monitorowanie statusu transportu w czasie rzeczywistym, co poprawia efektywność i zmniejsza opóźnienia.
+-   Retail: Monitorowanie poziomu zapasów na bieżąco i dostosowywanie zamówień do aktualnych potrzeb.
+
+### Konkurencyjność
+
+Organizacje, które wykorzystują analitykę w czasie rzeczywistym, mają przewagę nad konkurencją, ponieważ mogą szybciej reagować na zmiany na rynku, nowe potrzeby klientów i sytuacje kryzysowe. Dzięki natychmiastowym informacjom:
+
+-   Można podejmować decyzje z wyprzedzeniem przed konkurentami.
+-   Utrzymywać lepsze relacje z klientami, reagując na ich potrzeby w czasie rzeczywistym (np. dostosowywanie oferty).
+
+### Lepsze doświadczenia użytkowników (Customer Experience)
+
+Analiza danych w czasie rzeczywistym pozwala na dostosowywanie interakcji z użytkownikami w trakcie ich trwania. Przykłady:
+
+-   E-commerce: Analiza koszyka zakupowego użytkownika w czasie rzeczywistym, aby np. zaoferować rabat lub przypomnieć o porzuconych produktach.
+-   Streaming: Optymalizacja jakości usługi wideo/streamingowej w zależności od dostępnej przepustowości łącza.
+
+### Wykrywanie i reagowanie na anomalie
+
+W dzisiejszym świecie pełnym danych, wykrywanie anomalii w czasie rzeczywistym jest kluczowe dla bezpieczeństwa. Przykłady:
+
+-   Cyberbezpieczeństwo: Real-time analytics umożliwia wykrywanie podejrzanych działań w sieci i zapobieganie atakom w czasie rzeczywistym (np. ataki DDoS, nieautoryzowane logowanie).
+-   Wykrywanie oszustw: Natychmiastowa identyfikacja podejrzanych transakcji w systemach bankowych i kartach kredytowych.
+
+### Optymalizacja kosztów
+
+Dzięki analizie w czasie rzeczywistym można optymalizować zasoby i zmniejszać koszty. Na przykład:
+
+-   Zarządzanie energią: Analiza zużycia energii w czasie rzeczywistym, umożliwiająca optymalizację wydatków na energię w firmach.
+-   Optymalizacja łańcucha dostaw: Dzięki bieżącemu śledzeniu zapasów i dostaw można lepiej zarządzać kosztami magazynowania i transportu.
+
+### Zdolność do przewidywania i zapobiegania
+
+Analiza w czasie rzeczywistym wspiera procesy predykcyjne, które mogą przewidywać przyszłe zachowania lub problemy, a także je eliminować zanim się pojawią. Na przykład:
+
+-   Utrzymanie predykcyjne w produkcji: Wykorzystanie analizy w czasie rzeczywistym w połączeniu z modelami predykcyjnymi pozwala przewidywać awarie maszyn.
+-   Prognozy popytu: W czasie rzeczywistym można dostosowywać produkcję lub zapasy na podstawie bieżących trendów.
+
+Real-time analytics to nie tylko analiza danych – to kluczowy element strategii firm w świecie, który wymaga szybkich reakcji, elastyczności i dostosowywania się do zmieniającego się otoczenia. Firmy, które wdrażają te technologie, mogą znacząco poprawić swoje wyniki finansowe, obsługę klienta, wydajność operacyjną, a także przewagę konkurencyjną.
+
+## Wyzwania i problemy analizy danych w czasie rzeczywistym
+
+Analiza danych w czasie rzeczywistym wiąże się z wieloma wyzwaniami i trudnościami, które trzeba rozwiązać, aby systemy real-time działały efektywnie i niezawodnie. Pomimo ogromnego potencjału, jaki daje możliwość natychmiastowego przetwarzania danych, realizacja tych procesów w praktyce wiąże się z licznymi problemami technologicznymi, organizacyjnymi i dotyczącymi zarządzania danymi.
+
+Poniżej przedstawiamy najważniejsze wyzwania oraz możliwe rozwiązania, które należy uwzględnić podczas implementacji systemów analizy danych w czasie rzeczywistym.
+
+### Skalowalność systemów
+
+#### Wyzwanie:
+
+Skalowanie systemu analitycznego w czasie rzeczywistym jest jednym z najtrudniejszych zadań. W miarę jak ilość generowanych danych rośnie, systemy muszą być w stanie obsługiwać większe obciążenie bez opóźnienia w przetwarzaniu.
+
+Zwiększona ilość danych: W systemach real-time, jak np. monitorowanie danych IoT czy transakcje w systemach finansowych, ilość generowanych danych może być olbrzymia. Potrzebna jest elastyczność: System musi automatycznie dostosowywać zasoby w zależności od obciążenia.
+
+#### Rozwiązanie:
+
+Wykorzystanie skalowalnych systemów chmurowych, które pozwalają na dynamiczne zwiększanie zasobów obliczeniowych (np. AWS, Azure, Google Cloud). Kubernetes do zarządzania kontenerami i automatycznego skalowania mikroserwisów. Technologie strumieniowe (Apache Kafka, Apache Flink) umożliwiające przetwarzanie danych w sposób wydajny i rozproszony.
+
+### Opóźnienia (Latency)
+
+#### Wyzwanie:
+
+W systemach analizy danych w czasie rzeczywistym, każde opóźnienie w przetwarzaniu danych może mieć poważne konsekwencje. Dotyczy to zwłaszcza obszarów takich jak:
+
+Wykrywanie oszustw: W przypadku systemów płatności online, opóźnienie w analizie transakcji może oznaczać przegapienie nieautoryzowanej transakcji. Monitorowanie zdrowia pacjentów: Opóźnienia mogą wpłynąć na skuteczność reakcji w sytuacjach kryzysowych.
+
+#### Rozwiązanie:
+
+Używanie algorytmów optymalizujących czas przetwarzania, np. stream processing z wykorzystaniem systemów takich jak Apache Kafka lub Apache Flink. Edge computing: Przesuwanie przetwarzania danych bliżej źródła (np. urządzenia IoT), aby zmniejszyć opóźnienia w transmisji danych do chmury.
+
+### Jakość danych i zarządzanie danymi
+
+#### Wyzwanie:
+
+W systemach real-time musimy nie tylko analizować dane w czasie rzeczywistym, ale także zapewnić ich wysoką jakość. W przeciwnym razie analizy mogą prowadzić do błędnych wniosków lub opóźnień w reagowaniu na nieprawidłowe dane.
+
+Zanieczyszczone dane: W systemach real-time dane często są niepełne, brudne, błędne lub nieuporządkowane. Zmiana charakterystyki danych: Dane mogą zmieniać się w czasie, co może utrudniać ich przetwarzanie i analizę. \#### Rozwiązanie:
+
+Data cleansing i data validation na wstępnym etapie procesu. Automatyczne systemy monitorowania jakości danych w celu wykrywania błędów w czasie rzeczywistym. Zarządzanie danymi w strumieniu: Narzędzia takie jak Apache Kafka pozwalają na filtrowanie i oczyszczanie danych w locie.
+
+### Złożoność integracji systemów
+
+#### Wyzwanie:
+
+Systemy analizy danych w czasie rzeczywistym często muszą współpracować z istniejącymi systemami IT i źródłami danych (np. bazami danych, czujnikami IoT, aplikacjami). Integracja tych systemów, zwłaszcza w rozproszonej architekturze, może być skomplikowana.
+
+#### Rozwiązanie:
+
+Używanie API do łatwiejszej integracji z zewnętrznymi systemami. Mikroserwisy i konteneryzacja z pomocą narzędzi takich jak Docker i Kubernetes. Przetwarzanie w chmurze, które umożliwia łatwą integrację różnych źródeł danych oraz zapewnia elastyczność w dostosowywaniu systemów do rosnących potrzeb.
+
+### Bezpieczeństwo i prywatność
+
+#### Wyzwanie:
+
+Przetwarzanie danych w czasie rzeczywistym wiąże się z ogromną ilością wrażliwych informacji, szczególnie w branżach takich jak finanse, zdrowie czy e-commerce. Zapewnienie, że dane są odpowiednio chronione przed nieautoryzowanym dostępem, jest kluczowe.
+
+Ochrona danych w czasie transmisji: Muszą być szyfrowane zarówno podczas przesyłania, jak i przechowywania. Zabezpieczenia przed atakami: Przetwarzanie danych w czasie rzeczywistym może być celem ataków, takich jak DDoS czy SQL injection.
+
+#### Rozwiązanie:
+
+Szyfrowanie danych zarówno w spoczynku, jak i podczas przesyłania (np. TLS). Autentykacja i autoryzacja z wykorzystaniem nowoczesnych technologii bezpieczeństwa. Zgodność z regulacjami prawnymi, np. RODO w Unii Europejskiej czy GDPR w przypadku danych osobowych.
+
+### Zarządzanie błędami i awariami
+
+#### Wyzwanie:
+
+Błędy i awarie w systemach real-time mogą prowadzić do poważnych konsekwencji, w tym utraty danych, opóźnień w analizach czy nawet usunięcia usług. W systemach rozproszonych trudno jest osiągnąć pełną niezawodność.
+
+#### Rozwiązanie:
+
+Redundancja: Tworzenie kopii zapasowych systemów i danych. Systemy monitorowania i alertowania (np. Prometheus, Grafana), które pozwalają na szybkie wykrycie i naprawienie problemów. Zarządzanie stanem: Dzięki użyciu narzędzi jak Apache Kafka, można ponownie przetwarzać dane, jeśli wystąpił błąd w transmisji.
+
+### Koszty związane z infrastrukturą
+
+#### Wyzwanie:
+
+Przetwarzanie danych w czasie rzeczywistym wymaga odpowiedniej infrastruktury, która zapewni odpowiednią moc obliczeniową i pamięć. To może wiązać się z dużymi kosztami, szczególnie gdy dane muszą być przechowywane i przetwarzane w czasie rzeczywistym na dużą skalę.
+
+#### Rozwiązanie:
+
+Chmura obliczeniowa: Możliwość elastycznego skalowania zasobów w chmurze. Serverless computing: Technologie takie jak AWS Lambda pozwalają na uruchamianie procesów bez potrzeby utrzymywania stałej infrastruktury.
+
+Chociaż analiza danych w czasie rzeczywistym oferuje ogromne korzyści, wiąże się także z wieloma wyzwaniami. Właściwa architektura, narzędzia i technologie, takie jak Apache Kafka, Flink, Spark czy Kubernetes, mogą pomóc w przezwyciężeniu wielu z tych trudności. Warto również pamiętać o konieczności zapewnienia wysokiej jakości danych, ich bezpieczeństwa, a także elastyczności i skalowalności systemów, które będą w stanie sprostać rosnącym wymaganiom.
