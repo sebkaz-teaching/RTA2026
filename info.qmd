@@ -23,7 +23,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 ### Nowe środowisko pythona
 
 ```bash
-python3.11 -m venv <name of env>
+python3 -m venv <name of env>
 # dla linux i mac os
 source <name of env>/bin/activate
 # . env/bin/activate

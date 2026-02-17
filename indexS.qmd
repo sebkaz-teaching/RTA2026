@@ -6,7 +6,7 @@ title: "Informacje ogólne"
 
 Kod: 222890-S
 
-Semestr zimowy 2024/2025,
+Semestr zimowy 2025/2026,
 SGH Szkoła Główna Handlowa w Warszawie
 
 Szczegółowy opis znajdziesz w [sylabusie](/sylabus).
@@ -21,42 +21,18 @@ Inne książki zamieszczone zostały w zakładce [książki](/ksiazki)
 Wykład jest realizowany w trybie stacjonarnym.
 Jest on NIEOBOWIĄZKOWY i odbywa się w Auli III bud G
 
-1. 22-02-2025 (sobota) 08:00-09:30 - Wykład 1
-2. 08-03-2025 (sobota) 08:00-09:30 - Wykład 2
+1. 
 
 
 ### Laboratoria
 
 #### Lab1
-22-03-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
-
-23-03-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
-
-#### Lab2
-05-04-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
-
-06-04-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
-
-#### Lab3
-26-04-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
-
-27-04-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
-
-#### Lab4
-17-05-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
-
-18-05-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16
-
-#### Lab5
-31-05-2025 (sobota) 08:00-13:20 - G-210 grupy 11, 17, 18
-
-01-06-2025 (niedziela) 13:30-17:00 - G-116 grupy 15, 16 
 
 ### Zaliczenie i Egzamin
 
 Wykłady zakończą się testem (podczas ostatnich zajęć) 20 pytań. 
 
-Aby zaliczyć test, należy zdobyć więcej niż 13 punktów – jest to warunek konieczny do uczestnictwa w ćwiczeniach.
+Aby zaliczyć test, należy zdobyć więcej niż 13 punktów – jest to warunek konieczny do uczestnictwa w laboratoriach.
 
 Laboratoria
 
@@ -67,7 +43,7 @@ Każdy brak pracy domowej obniża końcową ocenę o 0,5 stopnia.
 
 Projekty należy realizować w grupach maksymalnie 5-osobowych.
 
-Wymagania projektu
+Wymagania projektu:
 
 - Projekt powinien rozwiązywać realny problem biznesowy, który można opracować przy użyciu danych przetwarzanych w trybie online. (Nie wyklucza to użycia przetwarzania wsadowego, np. do generowania modelu).
 - Dane powinny być przesyłane do Apache Kafka, skąd będą poddawane dalszemu przetwarzaniu i analizie.
@@ -83,4 +59,3 @@ Uczestnicząc w zajęciach musisz opanować i przynajmniej w podstawowym zakresi
 2. Python, Jupyter notebook, Jupyter lab, Colab
 3. [Docker](/info.html#docker)
 4. **Apache Spark**, **Apache Kafka**
-5. Databricks Community edition [Web page](https://community.cloud.databricks.com/login.html).

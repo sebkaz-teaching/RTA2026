@@ -6,15 +6,12 @@ title: "Informacje ogólne"
 
 Kod: 222890-D
 
-Semestr: 2024/2025
+Semestr: 2025/2026
 Uczelnia: SGH Szkoła Główna Handlowa w Warszawie
 
 Podstawowe informacje o kursie znajdziesz w [sylabusie](/sylabus).
 
 Polecane materiały znajdziesz na liście [książek](/ksiazki). 
-
-Materiały z wykładu i laboratoriów nie są wspierane przez Google. 
-Obecność na wykładach i ćwiczeniach nie zmniejszy Twoich 5 dolarów. 
 
 ## Kalendarz
 
@@ -23,11 +20,7 @@ Obecność na wykładach i ćwiczeniach nie zmniejszy Twoich 5 dolarów.
 Wykład jest realizowany w trybie stacjonarnym.
 Jest on NIEOBOWIĄZKOWY i odbywa się w Auli VI bud G
 
-1. 18-02-2025 (wtorek) 13:30-15:10 - Wykład 1
-2. 25-02-2025 (wtorek) 13:30-15:10 - Wykład 2
-3. 04-03-2025 (wtorek) 13:30-15:10 - Wykład 3 online 
-4. 11-03-2025 (wtorek) 13:30-15:10 - Wykład 4
-5. 18-03-2025 (wtorek) 13:30-15:10 - Wykład 5
+1.  - Wykład 1
     
 Wykład 5 kończy się TESTEM: 20 pytań - 30 minut. 
 Test przeprowadzany jest za pośrednictwem MS Teams.
@@ -35,60 +28,10 @@ Test przeprowadzany jest za pośrednictwem MS Teams.
 ### Laboratoria
 
 #### Lab1
-24-03-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
 
-25-03-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16 
 
-#### Lab2
-31-03-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-01-04-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab3
-07-04-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-08-04-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab4
-14-04-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-15-04-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab5
-28-04-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-29-04-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab6
-05-05-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-06-05-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab7
-12-05-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-13-05-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab8
-19-05-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-20-05-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab9
-26-05-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-27-05-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
-
-#### Lab10
-02-06-2025 (poniedziałek) 08:00-15:10 - G-235 grupy 11, 12, 13, 14
-
-03-06-2025 (wtorek) 11:40-15:10 - W-60 grupy 15, 16
 
 ### Zaliczenie i Egzamin
-
-Wykłady zakończą się testem (podczas ostatnich zajęć).
-
-Aby zaliczyć test, należy zdobyć więcej niż 13 punktów – jest to warunek konieczny do uczestnictwa w ćwiczeniach.
 
 Laboratoria
 
@@ -99,7 +42,7 @@ Każdy brak pracy domowej obniża końcową ocenę o 0,5 stopnia.
 
 Projekty należy realizować w grupach maksymalnie 5-osobowych.
 
-Wymagania projektu
+Wymagania projektu:
 
 - Projekt powinien rozwiązywać realny problem biznesowy, który można opracować przy użyciu danych przetwarzanych w trybie online. (Nie wyklucza to użycia przetwarzania wsadowego, np. do generowania modelu).
 - Dane powinny być przesyłane do Apache Kafka, skąd będą poddawane dalszemu przetwarzaniu i analizie.
@@ -114,5 +57,4 @@ Uczestnicząc w zajęciach musisz opanować i przynajmniej w podstawowym zakresi
 1. [GIT](/info.html#git) 
 2. Python, Jupyter notebook, Jupyter lab, Colab
 3. [Docker](/info.html#docker)
-4. **Apache Spark**, **Apache Kafka**
-5. Databricks Community edition [Web page](https://community.cloud.databricks.com/login.html).
+4. **Apache Spark**, **Apache Kafka**.
