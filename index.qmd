@@ -18,12 +18,10 @@ Polecane materiały znajdziesz na liście [książek](/ksiazki).
 ### Wykład 
 
 Wykład jest realizowany w trybie stacjonarnym.
-Jest on NIEOBOWIĄZKOWY i odbywa się w Auli VI bud G
+Jest on NIEOBOWIĄZKOWY i odbywa się w Auli I bud G
 
 1.  - Wykład 1
-    
-Wykład 5 kończy się TESTEM: 20 pytań - 30 minut. 
-Test przeprowadzany jest za pośrednictwem MS Teams.
+
 
 ### Laboratoria
 
