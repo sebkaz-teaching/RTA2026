@@ -410,3 +410,7 @@ W ramach Hurtowni Danych najczęściej wykonuje się dwa rodzaje zapytań(oba w 
 
 ![](../img/baza2.png){.center}
 
+## Business Impact:
+Różnorodność danych (Variety) pozwala firmie budować pełny obraz klienta (Customer 360). 
+Zdolność do łączenia sztywnych danych sprzedażowych (SQL) z luźnymi opiniami z mediów społecznościowych (NoSQL/NLP) pozwala odkrywać nisze rynkowe niewidoczne w tradycyjnych raportach. 
+Skalowalność typu MapReduce gwarantuje, że koszty analityki nie wzrosną liniowo wraz z przyrostem danych, co jest kluczowe dla rentowności projektów Big Data.

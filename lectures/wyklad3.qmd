@@ -233,3 +233,8 @@ W analizie danych strumieniowych interpretacja czasu jest złożonym zagadnienie
 1. Różne systemy mają różne zegary, co może prowadzić do niespójności,
 2. Dane mogą docierać z opóźnieniem, co wymaga technik watermarkingu i okien czasowych,
 3. Różne podejścia do analizy czasu zdarzenia i czasu przetwarzania wpływają na dokładność wyników.
+
+## Business Impact:
+Wykorzystanie okien czasowych pozwala na automatyzację procesów decyzyjnych, takich jak dynamiczne ustalanie cen (Dynamic Pricing) czy zarządzanie zapasami w czasie rzeczywistym. 
+Dzięki analityce strumieniowej firma może wykryć "wąskie gardła" w procesach biznesowych w momencie ich powstawania, a nie tydzień po fakcie. 
+To technologia, która zamienia dane z "kosztu przechowywania" w "paliwo dla automatyzacji marży".

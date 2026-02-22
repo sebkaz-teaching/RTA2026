@@ -437,3 +437,8 @@ Podczas dodawania konsumentów do grupy należy uważać, jeśli liczba konsumen
 
 </br>
 <img src="../img/kafka4.png" class="center" /> 
+
+## Business Impact:
+Architektura mikrousług oparta na Kafce pozwala organizacji na niespotykaną elastyczność – nowe funkcje biznesowe można wdrażać bez zatrzymywania całego systemu (tzw. Agility). 
+Z punktu widzenia ekonomii skali, model Serverless i konteneryzacja optymalizują wydatki na infrastrukturę IT (Capex zamieniamy na Opex). 
+Udostępnianie modeli ML przez API otwiera drogę do tzw. API Economy, czyli monetyzacji własnych algorytmów jako produktów dla partnerów zewnętrznych.

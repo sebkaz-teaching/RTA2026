@@ -431,3 +431,9 @@ Przetwarzanie danych w czasie rzeczywistym wymaga odpowiedniej infrastruktury, k
 Chmura obliczeniowa: Możliwość elastycznego skalowania zasobów w chmurze. Serverless computing: Technologie takie jak AWS Lambda pozwalają na uruchamianie procesów bez potrzeby utrzymywania stałej infrastruktury.
 
 Chociaż analiza danych w czasie rzeczywistym oferuje ogromne korzyści, wiąże się także z wieloma wyzwaniami. Właściwa architektura, narzędzia i technologie, takie jak Apache Kafka, Flink, Spark czy Kubernetes, mogą pomóc w przezwyciężeniu wielu z tych trudności. Warto również pamiętać o konieczności zapewnienia wysokiej jakości danych, ich bezpieczeństwa, a także elastyczności i skalowalności systemów, które będą w stanie sprostać rosnącym wymaganiom.
+
+## Business Impact:
+
+W dzisiejszej gospodarce informacja ma swoją "datę ważności". 
+Przejście z trybu Batch na Real-Time drastycznie skraca czas od wystąpienia zdarzenia do podjęcia decyzji (Time-to-Insight). 
+Dla menedżera oznacza to możliwość natychmiastowej reakcji na działania konkurencji lub nagłe zmiany popytu, co bezpośrednio przekłada się na wyższą płynność finansową i lepsze dopasowanie oferty do klienta.

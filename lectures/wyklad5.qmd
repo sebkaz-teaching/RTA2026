@@ -292,3 +292,8 @@ print(df)
 ```
 
 Wynik: Transakcja 5000 zł zostanie wykryta jako anomalia.
+
+## Business Impact:
+Detekcja anomalii to fundament nowoczesnego zarządzania ryzykiem (Risk Management) – od wykrywania nadużyć finansowych po przewidywanie awarii maszyn. 
+Z kolei wyjaśnialność algorytmów (LIME) to konieczność w sektorach regulowanych (bankowość, medycyna, ubezpieczenia).
+Zrozumienie, "dlaczego system powiedział NIE", chroni firmę przed stratami wizerunkowymi, prawnymi oraz zapewnia zgodność z regulacjami takimi jak AI Act czy RODO.
