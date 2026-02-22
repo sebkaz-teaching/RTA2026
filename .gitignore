@@ -1,5 +1,5 @@
 /.quarto/
 .DS_Store
 /.vscode/
-/venv/
+/.venv/
 **/*.quarto_ipynb
