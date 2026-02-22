@@ -17,7 +17,8 @@ Zapoznanie studentów z podstawami **real-time analytics**, różnicami między 
 
 ### Definicja i kluczowe koncepcje
 
-Analiza danych w czasie rzeczywistym (ang. *Real-Time Data Analytics*) to **proces** przetwarzania i analizy danych natychmiast po ich wygenerowaniu, bez konieczności przechowywania i oczekiwania na późniejsze przetworzenie. Celem jest uzyskanie **natychmiastowych** wniosków i reakcji na zmieniające się warunki w systemach biznesowych, technologicznych i naukowych.
+Analiza danych w czasie rzeczywistym (ang. *Real-Time Data Analytics*) to **proces** przetwarzania i analizy danych natychmiast po ich wygenerowaniu, bez konieczności przechowywania i oczekiwania na późniejsze przetworzenie. 
+Celem jest uzyskanie **natychmiastowych** wniosków i reakcji na zmieniające się warunki w systemach biznesowych, technologicznych i naukowych.
 
 ### Kluczowe cechy analizy danych w czasie rzeczywistym:
 
@@ -94,7 +95,7 @@ Batch Processing polega na zbieraniu dużych ilości danych i ich przetwarzaniu 
 -   Apache Spark (w trybie batch)
 -   Google BigQuery
 
-``` python
+```python
 import pandas as pd  
 df = pd.read_csv("transactions.csv")  
 
@@ -112,7 +113,7 @@ print("Raport zapisany!")
 
 Gdybyś chciał utworzyć dane do przykładu
 
-``` python
+```python
 import pandas as pd
 import numpy as np
 
