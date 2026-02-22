@@ -19,25 +19,33 @@ Inne książki zamieszczone zostały w zakładce [książki](/ksiazki)
 ### Wykład
 
 Wykład jest realizowany w trybie stacjonarnym.
-Jest on NIEOBOWIĄZKOWY i odbywa się w Auli III bud G
+Jest on NIEOBOWIĄZKOWY i odbywa się w Auli I bud G
 
-1. 
+1. 28.02.2026 Wykład 1. 8.00-9.40
+2. 14.03.2026 Wykład 2. 8.00-9.40
 
 
 ### Laboratoria
 
-#### Lab1
+1. 28.03.2026 Lab DS1-16 11:40-13.20, 13:30-15.10, 15.20-17.00, 17.10-18.50 (Dni Otwarte SGH)
+2. 29.03.2026 Lab G-116  9.50-11.30, 11:40-13.20, 13:30-15.10, 15.20-17.00  
+3. 18.04.2026 Lab DS1-16 11:40-13.20, 13:30-15.10, 15.20-17.00, 17.10-18.50
+4. 19.04.2026 Lab G-116  9.50-11.30, 11:40-13.20, 13:30-15.10, 15.20-17.00
+5. 09.05.2026 Lab DS1-16 11:40-13.20, 13:30-15.10, 15.20-17.00, 17.10-18.50
+6. 10.05.2026 Lab G-116  9.50-11.30, 11:40-13.20, 13:30-15.10, 15.20-17.00 
+7. 30.05.2026 Lab DS1-16 11:40-13.20, 13:30-15.10, 15.20-17.00, 17.10-18.50 (Zastępstwo)
+8. 31.05.2026 Lab G-116  9.50-11.30, 11:40-13.20, 13:30-15.10, 15.20-17.00  (Zastępstwo)
+9. 13.06.2026 Lab DS1-16 11:40-13.20, 13:30-15.10, 15.20-17.00, 17.10-18.50
+10. 14.06.2026 Lab G-116  9.50-11.30, 11:40-13.20, 13:30-15.10, 15.20-17.00
 
 ### Zaliczenie i Egzamin
 
-Wykłady zakończą się testem (podczas ostatnich zajęć) 20 pytań. 
+Wykłady zakończą się testem (pierwsze zajęcia lab) 20 pytań. 
 
-Aby zaliczyć test, należy zdobyć więcej niż 13 punktów – jest to warunek konieczny do uczestnictwa w laboratoriach.
-
-Laboratoria
+Aby zaliczyć test, należy zdobyć więcej niż 13 punktów – jest to warunek konieczny do zaliczenia przedmiotu.
 
 Podczas laboratoriów będą zadawane prace domowe, które należy przesyłać za pośrednictwem MS Teams.
-Każdy brak pracy domowej obniża końcową ocenę o 0,5 stopnia.
+Każdy brak pracy domowej obniża końcową ocenę o 0.5 stopnia.
 
 #### Projekt
 
@@ -56,6 +64,6 @@ Wymagania projektu:
 Uczestnicząc w zajęciach musisz opanować i przynajmniej w podstawowym zakresie posługiwać się następującymi technologiami informatycznymi:
 
 1. [GIT](/info.html#git) 
-2. Python, Jupyter notebook, Jupyter lab, Colab
+2. Python, Jupyter notebook, Colab
 3. [Docker](/info.html#docker)
 4. **Apache Spark**, **Apache Kafka**
