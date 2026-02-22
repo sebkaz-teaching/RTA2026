@@ -204,6 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#jak-działa-api" id="toc-jak-działa-api" class="nav-link" data-scroll-target="#jak-działa-api">Jak działa API?</a></li>
   <li><a href="#publikujsubskrybuj" id="toc-publikujsubskrybuj" class="nav-link" data-scroll-target="#publikujsubskrybuj">Publikuj/Subskrybuj</a></li>
   <li><a href="#apache-kafka" id="toc-apache-kafka" class="nav-link" data-scroll-target="#apache-kafka">Apache Kafka</a></li>
+  <li><a href="#business-impact" id="toc-business-impact" class="nav-link" data-scroll-target="#business-impact">Business Impact:</a></li>
   </ul>
 </nav>
     </div>
@@ -598,9 +599,13 @@ liczba partycji nie może być zmieniona bez zakłócenia tego mechanizmu.</li>
 <p>Innym ważnym pojęciem Kafki są „Grupy konsumentów”. Jest to bardzo ważne, gdy musimy skalować odczytywanie wiadomości. Staje się to bardzo kosztowne, gdy pojedynczy konsument musi czytać z wielu partycji, więc musimy zrównoważyć obciążenie między naszymi konsumentami, wtedy wchodzą grupy konsumentów.</p>
 <p>Dane z jednego tematu będą równoważone obciążeniem między konsumentami, dzięki czemu możemy zagwarantować, że nasi konsumenci będą w stanie obsługiwać i przetwarzać dane. Ideałem jest posiadanie takiej samej liczby konsumentów w grupie, jaką mamy jako partycje w temacie, w ten sposób każdy konsument czyta tylko z jednego. Podczas dodawania konsumentów do grupy należy uważać, jeśli liczba konsumentów jest większa niż liczba partycji, niektórzy konsumenci nie będą czytać z żadnego tematu i pozostaną bezczynni.</p>
 <p><br> <img src="../img/kafka4.png" class="center"></p>
-
-
 </section>
+</section>
+<section id="business-impact" class="level2">
+<h2 class="anchored" data-anchor-id="business-impact">Business Impact:</h2>
+<p>Architektura mikrousług oparta na Kafce pozwala organizacji na niespotykaną elastyczność – nowe funkcje biznesowe można wdrażać bez zatrzymywania całego systemu (tzw. Agility). Z punktu widzenia ekonomii skali, model Serverless i konteneryzacja optymalizują wydatki na infrastrukturę IT (Capex zamieniamy na Opex). Udostępnianie modeli ML przez API otwiera drogę do tzw. API Economy, czyli monetyzacji własnych algorytmów jako produktów dla partnerów zewnętrznych.</p>
+
+
 </section>
 
 </main> <!-- /main -->
