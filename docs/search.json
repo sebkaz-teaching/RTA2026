@@ -776,119 +776,204 @@
     "href": "lectures/wyklad2.html",
     "title": "Wykład 2",
     "section": "",
-    "text": "⏳ Czas trwania: 1,5h 🎯 Cel wykładu\nzrozumienie, jak dane ewoluowały w różnych branżach i jakie narzędzia są dziś wykorzystywane do ich analizy.\nNa tym wykładzie przedstawimy ewolucję analizy danych, pokazując, jak zmieniały się technologie i podejścia do przetwarzania danych na przestrzeni lat. Rozpoczniemy od klasycznych struktur tabelarycznych, przez bardziej zaawansowane modele grafowe i tekstowe, aż po nowoczesne podejście do strumieniowego przetwarzania danych."
+    "text": "⏳ Czas trwania: 1,5h 🎯 Cel wykładu\nzrozumienie, jak dane ewoluowały w różnych branżach i jakie narzędzia są dziś wykorzystywane do ich analizy.\nNa tym wykładzie przedstawimy ewolucję analizy danych, pokazując, jak zmieniały się technologie i podejścia do przetwarzania danych na przestrzeni lat. Rozpoczniemy od klasycznych struktur tabelarycznych, przez bardziej zaawansowane modele grafowe i tekstowe, aż po nowoczesne podejście do strumieniowego przetwarzania danych.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dane-tabelaryczne-tabele-sql",
     "href": "lectures/wyklad2.html#dane-tabelaryczne-tabele-sql",
     "title": "Wykład 2",
     "section": "Dane tabelaryczne (tabele SQL)",
-    "text": "Dane tabelaryczne (tabele SQL)\nPoczątkowo dane były przechowywane w postaci tabel, gdzie każda tabela zawierała zorganizowane informacje w kolumnach i wierszach (np. bazy danych SQL).\nModele takie doskonale nadawały się do danych ustrukturyzowanych.\n\n📌 Cechy:\n✅ Dane podzielone na kolumny o stałej strukturze.\n✅ Możliwość stosowania operacji CRUD (Create, Read, Update, Delete).\n✅ Ścisłe reguły spójności i normalizacji.\n\n\n📌 Przykłady:\n➡️ Systemy bankowe, e-commerce, ERP, systemy CRM.\n\n\n🖥️ Przykładowy kod w Pythonie (SQLite):\nimport sqlite3\nconn = sqlite3.connect(':memory:')\ncursor = conn.cursor()\ncursor.execute(\"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)\")\ncursor.execute(\"INSERT INTO users (name, age) VALUES ('Alice', 30)\")\ncursor.execute(\"SELECT * FROM users\")\nprint(cursor.fetchall())\nconn.close()"
+    "text": "Dane tabelaryczne (tabele SQL)\nPoczątkowo dane były przechowywane w postaci tabel, gdzie każda tabela zawierała zorganizowane informacje w kolumnach i wierszach (np. bazy danych SQL).\nModele takie doskonale nadawały się do danych ustrukturyzowanych.\n\n📌 Cechy:\n✅ Dane podzielone na kolumny o stałej strukturze.\n✅ Możliwość stosowania operacji CRUD (Create, Read, Update, Delete).\n✅ Ścisłe reguły spójności i normalizacji.\n\n\n📌 Przykłady:\n➡️ Systemy bankowe, e-commerce, ERP, systemy CRM.\n\n\n🖥️ Przykładowy kod w Pythonie (SQLite):\nimport sqlite3\nconn = sqlite3.connect(':memory:')\ncursor = conn.cursor()\ncursor.execute(\"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)\")\ncursor.execute(\"INSERT INTO users (name, age) VALUES ('Alice', 30)\")\ncursor.execute(\"SELECT * FROM users\")\nprint(cursor.fetchall())\nconn.close()",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dane-grafowe",
     "href": "lectures/wyklad2.html#dane-grafowe",
     "title": "Wykład 2",
     "section": "Dane grafowe",
-    "text": "Dane grafowe\nWraz z rozwojem potrzeb biznesowych pojawiły się dane grafowe, w których relacje między obiektami są reprezentowane jako wierzchołki i krawędzie.\n\n📌 Cechy:\n✅ Dane opisujące relacje i powiązania.\n✅ Elastyczna struktura (grafy zamiast tabel).\n✅ Możliwość analizy połączeń (np. algorytmy PageRank, centralność).\n\n\n📌 Przykłady:\n➡️ Sieci społecznościowe (Facebook, LinkedIn), wyszukiwarki (Google), systemy rekomendacji (Netflix, Amazon).\n\n\n🖥️ Przykładowy kod w Pythonie (Graf Karate - NetworkX):\n\n\nCode\nimport networkx as nx\nG = nx.karate_club_graph()\nnx.draw(G, with_labels=True)"
+    "text": "Dane grafowe\nWraz z rozwojem potrzeb biznesowych pojawiły się dane grafowe, w których relacje między obiektami są reprezentowane jako wierzchołki i krawędzie.\n\n📌 Cechy:\n✅ Dane opisujące relacje i powiązania.\n✅ Elastyczna struktura (grafy zamiast tabel).\n✅ Możliwość analizy połączeń (np. algorytmy PageRank, centralność).\n\n\n📌 Przykłady:\n➡️ Sieci społecznościowe (Facebook, LinkedIn), wyszukiwarki (Google), systemy rekomendacji (Netflix, Amazon).\n\n\n🖥️ Przykładowy kod w Pythonie (Graf Karate - NetworkX):\n\n\nCode\nimport networkx as nx\nG = nx.karate_club_graph()\nnx.draw(G, with_labels=True)",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dane-półstrukturyzowane-json-xml-yaml",
     "href": "lectures/wyklad2.html#dane-półstrukturyzowane-json-xml-yaml",
     "title": "Wykład 2",
     "section": "Dane półstrukturyzowane (JSON, XML, YAML)",
-    "text": "Dane półstrukturyzowane (JSON, XML, YAML)\nDane te nie są w pełni ustrukturyzowane jak w bazach SQL, ale mają pewien schemat.\n\n📌 Cechy:\n✅ Hierarchiczna struktura (np. klucz-wartość, obiekty zagnieżdżone).\n✅ Brak ścisłego schematu (możliwość dodawania nowych pól).\n✅ Popularność w systemach NoSQL i API.\n\n\n📌 Przykłady:\n➡️ Dokumenty w MongoDB, pliki konfiguracyjne, REST API, pliki logów.\n\n\n🖥️ Przykładowy kod w Pythonie (JSON):\n\n\nCode\nimport json\ndata = {'name': 'Alice', 'age': 30, 'city': 'New York'}\njson_str = json.dumps(data)\nprint(json.loads(json_str))\n\n\n{'name': 'Alice', 'age': 30, 'city': 'New York'}"
+    "text": "Dane półstrukturyzowane (JSON, XML, YAML)\nDane te nie są w pełni ustrukturyzowane jak w bazach SQL, ale mają pewien schemat.\n\n📌 Cechy:\n✅ Hierarchiczna struktura (np. klucz-wartość, obiekty zagnieżdżone).\n✅ Brak ścisłego schematu (możliwość dodawania nowych pól).\n✅ Popularność w systemach NoSQL i API.\n\n\n📌 Przykłady:\n➡️ Dokumenty w MongoDB, pliki konfiguracyjne, REST API, pliki logów.\n\n\n🖥️ Przykładowy kod w Pythonie (JSON):\n\n\nCode\nimport json\ndata = {'name': 'Alice', 'age': 30, 'city': 'New York'}\njson_str = json.dumps(data)\nprint(json.loads(json_str))\n\n\n{'name': 'Alice', 'age': 30, 'city': 'New York'}",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dane-tekstowe-nlp",
     "href": "lectures/wyklad2.html#dane-tekstowe-nlp",
     "title": "Wykład 2",
     "section": "Dane tekstowe (NLP)",
-    "text": "Dane tekstowe (NLP)\nTekst stał się kluczowym źródłem informacji, szczególnie w analizie opinii, chatbotach czy wyszukiwarkach.\n\n📌 Cechy:\n✅ Nieustrukturyzowane dane wymagające przekształcenia.\n✅ Stosowanie embeddingów (np. Word2Vec, BERT, GPT).\n✅ Duże zastosowanie w analizie sentymentu i chatbotach.\n\n\n📌 Przykłady:\n➡️ Media społecznościowe, e-maile, chatboty, tłumaczenie maszynowe.\n\n\n🖥️ Przykładowy kod w Pythonie:\n\n\nCode\nimport ollama\n\n# Przykładowe zdanie\nsentence = \"Sztuczna inteligencja zmienia świat.\"\nresponse = ollama.embeddings(model='llama3.2', prompt=sentence)\nembedding = response['embedding']\nprint(embedding[:4])\n\n\n[-1.6764535903930664, 3.037797689437866, -6.599167823791504, -1.7495818138122559]"
+    "text": "Dane tekstowe (NLP)\nTekst stał się kluczowym źródłem informacji, szczególnie w analizie opinii, chatbotach czy wyszukiwarkach.\n\n📌 Cechy:\n✅ Nieustrukturyzowane dane wymagające przekształcenia.\n✅ Stosowanie embeddingów (np. Word2Vec, BERT, GPT).\n✅ Duże zastosowanie w analizie sentymentu i chatbotach.\n\n\n📌 Przykłady:\n➡️ Media społecznościowe, e-maile, chatboty, tłumaczenie maszynowe.\n\n\n🖥️ Przykładowy kod w Pythonie:\n\n\nCode\nimport ollama\n\n# Przykładowe zdanie\nsentence = \"Sztuczna inteligencja zmienia świat.\"\nresponse = ollama.embeddings(model='llama3.2', prompt=sentence)\nembedding = response['embedding']\nprint(embedding[:4])\n\n\n[-1.6764535903930664, 3.037797689437866, -6.599167823791504, -1.7495818138122559]",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dane-multimedialne-obrazy-dźwięk-wideo",
     "href": "lectures/wyklad2.html#dane-multimedialne-obrazy-dźwięk-wideo",
     "title": "Wykład 2",
     "section": "Dane multimedialne (obrazy, dźwięk, wideo)",
-    "text": "Dane multimedialne (obrazy, dźwięk, wideo)\nNowoczesne systemy analizy danych wykorzystują również obrazy i dźwięk.\n\n📌 Cechy:\n✅ Wymagają dużej mocy obliczeniowej (sztuczna inteligencja, deep learning).\n✅ Przetwarzane przez modele CNN (obrazy) i RNN/Transformers (dźwięk).\n\n\n📌 Przykłady:\n➡️ Rozpoznawanie twarzy, analiza mowy, biometria, analiza treści wideo.\n\n\n🖥️ Przykładowy kod w Pythonie (Obraz - OpenCV):\nimport cv2\nimage = cv2.imread('cloud.jpeg')\ncv2.waitKey(0)\ncv2.destroyAllWindows()"
+    "text": "Dane multimedialne (obrazy, dźwięk, wideo)\nNowoczesne systemy analizy danych wykorzystują również obrazy i dźwięk.\n\n📌 Cechy:\n✅ Wymagają dużej mocy obliczeniowej (sztuczna inteligencja, deep learning).\n✅ Przetwarzane przez modele CNN (obrazy) i RNN/Transformers (dźwięk).\n\n\n📌 Przykłady:\n➡️ Rozpoznawanie twarzy, analiza mowy, biometria, analiza treści wideo.\n\n\n🖥️ Przykładowy kod w Pythonie (Obraz - OpenCV):\nimport cv2\nimage = cv2.imread('cloud.jpeg')\ncv2.waitKey(0)\ncv2.destroyAllWindows()",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dane-strumieniowe",
     "href": "lectures/wyklad2.html#dane-strumieniowe",
     "title": "Wykład 2",
     "section": "Dane strumieniowe",
-    "text": "Dane strumieniowe\nObecnie najbardziej dynamicznie rozwija się analiza danych strumieniowych, gdzie dane są analizowane na bieżąco, w miarę ich napływania.\n\n📌 Cechy:\n✅ Przetwarzanie w czasie rzeczywistym.\n✅ Wykorzystanie technologii takich jak Apache Kafka, Flink, Spark Streaming.\n\n\n📌 Przykłady:\n➡️ Transakcje bankowe (detekcja oszustw), analiza social media, IoT.\n\n\n🖥️ Przykładowy kod w Pythonie (Strumieniowe transakcje bankowe):\n\n\nCode\nimport time\ntransactions = [{'id': 1, 'amount': 100}, {'id': 2, 'amount': 200}]\nfor transaction in transactions:\n    print(f\"Processing transaction: {transaction}\")\n    time.sleep(1)\n\n\nProcessing transaction: {'id': 1, 'amount': 100}\nProcessing transaction: {'id': 2, 'amount': 200}"
+    "text": "Dane strumieniowe\nObecnie najbardziej dynamicznie rozwija się analiza danych strumieniowych, gdzie dane są analizowane na bieżąco, w miarę ich napływania.\n\n📌 Cechy:\n✅ Przetwarzanie w czasie rzeczywistym.\n✅ Wykorzystanie technologii takich jak Apache Kafka, Flink, Spark Streaming.\n\n\n📌 Przykłady:\n➡️ Transakcje bankowe (detekcja oszustw), analiza social media, IoT.\n\n\n🖥️ Przykładowy kod w Pythonie (Strumieniowe transakcje bankowe):\n\n\nCode\nimport time\ntransactions = [{'id': 1, 'amount': 100}, {'id': 2, 'amount': 200}]\nfor transaction in transactions:\n    print(f\"Processing transaction: {transaction}\")\n    time.sleep(1)\n\n\nProcessing transaction: {'id': 1, 'amount': 100}\nProcessing transaction: {'id': 2, 'amount': 200}",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dane-sensoryczne-i-iot",
     "href": "lectures/wyklad2.html#dane-sensoryczne-i-iot",
     "title": "Wykład 2",
     "section": "Dane sensoryczne i IoT",
-    "text": "Dane sensoryczne i IoT\nDane z czujników i urządzeń IoT są kolejnym krokiem w ewolucji.\n\n📌 Cechy:\n✅ Często pochodzą z miliardów urządzeń (big data).\n✅ Wymagają analizy brzegowej (edge computing).\n\n\n📌 Przykłady:\n➡️ Smart home, wearables, samochody autonomiczne, systemy przemysłowe.\n\n\n🖥️ Przykładowy kod w Pythonie (Sensor - temperatura):\n\n\nCode\nimport random\ndef get_temperature():\n    return round(random.uniform(20.0, 25.0), 2)\nprint(f\"Current temperature: {get_temperature()}°C\")\n\n\nCurrent temperature: 20.65°C"
+    "text": "Dane sensoryczne i IoT\nDane z czujników i urządzeń IoT są kolejnym krokiem w ewolucji.\n\n📌 Cechy:\n✅ Często pochodzą z miliardów urządzeń (big data).\n✅ Wymagają analizy brzegowej (edge computing).\n\n\n📌 Przykłady:\n➡️ Smart home, wearables, samochody autonomiczne, systemy przemysłowe.\n\n\n🖥️ Przykładowy kod w Pythonie (Sensor - temperatura):\n\n\nCode\nimport random\ndef get_temperature():\n    return round(random.uniform(20.0, 25.0), 2)\nprint(f\"Current temperature: {get_temperature()}°C\")\n\n\nCurrent temperature: 20.72°C",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#hadoop-map-reduce-skalowanie-obliczeń-na-big-data",
     "href": "lectures/wyklad2.html#hadoop-map-reduce-skalowanie-obliczeń-na-big-data",
     "title": "Wykład 2",
     "section": "Hadoop Map-Reduce – Skalowanie obliczeń na Big Data",
-    "text": "Hadoop Map-Reduce – Skalowanie obliczeń na Big Data\nKiedy mówimy o skalowalnym przetwarzaniu danych, pierwszym skojarzeniem może być Google.\nAle co tak naprawdę sprawia, że możemy wyszukiwać informacje w ułamku sekundy, przetwarzając petabajty danych?\n👉 Czy wiesz, że nazwa “Google” pochodzi od słowa “Googol”, czyli liczby równej 10¹⁰⁰?\nTo więcej niż liczba atomów w znanym Wszechświecie! 🌌\n\n🔥 Wyzwanie: Czy uda Ci się zapisać liczbę Googol do końca zajęć?"
+    "text": "Hadoop Map-Reduce – Skalowanie obliczeń na Big Data\nKiedy mówimy o skalowalnym przetwarzaniu danych, pierwszym skojarzeniem może być Google.\nAle co tak naprawdę sprawia, że możemy wyszukiwać informacje w ułamku sekundy, przetwarzając petabajty danych?\n👉 Czy wiesz, że nazwa “Google” pochodzi od słowa “Googol”, czyli liczby równej 10¹⁰⁰?\nTo więcej niż liczba atomów w znanym Wszechświecie! 🌌\n\n🔥 Wyzwanie: Czy uda Ci się zapisać liczbę Googol do końca zajęć?",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają",
     "href": "lectures/wyklad2.html#dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają",
     "title": "Wykład 2",
     "section": "🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają?",
-    "text": "🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają?\nTradycyjne bazy danych SQL czy jednowątkowe algorytmy zawodzą, gdy skala danych przekracza pojedynczy komputer.\nW tym miejscu pojawia się MapReduce – rewolucyjny model obliczeniowy stworzony przez Google.\n\n🛠️ Rozwiązania Google dla Big Data:\n✅ Google File System (GFS) – rozproszony system plików.\n✅ Bigtable – system do przechowywania ogromnych ilości ustrukturyzowanych danych.\n✅ MapReduce – algorytm podziału pracy na wiele maszyn."
+    "text": "🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają?\nTradycyjne bazy danych SQL czy jednowątkowe algorytmy zawodzą, gdy skala danych przekracza pojedynczy komputer.\nW tym miejscu pojawia się MapReduce – rewolucyjny model obliczeniowy stworzony przez Google.\n\n🛠️ Rozwiązania Google dla Big Data:\n✅ Google File System (GFS) – rozproszony system plików.\n✅ Bigtable – system do przechowywania ogromnych ilości ustrukturyzowanych danych.\n✅ MapReduce – algorytm podziału pracy na wiele maszyn.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#graficzne-przedstawienie-mapreduce",
     "href": "lectures/wyklad2.html#graficzne-przedstawienie-mapreduce",
     "title": "Wykład 2",
     "section": "Graficzne przedstawienie MapReduce",
-    "text": "Graficzne przedstawienie MapReduce\n\nMapowanie rozdziela zadania (Map)\nKażde wejście dzielone jest na mniejsze części i przetwarzane równolegle.\n🌍 Wyobraź sobie, że masz książkę telefoniczną i chcesz znaleźć wszystkie osoby o nazwisku “Nowak”.\n➡️ Podziel książkę na fragmenty i daj każdemu do przeanalizowania jeden fragment.\n\n\nRedukcja zbiera wyniki (Reduce)\nWszystkie częściowe wyniki są łączone w jedną, końcową odpowiedź.\n🔄 Wszyscy uczniowie zgłaszają swoje wyniki, a jeden student zbiera i podsumowuje odpowiedź."
+    "text": "Graficzne przedstawienie MapReduce\n\nMapowanie rozdziela zadania (Map)\nKażde wejście dzielone jest na mniejsze części i przetwarzane równolegle.\n🌍 Wyobraź sobie, że masz książkę telefoniczną i chcesz znaleźć wszystkie osoby o nazwisku “Nowak”.\n➡️ Podziel książkę na fragmenty i daj każdemu do przeanalizowania jeden fragment.\n\n\nRedukcja zbiera wyniki (Reduce)\nWszystkie częściowe wyniki są łączone w jedną, końcową odpowiedź.\n🔄 Wszyscy uczniowie zgłaszają swoje wyniki, a jeden student zbiera i podsumowuje odpowiedź.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#klasyczny-przykład-liczenie-słów-w-tekście",
     "href": "lectures/wyklad2.html#klasyczny-przykład-liczenie-słów-w-tekście",
     "title": "Wykład 2",
     "section": "💡 Klasyczny przykład: Liczenie słów w tekście",
-    "text": "💡 Klasyczny przykład: Liczenie słów w tekście\nZałóżmy, że mamy miliony książek i chcemy policzyć, ile razy występuje każde słowo.\n\n🖥️ Kod MapReduce w Pythonie (z użyciem multiprocessing)\nfrom multiprocessing import Pool\nfrom collections import Counter\n\n# Funkcja Map (podział tekstu na słowa)\ndef map_function(text):\n    words = text.split()\n    return Counter(words)\n\n# Funkcja Reduce (sumowanie wyników)\ndef reduce_function(counters):\n    total_count = Counter()\n    for counter in counters:\n        total_count.update(counter)\n    return total_count\n\ntexts = [\n        \"big data is amazing\",\n        \"data science and big data\",\n        \"big data is everywhere\"\n    ]\nif __name__ == '__main__':    \n    with Pool() as pool:\n        mapped_results = pool.map(map_function, texts)\n    \n    final_result = reduce_function(mapped_results)\n    print(final_result)\n\n# Counter({'data': 4, 'big': 3, 'is': 2, 'amazing': 1, 'science': 1, 'and': 1, 'everywhere': 1})\n\n\n🔹 Co tu się dzieje?\n✅ Każdy fragment tekstu jest przetwarzany niezależnie (map).\n✅ Wyniki są zbierane i sumowane (reduce).\n✅ Efekt: Możemy przetwarzać terabajty tekstu równolegle!"
+    "text": "💡 Klasyczny przykład: Liczenie słów w tekście\nZałóżmy, że mamy miliony książek i chcemy policzyć, ile razy występuje każde słowo.\n\n🖥️ Kod MapReduce w Pythonie (z użyciem multiprocessing)\nfrom multiprocessing import Pool\nfrom collections import Counter\n\n# Funkcja Map (podział tekstu na słowa)\ndef map_function(text):\n    words = text.split()\n    return Counter(words)\n\n# Funkcja Reduce (sumowanie wyników)\ndef reduce_function(counters):\n    total_count = Counter()\n    for counter in counters:\n        total_count.update(counter)\n    return total_count\n\ntexts = [\n        \"big data is amazing\",\n        \"data science and big data\",\n        \"big data is everywhere\"\n    ]\nif __name__ == '__main__':    \n    with Pool() as pool:\n        mapped_results = pool.map(map_function, texts)\n    \n    final_result = reduce_function(mapped_results)\n    print(final_result)\n\n# Counter({'data': 4, 'big': 3, 'is': 2, 'amazing': 1, 'science': 1, 'and': 1, 'everywhere': 1})\n\n\n🔹 Co tu się dzieje?\n✅ Każdy fragment tekstu jest przetwarzany niezależnie (map).\n✅ Wyniki są zbierane i sumowane (reduce).\n✅ Efekt: Możemy przetwarzać terabajty tekstu równolegle!",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce",
     "href": "lectures/wyklad2.html#wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce",
     "title": "Wykład 2",
     "section": "🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce",
-    "text": "🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce\n📊 Stare podejście – Jeden komputer wykonuje wszystko sekwencyjnie.\n📊 Nowe podejście (MapReduce) – Każda maszyna liczy fragment i wyniki są agregowane."
+    "text": "🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce\n📊 Stare podejście – Jeden komputer wykonuje wszystko sekwencyjnie.\n📊 Nowe podejście (MapReduce) – Każda maszyna liczy fragment i wyniki są agregowane.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#wyzwanie-dla-ciebie",
     "href": "lectures/wyklad2.html#wyzwanie-dla-ciebie",
     "title": "Wykład 2",
     "section": "🚀 Wyzwanie dla Ciebie!",
-    "text": "🚀 Wyzwanie dla Ciebie!\n🔹 Znajdź i uruchom swój własny algorytm MapReduce w dowolnym języku!\n🔹 Czy potrafisz zaimplementować własny MapReduce do innego zadania? (np. analiza logów, zliczanie kliknięć na stronie)"
+    "text": "🚀 Wyzwanie dla Ciebie!\n🔹 Znajdź i uruchom swój własny algorytm MapReduce w dowolnym języku!\n🔹 Czy potrafisz zaimplementować własny MapReduce do innego zadania? (np. analiza logów, zliczanie kliknięć na stronie)",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#big-data",
     "href": "lectures/wyklad2.html#big-data",
     "title": "Wykład 2",
     "section": "Big Data",
-    "text": "Big Data\nSystemy Big data mogą być częścią (źródłem) dla hurtowni danych (np. Data Lake, Enterprise Data Hub)\nAle Hurtownie danych nie są systemami Big Data!\n\nHurtownie danych\n\n\nprzetrzymywanie danych wysoko strukturyzowanych\nskupione na analizach i procesie raportowania\n100% accuracy\n\n\nBig Data\n\n\ndane o dowolnej strukturze\nsłuży do różnorodnych celów opartych na danych (analityka, data science …)\nponiżej 100% accuracy\n\n\n,,Big Data is like teenage sex: everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so every one claims they are doing it.’’ — Dan Ariely, Professor of Psychology and Behavioral Economics, Duke University\n\n\none, two, … four V\n\nVolume (Objętość) - rozmiar danych produkowanych na całym świecie przyrasta w tempie wykładniczym.\nVelocity (Szybkość) - tempo produkowania danych, szybkości ich przesyłania i przetwarzania.\nVariety (Zróżnicowanie) - tradycyjne dane kojarzą się nam z postacią alfanumeryczną złożoną z liter i cyfr. Obecnie mamy do dyspozycji obrazy, dźwięki, pliki wideo, strumienie danych z IoT\nVeracity (Wiarygodność) - Czy dane są kompletne i poprawne? Czy obiektywnie odzwierciedlają rzeczywistość? Czy są podstawą do podejmowania decyzji?\nValue - The value that the data actually holds. In the end, it’s all about cost and benefits.\n\n\nCelem obliczeń nie są liczby, lecz ich zrozumienie R.W. Hamming 1962."
+    "text": "Big Data\nSystemy Big data mogą być częścią (źródłem) dla hurtowni danych (np. Data Lake, Enterprise Data Hub)\nAle Hurtownie danych nie są systemami Big Data!\n\nHurtownie danych\n\n\nprzetrzymywanie danych wysoko strukturyzowanych\nskupione na analizach i procesie raportowania\n100% accuracy\n\n\nBig Data\n\n\ndane o dowolnej strukturze\nsłuży do różnorodnych celów opartych na danych (analityka, data science …)\nponiżej 100% accuracy\n\n\n,,Big Data is like teenage sex: everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so every one claims they are doing it.’’ — Dan Ariely, Professor of Psychology and Behavioral Economics, Duke University\n\n\none, two, … four V\n\nVolume (Objętość) - rozmiar danych produkowanych na całym świecie przyrasta w tempie wykładniczym.\nVelocity (Szybkość) - tempo produkowania danych, szybkości ich przesyłania i przetwarzania.\nVariety (Zróżnicowanie) - tradycyjne dane kojarzą się nam z postacią alfanumeryczną złożoną z liter i cyfr. Obecnie mamy do dyspozycji obrazy, dźwięki, pliki wideo, strumienie danych z IoT\nVeracity (Wiarygodność) - Czy dane są kompletne i poprawne? Czy obiektywnie odzwierciedlają rzeczywistość? Czy są podstawą do podejmowania decyzji?\nValue - The value that the data actually holds. In the end, it’s all about cost and benefits.\n\n\nCelem obliczeń nie są liczby, lecz ich zrozumienie R.W. Hamming 1962.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#modele-przetwarzania-danych",
     "href": "lectures/wyklad2.html#modele-przetwarzania-danych",
     "title": "Wykład 2",
     "section": "Modele przetwarzania danych",
-    "text": "Modele przetwarzania danych\nDane w biznesie przetwarzane są praktycznie od zawsze. W ciągu ostatnich dziesięcioleci ilość przetwarzanych danych systematycznie rośnie co wpływa na proces przygotowania i przetwarzania danych.\n\nTrochę historii\n\nLata 60-te : Kolekcje danych, bazy danych\nLata 70-te : Relacyjne modele danych i ich implementacja w systemach OLTP\n1975 : Pierwsze komputery osobiste\nLata 80-te : Zaawansowane modele danych, extended-relational, objective oriented, aplikacyjno-zorientowane itp.\n1983 : Początek internetu\nLata 90-te : Data mining, hurtownie danych, systemy OLAP\nPóźniej : NoSQL, Hadoop, SPARK, data lake\n2002 : AWS , 2005: Hadoop, Cloud computing\n\nWiększość danych przechowywana jest w bazach lub hurtowniach danych. Standardowo dostęp do danych sprowadza się najczęściej do realizacji zapytań poprzez aplikację.\nSposób wykorzystania i realizacji procesu dostępu do bazy danych nazywamy modelem przetwarzania. Najczęściej używane są dwie implementacje:\n\n\nModel Tradycyjny\nModel tradycyjny - przetwarzanie transakcyjne w trybie on-line, OLTP (on-line transaction processing). Świetnie sprawdza się w przypadku obsługi bieżącej np. obsługa klienta, rejestr zamówień, obsługa sprzedaży itp. Wykorzystywany w systemach Enterprise Resource Planning (ERP) Systems, Customer Relationship Management (CRM) software, and web-based applications.\n\nModel ten dostarcza efektywnych rozwiązań m.in do:\n\nefektywnego i bezpiecznego przechowywania danych,\ntransakcyjnego odtwarzanie danych po awarii,\noptymalizacji dostępu do danych,\nzarządzania współbieżnością,\nprzetwarzania zdarzeń -&gt; odczyt -&gt; zapis\n\nCo w przypadku gdy mamy do czynienia z:\n\nagregacjami danych z wielu systemów (np. dla wielu sklepów),\nraportowanie i podsumowania danych,\noptymalizacja złożonych zapytań,\nwspomaganie decyzji biznesowych.\n\nBadania nad tego typu zagadnieniami doprowadziły do sformułowania nowego modelu przetwarzania danych oraz nowego typu baz danych - Hurtownie Danych (Data warehouse).\n\n\nModel OLAP\nPrzetwarzanie analityczne on-line OLAP (on-line analytic processing).\nWspieranie procesów analizy i dostarczanie narzędzi umożliwiających analizę wielowymiarową (czas, miejsce, produkt).\nProces zrzucania danych z różnych systemów do jednej bazy nazywamy Extract-Transform-Load (ETL) (normalizacja i encoding and schema transaction).\nAnaliza danych z hurtowni to przede wszystkim obliczanie agregatów (podsumowań) dotyczących wymiarów hurtowni. Proces ten jest całkowicie sterowany przez użytkownika.\nPrzykład\nZałóżmy, że mamy dostęp do hurtowni danych gdzie przechowywane są informacje dotyczące sprzedaży produktów w supermarkecie. Jak przeanalizować zapytania:\n\nJaka jest łączna sprzedaż produktów w kolejnych kwartałach, miesiącach, tygodniach ?\nJaka jest sprzedaż produktów z podziałem na rodzaje produktów ?\nJaka jest sprzedaż produktów z podziałem na oddziały supermarketu ?\n\nOdpowiedzi na te pytania pozwalają określić wąskie gardła sprzedaży produktów przynoszących deficyt, zaplanować zapasy w magazynach czy porównać sprzedaż różnych grup w różnych oddziałach supermarketu.\nW ramach Hurtowni Danych najczęściej wykonuje się dwa rodzaje zapytań(oba w trybie batchowym): 1. Wykonywane okresowo w czasie zapytania raportowe obliczające biznesowe statystyki 2. Wykonywane ad-hoc zapytania wspomagające krytyczne decyzje biznesowe."
+    "text": "Modele przetwarzania danych\nDane w biznesie przetwarzane są praktycznie od zawsze. W ciągu ostatnich dziesięcioleci ilość przetwarzanych danych systematycznie rośnie co wpływa na proces przygotowania i przetwarzania danych.\n\nTrochę historii\n\nLata 60-te : Kolekcje danych, bazy danych\nLata 70-te : Relacyjne modele danych i ich implementacja w systemach OLTP\n1975 : Pierwsze komputery osobiste\nLata 80-te : Zaawansowane modele danych, extended-relational, objective oriented, aplikacyjno-zorientowane itp.\n1983 : Początek internetu\nLata 90-te : Data mining, hurtownie danych, systemy OLAP\nPóźniej : NoSQL, Hadoop, SPARK, data lake\n2002 : AWS , 2005: Hadoop, Cloud computing\n\nWiększość danych przechowywana jest w bazach lub hurtowniach danych. Standardowo dostęp do danych sprowadza się najczęściej do realizacji zapytań poprzez aplikację.\nSposób wykorzystania i realizacji procesu dostępu do bazy danych nazywamy modelem przetwarzania. Najczęściej używane są dwie implementacje:\n\n\nModel Tradycyjny\nModel tradycyjny - przetwarzanie transakcyjne w trybie on-line, OLTP (on-line transaction processing). Świetnie sprawdza się w przypadku obsługi bieżącej np. obsługa klienta, rejestr zamówień, obsługa sprzedaży itp. Wykorzystywany w systemach Enterprise Resource Planning (ERP) Systems, Customer Relationship Management (CRM) software, and web-based applications.\n\nModel ten dostarcza efektywnych rozwiązań m.in do:\n\nefektywnego i bezpiecznego przechowywania danych,\ntransakcyjnego odtwarzanie danych po awarii,\noptymalizacji dostępu do danych,\nzarządzania współbieżnością,\nprzetwarzania zdarzeń -&gt; odczyt -&gt; zapis\n\nCo w przypadku gdy mamy do czynienia z:\n\nagregacjami danych z wielu systemów (np. dla wielu sklepów),\nraportowanie i podsumowania danych,\noptymalizacja złożonych zapytań,\nwspomaganie decyzji biznesowych.\n\nBadania nad tego typu zagadnieniami doprowadziły do sformułowania nowego modelu przetwarzania danych oraz nowego typu baz danych - Hurtownie Danych (Data warehouse).\n\n\nModel OLAP\nPrzetwarzanie analityczne on-line OLAP (on-line analytic processing).\nWspieranie procesów analizy i dostarczanie narzędzi umożliwiających analizę wielowymiarową (czas, miejsce, produkt).\nProces zrzucania danych z różnych systemów do jednej bazy nazywamy Extract-Transform-Load (ETL) (normalizacja i encoding and schema transaction).\nAnaliza danych z hurtowni to przede wszystkim obliczanie agregatów (podsumowań) dotyczących wymiarów hurtowni. Proces ten jest całkowicie sterowany przez użytkownika.\nPrzykład\nZałóżmy, że mamy dostęp do hurtowni danych gdzie przechowywane są informacje dotyczące sprzedaży produktów w supermarkecie. Jak przeanalizować zapytania:\n\nJaka jest łączna sprzedaż produktów w kolejnych kwartałach, miesiącach, tygodniach ?\nJaka jest sprzedaż produktów z podziałem na rodzaje produktów ?\nJaka jest sprzedaż produktów z podziałem na oddziały supermarketu ?\n\nOdpowiedzi na te pytania pozwalają określić wąskie gardła sprzedaży produktów przynoszących deficyt, zaplanować zapasy w magazynach czy porównać sprzedaż różnych grup w różnych oddziałach supermarketu.\nW ramach Hurtowni Danych najczęściej wykonuje się dwa rodzaje zapytań(oba w trybie batchowym): 1. Wykonywane okresowo w czasie zapytania raportowe obliczające biznesowe statystyki 2. Wykonywane ad-hoc zapytania wspomagające krytyczne decyzje biznesowe.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad2.html#business-impact",
     "href": "lectures/wyklad2.html#business-impact",
     "title": "Wykład 2",
     "section": "Business Impact:",
-    "text": "Business Impact:\nRóżnorodność danych (Variety) pozwala firmie budować pełny obraz klienta (Customer 360). Zdolność do łączenia sztywnych danych sprzedażowych (SQL) z luźnymi opiniami z mediów społecznościowych (NoSQL/NLP) pozwala odkrywać nisze rynkowe niewidoczne w tradycyjnych raportach. Skalowalność typu MapReduce gwarantuje, że koszty analityki nie wzrosną liniowo wraz z przyrostem danych, co jest kluczowe dla rentowności projektów Big Data."
+    "text": "Business Impact:\nRóżnorodność danych (Variety) pozwala firmie budować pełny obraz klienta (Customer 360). Zdolność do łączenia sztywnych danych sprzedażowych (SQL) z luźnymi opiniami z mediów społecznościowych (NoSQL/NLP) pozwala odkrywać nisze rynkowe niewidoczne w tradycyjnych raportach. Skalowalność typu MapReduce gwarantuje, że koszty analityki nie wzrosną liniowo wraz z przyrostem danych, co jest kluczowe dla rentowności projektów Big Data.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2"
+    ]
   },
   {
     "objectID": "lectures/wyklad1.html",
