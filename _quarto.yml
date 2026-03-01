@@ -14,7 +14,7 @@ website:
         contents:
         - href: lectures/wyklad1.qmd
         - href: lectures/wyklad2.qmd
-        # - href: lectures/wyklad3.qmd
+        - href: lectures/wyklad3.qmd
         # - href: lectures/wyklad4.qmd
         # - href: lectures/wyklad5.qmd
       # - section : "Laboratoria"

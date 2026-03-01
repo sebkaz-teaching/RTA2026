@@ -20,7 +20,7 @@ Polecane materiały znajdziesz na liście [książek](/ksiazki).
 Wykład jest realizowany w trybie hybrydowym.
 Jest on NIEOBOWIĄZKOWY i odbywa się w Auli I bud G
 
-1. 23.03.2026 Wykład 1 - 9.50-11:30
+1. <del>23.03.2026 Wykład 1 - 9.50-11:30</del>
 2. 02.03.2026 Wykład 2 - 9.50-11:30
 3. 09.03.2026 Wykład 3 - 9.50-11:30
 4. 16.03.2026 Wykład 4 - 9.50-11:30
