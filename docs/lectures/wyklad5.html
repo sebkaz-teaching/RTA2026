@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Wykład 5 – Analiza danych w czasie rzeczywistym</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-f1aadacce99040138bbb613f9330654f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-47ced4e51990f65db33ba556d4d102bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../style.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Analiza danych w czasie rzeczywistym</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../indexS.html"> 
+<span class="menu-text">222890-S</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../sylabus.html"> 
+<span class="menu-text">Sylabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../info.html"> 
+<span class="menu-text">Narzędzia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../ksiazki.html"> 
+<span class="menu-text">Książki</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Wykład 5</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Informacje ogólne</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Wykłady</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 4</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title"><strong>Sections</strong></h2>
+   
+  <ul class="collapse">
+  <li><a href="#algorytmy" id="toc-algorytmy" class="nav-link active" data-scroll-target="#algorytmy">Algorytmy</a></li>
+  <li><a href="#wyjaśnialność-algorytmów" id="toc-wyjaśnialność-algorytmów" class="nav-link" data-scroll-target="#wyjaśnialność-algorytmów">Wyjaśnialność algorytmów</a></li>
+  <li><a href="#detekcja-anomalii" id="toc-detekcja-anomalii" class="nav-link" data-scroll-target="#detekcja-anomalii">Detekcja anomalii</a></li>
+  <li><a href="#business-impact" id="toc-business-impact" class="nav-link" data-scroll-target="#business-impact">Business Impact:</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Wykład 5</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="algorytmy" class="level2">
+<h2 class="anchored" data-anchor-id="algorytmy">Algorytmy</h2>
+<p>Zanim zaprojektujesz rozwiązanie problemu biznesowego, warto zastanowić się nad złożonością Twojego problemu.</p>
+<section id="klasyfikacja-algorytmów" class="level3">
+<h3 class="anchored" data-anchor-id="klasyfikacja-algorytmów">Klasyfikacja algorytmów</h3>
+<p><strong>1. Algorytmy przetwarzające duże ilości danych</strong></p>
+<p>Przetwarzanie ogromnych zbiorów danych wymaga odpowiedniego podejścia do ich organizacji i analizy. W sytuacji, gdy ilość danych przekracza dostępną pamięć jednostki obliczeniowej, często stosuje się iteracyjne sposoby ich przetwarzania.</p>
+<p>🔹 Przykład: System rekomendacji w e-commerce (np. Amazon, Netflix)</p>
+<ul>
+<li>Analizuje ogromne zbiory danych o użytkownikach, ich historii zakupów i oglądanych treści.</li>
+<li>Przetwarza dane w sposób iteracyjny (np. strumieniowe przetwarzanie w Apache Spark).</li>
+<li>Wykorzystuje algorytmy filtracji kolaboratywnej lub algorytmy grafowe do przewidywania preferencji użytkownika.</li>
+</ul>
+<p>🔹 Inne zastosowania:</p>
+<ul>
+<li>Analiza logów serwerowych w czasie rzeczywistym (np. wykrywanie ataków DDoS).</li>
+<li>Monitoring sieci IoT (np. analiza danych z sensorów w inteligentnym mieście).</li>
+</ul>
+<p><strong>2. Algorytmy dokonujące wielu obliczeń</strong></p>
+<p>Wymagają dużej mocy obliczeniowej, ale zazwyczaj nie operują na wielkich zbiorach danych. Przykładem może być algorytm wyszukujący dużą liczbę pierwszą. Często wykorzystuje się tutaj podział obliczeń na równoległe procesy w celu optymalizacji wydajności.</p>
+<p>🔹 Przykład: Kryptografia i znalezienie dużej liczby pierwszej (np. RSA)</p>
+<ul>
+<li>Algorytm generuje bardzo duże liczby pierwsze, które są podstawą dla szyfrowania RSA.</li>
+<li>Proces wymaga intensywnych obliczeń, ale nie operuje na ogromnych zbiorach danych.</li>
+<li>Często wykorzystywane są metody równoległe, np. algorytm probabilistyczny Millera-Rabina do testowania pierwszości.</li>
+</ul>
+<p>🔹 Inne zastosowania:</p>
+<ul>
+<li>Symulacje fizyczne (np. prognozowanie pogody, modele klimatyczne).</li>
+<li>Algorytmy optymalizacyjne (np. znajdowanie najkrótszej trasy w problemie komiwojażera).</li>
+</ul>
+<p><strong>3. Algorytmy przetwarzające duże ilości danych i dokonujące wielu obliczeń</strong></p>
+<p>Łączą wymagania obu poprzednich typów, potrzebując zarówno dużych zasobów obliczeniowych, jak i obsługi dużych zbiorów danych. Przykładem może być analiza sentymentu w transmisjach wideo na żywo.</p>
+<p>🔹 Przykład: Analiza sentymentu w transmisjach wideo na żywo (np. YouTube, Twitch)</p>
+<ul>
+<li>Algorytm analizuje zarówno tekst (czat), jak i obraz/wideo w czasie rzeczywistym.</li>
+<li>Wymaga zarówno dużych zasobów obliczeniowych (przetwarzanie NLP i CV), jak i obsługi dużej ilości danych.</li>
+<li>Może wykorzystywać modele Transformer (np. BERT) do analizy tekstu oraz CNN/RNN do analizy obrazu i dźwięku.</li>
+</ul>
+<p>🔹 Inne zastosowania:</p>
+<ul>
+<li>Autonomiczne pojazdy (analiza obrazu i decyzje w czasie rzeczywistym).</li>
+<li>Wyszukiwanie anomalii w ogromnych zbiorach danych finansowych (np. wykrywanie oszustw bankowych).</li>
+</ul>
+</section>
+<section id="wymiar-danych" class="level3">
+<h3 class="anchored" data-anchor-id="wymiar-danych">Wymiar danych</h3>
+<p>Aby określić wymiar danych problemu, nie wystarczy podać jedynie ilości miejsca zajmowanego przez dane. Istotne są trzy główne aspekty:</p>
+<ol type="1">
+<li><strong>Rozmiar wejścia</strong> – oczekiwany rozmiar danych do przetwarzania.</li>
+<li><strong>Szybkość narastania</strong> – tempo generowania nowych danych podczas działania algorytmu.</li>
+<li><strong>Różnorodność struktury</strong> – typy danych, jakie algorytm musi obsłużyć.</li>
+</ol>
+</section>
+<section id="wymiar-obliczeniowy" class="level3">
+<h3 class="anchored" data-anchor-id="wymiar-obliczeniowy">Wymiar obliczeniowy</h3>
+<p>Dotyczy zasobów procesowania i mocy obliczeniowej. Na przykład algorytmy uczenia głębokiego (DL) wymagają dużej mocy obliczeniowej, dlatego warto zapewnić zrównolegloną architekturę, wykorzystującą GPU lub TPU, co znacząco przyspiesza obliczenia.</p>
+</section>
+</section>
+<section id="wyjaśnialność-algorytmów" class="level2">
+<h2 class="anchored" data-anchor-id="wyjaśnialność-algorytmów">Wyjaśnialność algorytmów</h2>
+<p>W wielu przypadkach modelowanie jest wykorzystywane w sytuacjach krytycznych, np. w oprogramowaniu do podawania leków. W takich sytuacjach kluczowe staje się wyjaśnienie przyczyny każdego wyniku działania algorytmu. Jest to konieczne, aby zapewnić, że decyzje podejmowane na jego podstawie są wolne od błędów i uprzedzeń.</p>
+<p>Zdolność algorytmu do wskazania mechanizmów generujących wyniki nazywamy <strong>możliwością wyjaśnienia</strong>. Analiza etyczna stanowi standardowy element procesu walidacji algorytmu.</p>
+<p>Uzyskanie wysokiej wyjaśnialności jest szczególnie trudne w przypadku algorytmów uczenia maszynowego (ML) i głębokiego uczenia (DL). Na przykład banki korzystające z algorytmów do podejmowania decyzji kredytowych muszą zapewnić transparentność i wskazać powody wydanej decyzji.</p>
+<p>Jedną z metod poprawy wyjaśnialności algorytmów jest <strong>LIME</strong> (<em>Local Interpretable Model-Agnostic Explanations</em>), opublikowana w 2016 roku. Metoda ta polega na wprowadzaniu niewielkich zmian w danych wejściowych i analizowaniu ich wpływu na wynik, co pozwala określić lokalne zasady podejmowania decyzji przez model.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#from lime.lime_tabular import LimeTabularExplainer</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Wczytanie danych Iris</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> iris.target</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Podział na zbiór treningowy i testowy</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Trenowanie modelu</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Tworzenie obiektu LIME do interpretacji modelu</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># explainer = LimeTabularExplainer(X_train, feature_names=iris.feature_names, class_names=iris.target_names, discretize_continuous=True)</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Interpretacja losowego przykładu ze zbioru testowego</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># i = np.random.randint(0, len(X_test))  # Wybór losowego przykładu</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># exp = explainer.explain_instance(X_test[i], model.predict_proba)</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Wyświetlenie interpretacji</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># exp.show_in_notebook()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Jak działa ten kod? 1. Ładowanie danych i trenowanie modelu</p>
+<ul>
+<li>Używamy zbioru Iris, który zawiera 150 przykładów kwiatów z trzema gatunkami:</li>
+<li>Setosa</li>
+<li>Versicolor</li>
+<li>Virginica</li>
+<li>Model RandomForestClassifier trenuje się na tych danych.</li>
+</ul>
+<ol start="2" type="1">
+<li>Tworzenie interpretowalnego modelu za pomocą LIME</li>
+</ol>
+<ul>
+<li>LIME generuje lokalne wyjaśnienia, czyli interpretuje model dla pojedynczych predykcji.</li>
+<li>Wybieramy losowy przykład z danych testowych.</li>
+</ul>
+<ol start="3" type="1">
+<li>Eksploracja wyniku dla jednego przykładu</li>
+</ol>
+<ul>
+<li>LIME modyfikuje lekko wartości wejściowe i obserwuje, jak zmienia się wynik predykcji.</li>
+<li>Tworzy „lokalny” model liniowy, który pokazuje, które cechy miały największy wpływ na decyzję.</li>
+</ul>
+<p>Załóżmy, że nasz model wybrał przykładową roślinę i sklasyfikował ją jako Virginica.</p>
+<p>Oto interpretacja wyników:</p>
+<ol type="1">
+<li>Najważniejsze cechy wpływające na decyzję modelu:</li>
+</ol>
+<ul>
+<li>Długość płatka (petal length): największy wpływ na predykcję (np. im większa, tym większe prawdopodobieństwo, że to Virginica).</li>
+<li>Szerokość płatka (petal width): również istotny czynnik (np. powyżej pewnej wartości sugeruje Virginica).</li>
+<li>Długość kielicha (sepal length): mniejszy wpływ, ale nadal istotny.</li>
+<li>Szerokość kielicha (sepal width): zwykle najmniej istotna cecha.</li>
+</ul>
+<ol start="2" type="1">
+<li>Wizualizacja wyników</li>
+</ol>
+<ul>
+<li>LIME generuje wykres słupkowy, który pokazuje wpływ każdej cechy na klasyfikację.</li>
+<li>Na wykresie widać, które cechy zwiększały, a które zmniejszały prawdopodobieństwo przypisania do danej klasy.</li>
+</ul>
+<ol start="3" type="1">
+<li>Co oznacza wynik?</li>
+</ol>
+<ul>
+<li>Jeśli model przewidział klasę Virginica z wysokim prawdopodobieństwem, oznacza to, że kluczowe cechy (np. długi płatek) mocno wskazują na ten gatunek.</li>
+<li>Jeśli cechy miały zróżnicowany wpływ, oznacza to, że model miał pewne trudności w klasyfikacji (np. szerokość płatka nie była jednoznaczna).</li>
+</ul>
+</section>
+<section id="detekcja-anomalii" class="level2">
+<h2 class="anchored" data-anchor-id="detekcja-anomalii">Detekcja anomalii</h2>
+<section id="wartość-odstająca-outlier" class="level3">
+<h3 class="anchored" data-anchor-id="wartość-odstająca-outlier">Wartość odstająca (Outlier)</h3>
+<p><strong>Wartość odstająca</strong> (ang. <em>outlier</em>) to obserwacja (wiersz w tabeli danych), która jest znacznie oddalona od pozostałych elementów próbki. Oznacza to, że zależność między zmiennymi niezależnymi i zależnymi dla tej obserwacji może różnić się od pozostałych przypadków.</p>
+<p>Dla pojedynczych zmiennych wartości odstające można określić, korzystając z wykresu pudełkowego (<em>box plot</em>). Wykres ten bazuje na kwartylach:</p>
+<ul>
+<li><strong>Pierwszy kwartyl</strong> <span class="math inline">\(Q_1\)</span> i <strong>trzeci kwartyl</strong> <span class="math inline">\(Q_3\)</span> wyznaczają boki pudełka,</li>
+<li><strong>Drugi kwartyl</strong> <span class="math inline">\(Q_2\)</span> (mediana) jest zaznaczony wewnątrz pudełka,</li>
+</ul>
+<p>Wartości odstające spełniają zależność:</p>
+<p><span class="math display">\[
+x_{out} &lt; Q_1 - 1.5 \times IQR \quad \text{lub} \quad x_{out} &gt; Q_3 + 1.5 \times IQR
+\]</span></p>
+<p>Gdzie: <span class="math display">\[
+IQR = Q_3 - Q_1
+\]</span></p>
+<p>Przykładem wartości odstającej może być bolid Formuły 1 – pod względem prędkości jest on anomalią wśród zwykłych samochodów.</p>
+</section>
+<section id="wykorzystanie-detekcji-anomalii" class="level3">
+<h3 class="anchored" data-anchor-id="wykorzystanie-detekcji-anomalii">Wykorzystanie detekcji anomalii</h3>
+<p>Wykrywanie wartości odstających ma szerokie zastosowanie, np.:</p>
+<ul>
+<li><strong>Finanse</strong> – wykrywanie transakcji fraudowych w analizie danych bankowych,</li>
+<li><strong>Cyberbezpieczeństwo</strong> – identyfikacja intruzów w sieci na podstawie zachowań użytkowników,</li>
+<li><strong>Medycyna</strong> – monitorowanie parametrów zdrowotnych i wykrywanie nieprawidłowości,</li>
+<li><strong>Przemysł</strong> – wykrywanie wadliwych komponentów poprzez analizę obrazu.</li>
+</ul>
+</section>
+<section id="metody-wykrywania-anomalii" class="level3">
+<h3 class="anchored" data-anchor-id="metody-wykrywania-anomalii">Metody wykrywania anomalii</h3>
+<section id="metody-nadzorowane-supervised-learning" class="level4">
+<h4 class="anchored" data-anchor-id="metody-nadzorowane-supervised-learning">1. Metody nadzorowane (supervised learning)</h4>
+<p>Stosowane, gdy mamy oznaczone dane (np. przypadki oszustw w transakcjach).</p>
+<ul>
+<li>Sieci neuronowe,</li>
+<li>Algorytm K-najbliższych sąsiadów (KNN),</li>
+<li>Sieci Bayesowskie.</li>
+</ul>
+</section>
+<section id="metody-nienadzorowane-unsupervised-learning" class="level4">
+<h4 class="anchored" data-anchor-id="metody-nienadzorowane-unsupervised-learning">2. Metody nienadzorowane (unsupervised learning)</h4>
+<p>Zakładają, że większość danych jest poprawna, a anomalie to niewielki odsetek przypadków.</p>
+<ul>
+<li>Klasteryzacja metodą K-średnich (<em>K-Means</em>),</li>
+<li>Autoenkodery w sieciach neuronowych,</li>
+<li>Testy statystyczne.</li>
+</ul>
+</section>
+</section>
+<section id="metoda-klasyczna-detekcja-na-podstawie-prawdopodobieństwa" class="level3">
+<h3 class="anchored" data-anchor-id="metoda-klasyczna-detekcja-na-podstawie-prawdopodobieństwa">Metoda klasyczna – detekcja na podstawie prawdopodobieństwa</h3>
+<p>Aby określić, czy dana obserwacja jest anomalią, można użyć prawdopodobieństwa <span class="math inline">\(p(x)\)</span>:</p>
+<ul>
+<li>Jeśli <span class="math inline">\(p(x) &lt; \epsilon\)</span>, uznajemy wartość za odstającą.</li>
+<li>W praktyce zakładamy, że dane mają <strong>rozkład normalny</strong> <span class="math inline">\(N(\mu, \sigma)\)</span>.</li>
+<li>Szacujemy parametry <span class="math inline">\(\mu\)</span> (średnia) i <span class="math inline">\(\sigma^2\)</span> (wariancja) na podstawie próbki.</li>
+<li>Następnie dla każdej wartości obliczamy prawdopodobieństwo jej wystąpienia i porównujemy z <span class="math inline">\(\epsilon\)</span>.</li>
+</ul>
+<p><strong>Przykład: Analiza wynagrodzeń w firmie</strong></p>
+<p>Wykrywamy, czy w danej firmie są osoby o wynagrodzeniach znacznie odbiegających od średniej.</p>
+<div id="0fdf05f7" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Przykładowe wynagrodzenia w firmie (w tysiącach)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>salaries <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">90</span>, <span class="dv">150</span>]  <span class="co"># 150 to outlier</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Obliczenie kwartylów</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Q1 <span class="op">=</span> np.percentile(salaries, <span class="dv">25</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Q3 <span class="op">=</span> np.percentile(salaries, <span class="dv">75</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Definicja wartości odstających</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>outlier_threshold_low <span class="op">=</span> Q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>outlier_threshold_high <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Znalezienie outlierów</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>outliers <span class="op">=</span> [x <span class="cf">for</span> x <span class="kw">in</span> salaries <span class="cf">if</span> x <span class="op">&lt;</span> outlier_threshold_low <span class="kw">or</span> x <span class="op">&gt;</span> outlier_threshold_high]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Outliers: </span><span class="sc">{</span>outliers<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Wizualizacja</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>sns.boxplot(salaries)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Wykres pudełkowy wynagrodzeń"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Outliers: [150]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="wyklad5_files/figure-html/cell-2-output-2.png" width="575" height="414" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Wynik: Na wykresie pudełkowym widać, że 150 tys. to anomalia.</p>
+</section>
+<section id="isolation-forest-detekcja-anomalii-za-pomocą-lasu-izolacyjnego" class="level3">
+<h3 class="anchored" data-anchor-id="isolation-forest-detekcja-anomalii-za-pomocą-lasu-izolacyjnego">Isolation Forest – detekcja anomalii za pomocą lasu izolacyjnego</h3>
+<p><strong>Isolation Forest</strong> to algorytm bazujący na drzewach decyzyjnych, zaproponowany przez Fei Tony Liu, Kai Ming Ting oraz Zhi-Hua Zhou w 2008 roku. Identyfikuje anomalie poprzez izolowanie wartości odstających w procesie podziału danych:</p>
+<ul>
+<li>Wybiera losowo cechę oraz wartość podziału,</li>
+<li>Wartości odstające szybciej zostają odizolowane (są bliżej korzenia drzewa),</li>
+<li>Wynik jest agregowany na podstawie wielu drzew.</li>
+</ul>
+<p>Jego zalety to <strong>niskie wymagania obliczeniowe</strong> i skuteczność w analizie wielowymiarowych danych.</p>
+<p><a href="https://scikit-learn.org/0.20/auto_examples/plot_anomaly_comparison.html">Metody detekcji anomalii sklearn</a></p>
+<p><strong>Przykład: Wykrywanie oszustw bankowych</strong></p>
+<p>Bank analizuje transakcje kartą kredytową i wykrywa te, które mogą być nieautoryzowane.</p>
+<div id="2868ee04" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Przykładowe dane transakcji (kwota, liczba transakcji w tygodniu)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array([</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">100</span>, <span class="dv">5</span>], [<span class="dv">120</span>, <span class="dv">6</span>], [<span class="dv">130</span>, <span class="dv">5</span>], [<span class="dv">110</span>, <span class="dv">4</span>], [<span class="dv">5000</span>, <span class="dv">1</span>],  <span class="co"># Outlier (duża kwota, rzadkość)</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">125</span>, <span class="dv">5</span>], [<span class="dv">115</span>, <span class="dv">5</span>], [<span class="dv">140</span>, <span class="dv">7</span>], [<span class="dv">135</span>, <span class="dv">6</span>], [<span class="dv">145</span>, <span class="dv">5</span>]</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Model Isolation Forest</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> IsolationForest(contamination<span class="op">=</span><span class="fl">0.1</span>)  <span class="co"># 10% transakcji uznajemy za anomalie</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>clf.fit(data)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Predykcja (1 = normalna transakcja, -1 = oszustwo)</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> clf.predict(data)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data, columns<span class="op">=</span>[<span class="st">"Kwota"</span>, <span class="st">"Liczba transakcji"</span>])</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Anomalia"</span>] <span class="op">=</span> predictions</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Kwota  Liczba transakcji  Anomalia
+0    100                  5         1
+1    120                  6         1
+2    130                  5         1
+3    110                  4         1
+4   5000                  1        -1
+5    125                  5         1
+6    115                  5         1
+7    140                  7         1
+8    135                  6         1
+9    145                  5         1</code></pre>
+</div>
+</div>
+<p>Wynik: Transakcja 5000 zł zostanie wykryta jako anomalia.</p>
+</section>
+</section>
+<section id="business-impact" class="level2">
+<h2 class="anchored" data-anchor-id="business-impact">Business Impact:</h2>
+<p>Detekcja anomalii to fundament nowoczesnego zarządzania ryzykiem (Risk Management) – od wykrywania nadużyć finansowych po przewidywanie awarii maszyn. Z kolei wyjaśnialność algorytmów (LIME) to konieczność w sektorach regulowanych (bankowość, medycyna, ubezpieczenia). Zrozumienie, “dlaczego system powiedział NIE”, chroni firmę przed stratami wizerunkowymi, prawnymi oraz zapewnia zgodność z regulacjami takimi jak AI Act czy RODO.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/sebkaz-teaching\.github\.io\/RTA2026");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2026, Sebastian Zając</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
