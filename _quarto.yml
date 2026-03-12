@@ -16,7 +16,7 @@ website:
         - href: lectures/wyklad2.qmd
         - href: lectures/wyklad3.qmd
         - href: lectures/wyklad4.qmd
-        # - href: lectures/wyklad5.qmd
+        - href: lectures/wyklad5.qmd
       # - section : "Laboratoria"
       #   contents:
         # - section: "Apache Kafka"
@@ -62,6 +62,5 @@ format:
     toc-title: "**Sections**"
     self-contained-math: true
     code-overflow: wrap
-    highlight-style: github-dark
     code-block-background: true
     link-external-newwindow: true

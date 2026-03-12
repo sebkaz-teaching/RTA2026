@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-f1aadacce99040138bbb613f9330654f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-47ced4e51990f65db33ba556d4d102bb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -203,6 +203,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Wykład 4</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Wykład 5</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -216,8 +222,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#python" id="toc-python" class="nav-link active" data-scroll-target="#python">Python</a></li>
-  <li><a href="#zacznij-korzystać-z-serwisu-github" id="toc-zacznij-korzystać-z-serwisu-github" class="nav-link" data-scroll-target="#zacznij-korzystać-z-serwisu-github">Zacznij korzystać z serwisu GitHub</a></li>
-  <li><a href="#zacznij-korzystać-z-dockera" id="toc-zacznij-korzystać-z-dockera" class="nav-link" data-scroll-target="#zacznij-korzystać-z-dockera">Zacznij korzystać z Dockera</a></li>
+  <li><a href="#git" id="toc-git" class="nav-link" data-scroll-target="#git">Git</a></li>
+  <li><a href="#docker" id="toc-docker" class="nav-link" data-scroll-target="#docker">Docker</a></li>
+  <li><a href="#kafka" id="toc-kafka" class="nav-link" data-scroll-target="#kafka">Apache Kafka</a></li>
+  <li><a href="#spark" id="toc-spark" class="nav-link" data-scroll-target="#spark">Apache Spark</a></li>
   </ul>
 </nav>
     </div>
@@ -245,39 +253,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="python" class="level2">
 <h2 class="anchored" data-anchor-id="python">Python</h2>
-<p>W terminalu (Windows CMD) wpisz</p>
+<p>W terminalu wpisz:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Jeśli nie odnaleziono komendy uruchom polecenie:</p>
+<p>Jeśli komenda nie została odnaleziona, spróbuj:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Zwróć uwagę, aby Twoja wersja nie była niższa niż 3.X Aby wyjść z powłoki pythona użyj funkcji <code>exit()</code></p>
+<p>Zwróć uwagę, aby Twoja wersja nie była niższa niż 3.10. Aby wyjść z powłoki Pythona, użyj funkcji <code>exit()</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Python</span> 3.13.2 <span class="er">(</span><span class="ex">main,</span> Feb  4 2025, 14:51:09<span class="kw">)</span> <span class="ex">[Clang</span> 16.0.0 <span class="er">(</span><span class="ex">clang-1600.0.26.6</span><span class="kw">)</span><span class="ex">]</span> on darwin</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Type</span> <span class="st">"help"</span>, <span class="st">"copyright"</span>, <span class="st">"credits"</span> or <span class="st">"license"</span> for more information.</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> exit<span class="kw">()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="nowe-środowisko-pythona" class="level3">
-<h3 class="anchored" data-anchor-id="nowe-środowisko-pythona">Nowe środowisko pythona</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv <span class="op">&lt;</span>name of env<span class="op">&gt;</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># dla linux i mac os</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="op">&lt;</span>name of env<span class="op">&gt;</span>/bin/activate</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># . env/bin/activate</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># dla windows </span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;name of env&gt;\Scripts\activate</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="ex">venv</span><span class="kw">)</span><span class="ex">$</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Szybka instalacja podstawowych bibliotek i jupyterlab.</p>
+<h3 class="anchored" data-anchor-id="nowe-środowisko-pythona">Nowe środowisko Pythona</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv <span class="op">&lt;</span>nazwa_srodowiska<span class="op">&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Linux / macOS</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="op">&lt;</span>nazwa_srodowiska<span class="op">&gt;</span>/bin/activate</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;nazwa_srodowiska&gt;\Scripts\activate</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">(</span><span class="ex">venv</span><span class="kw">)</span><span class="ex">$</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Szybka instalacja podstawowych bibliotek i JupyterLab:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--no-cache</span> <span class="at">--upgrade</span> pip setuptools</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyterlab numpy pandas matplotlib scipy</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># jeśli masz plik requirements.txt z potrzebnymi bibliotekami</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyterlab numpy pandas matplotlib scipy</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># jeśli masz plik requirements.txt</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># uruchom </span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyterlab</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># uruchom JupyterLab</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> lab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>W przeglądarce internetowej wpisz: <em>localhost:8888</em></p>
-<p>Po ponownym uruchomieniu przejdź do katalogu w którym utworzyłeś środowisko, następnie uruchom środowisko i jupyterlab.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="op">&lt;</span>name of env<span class="op">&gt;</span>/bin/activate</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyterlab</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Po ponownym uruchomieniu komputera przejdź do katalogu, w którym utworzyłeś środowisko, aktywuj je i uruchom JupyterLab:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="op">&lt;</span>nazwa_srodowiska<span class="op">&gt;</span>/bin/activate</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> lab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="naucz-się-pythona-w-2-godziny" class="level3">
-<h3 class="anchored" data-anchor-id="naucz-się-pythona-w-2-godziny">Naucz się Pythona w 2 godziny</h3>
-<p>Kurs podstaw pythona <a href="https://www.tomasbeuzen.com/python-programming-for-data-science/README.html">Tomas Beuzen</a> polecam.</p>
+<section id="naucz-się-pythona" class="level3">
+<h3 class="anchored" data-anchor-id="naucz-się-pythona">Naucz się Pythona</h3>
+<p>Kurs podstaw Pythona — <a href="https://www.tomasbeuzen.com/python-programming-for-data-science/README.html">Tomas Beuzen</a> — polecam.</p>
 <p>Utwórz konto na <a href="https://kaggle.com">Kaggle</a>, przejdź do zakładki <code>Courses</code> i przerób cały moduł Pythona. Zawiera on:</p>
 <ul>
 <li>wyrażenia i zmienne</li>
@@ -290,103 +301,165 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 </section>
-<section id="zacznij-korzystać-z-serwisu-github" class="level2">
-<h2 class="anchored" data-anchor-id="zacznij-korzystać-z-serwisu-github">Zacznij korzystać z serwisu GitHub</h2>
-<div id="git">
-
-</div>
-<p>Tekst na podstawie strony <a href="http://pbiecek.github.io/Przewodnik/Programowanie/jak_korzystac_z_serwisu_github_i_waffle.html">jak korzystać z serwisu github</a></p>
-<p>Pracując nad projektem np. praca magisterska, (samodzielnie lub w zespole) często potrzebujesz sprawdzić jakie zmiany, kiedy i przez kogo zostały wprowadzone do projektu. W zadaniu tym świetnie sprawdza się <code>system kontroli wersji</code> czyli <a href="https://git-scm.com">GIT</a>.</p>
-<p>Git możesz pobrać i zainstalować jak zwykły program na dowolnym komputerze. Jednak najczęściej (małe projekty) korzysta się z serwisów z jakimś systemem git. Jednym z najbardziej rozpoznawanych jest <a href="www.github.com">GitHub</a> dzięki któremu możesz korzystać z systemu git bez jego instalacji na swoim komputerze.</p>
-<p>W darmowej wersji serwisu <code>GitHub</code> swoje pliki możesz przechowywać w publicznych (dostęp mają wszyscy) repozytoriach.<br>
-Skupimy się wyłącznie na darmowej wersji serwisu GitHub.</p>
+<section id="git" class="level2">
+<h2 class="anchored" data-anchor-id="git">Git</h2>
+<p>Tekst na podstawie strony <a href="http://pbiecek.github.io/Przewodnik/Programowanie/jak_korzystac_z_serwisu_github_i_waffle.html">jak korzystać z serwisu GitHub</a>.</p>
+<p>Pracując nad projektem (samodzielnie lub w zespole), często potrzebujesz sprawdzić, jakie zmiany, kiedy i przez kogo zostały wprowadzone. Do tego służy <strong>system kontroli wersji</strong> — <a href="https://git-scm.com">Git</a>.</p>
+<p>Git możesz pobrać i zainstalować na dowolnym systemie operacyjnym. Najczęściej jednak korzysta się z serwisów hostujących repozytoria Git. Jednym z najbardziej rozpoznawanych jest <a href="https://github.com">GitHub</a>, dzięki któremu możesz korzystać z systemu Git bezpośrednio z poziomu przeglądarki.</p>
+<p>W darmowej wersji serwisu GitHub możesz przechowywać pliki zarówno w publicznych, jak i <strong>prywatnych</strong> repozytoriach.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="struktura-githuba" class="level3">
 <h3 class="anchored" data-anchor-id="struktura-githuba">Struktura GitHuba</h3>
-<p>Na najwyższym poziomie znajdują się konta indywidualne np <a href="http://github.com/sebkaz">http://github.com/sebkaz</a>, bądź zakładane przez organizacje. Użytkownicy indywidualni mogą tworzyć <strong>repozytoria</strong> publiczne (<code>public</code> ) bądź prywatne (<code>private</code>).</p>
-<p>Jeden plik nie powinien przekraczać 100 MB.</p>
-<p><strong>Repo</strong> (skrót do repozytorium) tworzymy za pomocą <code>Create a new repository</code>. Każde repo powinno mieć swoją indywidualną nazwę.</p>
+<p>Na najwyższym poziomie znajdują się konta indywidualne (np. <a href="https://github.com/sebkaz">github.com/sebkaz</a>) bądź organizacje. Użytkownicy mogą tworzyć repozytoria <strong>publiczne</strong> (<code>public</code>) lub <strong>prywatne</strong> (<code>private</code>).</p>
+<p>Jeden plik w repozytorium nie powinien przekraczać 100 MB.</p>
+<p><strong>Repo</strong> (skrót od repozytorium) tworzymy za pomocą przycisku <code>Create a new repository</code>. Każde repo powinno mieć swoją unikalną nazwę.</p>
 </section>
-<section id="branche" class="level3">
-<h3 class="anchored" data-anchor-id="branche">Branche</h3>
-<p>Główna (tworzona domyślnie) gałąź rapozytorium ma nazwę <code>master</code>.</p>
+<section id="gałęzie-branches" class="level3">
+<h3 class="anchored" data-anchor-id="gałęzie-branches">Gałęzie (branches)</h3>
+<p>Główna gałąź repozytorium domyślnie nosi nazwę <code>main</code> (dawniej <code>master</code>).</p>
 </section>
-<section id="najważniejsze-polecnia-do-zapamiętania" class="level3">
-<h3 class="anchored" data-anchor-id="najważniejsze-polecnia-do-zapamiętania">Najważniejsze polecnia do zapamiętania</h3>
-<ul>
-<li><em>ściąganie repozytorium z sieci</em></li>
-</ul>
+<section id="najważniejsze-polecenia" class="level3">
+<h3 class="anchored" data-anchor-id="najważniejsze-polecenia">Najważniejsze polecenia</h3>
+<p>Ściąganie repozytorium z sieci:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://adres_repo.git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <blockquote class="blockquote">
-<p>W przypadku githuba możesz pobrać repozytorium jako plik zip.</p>
+<p>Możesz też pobrać repozytorium z GitHuba jako plik ZIP.</p>
 </blockquote>
-<ul>
-<li><em>Tworzenie repozytorium dla lokalnego katalogu</em></li>
-</ul>
+<p>Tworzenie repozytorium dla lokalnego katalogu:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tworzenie nowego katalogu</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> datamining</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># przejście do katalogu</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> datamining</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># inicjalizacja repozytorium w katalogu</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># inicjalizacja repozytorium</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># powinien pojawić się ukryty katalog .git</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># dodajmy plik</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Info "</span> <span class="op">&gt;&gt;</span> README.md</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li>Połącz lokalne repozytorium z kontem na githubie</li>
-</ul>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># dodajmy plik</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Info"</span> <span class="op">&gt;&gt;</span> README.md</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Połączenie lokalnego repozytorium z kontem na GitHubie:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin https://github.com/<span class="op">&lt;</span>twojGit<span class="op">&gt;</span>/nazwa.git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<ul>
-<li>Obsługa w 3 krokach</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sprawdź zmiany jakie zostały dokonane</span></span>
+<p>Obsługa w 3 krokach:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sprawdź zmiany</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. dodaj wszystkie zmiany</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add .</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. zapisz bierzący stan wraz z informacją co zrobiłeś</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">" opis "</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. potem już zostaje tylko</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Warto obejrzeć <a href="https://www.youtube.com/watch?v=HVsySz-h9r4">Youtube course</a>.</p>
-<p>Ciekawe i proste wprowadzenie mozna znaleźć <a href="http://rogerdudler.github.io/git-guide/index.pl.html">tutaj</a></p>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. zapisz bieżący stan wraz z opisem</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"opis zmian"</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. wyślij na serwer</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push origin main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Warto obejrzeć <a href="https://www.youtube.com/watch?v=HVsySz-h9r4">kurs Git na YouTube</a>.</p>
+<p>Ciekawe i proste wprowadzenie można znaleźć <a href="http://rogerdudler.github.io/git-guide/index.pl.html">tutaj</a>.</p>
 </section>
 </section>
-<section id="zacznij-korzystać-z-dockera" class="level2">
-<h2 class="anchored" data-anchor-id="zacznij-korzystać-z-dockera">Zacznij korzystać z Dockera</h2>
-<div id="docker">
-
-</div>
-<p>W celu pobrania oprogramowania docker na swój system przejdź do <a href="https://docs.docker.com/get-docker/">strony</a>.</p>
-<p>Jeżli wszystko zainstalowało się prawidłowo wykonaj następujące polecenia:</p>
+<section id="docker" class="level2">
+<h2 class="anchored" data-anchor-id="docker">Docker</h2>
+<p>W celu pobrania Dockera przejdź do <a href="https://docs.docker.com/get-docker/">oficjalnej strony</a>.</p>
+<p>Jeśli wszystko zainstalowało się prawidłowo, wykonaj następujące polecenia:</p>
 <ol type="1">
-<li>Sprawdź zainstalowaną wersję</li>
+<li>Sprawdź zainstalowaną wersję:</li>
 </ol>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="2" type="1">
-<li>Ściągnij i uruchom obraz <code>Hello World</code> i</li>
+<li>Ściągnij i uruchom obraz testowy:</li>
 </ol>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run hello-world</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="3" type="1">
-<li>Przegląd ściągnietych obrazów:</li>
+<li>Przegląd ściągniętych obrazów:</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> image ls</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> images</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="4" type="1">
 <li>Przegląd uruchomionych kontenerów:</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-all</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-a</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="5" type="1">
 <li>Zatrzymanie uruchomionego kontenera:</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stop <span class="op">&lt;</span>CONTAINER ID<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> stop <span class="op">&lt;</span>CONTAINER_ID<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ol start="6" type="1">
-<li>Usunięcie kontenera</li>
+<li>Usunięcie kontenera:</li>
 </ol>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> rm <span class="at">-f</span> <span class="op">&lt;</span>CONTAINER ID<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Polecam również <a href="https://medium.com/codingthesmartway-com-blog/docker-beginners-guide-part-1-images-containers-6f3507fffc98">krótkie intro</a></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> rm <span class="at">-f</span> <span class="op">&lt;</span>CONTAINER_ID<span class="op">&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="docker-compose" class="level3">
+<h3 class="anchored" data-anchor-id="docker-compose">Docker Compose</h3>
+<p>Docker Compose pozwala definiować i uruchamiać wielokontenerowe środowiska za pomocą jednego pliku <code>docker-compose.yml</code>. Na zajęciach będziemy go używać do stawiania środowisk z Kafką, Sparkiem i innymi usługami.</p>
+<p>Sprawdź, czy masz zainstalowany Docker Compose:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose version</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Przykładowy plik <code>docker-compose.yml</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">zookeeper</span><span class="kw">:</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> confluentinc/cp-zookeeper:7.6.0</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">ZOOKEEPER_CLIENT_PORT</span><span class="kw">:</span><span class="at"> </span><span class="dv">2181</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">kafka</span><span class="kw">:</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> confluentinc/cp-kafka:7.6.0</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">depends_on</span><span class="kw">:</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> zookeeper</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"9092:9092"</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">KAFKA_BROKER_ID</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">KAFKA_ZOOKEEPER_CONNECT</span><span class="kw">:</span><span class="at"> zookeeper:2181</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">KAFKA_ADVERTISED_LISTENERS</span><span class="kw">:</span><span class="at"> PLAINTEXT://localhost:9092</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Uruchomienie i zatrzymanie:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># uruchom wszystkie usługi w tle</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sprawdź działające kontenery</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose ps</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># zatrzymaj i usuń kontenery</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose down</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</section>
+<section id="kafka" class="level2">
+<h2 class="anchored" data-anchor-id="kafka">Apache Kafka</h2>
+<p>Apache Kafka to rozproszona platforma do strumieniowego przetwarzania danych. Umożliwia publikowanie, subskrybowanie i przetwarzanie strumieni rekordów w czasie rzeczywistym.</p>
+<p>Na zajęciach będziemy uruchamiać Kafkę za pomocą Docker Compose (patrz wyżej).</p>
+<p>Podstawowe pojęcia:</p>
+<ul>
+<li><strong>Producent (Producer)</strong> — wysyła dane (wiadomości) do Kafki.</li>
+<li><strong>Konsument (Consumer)</strong> — odczytuje dane z Kafki.</li>
+<li><strong>Temat (Topic)</strong> — kategoria, do której trafiają wiadomości.</li>
+<li><strong>Partycja (Partition)</strong> — podział tematu umożliwiający równoległe przetwarzanie.</li>
+<li><strong>Broker</strong> — serwer Kafki przechowujący dane.</li>
+</ul>
+<p>Szybki test Kafki z Dockera:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># utwórz temat</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose exec kafka kafka-topics <span class="at">--create</span> <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--topic</span> test <span class="at">--bootstrap-server</span> localhost:9092 <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--partitions</span> 1 <span class="at">--replication-factor</span> 1</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># wyślij wiadomość (producent)</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose exec kafka kafka-console-producer <span class="dt">\</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">--topic</span> test <span class="at">--bootstrap-server</span> localhost:9092</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># odczytaj wiadomości (konsument) — w nowym terminalu</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose exec kafka kafka-console-consumer <span class="dt">\</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">--topic</span> test <span class="at">--bootstrap-server</span> localhost:9092 <span class="at">--from-beginning</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Biblioteka Pythonowa: <code>pip install confluent-kafka</code></p>
+<p>Więcej informacji: <a href="https://kafka.apache.org/documentation/">Apache Kafka — dokumentacja</a></p>
+</section>
+<section id="spark" class="level2">
+<h2 class="anchored" data-anchor-id="spark">Apache Spark</h2>
+<p>Apache Spark to silnik do rozproszonego przetwarzania danych, obsługujący zarówno tryb wsadowy (batch), jak i strumieniowy (streaming). Na zajęciach będziemy korzystać z <strong>PySpark</strong> — interfejsu Pythonowego do Sparka.</p>
+<p>Instalacja PySpark:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pyspark</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Szybki test:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder <span class="op">\</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"Test"</span>) <span class="op">\</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    .master(<span class="st">"local[*]"</span>) <span class="op">\</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.createDataFrame(</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    [(<span class="dv">1</span>, <span class="st">"Anna"</span>, <span class="dv">28</span>), (<span class="dv">2</span>, <span class="st">"Jan"</span>, <span class="dv">35</span>), (<span class="dv">3</span>, <span class="st">"Ewa"</span>, <span class="dv">22</span>)],</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"id"</span>, <span class="st">"imie"</span>, <span class="st">"wiek"</span>]</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>df.show()</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>spark.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Na dalszych zajęciach będziemy korzystać ze <strong>Structured Streaming</strong> — modułu Sparka do przetwarzania danych strumieniowych, w tym integracji z Apache Kafka.</p>
+<p>Więcej informacji: <a href="https://spark.apache.org/docs/latest/">Apache Spark — dokumentacja</a></p>
 
 
 </section>

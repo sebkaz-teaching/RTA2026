@@ -2,60 +2,70 @@
 title: Narzędzia
 ---
 
-## Python
+## Python {#python}
 
-W terminalu (Windows CMD) wpisz
+W terminalu wpisz:
+
 ```bash
 python
 ```
-Jeśli nie odnaleziono komendy uruchom polecenie:
+
+Jeśli komenda nie została odnaleziona, spróbuj:
+
 ```bash
 python3
 ```
 
-Zwróć uwagę, aby Twoja wersja nie była niższa niż 3.X
-Aby wyjść z powłoki pythona użyj funkcji `exit()`
+Zwróć uwagę, aby Twoja wersja nie była niższa niż 3.10.
+Aby wyjść z powłoki Pythona, użyj funkcji `exit()`:
+
 ```bash
 Python 3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 >>> exit()
 ```
-### Nowe środowisko pythona
+
+### Nowe środowisko Pythona
 
 ```bash
-python3 -m venv <name of env>
-# dla linux i mac os
-source <name of env>/bin/activate
-# . env/bin/activate
-# dla windows 
-# <name of env>\Scripts\activate
-(venv)$ 
+python3 -m venv <nazwa_srodowiska>
+
+# Linux / macOS
+source <nazwa_srodowiska>/bin/activate
+
+# Windows
+# <nazwa_srodowiska>\Scripts\activate
+
+(venv)$
 ```
 
-Szybka instalacja podstawowych bibliotek i jupyterlab.
+Szybka instalacja podstawowych bibliotek i JupyterLab:
+
 ```bash
 pip install --no-cache --upgrade pip setuptools
-
 pip install jupyterlab numpy pandas matplotlib scipy
-# jeśli masz plik requirements.txt z potrzebnymi bibliotekami
+
+# jeśli masz plik requirements.txt
 pip install -r requirements.txt
-# uruchom 
-jupyterlab
+
+# uruchom JupyterLab
+jupyter lab
 ```
+
 W przeglądarce internetowej wpisz: _localhost:8888_
 
-Po ponownym uruchomieniu przejdź do katalogu w którym utworzyłeś środowisko, 
-następnie uruchom środowisko i jupyterlab.
+Po ponownym uruchomieniu komputera przejdź do katalogu, w którym utworzyłeś środowisko, aktywuj je i uruchom JupyterLab:
 
 ```bash
-source <name of env>/bin/activate
-jupyterlab
+source <nazwa_srodowiska>/bin/activate
+jupyter lab
 ```
-### Naucz się Pythona w 2 godziny
 
-Kurs podstaw pythona [Tomas Beuzen](https://www.tomasbeuzen.com/python-programming-for-data-science/README.html) polecam.
+### Naucz się Pythona
 
-Utwórz konto na [Kaggle](https://kaggle.com), przejdź do zakładki `Courses` i przerób cały moduł Pythona. Zawiera on: 
+Kurs podstaw Pythona — [Tomas Beuzen](https://www.tomasbeuzen.com/python-programming-for-data-science/README.html) — polecam.
+
+Utwórz konto na [Kaggle](https://kaggle.com), przejdź do zakładki `Courses` i przerób cały moduł Pythona. Zawiera on:
 
 - wyrażenia i zmienne
 - funkcje
@@ -66,20 +76,18 @@ Utwórz konto na [Kaggle](https://kaggle.com), przejdź do zakładki `Courses` i
 - dodawanie i używanie zewnętrznych bibliotek
 
 
-## Zacznij korzystać z serwisu GitHub
-<div id="git"></div>
-Tekst na podstawie strony [jak korzystać z serwisu github](http://pbiecek.github.io/Przewodnik/Programowanie/jak_korzystac_z_serwisu_github_i_waffle.html)
+## Git {#git}
 
+Tekst na podstawie strony [jak korzystać z serwisu GitHub](http://pbiecek.github.io/Przewodnik/Programowanie/jak_korzystac_z_serwisu_github_i_waffle.html).
 
-Pracując nad projektem np. praca magisterska, (samodzielnie lub w zespole) często potrzebujesz sprawdzić jakie zmiany, kiedy i przez kogo zostały wprowadzone do projektu.
-W zadaniu tym świetnie sprawdza się `system kontroli wersji` czyli [GIT](https://git-scm.com). 
+Pracując nad projektem (samodzielnie lub w zespole), często potrzebujesz sprawdzić, jakie zmiany, kiedy i przez kogo zostały wprowadzone.
+Do tego służy **system kontroli wersji** — [Git](https://git-scm.com).
 
-Git możesz pobrać i zainstalować jak zwykły program na dowolnym komputerze.
-Jednak najczęściej (małe projekty) korzysta się z serwisów z jakimś systemem git. 
-Jednym z najbardziej rozpoznawanych jest [GitHub](www.github.com) dzięki któremu możesz korzystać z systemu git bez jego instalacji na swoim komputerze.
+Git możesz pobrać i zainstalować na dowolnym systemie operacyjnym.
+Najczęściej jednak korzysta się z serwisów hostujących repozytoria Git.
+Jednym z najbardziej rozpoznawanych jest [GitHub](https://github.com), dzięki któremu możesz korzystać z systemu Git bezpośrednio z poziomu przeglądarki.
 
-W darmowej wersji serwisu `GitHub` swoje pliki możesz przechowywać w publicznych (dostęp mają wszyscy) repozytoriach.  
-Skupimy się wyłącznie na darmowej wersji serwisu GitHub.
+W darmowej wersji serwisu GitHub możesz przechowywać pliki zarówno w publicznych, jak i **prywatnych** repozytoriach.
 
 ```bash
 git --version
@@ -87,109 +95,220 @@ git --version
 
 ### Struktura GitHuba
 
-Na najwyższym poziomie znajdują się konta indywidualne np [http://github.com/sebkaz](http://github.com/sebkaz), bądź zakładane przez organizacje. 
-Użytkownicy indywidualni mogą tworzyć **repozytoria** publiczne (`public` ) bądź prywatne (`private`). 
+Na najwyższym poziomie znajdują się konta indywidualne (np. [github.com/sebkaz](https://github.com/sebkaz)) bądź organizacje.
+Użytkownicy mogą tworzyć repozytoria **publiczne** (`public`) lub **prywatne** (`private`).
 
-Jeden plik nie powinien przekraczać 100 MB.
+Jeden plik w repozytorium nie powinien przekraczać 100 MB.
 
-**Repo** (skrót do repozytorium) tworzymy za pomocą `Create a new repository`.
- Każde repo powinno mieć swoją indywidualną nazwę. 
+**Repo** (skrót od repozytorium) tworzymy za pomocą przycisku `Create a new repository`.
+Każde repo powinno mieć swoją unikalną nazwę.
 
-### Branche
+### Gałęzie (branches)
 
-Główna (tworzona domyślnie) gałąź rapozytorium ma nazwę `master`.
+Główna gałąź repozytorium domyślnie nosi nazwę `main` (dawniej `master`).
 
+### Najważniejsze polecenia
 
-### Najważniejsze polecnia do zapamiętania
-
-* _ściąganie repozytorium z sieci_
+Ściąganie repozytorium z sieci:
 
 ```bash
 git clone https://adres_repo.git
 ```
 
-> W przypadku githuba możesz pobrać repozytorium jako plik zip.
+> Możesz też pobrać repozytorium z GitHuba jako plik ZIP.
 
-* _Tworzenie repozytorium dla lokalnego katalogu_
+Tworzenie repozytorium dla lokalnego katalogu:
 
 ```bash
 # tworzenie nowego katalogu
 mkdir datamining
 # przejście do katalogu
 cd datamining
-# inicjalizacja repozytorium w katalogu
+# inicjalizacja repozytorium
 git init
-# powinien pojawić się ukryty katalog .git
 # dodajmy plik
-echo "Info " >> README.md
+echo "Info" >> README.md
 ```
 
-* Połącz lokalne repozytorium z kontem na githubie
+Połączenie lokalnego repozytorium z kontem na GitHubie:
 
 ```bash
 git remote add origin https://github.com/<twojGit>/nazwa.git
 ```
 
-* Obsługa w 3 krokach
+Obsługa w 3 krokach:
 
 ```bash
-# sprawdź zmiany jakie zostały dokonane
+# sprawdź zmiany
 git status
 # 1. dodaj wszystkie zmiany
 git add .
-# 2. zapisz bierzący stan wraz z informacją co zrobiłeś
-git commit -m " opis "
-# 3. potem już zostaje tylko
-git push origin master
+# 2. zapisz bieżący stan wraz z opisem
+git commit -m "opis zmian"
+# 3. wyślij na serwer
+git push origin main
 ```
-Warto obejrzeć [Youtube course](https://www.youtube.com/watch?v=HVsySz-h9r4).
 
-Ciekawe i proste wprowadzenie mozna znaleźć [tutaj](http://rogerdudler.github.io/git-guide/index.pl.html)
+Warto obejrzeć [kurs Git na YouTube](https://www.youtube.com/watch?v=HVsySz-h9r4).
 
-## Zacznij korzystać z Dockera
-<div id="docker"></div>
-W celu pobrania oprogramowania docker na swój system przejdź do [strony](https://docs.docker.com/get-docker/).
+Ciekawe i proste wprowadzenie można znaleźć [tutaj](http://rogerdudler.github.io/git-guide/index.pl.html).
 
-Jeżli wszystko zainstalowało się prawidłowo wykonaj następujące polecenia:
 
-1. Sprawdź zainstalowaną wersję
+## Docker {#docker}
+
+W celu pobrania Dockera przejdź do [oficjalnej strony](https://docs.docker.com/get-docker/).
+
+Jeśli wszystko zainstalowało się prawidłowo, wykonaj następujące polecenia:
+
+1. Sprawdź zainstalowaną wersję:
 
 ```bash
 docker --version
 ```
 
-2. Ściągnij i uruchom obraz `Hello World` i 
+2. Ściągnij i uruchom obraz testowy:
 
 ```bash
 docker run hello-world
 ```
 
-3. Przegląd ściągnietych obrazów:
+3. Przegląd ściągniętych obrazów:
 
 ```bash
-docker image ls
-
 docker images
 ```
 
 4. Przegląd uruchomionych kontenerów:
 
 ```bash
-docker ps 
-
-docker ps -all
+docker ps
+docker ps -a
 ```
 
-5. Zatrzymanie uruchomionego kontenera: 
+5. Zatrzymanie uruchomionego kontenera:
 
 ```bash
-docker stop <CONTAINER ID>
+docker stop <CONTAINER_ID>
 ```
 
-6. Usunięcie kontenera
+6. Usunięcie kontenera:
+
 ```bash
-docker rm -f <CONTAINER ID>
+docker rm -f <CONTAINER_ID>
 ```
 
-Polecam również [krótkie intro](https://medium.com/codingthesmartway-com-blog/docker-beginners-guide-part-1-images-containers-6f3507fffc98)
+### Docker Compose {#docker-compose}
 
+Docker Compose pozwala definiować i uruchamiać wielokontenerowe środowiska za pomocą jednego pliku `docker-compose.yml`.
+Na zajęciach będziemy go używać do stawiania środowisk z Kafką, Sparkiem i innymi usługami.
+
+Sprawdź, czy masz zainstalowany Docker Compose:
+
+```bash
+docker compose version
+```
+
+Przykładowy plik `docker-compose.yml`:
+
+```yaml
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+```
+
+Uruchomienie i zatrzymanie:
+
+```bash
+# uruchom wszystkie usługi w tle
+docker compose up -d
+# sprawdź działające kontenery
+docker compose ps
+# zatrzymaj i usuń kontenery
+docker compose down
+```
+
+
+## Apache Kafka {#kafka}
+
+Apache Kafka to rozproszona platforma do strumieniowego przetwarzania danych.
+Umożliwia publikowanie, subskrybowanie i przetwarzanie strumieni rekordów w czasie rzeczywistym.
+
+Na zajęciach będziemy uruchamiać Kafkę za pomocą Docker Compose (patrz wyżej).
+
+Podstawowe pojęcia:
+
+- **Producent (Producer)** — wysyła dane (wiadomości) do Kafki.
+- **Konsument (Consumer)** — odczytuje dane z Kafki.
+- **Temat (Topic)** — kategoria, do której trafiają wiadomości.
+- **Partycja (Partition)** — podział tematu umożliwiający równoległe przetwarzanie.
+- **Broker** — serwer Kafki przechowujący dane.
+
+Szybki test Kafki z Dockera:
+
+```bash
+# utwórz temat
+docker compose exec kafka kafka-topics --create \
+  --topic test --bootstrap-server localhost:9092 \
+  --partitions 1 --replication-factor 1
+
+# wyślij wiadomość (producent)
+docker compose exec kafka kafka-console-producer \
+  --topic test --bootstrap-server localhost:9092
+
+# odczytaj wiadomości (konsument) — w nowym terminalu
+docker compose exec kafka kafka-console-consumer \
+  --topic test --bootstrap-server localhost:9092 --from-beginning
+```
+
+Biblioteka Pythonowa: `pip install confluent-kafka`
+
+Więcej informacji: [Apache Kafka — dokumentacja](https://kafka.apache.org/documentation/)
+
+
+## Apache Spark {#spark}
+
+Apache Spark to silnik do rozproszonego przetwarzania danych, obsługujący zarówno tryb wsadowy (batch), jak i strumieniowy (streaming).
+Na zajęciach będziemy korzystać z **PySpark** — interfejsu Pythonowego do Sparka.
+
+Instalacja PySpark:
+
+```bash
+pip install pyspark
+```
+
+Szybki test:
+
+```python
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .appName("Test") \
+    .master("local[*]") \
+    .getOrCreate()
+
+df = spark.createDataFrame(
+    [(1, "Anna", 28), (2, "Jan", 35), (3, "Ewa", 22)],
+    ["id", "imie", "wiek"]
+)
+
+df.show()
+spark.stop()
+```
+
+Na dalszych zajęciach będziemy korzystać ze **Structured Streaming** — modułu Sparka do przetwarzania danych strumieniowych, w tym integracji z Apache Kafka.
+
+Więcej informacji: [Apache Spark — dokumentacja](https://spark.apache.org/docs/latest/)

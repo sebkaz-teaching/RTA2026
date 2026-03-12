@@ -6,52 +6,51 @@ title: "Informacje ogólne"
 
 Kod: 222890-D
 
-Semestr: 2025/2026
-Uczelnia: SGH Szkoła Główna Handlowa w Warszawie
+Semestr letni 2025/2026,
+SGH Szkoła Główna Handlowa w Warszawie
 
-Podstawowe informacje o kursie znajdziesz w [sylabusie](/sylabus).
+Szczegółowy opis znajdziesz w [sylabusie](sylabus.qmd).
+Znajdziesz w nim opis wszystkich wykładów i ćwiczeń oraz proponowaną literaturę.
 
-Polecane materiały znajdziesz na liście [książek](/ksiazki). 
+Inne książki zamieszczone zostały w zakładce [książki](ksiazki.qmd).
 
 ## Kalendarz
 
-### Wykład 
+### Wykład
 
 Wykład jest realizowany w trybie hybrydowym.
-Jest on NIEOBOWIĄZKOWY i odbywa się w Auli I bud G
+Jest on NIEOBOWIĄZKOWY i odbywa się w Auli I bud. G.
 
-1. <del>23.03.2026 Wykład 1 - 9.50-11:30</del>
-2. <del>02.03.2026 Wykład 2 - 9.50-11:30</del>
-3. 09.03.2026 Wykład 3 - 9.50-11:30
-4. 16.03.2026 Wykład 4 - 9.50-11:30
-5. 23.03.2026 Wykład 5 - 9.50-11:30
+1. ~~23.02.2026 Wykład 1 — 9:50–11:30~~
+2. ~~02.03.2026 Wykład 2 — 9:50–11:30~~
+3. ~~09.03.2026 Wykład 3 — 9:50–11:30~~
+4. 16.03.2026 Wykład 4 — 9:50–11:30
+5. 23.03.2026 Wykład 5 — 9:50–11:30
 
 ### Laboratoria
 
-1. 30.03.2026 Lab1 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-2. 31.03.2026 Lab1 -  B-12  11.40-13.20, 13.30-15.10
-3. 13.04.2026 Lab2 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-4. 14.04.2026 Lab2 -  B-12  11.40-13.20, 13.30-15.10
-5. 20.04.2026 Lab3 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-6. 21.04.2026 Lab3 -  B-12  11.40-13.20, 13.30-15.10
-7. 27.04.2026 Lab4 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-8. 28.04.2026 Lab4 -  B-12  11.40-13.20, 13.30-15.10
-9. 04.05.2026 Lab5 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-10. 05.05.2026 Lab5 -  B-12  11.40-13.20, 13.30-15.10
-11. 11.05.2026 Lab6 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-12. 12.05.2026 Lab6 -  B-12  11.40-13.20, 13.30-15.10
-13. 18.05.2026 Lab7 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-14. 19.05.2026 Lab7 -  B-12  11.40-13.20, 13.30-15.10
-15. 25.05.2026 Lab8 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-16. 26.05.2026 Lab8 -  B-12  11.40-13.20, 13.30-15.10
-17. 01.06.2026 Lab9 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10 (Zastępstwo)
-18. 02.06.2026 Lab9 -  B-12  11.40-13.20, 13.30-15.10                        (Zastępstwo)
-19. 08.06.2026 Lab10 -  G-108 8.00-9.40, 9.50-11.30, 11.40-13.20, 13.30-15.10
-20. 09.06.2026 Lab10 -  B-12  11.40-13.20, 13.30-15.10
+1. 30.03.2026 Lab1 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+2. 31.03.2026 Lab1 — B-12 11:40–13:20, 13:30–15:10
+3. 13.04.2026 Lab2 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+4. 14.04.2026 Lab2 — B-12 11:40–13:20, 13:30–15:10
+5. 20.04.2026 Lab3 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+6. 21.04.2026 Lab3 — B-12 11:40–13:20, 13:30–15:10
+7. 27.04.2026 Lab4 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+8. 28.04.2026 Lab4 — B-12 11:40–13:20, 13:30–15:10
+9. 04.05.2026 Lab5 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+10. 05.05.2026 Lab5 — B-12 11:40–13:20, 13:30–15:10
+11. 11.05.2026 Lab6 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+12. 12.05.2026 Lab6 — B-12 11:40–13:20, 13:30–15:10
+13. 18.05.2026 Lab7 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+14. 19.05.2026 Lab7 — B-12 11:40–13:20, 13:30–15:10
+15. 25.05.2026 Lab8 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+16. 26.05.2026 Lab8 — B-12 11:40–13:20, 13:30–15:10
+17. 01.06.2026 Lab9 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10 (Zastępstwo)
+18. 02.06.2026 Lab9 — B-12 11:40–13:20, 13:30–15:10 (Zastępstwo)
+19. 08.06.2026 Lab10 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10
+20. 09.06.2026 Lab10 — B-12 11:40–13:20, 13:30–15:10
 
-### Zaliczenie i Egzamin
-
-Laboratoria
+### Zaliczenie
 
 Podczas laboratoriów będą zadawane prace domowe, które należy przesyłać za pośrednictwem MS Teams.
 Każdy brak pracy domowej obniża końcową ocenę o 0,5 stopnia.
@@ -62,7 +61,7 @@ Projekty należy realizować w grupach maksymalnie 5-osobowych.
 
 Wymagania projektu:
 
-- Projekt powinien rozwiązywać realny problem biznesowy, który można opracować przy użyciu danych przetwarzanych w trybie online. (Nie wyklucza to użycia przetwarzania wsadowego, np. do generowania modelu).
+- Projekt powinien rozwiązywać realny problem biznesowy, który można opracować przy użyciu danych przetwarzanych w trybie online (nie wyklucza to użycia przetwarzania wsadowego, np. do generowania modelu).
 - Dane powinny być przesyłane do Apache Kafka, skąd będą poddawane dalszemu przetwarzaniu i analizie.
 - Można używać dowolnego języka programowania w każdym komponencie projektu.
 - Można wykorzystać narzędzia BI.
@@ -70,9 +69,9 @@ Wymagania projektu:
 
 ## Technologie
 
-Uczestnicząc w zajęciach musisz opanować i przynajmniej w podstawowym zakresie posługiwać się następującymi technologiami informatycznymi:
+Uczestnicząc w zajęciach, musisz opanować i przynajmniej w podstawowym zakresie posługiwać się następującymi technologiami:
 
-1. [GIT](/info.html#git) 
-2. Python, Jupyter notebook, Jupyter lab, Colab
-3. [Docker](/info.html#docker)
-4. **Apache Spark**, **Apache Kafka**.
+1. [Git](info.qmd#git)
+2. Python, Jupyter Notebook, JupyterLab, Google Colab
+3. [Docker i Docker Compose](info.qmd#docker)
+4. **Apache Spark**, **Apache Kafka**
