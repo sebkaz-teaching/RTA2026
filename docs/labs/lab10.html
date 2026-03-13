@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Producent w środowisku python – Analiza danych w czasie rzeczywistym</title>
+<title>Lab 10: Projekt — kompletny system real-time – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Producent w środowisku python</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab10.html">Lab 10: Projekt — kompletny system real-time</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -276,7 +276,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
+  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
   </div>
 </li>
@@ -292,22 +292,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title"><strong>Sections</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#uruchomienie-środowiska" id="toc-uruchomienie-środowiska" class="nav-link active" data-scroll-target="#uruchomienie-środowiska">1️⃣ Uruchomienie środowiska</a></li>
-  <li><a href="#sprawdzenie-katalogów-i-dostępności-kafki" id="toc-sprawdzenie-katalogów-i-dostępności-kafki" class="nav-link" data-scroll-target="#sprawdzenie-katalogów-i-dostępności-kafki">2️⃣ Sprawdzenie katalogów i dostępności Kafki</a></li>
-  <li><a href="#sprawdzenie-listy-topiców" id="toc-sprawdzenie-listy-topiców" class="nav-link" data-scroll-target="#sprawdzenie-listy-topiców">3️⃣ Sprawdzenie listy topiców</a></li>
-  <li><a href="#dodanie-nowego-topicu" id="toc-dodanie-nowego-topicu" class="nav-link" data-scroll-target="#dodanie-nowego-topicu">4️⃣ Dodanie nowego topicu</a></li>
-  <li><a href="#uruchomienie-producenta-w-pythonie" id="toc-uruchomienie-producenta-w-pythonie" class="nav-link" data-scroll-target="#uruchomienie-producenta-w-pythonie">5️⃣ Uruchomienie producenta w Pythonie</a></li>
-  <li><a href="#uruchomienie-konsumenta-w-konsoli" id="toc-uruchomienie-konsumenta-w-konsoli" class="nav-link" data-scroll-target="#uruchomienie-konsumenta-w-konsoli">6️⃣ Uruchomienie konsumenta w konsoli</a></li>
-  <li><a href="#zakończenie-pracy" id="toc-zakończenie-pracy" class="nav-link" data-scroll-target="#zakończenie-pracy">7️⃣ Zakończenie pracy</a></li>
+  <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
+  <li><a href="#wymagania-projektu" id="toc-wymagania-projektu" class="nav-link" data-scroll-target="#wymagania-projektu">Wymagania projektu</a></li>
+  <li><a href="#propozycje-tematów" id="toc-propozycje-tematów" class="nav-link" data-scroll-target="#propozycje-tematów">Propozycje tematów</a></li>
+  <li><a href="#struktura-repozytorium" id="toc-struktura-repozytorium" class="nav-link" data-scroll-target="#struktura-repozytorium">Struktura repozytorium</a></li>
+  <li><a href="#dzisiejsze-zajęcia" id="toc-dzisiejsze-zajęcia" class="nav-link" data-scroll-target="#dzisiejsze-zajęcia">Dzisiejsze zajęcia</a></li>
+  <li><a href="#harmonogram" id="toc-harmonogram" class="nav-link" data-scroll-target="#harmonogram">Harmonogram</a></li>
+  <li><a href="#kryteria-oceny" id="toc-kryteria-oceny" class="nav-link" data-scroll-target="#kryteria-oceny">Kryteria oceny</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab10.html">Lab 10: Projekt — kompletny system real-time</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Producent w środowisku python</h1>
+<h1 class="title">Lab 10: Projekt — kompletny system real-time</h1>
 </div>
 
 
@@ -324,80 +324,219 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Tę wersję ćwiczeń można przejść, posiadając nowy obraz Dockerowy i uruchomiony Docker Desktop na własnym komputerze. Jak również na środowisku SGH.</p>
-<section id="uruchomienie-środowiska" class="level2">
-<h2 class="anchored" data-anchor-id="uruchomienie-środowiska">1️⃣ Uruchomienie środowiska</h2>
-<p>Przejdź do przeglądarki i otwórz stronę ze środowiskiem (w przypadku Dockera otwórz <code>localhost:8888</code>).</p>
-<p>Uruchom <strong>Jupyter Lab</strong>, a następnie otwórz nowy terminal (za pomocą ikony terminala).</p>
+<section id="cel" class="level2">
+<h2 class="anchored" data-anchor-id="cel">Cel</h2>
+<p>Zbudowanie kompletnego systemu analizy danych w czasie rzeczywistym, łączącego wszystkie poznane technologie.</p>
+<hr>
 </section>
-<section id="sprawdzenie-katalogów-i-dostępności-kafki" class="level2">
-<h2 class="anchored" data-anchor-id="sprawdzenie-katalogów-i-dostępności-kafki">2️⃣ Sprawdzenie katalogów i dostępności Kafki</h2>
-<p>Przejdź do katalogu głównego i wypisz listę wszystkich elementów. Sprawdź, czy na liście znajduje się katalog <code>kafka</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="wymagania-projektu" class="level2">
+<h2 class="anchored" data-anchor-id="wymagania-projektu">Wymagania projektu</h2>
+<p>Projekt realizowany w grupach max. 5-osobowych.</p>
+<section id="architektura-systemu" class="level3">
+<h3 class="anchored" data-anchor-id="architektura-systemu">Architektura systemu</h3>
+<p>Twój system powinien składać się z następujących komponentów:</p>
+<ol type="1">
+<li><strong>Źródło danych</strong> — producent wysyłający dane do Kafki (API, generator, IoT, webscraping)</li>
+<li><strong>Apache Kafka</strong> — broker wiadomości</li>
+<li><strong>Przetwarzanie</strong> — Spark Structured Streaming lub konsument Pythonowy</li>
+<li><strong>Model ML</strong> — klasyfikacja, detekcja anomalii lub regresja</li>
+<li><strong>Wyjście</strong> — dashboard, API, zapis do bazy/pliku, alerty</li>
+</ol>
 </section>
-<section id="sprawdzenie-listy-topiców" class="level2">
-<h2 class="anchored" data-anchor-id="sprawdzenie-listy-topiców">3️⃣ Sprawdzenie listy topiców</h2>
-<p>Uruchom polecenie sprawdzające listę topiców serwera Kafki:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-topics.sh</span> <span class="at">--list</span> <span class="at">--bootstrap-server</span> broker:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="minimalne-wymagania" class="level3">
+<h3 class="anchored" data-anchor-id="minimalne-wymagania">Minimalne wymagania</h3>
+<ul>
+<li>Całość uruchamiana przez <code>docker compose up</code></li>
+<li>Dane przesyłane przez Apache Kafka</li>
+<li>Przynajmniej jedna transformacja strumieniowa (okno czasowe, agregacja)</li>
+<li>Model ML (wytrenowany offline lub online)</li>
+<li>Dokumentacja w README.md</li>
+<li>Prezentacja (5-10 minut)</li>
+</ul>
+<hr>
 </section>
-<section id="dodanie-nowego-topicu" class="level2">
-<h2 class="anchored" data-anchor-id="dodanie-nowego-topicu">4️⃣ Dodanie nowego topicu</h2>
-<p>Dodaj topic o nazwie <code>streaming</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-topics.sh</span> <span class="at">--bootstrap-server</span> broker:9092 <span class="at">--create</span> <span class="at">--topic</span> streaming</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Sprawdź ponownie listę topiców, upewniając się, że <code>streaming</code> został dodany:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-topics.sh</span> <span class="at">--list</span> <span class="at">--bootstrap-server</span> broker:9092 <span class="kw">|</span> <span class="fu">grep</span> streaming</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="uruchomienie-producenta-w-pythonie" class="level2">
-<h2 class="anchored" data-anchor-id="uruchomienie-producenta-w-pythonie">5️⃣ Uruchomienie producenta w Pythonie</h2>
-<p>W nowym terminalu utwórz plik <code>stream.py</code> i wklej poniższy kod:</p>
-<div id="7be8cfe9-a6b4-4ee4-a104-1e790be9dccf" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> stream.py</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> sleep</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaProducer</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>SERVER <span class="op">=</span> <span class="st">"broker:9092"</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>TOPIC <span class="op">=</span> <span class="st">"streaming"</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    producer <span class="op">=</span> KafkaProducer(</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        bootstrap_servers<span class="op">=</span>[SERVER],</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        value_serializer<span class="op">=</span><span class="kw">lambda</span> x: json.dumps(x).encode(<span class="st">"utf-8"</span>)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="va">True</span>:</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>            </span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>            message <span class="op">=</span> {</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">"time"</span>: <span class="bu">str</span>(datetime.now()),</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">"id"</span>: random.choice([<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>,<span class="st">'d'</span>]),</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">"value"</span>: random.randint(<span class="dv">0</span>,<span class="dv">100</span>)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>            }</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>            producer.send(TOPIC, value<span class="op">=</span>message)</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>            sleep(<span class="dv">1</span>)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">KeyboardInterrupt</span>:</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        producer.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Writing stream.py</code></pre>
+<section id="propozycje-tematów" class="level2">
+<h2 class="anchored" data-anchor-id="propozycje-tematów">Propozycje tematów</h2>
+<p>Wybierz jeden z poniższych lub zaproponuj własny:</p>
+<section id="detekcja-fraudów-w-transakcjach-bankowych" class="level3">
+<h3 class="anchored" data-anchor-id="detekcja-fraudów-w-transakcjach-bankowych">1. Detekcja fraudów w transakcjach bankowych</h3>
+<ul>
+<li>Producent: generator transakcji (lub dane z Kaggle)</li>
+<li>Model: Isolation Forest / Random Forest</li>
+<li>Alert: powiadomienie o podejrzanej transakcji</li>
+</ul>
+</section>
+<section id="analiza-sentymentu-komentarzy-w-czasie-rzeczywistym" class="level3">
+<h3 class="anchored" data-anchor-id="analiza-sentymentu-komentarzy-w-czasie-rzeczywistym">2. Analiza sentymentu komentarzy w czasie rzeczywistym</h3>
+<ul>
+<li>Producent: symulowany strumień recenzji produktów</li>
+<li>Model: klasyfikator sentymentu (scikit-learn / transformers)</li>
+<li>Wyjście: dashboard z trendem sentymentu per produkt</li>
+</ul>
+</section>
+<section id="monitoring-cen-produktów-dynamic-pricing" class="level3">
+<h3 class="anchored" data-anchor-id="monitoring-cen-produktów-dynamic-pricing">3. Monitoring cen produktów (dynamic pricing)</h3>
+<ul>
+<li>Producent: scraper/API porównywarki cen</li>
+<li>Przetwarzanie: Spark — średnie kroczace, wykrywanie zmian cen</li>
+<li>Alert: powiadomienie o spadku ceny poniżej progu</li>
+</ul>
+</section>
+<section id="analiza-ruchu-na-stronie-e-commerce" class="level3">
+<h3 class="anchored" data-anchor-id="analiza-ruchu-na-stronie-e-commerce">4. Analiza ruchu na stronie e-commerce</h3>
+<ul>
+<li>Producent: generator clickstream (page_view, add_to_cart, purchase)</li>
+<li>Przetwarzanie: segmentacja użytkowników w oknach czasowych</li>
+<li>Model: predykcja konwersji</li>
+</ul>
+</section>
+<section id="monitoring-iot-czujniki-temperaturywilgotności" class="level3">
+<h3 class="anchored" data-anchor-id="monitoring-iot-czujniki-temperaturywilgotności">5. Monitoring IoT — czujniki temperatury/wilgotności</h3>
+<ul>
+<li>Producent: symulowane dane z czujników</li>
+<li>Przetwarzanie: Spark — detekcja anomalii w oknach czasowych</li>
+<li>Alert: alarm przy przekroczeniu progu</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="struktura-repozytorium" class="level2">
+<h2 class="anchored" data-anchor-id="struktura-repozytorium">Struktura repozytorium</h2>
+<pre><code>projekt/
+├── docker-compose.yml
+├── producer/
+│   ├── Dockerfile
+│   └── producer.py
+├── consumer/
+│   ├── Dockerfile
+│   └── consumer.py
+├── model/
+│   ├── train_model.py
+│   └── model.pkl
+├── api/
+│   ├── Dockerfile
+│   └── app.py
+└── README.md</code></pre>
+<hr>
+</section>
+<section id="dzisiejsze-zajęcia" class="level2">
+<h2 class="anchored" data-anchor-id="dzisiejsze-zajęcia">Dzisiejsze zajęcia</h2>
+<section id="zadanie-1-wybierz-temat-i-zespół" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1-wybierz-temat-i-zespół">Zadanie 1 — Wybierz temat i zespół</h3>
+<div id="cell-2" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Temat projektu: ...</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Członkowie zespołu: ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</section>
+<section id="zadanie-2-zaprojektuj-architekturę" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2-zaprojektuj-architekturę">Zadanie 2 — Zaprojektuj architekturę</h3>
+<p>Narysuj diagram systemu (możesz użyć narzędzia online jak draw.io lub ręcznie na kartce).</p>
+<p>Odpowiedz na pytania:</p>
+<div id="cell-4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Jakie dane beda przesylane?</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Ile tematow Kafka potrzebujesz?</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Jaki model ML zastosujesz?</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Jak wyglada output systemu (dashboard, plik, alert, API)?</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Ile kontenerow Docker bedzie potrzebnych?</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># TWOJE ODPOWIEDZI</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="uruchomienie-konsumenta-w-konsoli" class="level2">
-<h2 class="anchored" data-anchor-id="uruchomienie-konsumenta-w-konsoli">6️⃣ Uruchomienie konsumenta w konsoli</h2>
-<p>Aby sprawdzić, czy wysyłanie wiadomości działa, otwórz kolejne okno terminala i uruchom konsumenta:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-console-consumer.sh</span> <span class="at">--bootstrap-server</span> broker:9092 <span class="at">--topic</span> streaming <span class="at">--from-beginning</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Teraz wszystkie wiadomości wysłane przez producenta powinny pojawić się w konsoli konsumenta.</p>
+<section id="zadanie-3-prototyp-producenta" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3-prototyp-producenta">Zadanie 3 — Prototyp producenta</h3>
+<p>Napisz pierwszą wersję producenta danych.</p>
+<div id="cell-6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> producer_prototype.py</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Producent wysylajacy dane do tematu Kafka</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Na razie moze generowac sztuczne dane</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
-<section id="zakończenie-pracy" class="level2">
-<h2 class="anchored" data-anchor-id="zakończenie-pracy">7️⃣ Zakończenie pracy</h2>
-<p>Pamiętaj, aby uruchamiać komendy z odpowiedniego katalogu. Po zakończeniu ćwiczeń użyj <code>Ctrl+C</code>, aby zatrzymać zarówno producenta, jak i konsumenta.</p>
+<section id="zadanie-4-prototyp-konsumenta" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4-prototyp-konsumenta">Zadanie 4 — Prototyp konsumenta</h3>
+<p>Napisz konsumenta, który odbiera dane i wykonuje podstawową transformację.</p>
+<div id="cell-8" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> consumer_prototype.py</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-5-docker-compose" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-5-docker-compose">Zadanie 5 — Docker Compose</h3>
+<p>Utwórz <code>docker-compose.yml</code> dla całego systemu.</p>
+<div id="cell-10" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> docker<span class="op">-</span>compose.yml</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># services:</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   zookeeper: ...</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   kafka: ...</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   producer: ...</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   consumer: ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="harmonogram" class="level2">
+<h2 class="anchored" data-anchor-id="harmonogram">Harmonogram</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Termin</th>
+<th>Kamień milowy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Dziś</strong></td>
+<td>Wybór tematu, architektura, prototyp producenta/konsumenta</td>
+</tr>
+<tr class="even">
+<td><strong>Za tydzień</strong></td>
+<td>Działający pipeline Kafka + model ML</td>
+</tr>
+<tr class="odd">
+<td><strong>Za 2 tygodnie</strong></td>
+<td>Całość w Docker Compose + prezentacja</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="kryteria-oceny" class="level2">
+<h2 class="anchored" data-anchor-id="kryteria-oceny">Kryteria oceny</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Kryterium</th>
+<th>Waga</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Działający pipeline (Kafka + przetwarzanie)</td>
+<td>30%</td>
+</tr>
+<tr class="even">
+<td>Model ML zintegrowany z systemem</td>
+<td>25%</td>
+</tr>
+<tr class="odd">
+<td>Konteneryzacja (Docker Compose)</td>
+<td>20%</td>
+</tr>
+<tr class="even">
+<td>Dokumentacja i jakość kodu</td>
+<td>15%</td>
+</tr>
+<tr class="odd">
+<td>Prezentacja</td>
+<td>10%</td>
+</tr>
+</tbody>
+</table>
 
 
 </section>

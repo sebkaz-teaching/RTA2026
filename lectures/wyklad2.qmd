@@ -1,416 +1,288 @@
 ---
-title:  Wykład 2
+title: "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
 format:
   html:
     code-fold: true
 jupyter: python3
 ---
 
- 
-⏳ Czas trwania: 1,5h
-*🎯 Cel wykładu* 
+*Czas trwania: 1,5h*
 
-zrozumienie, jak dane ewoluowały w różnych branżach i jakie narzędzia są dziś wykorzystywane do ich analizy.
+**Cel wykładu:** Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.
 
 ---
 
-Na tym wykładzie przedstawimy ewolucję analizy danych, pokazując, jak zmieniały się technologie i podejścia do przetwarzania danych na przestrzeni lat. 
-Rozpoczniemy od klasycznych struktur tabelarycznych, przez bardziej zaawansowane modele grafowe i tekstowe, aż po nowoczesne podejście do strumieniowego przetwarzania danych. 
+## Batch vs Stream — dwa podejścia do tych samych danych
 
+Na poprzednim wykładzie ustaliliśmy, że dane **zawsze** powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.
 
-# Ewolucja danych 
+Porównajmy oba podejścia na tym samym problemie biznesowym: **monitorowanie transakcji w sklepie internetowym**.
 
-##  Dane tabelaryczne (tabele SQL)
-Początkowo dane były przechowywane w postaci tabel, gdzie każda tabela zawierała zorganizowane informacje w kolumnach i wierszach (np. bazy danych SQL).  
-Modele takie doskonale nadawały się do danych **ustrukturyzowanych**.  
+### Podejście wsadowe (batch)
 
-### 📌 Cechy:
-✅ Dane podzielone na kolumny o stałej strukturze.  
-✅ Możliwość stosowania operacji CRUD (Create, Read, Update, Delete).  
-✅ Ścisłe reguły spójności i normalizacji.  
-
-### 📌 Przykłady:  
-➡️ Systemy bankowe, e-commerce, ERP, systemy CRM.  
-
-### 🖥️ Przykładowy kod w Pythonie (SQLite):  
-```python
-import sqlite3
-conn = sqlite3.connect(':memory:')
-cursor = conn.cursor()
-cursor.execute("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)")
-cursor.execute("INSERT INTO users (name, age) VALUES ('Alice', 30)")
-cursor.execute("SELECT * FROM users")
-print(cursor.fetchall())
-conn.close()
-```
-
----
-
-## Dane grafowe  
-Wraz z rozwojem potrzeb biznesowych pojawiły się **dane grafowe**, w których relacje między obiektami są reprezentowane jako **wierzchołki i krawędzie**.  
-
-### 📌 Cechy:  
-✅ Dane opisujące relacje i powiązania.  
-✅ Elastyczna struktura (grafy zamiast tabel).  
-✅ Możliwość analizy połączeń (np. algorytmy PageRank, centralność).  
-
-### 📌 Przykłady:  
-➡️ Sieci społecznościowe (Facebook, LinkedIn), wyszukiwarki (Google), systemy rekomendacji (Netflix, Amazon).  
-
-### 🖥️ Przykładowy kod w Pythonie (Graf Karate - NetworkX): 
 ```{python}
-import networkx as nx
-G = nx.karate_club_graph()
-nx.draw(G, with_labels=True)
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+
+np.random.seed(42)
+
+# Dane zebrane z całego dnia — analizowane następnego ranka
+transakcje = pd.DataFrame({
+    'czas': [datetime(2026, 3, 12, h, m)
+             for h in range(9, 18)
+             for m in np.random.choice(range(60), 20)],
+    'kwota': np.random.uniform(20, 3000, 180).round(2),
+    'klient_id': np.random.randint(1000, 9999, 180)
+})
+
+# Raport dzienny — widzimy go NASTĘPNEGO DNIA
+raport = transakcje.groupby(transakcje['czas'].dt.hour).agg(
+    liczba=('kwota', 'count'),
+    suma=('kwota', 'sum'),
+    srednia=('kwota', 'mean')
+).round(2)
+
+print("Raport dzienny (generowany następnego ranka):")
+print(raport.head())
 ```
 
----
+### Podejście strumieniowe (stream)
 
-## Dane półstrukturyzowane (JSON, XML, YAML)  
-Dane te nie są w pełni ustrukturyzowane jak w bazach SQL, ale mają pewien schemat.  
-
-### 📌 Cechy:  
-✅ Hierarchiczna struktura (np. klucz-wartość, obiekty zagnieżdżone).  
-✅ Brak ścisłego schematu (możliwość dodawania nowych pól).  
-✅ Popularność w systemach NoSQL i API.  
-
-### 📌 Przykłady:  
-➡️ Dokumenty w MongoDB, pliki konfiguracyjne, REST API, pliki logów.  
-
-### 🖥️ Przykładowy kod w Pythonie (JSON):  
-```{python}
-import json
-data = {'name': 'Alice', 'age': 30, 'city': 'New York'}
-json_str = json.dumps(data)
-print(json.loads(json_str))
-```
-
----
-
-## Dane tekstowe (NLP) 
-Tekst stał się kluczowym źródłem informacji, szczególnie w analizie opinii, chatbotach czy wyszukiwarkach.  
-
-### 📌 Cechy:
-✅ Nieustrukturyzowane dane wymagające przekształcenia.  
-✅ Stosowanie **embeddingów** (np. Word2Vec, BERT, GPT).  
-✅ Duże zastosowanie w analizie sentymentu i chatbotach.  
-
-### 📌 Przykłady:  
-➡️ Media społecznościowe, e-maile, chatboty, tłumaczenie maszynowe.  
-
-### 🖥️ Przykładowy kod w Pythonie:  
-```{python}
-import ollama
-
-# Przykładowe zdanie
-sentence = "Sztuczna inteligencja zmienia świat."
-response = ollama.embeddings(model='llama3.2', prompt=sentence)
-embedding = response['embedding']
-print(embedding[:4])
-```
-
----
-
-## Dane multimedialne (obrazy, dźwięk, wideo)
-Nowoczesne systemy analizy danych wykorzystują również obrazy i dźwięk.  
-
-### 📌 Cechy:  
-✅ Wymagają dużej mocy obliczeniowej (sztuczna inteligencja, deep learning).  
-✅ Przetwarzane przez modele CNN (obrazy) i RNN/Transformers (dźwięk).  
-
-### 📌 Przykłady:  
-➡️ Rozpoznawanie twarzy, analiza mowy, biometria, analiza treści wideo.  
-
-### 🖥️ Przykładowy kod w Pythonie (Obraz - OpenCV):  
-```python
-import cv2
-image = cv2.imread('cloud.jpeg')
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-```
----
-
-## Dane strumieniowe
-Obecnie najbardziej dynamicznie rozwija się analiza **danych strumieniowych**, gdzie dane są analizowane na bieżąco, w miarę ich napływania.  
-
-### 📌 Cechy:  
-✅ Przetwarzanie w czasie rzeczywistym.  
-✅ Wykorzystanie technologii takich jak Apache Kafka, Flink, Spark Streaming.  
-
-### 📌 Przykłady:  
-➡️ Transakcje bankowe (detekcja oszustw), analiza social media, IoT.  
-
-### 🖥️ Przykładowy kod w Pythonie (Strumieniowe transakcje bankowe):  
 ```{python}
 import time
-transactions = [{'id': 1, 'amount': 100}, {'id': 2, 'amount': 200}]
-for transaction in transactions:
-    print(f"Processing transaction: {transaction}")
-    time.sleep(1)
+
+# Symulacja: każda transakcja analizowana w momencie pojawienia się
+okno_5min = []
+alert_prog = 5000  # alert jeśli suma w oknie 5min > 5000 PLN
+
+for i in range(10):
+    tx = {
+        'czas': datetime.now().strftime('%H:%M:%S'),
+        'kwota': round(np.random.uniform(20, 3000), 2),
+        'klient': np.random.randint(1000, 9999)
+    }
+    okno_5min.append(tx['kwota'])
+    suma_okno = sum(okno_5min)
+
+    status = ""
+    if suma_okno > alert_prog:
+        status = " << ALERT: wysoka aktywność!"
+        okno_5min = []  # reset okna
+
+    print(f"[{tx['czas']}] Klient {tx['klient']}: {tx['kwota']:>8.2f} PLN | Suma okna: {suma_okno:>9.2f}{status}")
+    time.sleep(0.2)
+```
+
+Różnica jest fundamentalna: w trybie batch dowiadujemy się o problemie **następnego dnia**. W trybie stream — **natychmiast**.
+
+---
+
+## Architektura Lambda
+
+W praktyce firmy potrzebują **obu** podejść jednocześnie. Architektura Lambda, zaproponowana przez Nathana Marza, łączy przetwarzanie wsadowe i strumieniowe w jednym systemie.
+
+### Trzy warstwy Lambdy
+
+**Warstwa wsadowa (Batch Layer)** — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem. Typowe narzędzia: Spark (batch), Hadoop.
+
+**Warstwa szybka (Speed Layer)** — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast. Typowe narzędzia: Spark Streaming, Kafka Streams.
+
+**Warstwa serwująca (Serving Layer)** — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym. Typowe narzędzia: bazy danych, API, dashboardy.
+
+```
+                  ┌─────────────────────────┐
+                  │     Źródło danych       │
+                  │  (strumień zdarzeń)     │
+                  └────────┬────────────────┘
+                           │
+              ┌────────────┴────────────┐
+              ▼                         ▼
+   ┌──────────────────┐     ┌──────────────────┐
+   │  Warstwa wsadowa │     │  Warstwa szybka  │
+   │  (Batch Layer)   │     │  (Speed Layer)   │
+   │                  │     │                  │
+   │  Kompletne dane  │     │  Najnowsze dane  │
+   │  Dokładne wyniki │     │  Przybliżone     │
+   │  Duże opóźnienie │     │  Niska latencja  │
+   └────────┬─────────┘     └────────┬─────────┘
+            │                        │
+            └───────────┬────────────┘
+                        ▼
+             ┌──────────────────┐
+             │ Warstwa serwująca│
+             │ (Serving Layer)  │
+             └──────────────────┘
+```
+
+**Przykład biznesowy:** Bank analizujący transakcje kartowe.
+
+- Warstwa wsadowa: co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.
+- Warstwa szybka: w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.
+- Warstwa serwująca: dashboard dla analityków + API dla aplikacji mobilnej.
+
+### Zalety i wady Lambdy
+
+Zaleta: kompletność — batch layer koryguje błędy speed layer. 
+Wada: **utrzymujesz dwie oddzielne ścieżki przetwarzania** — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.
+
+---
+
+## Architektura Kappa
+
+Jay Kreps (twórca Apache Kafka) zaproponował uproszczenie: **a co, gdyby potrzebna była tylko warstwa strumieniowa?**
+
+Architektura Kappa to Lambda bez warstwy wsadowej. Cały przepływ danych opiera się na strumieniu zdarzeń. Jeśli trzeba przeliczyć dane historyczne — odtwarzamy strumień od początku (replay).
+
+```
+   ┌─────────────────────────┐
+   │     Źródło danych       │
+   │  (strumień zdarzeń)     │
+   └────────┬────────────────┘
+            │
+            ▼
+   ┌──────────────────────┐
+   │  Warstwa strumieniowa│
+   │  (Stream Layer)      │
+   │                      │
+   │  Jeden kod           │
+   │  Jeden pipeline      │
+   └────────┬─────────────┘
+            │
+            ▼
+   ┌──────────────────┐
+   │ Warstwa serwująca│
+   └──────────────────┘
+```
+
+### Lambda vs Kappa — kiedy co stosować?
+
+| Cecha | Lambda | Kappa |
+|-------|--------|-------|
+| Złożoność | Wysoka (dwie ścieżki) | Niska (jedna ścieżka) |
+| Dokładność | Batch koryguje stream | Zależna od jakości streamingu |
+| Historyczne przeliczanie | Naturalne (batch) | Replay strumienia |
+| Kiedy stosować | Gdy batch i stream mają różną logikę | Gdy jedna logika wystarcza |
+| Przykład | Bank (nocny retrenowanie + real-time scoring) | E-commerce (personalizacja) |
+
+---
+
+## Czas w przetwarzaniu strumieniowym
+
+W przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczne, kiedy chcemy. W przetwarzaniu strumieniowym czas staje się **kluczowym wymiarem analizy**.
+
+### Dwa rodzaje czasu
+
+**Czas zdarzenia (event time)** — moment, w którym zdarzenie faktycznie nastąpiło. Np. klient kliknął „Kup" o 14:23:45.
+
+**Czas przetwarzania (processing time)** — moment, w którym system odebrał i przetworzył zdarzenie. Np. system Kafki odebrał zdarzenie o 14:23:47.
+
+W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje **opóźnienie** (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.
+
+```{python}
+# Symulacja: zdarzenia docierają z losowym opóźnieniem
+import random
+
+zdarzenia = []
+for i in range(8):
+    event_time = datetime(2026, 3, 12, 14, 23, i * 2)  # co 2 sekundy
+    delay = random.uniform(0.1, 5.0)  # opóźnienie 0.1–5s
+    processing_time = event_time + timedelta(seconds=delay)
+    zdarzenia.append({
+        'event_time': event_time.strftime('%H:%M:%S'),
+        'processing_time': processing_time.strftime('%H:%M:%S.') + f'{int(delay*100):02d}',
+        'opóźnienie': f'{delay:.1f}s'
+    })
+
+df = pd.DataFrame(zdarzenia)
+print(df.to_string(index=False))
+```
+
+### Dlaczego to ważne?
+
+Wyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą **przeszłości**, a nie teraźniejszości.
+
+Opóźnione zdarzenia możemy obsłużyć na dwa sposoby:
+
+- **Ignorowanie** — odrzucamy zdarzenia, które przyszły zbyt późno (ryzyko utraty danych).
+- **Watermarking** — definiujemy „znacznik wodny" — maksymalne dopuszczalne opóźnienie. Zdarzenia, które mieszczą się w oknie watermarku, są uwzględniane. Reszta odrzucana.
+
+---
+
+## Okna czasowe
+
+W przetwarzaniu strumieniowym nie możemy analizować „wszystkich danych" — strumień jest nieskończony. Zamiast tego grupujemy zdarzenia w **okna czasowe** o skończonej długości.
+
+### Okno rozłączne (Tumbling Window)
+
+Stała długość, brak nakładania. Każde zdarzenie należy do dokładnie jednego okna.
+
+Przykład: suma transakcji co 5 minut.
+
+```{python}
+# Symulacja okna rozłącznego (tumbling) 5-minutowego
+np.random.seed(42)
+
+zdarzenia = pd.DataFrame({
+    'czas': pd.date_range('2026-03-12 14:00', periods=30, freq='30s'),
+    'kwota': np.random.uniform(10, 500, 30).round(2)
+})
+
+# Tumbling window: grupowanie co 5 minut
+zdarzenia['okno'] = zdarzenia['czas'].dt.floor('5min')
+wynik = zdarzenia.groupby('okno')['kwota'].agg(['sum', 'count']).round(2)
+wynik.columns = ['suma', 'liczba']
+print("Okno rozłączne (5 min):")
+print(wynik)
+```
+
+### Okno przesuwne (Sliding Window)
+
+Stała długość, ale okno przesuwa się o zadany interwał — zdarzenia mogą należeć do **wielu okien**.
+
+Przykład: średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.
+
+### Okno skokowe (Hopping Window)
+
+Podobne do sliding, ale z możliwością nakładania się okien o określony krok. Stosowane do wygładzania danych.
+
+### Okno sesyjne (Session Window)
+
+Dynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (gap).
+
+Przykład: sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.
+
+### Porównanie okien
+
+| Typ okna | Długość | Nakładanie | Zastosowanie |
+|----------|---------|------------|-------------|
+| Rozłączne (Tumbling) | Stała | Nie | Raporty okresowe |
+| Przesuwne (Sliding) | Stała | Tak | Wykrywanie trendów |
+| Skokowe (Hopping) | Stała | Częściowe | Wygładzanie danych |
+| Sesyjne (Session) | Dynamiczna | Nie | Analiza sesji użytkowników |
+
+```{python}
+# Porównanie: tumbling vs sliding window na tych samych danych
+print("=== Tumbling (5 min) ===")
+tumbling = zdarzenia.groupby(zdarzenia['czas'].dt.floor('5min'))['kwota'].sum().round(2)
+print(tumbling)
+
+print("\n=== Sliding (okno 5 min, krok 1 min) ===")
+for start_min in range(0, 15, 1):
+    start = pd.Timestamp('2026-03-12 14:00') + pd.Timedelta(minutes=start_min)
+    end = start + pd.Timedelta(minutes=5)
+    mask = (zdarzenia['czas'] >= start) & (zdarzenia['czas'] < end)
+    suma = zdarzenia.loc[mask, 'kwota'].sum()
+    if suma > 0:
+        print(f"  [{start.strftime('%H:%M')}–{end.strftime('%H:%M')}) suma = {suma:.2f}")
 ```
 
 ---
 
-## Dane sensoryczne i IoT 
-Dane z czujników i urządzeń IoT są kolejnym krokiem w ewolucji.  
+## Podsumowanie
 
-### 📌 Cechy:  
-✅ Często pochodzą z miliardów urządzeń (big data).  
-✅ Wymagają analizy brzegowej (_edge computing_).  
+Na tym wykładzie poznaliśmy dwie kluczowe architektury (Lambda i Kappa) oraz fundamentalne pojęcia przetwarzania strumieniowego: czas zdarzenia, czas przetwarzania, watermarking i okna czasowe. To pojęcia, które będą towarzyszyć nam na laboratoriach podczas pracy z Apache Kafka i Spark Structured Streaming.
 
-### 📌 Przykłady:  
-➡️ Smart home, wearables, samochody autonomiczne, systemy przemysłowe.  
+**Na następnym wykładzie:** uczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.
 
-### 🖥️ Przykładowy kod w Pythonie (Sensor - temperatura):  
-```{python}
-import random
-def get_temperature():
-    return round(random.uniform(20.0, 25.0), 2)
-print(f"Current temperature: {get_temperature()}°C")
-```
-
-# Rzeczywisty proces generowania danych
-
-Dane generowane są w postaci nieograniczonej - pojawiają się na skutek ciągłych działań systemów.
-W swoim telefonie wygenerowałeś dziś (a nawet na tych zajęciach!) wiele danych.
-Czy na następnych zajęciach lub też jutro nie będziesz ich generował?
-
-> Dane zawsze generowane są jako forma strumienia danych.
-
-📌 Systemy obsługujące strumienie danych:
-
-- Hurtownie danych
-- Systemy monitorujące działania urządzeń (IoT)
-- Systemy transakcyjne
-- Systemy analityczne stron www
-- Reklamy on-line
-- Media społecznościowe
-- Systemy logowania
-
-> Firma to organizacja, która generuje i odpowiada na ciągły strumień danych.
-
-W przetwarzaniu wsadowym źródłem (ale i wynikiem przetwarzania) danych jest **plik**.
-
-Jest on zapisywany raz i można się do niego odwołać (może na nim działać wiele procesów - zadań).
-
-Nazwa pliku to element identyfikujący zbiór rekordów.
-
-W przypadku strumienia zdarzenie jest generowane tylko raz przez tzw. producenta (zwanego też nadawcą lub dostawcą).
-Powstałe zdarzenie przetwarzane może być przez wielu tzw. konsumentów (odbiorców).
-Zdarzenia strumieniowe grupowane są w tzw. tematy (ang. topics).
-
-
-# Duże dane 
-
-Kiedy podjąć decyzję biznesową ?
-
-<img alt="Batch Processing" src="../img/batch0.png" class="center" />
-
-## Hadoop Map-Reduce – Skalowanie obliczeń na Big Data
-
-Kiedy mówimy o skalowalnym przetwarzaniu danych, pierwszym skojarzeniem może być Google.  
-Ale co tak naprawdę sprawia, że możemy wyszukiwać informacje w ułamku sekundy, przetwarzając petabajty danych?  
-
-👉 Czy wiesz, że nazwa "Google" pochodzi od słowa "Googol", czyli liczby równej 10¹⁰⁰?  
-To więcej niż liczba atomów w znanym Wszechświecie! 🌌  
-
-### 🔥 Wyzwanie: Czy uda Ci się zapisać liczbę Googol do końca zajęć?  
-
----  
-
-## 🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają? 
-
-Tradycyjne **bazy danych SQL** czy **jednowątkowe algorytmy** zawodzą, gdy skala danych przekracza pojedynczy komputer.  
-W tym miejscu pojawia się **MapReduce** – rewolucyjny model obliczeniowy stworzony przez Google.  
-
-### 🛠️ Rozwiązania Google dla Big Data:  
-✅ **Google File System (GFS)** – rozproszony system plików.  
-✅ **Bigtable** – system do przechowywania ogromnych ilości ustrukturyzowanych danych.  
-✅ **MapReduce** – algorytm podziału pracy na wiele maszyn.  
-
-## Graficzne przedstawienie MapReduce
-
-###  Mapowanie rozdziela zadania (Map)
-Każde wejście dzielone jest na mniejsze części i przetwarzane równolegle.  
-
-🌍 Wyobraź sobie, że masz **książkę telefoniczną** i chcesz znaleźć wszystkie osoby o nazwisku "Nowak".  
-➡️ **Podziel książkę na fragmenty i daj każdemu do przeanalizowania jeden fragment.**  
-
-### Redukcja zbiera wyniki (Reduce)  
-Wszystkie częściowe wyniki są łączone w jedną, końcową odpowiedź.  
-
-🔄 Wszyscy uczniowie zgłaszają swoje wyniki, a jeden student zbiera i podsumowuje odpowiedź.  
-
-<img alt="MapReduce w działaniu – rozdzielanie i agregowanie danych" src="../img/mapreduce_flow.png" class="center" />
----  
-
-## 💡 Klasyczny przykład: Liczenie słów w tekście  
-Załóżmy, że mamy miliony książek i chcemy policzyć, ile razy występuje każde słowo.  
-
-### 🖥️ Kod MapReduce w Pythonie (z użyciem multiprocessing)  
-
-```python
-from multiprocessing import Pool
-from collections import Counter
-
-# Funkcja Map (podział tekstu na słowa)
-def map_function(text):
-    words = text.split()
-    return Counter(words)
-
-# Funkcja Reduce (sumowanie wyników)
-def reduce_function(counters):
-    total_count = Counter()
-    for counter in counters:
-        total_count.update(counter)
-    return total_count
-
-texts = [
-        "big data is amazing",
-        "data science and big data",
-        "big data is everywhere"
-    ]
-if __name__ == '__main__':    
-    with Pool() as pool:
-        mapped_results = pool.map(map_function, texts)
-    
-    final_result = reduce_function(mapped_results)
-    print(final_result)
-
-# Counter({'data': 4, 'big': 3, 'is': 2, 'amazing': 1, 'science': 1, 'and': 1, 'everywhere': 1})
-```
-
-### 🔹 Co tu się dzieje?  
-✅ Każdy fragment tekstu jest przetwarzany niezależnie (**map**).  
-✅ Wyniki są zbierane i sumowane (**reduce**).  
-✅ **Efekt:** Możemy przetwarzać **terabajty tekstu równolegle**!  
-
-<img alt="Batch Processing" src="../img/batch3.png" class="center" />
-
----  
-
-## 🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce  
-
-📊 **Stare podejście** – Jeden komputer wykonuje wszystko sekwencyjnie.  
-📊 **Nowe podejście (MapReduce)** – Każda maszyna liczy fragment i wyniki są agregowane.  
-
-
-<img alt="MapReduce Processing" src="../img/mapreduce_vs_classic.png" class="center" />
-
----  
-
-## 🚀 Wyzwanie dla Ciebie! 
-
-🔹 **Znajdź i uruchom swój własny algorytm MapReduce w dowolnym języku!**  
-🔹 **Czy potrafisz zaimplementować własny MapReduce do innego zadania?** (np. analiza logów, zliczanie kliknięć na stronie)  
-
-
-## Big Data
-
-Systemy Big data mogą być częścią (źródłem) dla hurtowni danych (np. Data Lake, Enterprise Data Hub)
-
-Ale Hurtownie danych nie są systemami Big Data!
-
-1. Hurtownie danych
-- przetrzymywanie danych wysoko strukturyzowanych
-- skupione na analizach i procesie raportowania
-- 100\% accuracy
-
-2. Big Data
-- dane o dowolnej strukturze
-- służy do różnorodnych celów opartych na danych (analityka, data science ...)
-- poniżej 100\% accuracy
-
-> _,,Big Data is like teenage sex: everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so every one claims they are doing it.''_ — Dan Ariely, Professor of Psychology and Behavioral Economics, Duke University
-
-### one, two, ... four V
-
-1. **Volume**  (Objętość) - rozmiar danych produkowanych na całym świecie przyrasta w tempie wykładniczym.
-2. **Velocity** (Szybkość) - tempo produkowania danych, szybkości ich przesyłania i przetwarzania.
-3. **Variety** (Zróżnicowanie) - tradycyjne dane kojarzą się nam z postacią alfanumeryczną złożoną z liter i cyfr. Obecnie mamy do dyspozycji obrazy, dźwięki, pliki wideo, strumienie danych z IoT
-4. **Veracity** (Wiarygodność) - Czy dane są kompletne i poprawne? Czy obiektywnie odzwierciedlają rzeczywistość? Czy są podstawą do podejmowania decyzji?
-5. **Value** - The value that the data actually holds. In the end, it's all about cost and benefits.
-
-> _Celem obliczeń nie są liczby, lecz ich zrozumienie_ R.W. Hamming 1962. 
-
-
-## Modele przetwarzania danych
-
-Dane w biznesie przetwarzane są praktycznie od zawsze. 
-W ciągu ostatnich dziesięcioleci ilość przetwarzanych danych systematycznie rośnie co wpływa na proces przygotowania i przetwarzania danych.
-
-### Trochę historii
-
-- Lata 60-te : Kolekcje danych, bazy danych
-- Lata 70-te : Relacyjne modele danych i ich implementacja w systemach OLTP
-- 1975 : Pierwsze komputery osobiste 
-- Lata 80-te : Zaawansowane modele danych, extended-relational, objective oriented, aplikacyjno-zorientowane itp.
-- 1983 : Początek internetu
-- Lata 90-te : Data mining, hurtownie danych, systemy OLAP
-- Później : NoSQL, Hadoop, SPARK, data lake
-- 2002 : AWS , 2005: Hadoop, Cloud computing 
-
-
-Większość danych przechowywana jest w bazach lub hurtowniach danych.
-Standardowo dostęp do danych sprowadza się najczęściej do realizacji zapytań poprzez aplikację.
-
-Sposób wykorzystania i realizacji procesu dostępu do bazy danych nazywamy **modelem przetwarzania**.
-Najczęściej używane są dwie implementacje:
-
-### Model Tradycyjny
-
-**Model tradycyjny** - przetwarzanie transakcyjne w trybie on-line, OLTP (on-line transaction processing).
-Świetnie sprawdza się w przypadku obsługi bieżącej np. obsługa klienta, rejestr zamówień, obsługa sprzedaży itp.
-Wykorzystywany w systemach Enterprise Resource Planning (ERP) Systems, Customer Relationship Management (CRM) software, and web-based applications.
-
-![](../img/baza1.png){.center}
-
-Model ten dostarcza efektywnych rozwiązań m.in do:
-
-- efektywnego i bezpiecznego przechowywania danych,
-- transakcyjnego odtwarzanie danych po awarii,
-- optymalizacji dostępu do danych,
-- zarządzania współbieżnością,
-- przetwarzania zdarzeń -> odczyt -> zapis
-
-Co w przypadku gdy mamy do czynienia z:
-
-- agregacjami danych z wielu systemów (np. dla wielu sklepów),
-- raportowanie i podsumowania danych,
-- optymalizacja złożonych zapytań,
-- wspomaganie decyzji biznesowych.
-
-Badania nad tego typu zagadnieniami doprowadziły do sformułowania nowego modelu przetwarzania danych oraz nowego typu baz danych - **Hurtownie Danych** _(Data warehouse)_.
-
-### Model OLAP
-
-**Przetwarzanie analityczne on-line OLAP (on-line analytic processing).**
-
- Wspieranie procesów analizy i dostarczanie narzędzi umożliwiających analizę wielowymiarową (`czas`, `miejsce`, `produkt`).
-
- Proces zrzucania danych z różnych systemów do jednej bazy nazywamy Extract-Transform-Load (ETL) (normalizacja i encoding and schema transaction).
-
- Analiza danych z hurtowni to przede wszystkim obliczanie **agregatów** (podsumowań) dotyczących wymiarów hurtowni.
- Proces ten jest całkowicie sterowany przez użytkownika.
-
-**Przykład**
-
-Załóżmy, że mamy dostęp do hurtowni danych gdzie przechowywane są informacje dotyczące sprzedaży produktów w supermarkecie.
-Jak przeanalizować zapytania:
-
-1. Jaka jest łączna sprzedaż produktów w kolejnych kwartałach, miesiącach, tygodniach ?
-2. Jaka jest sprzedaż produktów z podziałem na rodzaje produktów ?
-3. Jaka jest sprzedaż produktów z podziałem na oddziały supermarketu ?
-
-Odpowiedzi na te pytania pozwalają określić `wąskie gardła` sprzedaży produktów przynoszących deficyt, zaplanować zapasy w magazynach czy porównać sprzedaż różnych grup w różnych oddziałach supermarketu.
-
-W ramach Hurtowni Danych najczęściej wykonuje się dwa rodzaje zapytań(oba w trybie batchowym):
-1. Wykonywane okresowo w czasie zapytania raportowe obliczające biznesowe statystyki
-2. Wykonywane ad-hoc zapytania wspomagające krytyczne decyzje biznesowe.
-
-![](../img/baza2.png){.center}
-
-## Business Impact:
-Różnorodność danych (Variety) pozwala firmie budować pełny obraz klienta (Customer 360). 
-Zdolność do łączenia sztywnych danych sprzedażowych (SQL) z luźnymi opiniami z mediów społecznościowych (NoSQL/NLP) pozwala odkrywać nisze rynkowe niewidoczne w tradycyjnych raportach. 
-Skalowalność typu MapReduce gwarantuje, że koszty analityki nie wzrosną liniowo wraz z przyrostem danych, co jest kluczowe dla rentowności projektów Big Data.
+**Do przemyślenia:** Twój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?

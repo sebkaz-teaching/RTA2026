@@ -17,29 +17,20 @@ website:
         - href: lectures/wyklad3.qmd
         - href: lectures/wyklad4.qmd
         - href: lectures/wyklad5.qmd
-      # - section : "Laboratoria"
-      #   contents:
-        # - section: "Apache Kafka"
-        #   contents:
-        #     - href: kafka_codes/kafka1.ipynb
-        #     - href: kafka_codes/kafka2.ipynb
-        #     - href: kafka_codes/kafka3.ipynb
-        # - section : "Python"
-        #   contents:
-        #   - href: labs/lab1.ipynb
-        #   - href: labs/lab2.ipynb
-        #   - href: labs/lab3.ipynb
-        #   - href: labs/lab4.ipynb
-        #   - href: labs/lab5.ipynb
-        # - section : "Apache Spark"
-        #   contents:
-        #   - href: labs/lab6.ipynb
-        #   - href: labs/lab7.ipynb
-        #   - href: labs/lab8.ipynb
-        #   - href: labs/lab9.ipynb
+      - section : "Laboratoria"
+        contents:
+        - href: labs/lab1.ipynb
+        - href: labs/lab2.ipynb
+        - href: labs/lab3.ipynb
+        - href: labs/lab4.ipynb
+        - href: labs/lab5.ipynb
+        - href: labs/lab6.ipynb
+        - href: labs/lab7.ipynb
+        - href: labs/lab8.ipynb
+        - href: labs/lab9.ipynb
+        - href: labs/lab10.ipynb
       
-        
-        
+
   navbar:
     left: 
           - href: indexS.qmd

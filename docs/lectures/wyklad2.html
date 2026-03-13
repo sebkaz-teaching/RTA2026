@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Wykład 2 – Analiza danych w czasie rzeczywistym</title>
+<title>Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad2.html">Wykład 2</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad2.html">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -182,31 +182,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 1</span></a>
+ <span class="menu-text">Wykład 1 — Od plików płaskich do Data Lake</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Wykład 2</span></a>
+ <span class="menu-text">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 3</span></a>
+ <span class="menu-text">Wykład 3 — Uczenie maszynowe: batch vs online</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 4</span></a>
+ <span class="menu-text">Wykład 4 — Apache Kafka</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 5</span></a>
+ <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
   </div>
 </li>
       </ul>
@@ -221,39 +292,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title"><strong>Sections</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#ewolucja-danych" id="toc-ewolucja-danych" class="nav-link active" data-scroll-target="#ewolucja-danych">Ewolucja danych</a>
-  <ul class="collapse">
-  <li><a href="#dane-tabelaryczne-tabele-sql" id="toc-dane-tabelaryczne-tabele-sql" class="nav-link" data-scroll-target="#dane-tabelaryczne-tabele-sql">Dane tabelaryczne (tabele SQL)</a></li>
-  <li><a href="#dane-grafowe" id="toc-dane-grafowe" class="nav-link" data-scroll-target="#dane-grafowe">Dane grafowe</a></li>
-  <li><a href="#dane-półstrukturyzowane-json-xml-yaml" id="toc-dane-półstrukturyzowane-json-xml-yaml" class="nav-link" data-scroll-target="#dane-półstrukturyzowane-json-xml-yaml">Dane półstrukturyzowane (JSON, XML, YAML)</a></li>
-  <li><a href="#dane-tekstowe-nlp" id="toc-dane-tekstowe-nlp" class="nav-link" data-scroll-target="#dane-tekstowe-nlp">Dane tekstowe (NLP)</a></li>
-  <li><a href="#dane-multimedialne-obrazy-dźwięk-wideo" id="toc-dane-multimedialne-obrazy-dźwięk-wideo" class="nav-link" data-scroll-target="#dane-multimedialne-obrazy-dźwięk-wideo">Dane multimedialne (obrazy, dźwięk, wideo)</a></li>
-  <li><a href="#dane-strumieniowe" id="toc-dane-strumieniowe" class="nav-link" data-scroll-target="#dane-strumieniowe">Dane strumieniowe</a></li>
-  <li><a href="#dane-sensoryczne-i-iot" id="toc-dane-sensoryczne-i-iot" class="nav-link" data-scroll-target="#dane-sensoryczne-i-iot">Dane sensoryczne i IoT</a></li>
-  </ul></li>
-  <li><a href="#rzeczywisty-proces-generowania-danych" id="toc-rzeczywisty-proces-generowania-danych" class="nav-link" data-scroll-target="#rzeczywisty-proces-generowania-danych">Rzeczywisty proces generowania danych</a></li>
-  <li><a href="#duże-dane" id="toc-duże-dane" class="nav-link" data-scroll-target="#duże-dane">Duże dane</a>
-  <ul class="collapse">
-  <li><a href="#hadoop-map-reduce-skalowanie-obliczeń-na-big-data" id="toc-hadoop-map-reduce-skalowanie-obliczeń-na-big-data" class="nav-link" data-scroll-target="#hadoop-map-reduce-skalowanie-obliczeń-na-big-data">Hadoop Map-Reduce – Skalowanie obliczeń na Big Data</a></li>
-  <li><a href="#dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają" id="toc-dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają" class="nav-link" data-scroll-target="#dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają">🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają?</a></li>
-  <li><a href="#graficzne-przedstawienie-mapreduce" id="toc-graficzne-przedstawienie-mapreduce" class="nav-link" data-scroll-target="#graficzne-przedstawienie-mapreduce">Graficzne przedstawienie MapReduce</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"><img alt="MapReduce w działaniu – rozdzielanie i agregowanie danych" src="../img/mapreduce_flow.png" class="center"></a></li>
-  <li><a href="#klasyczny-przykład-liczenie-słów-w-tekście" id="toc-klasyczny-przykład-liczenie-słów-w-tekście" class="nav-link" data-scroll-target="#klasyczny-przykład-liczenie-słów-w-tekście">💡 Klasyczny przykład: Liczenie słów w tekście</a></li>
-  <li><a href="#wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce" id="toc-wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce" class="nav-link" data-scroll-target="#wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce">🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce</a></li>
-  <li><a href="#wyzwanie-dla-ciebie" id="toc-wyzwanie-dla-ciebie" class="nav-link" data-scroll-target="#wyzwanie-dla-ciebie">🚀 Wyzwanie dla Ciebie!</a></li>
-  <li><a href="#big-data" id="toc-big-data" class="nav-link" data-scroll-target="#big-data">Big Data</a></li>
-  <li><a href="#modele-przetwarzania-danych" id="toc-modele-przetwarzania-danych" class="nav-link" data-scroll-target="#modele-przetwarzania-danych">Modele przetwarzania danych</a></li>
-  <li><a href="#business-impact" id="toc-business-impact" class="nav-link" data-scroll-target="#business-impact">Business Impact:</a></li>
-  </ul></li>
+  <li><a href="#batch-vs-stream-dwa-podejścia-do-tych-samych-danych" id="toc-batch-vs-stream-dwa-podejścia-do-tych-samych-danych" class="nav-link active" data-scroll-target="#batch-vs-stream-dwa-podejścia-do-tych-samych-danych">Batch vs Stream — dwa podejścia do tych samych danych</a></li>
+  <li><a href="#architektura-lambda" id="toc-architektura-lambda" class="nav-link" data-scroll-target="#architektura-lambda">Architektura Lambda</a></li>
+  <li><a href="#architektura-kappa" id="toc-architektura-kappa" class="nav-link" data-scroll-target="#architektura-kappa">Architektura Kappa</a></li>
+  <li><a href="#czas-w-przetwarzaniu-strumieniowym" id="toc-czas-w-przetwarzaniu-strumieniowym" class="nav-link" data-scroll-target="#czas-w-przetwarzaniu-strumieniowym">Czas w przetwarzaniu strumieniowym</a></li>
+  <li><a href="#okna-czasowe" id="toc-okna-czasowe" class="nav-link" data-scroll-target="#okna-czasowe">Okna czasowe</a></li>
+  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie">Podsumowanie</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad2.html">Wykład 2</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad2.html">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Wykład 2</h1>
+<h1 class="title">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</h1>
 </div>
 
 
@@ -270,438 +323,403 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>⏳ Czas trwania: 1,5h <em>🎯 Cel wykładu</em></p>
-<p>zrozumienie, jak dane ewoluowały w różnych branżach i jakie narzędzia są dziś wykorzystywane do ich analizy.</p>
+<p><em>Czas trwania: 1,5h</em></p>
+<p><strong>Cel wykładu:</strong> Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.</p>
 <hr>
-<p>Na tym wykładzie przedstawimy ewolucję analizy danych, pokazując, jak zmieniały się technologie i podejścia do przetwarzania danych na przestrzeni lat. Rozpoczniemy od klasycznych struktur tabelarycznych, przez bardziej zaawansowane modele grafowe i tekstowe, aż po nowoczesne podejście do strumieniowego przetwarzania danych.</p>
-<section id="ewolucja-danych" class="level1">
-<h1>Ewolucja danych</h1>
-<section id="dane-tabelaryczne-tabele-sql" class="level2">
-<h2 class="anchored" data-anchor-id="dane-tabelaryczne-tabele-sql">Dane tabelaryczne (tabele SQL)</h2>
-<p>Początkowo dane były przechowywane w postaci tabel, gdzie każda tabela zawierała zorganizowane informacje w kolumnach i wierszach (np. bazy danych SQL).<br>
-Modele takie doskonale nadawały się do danych <strong>ustrukturyzowanych</strong>.</p>
-<section id="cechy" class="level3">
-<h3 class="anchored" data-anchor-id="cechy">📌 Cechy:</h3>
-<p>✅ Dane podzielone na kolumny o stałej strukturze.<br>
-✅ Możliwość stosowania operacji CRUD (Create, Read, Update, Delete).<br>
-✅ Ścisłe reguły spójności i normalizacji.</p>
-</section>
-<section id="przykłady" class="level3">
-<h3 class="anchored" data-anchor-id="przykłady">📌 Przykłady:</h3>
-<p>➡️ Systemy bankowe, e-commerce, ERP, systemy CRM.</p>
-</section>
-<section id="przykładowy-kod-w-pythonie-sqlite" class="level3">
-<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-sqlite">🖥️ Przykładowy kod w Pythonie (SQLite):</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">':memory:'</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>cursor <span class="op">=</span> conn.cursor()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">"INSERT INTO users (name, age) VALUES ('Alice', 30)"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">"SELECT * FROM users"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cursor.fetchall())</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>conn.close()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-</section>
-<section id="dane-grafowe" class="level2">
-<h2 class="anchored" data-anchor-id="dane-grafowe">Dane grafowe</h2>
-<p>Wraz z rozwojem potrzeb biznesowych pojawiły się <strong>dane grafowe</strong>, w których relacje między obiektami są reprezentowane jako <strong>wierzchołki i krawędzie</strong>.</p>
-<section id="cechy-1" class="level3">
-<h3 class="anchored" data-anchor-id="cechy-1">📌 Cechy:</h3>
-<p>✅ Dane opisujące relacje i powiązania.<br>
-✅ Elastyczna struktura (grafy zamiast tabel).<br>
-✅ Możliwość analizy połączeń (np. algorytmy PageRank, centralność).</p>
-</section>
-<section id="przykłady-1" class="level3">
-<h3 class="anchored" data-anchor-id="przykłady-1">📌 Przykłady:</h3>
-<p>➡️ Sieci społecznościowe (Facebook, LinkedIn), wyszukiwarki (Google), systemy rekomendacji (Netflix, Amazon).</p>
-</section>
-<section id="przykładowy-kod-w-pythonie-graf-karate---networkx" class="level3">
-<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-graf-karate---networkx">🖥️ Przykładowy kod w Pythonie (Graf Karate - NetworkX):</h3>
-<div id="ef25f905" class="cell" data-execution_count="1">
+<section id="batch-vs-stream-dwa-podejścia-do-tych-samych-danych" class="level2">
+<h2 class="anchored" data-anchor-id="batch-vs-stream-dwa-podejścia-do-tych-samych-danych">Batch vs Stream — dwa podejścia do tych samych danych</h2>
+<p>Na poprzednim wykładzie ustaliliśmy, że dane <strong>zawsze</strong> powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.</p>
+<p>Porównajmy oba podejścia na tym samym problemie biznesowym: <strong>monitorowanie transakcji w sklepie internetowym</strong>.</p>
+<section id="podejście-wsadowe-batch" class="level3">
+<h3 class="anchored" data-anchor-id="podejście-wsadowe-batch">Podejście wsadowe (batch)</h3>
+<div id="1b0f8298" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>G <span class="op">=</span> nx.karate_club_graph()</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>nx.draw(G, with_labels<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="wyklad2_files/figure-html/cell-2-output-1.png" width="691" height="499" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<hr>
-</section>
-</section>
-<section id="dane-półstrukturyzowane-json-xml-yaml" class="level2">
-<h2 class="anchored" data-anchor-id="dane-półstrukturyzowane-json-xml-yaml">Dane półstrukturyzowane (JSON, XML, YAML)</h2>
-<p>Dane te nie są w pełni ustrukturyzowane jak w bazach SQL, ale mają pewien schemat.</p>
-<section id="cechy-2" class="level3">
-<h3 class="anchored" data-anchor-id="cechy-2">📌 Cechy:</h3>
-<p>✅ Hierarchiczna struktura (np. klucz-wartość, obiekty zagnieżdżone).<br>
-✅ Brak ścisłego schematu (możliwość dodawania nowych pól).<br>
-✅ Popularność w systemach NoSQL i API.</p>
-</section>
-<section id="przykłady-2" class="level3">
-<h3 class="anchored" data-anchor-id="przykłady-2">📌 Przykłady:</h3>
-<p>➡️ Dokumenty w MongoDB, pliki konfiguracyjne, REST API, pliki logów.</p>
-</section>
-<section id="przykładowy-kod-w-pythonie-json" class="level3">
-<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-json">🖥️ Przykładowy kod w Pythonie (JSON):</h3>
-<div id="4811451e" class="cell" data-execution_count="2">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">'name'</span>: <span class="st">'Alice'</span>, <span class="st">'age'</span>: <span class="dv">30</span>, <span class="st">'city'</span>: <span class="st">'New York'</span>}</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>json_str <span class="op">=</span> json.dumps(data)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(json.loads(json_str))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Dane zebrane z całego dnia — analizowane następnego ranka</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>transakcje <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czas'</span>: [datetime(<span class="dv">2026</span>, <span class="dv">3</span>, <span class="dv">12</span>, h, m)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>             <span class="cf">for</span> h <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">9</span>, <span class="dv">18</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>             <span class="cf">for</span> m <span class="kw">in</span> np.random.choice(<span class="bu">range</span>(<span class="dv">60</span>), <span class="dv">20</span>)],</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">20</span>, <span class="dv">3000</span>, <span class="dv">180</span>).<span class="bu">round</span>(<span class="dv">2</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'klient_id'</span>: np.random.randint(<span class="dv">1000</span>, <span class="dv">9999</span>, <span class="dv">180</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Raport dzienny — widzimy go NASTĘPNEGO DNIA</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>raport <span class="op">=</span> transakcje.groupby(transakcje[<span class="st">'czas'</span>].dt.hour).agg(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    liczba<span class="op">=</span>(<span class="st">'kwota'</span>, <span class="st">'count'</span>),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    suma<span class="op">=</span>(<span class="st">'kwota'</span>, <span class="st">'sum'</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    srednia<span class="op">=</span>(<span class="st">'kwota'</span>, <span class="st">'mean'</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Raport dzienny (generowany następnego ranka):"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raport.head())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'name': 'Alice', 'age': 30, 'city': 'New York'}</code></pre>
+<pre><code>Raport dzienny (generowany następnego ranka):
+      liczba      suma  srednia
+czas                           
+9         20  30174.87  1508.74
+10        20  23969.05  1198.45
+11        20  27346.70  1367.34
+12        20  33457.91  1672.90
+13        20  36552.13  1827.61</code></pre>
 </div>
 </div>
-<hr>
 </section>
-</section>
-<section id="dane-tekstowe-nlp" class="level2">
-<h2 class="anchored" data-anchor-id="dane-tekstowe-nlp">Dane tekstowe (NLP)</h2>
-<p>Tekst stał się kluczowym źródłem informacji, szczególnie w analizie opinii, chatbotach czy wyszukiwarkach.</p>
-<section id="cechy-3" class="level3">
-<h3 class="anchored" data-anchor-id="cechy-3">📌 Cechy:</h3>
-<p>✅ Nieustrukturyzowane dane wymagające przekształcenia.<br>
-✅ Stosowanie <strong>embeddingów</strong> (np. Word2Vec, BERT, GPT).<br>
-✅ Duże zastosowanie w analizie sentymentu i chatbotach.</p>
-</section>
-<section id="przykłady-3" class="level3">
-<h3 class="anchored" data-anchor-id="przykłady-3">📌 Przykłady:</h3>
-<p>➡️ Media społecznościowe, e-maile, chatboty, tłumaczenie maszynowe.</p>
-</section>
-<section id="przykładowy-kod-w-pythonie" class="level3">
-<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie">🖥️ Przykładowy kod w Pythonie:</h3>
-<div id="7afbb38e" class="cell" data-execution_count="3">
+<section id="podejście-strumieniowe-stream" class="level3">
+<h3 class="anchored" data-anchor-id="podejście-strumieniowe-stream">Podejście strumieniowe (stream)</h3>
+<div id="1bbfb89c" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ollama</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Przykładowe zdanie</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>sentence <span class="op">=</span> <span class="st">"Sztuczna inteligencja zmienia świat."</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> ollama.embeddings(model<span class="op">=</span><span class="st">'llama3.2'</span>, prompt<span class="op">=</span>sentence)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>embedding <span class="op">=</span> response[<span class="st">'embedding'</span>]</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(embedding[:<span class="dv">4</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: każda transakcja analizowana w momencie pojawienia się</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>okno_5min <span class="op">=</span> []</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>alert_prog <span class="op">=</span> <span class="dv">5000</span>  <span class="co"># alert jeśli suma w oknie 5min &gt; 5000 PLN</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    tx <span class="op">=</span> {</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'czas'</span>: datetime.now().strftime(<span class="st">'%H:%M:%S'</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'kwota'</span>: <span class="bu">round</span>(np.random.uniform(<span class="dv">20</span>, <span class="dv">3000</span>), <span class="dv">2</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'klient'</span>: np.random.randint(<span class="dv">1000</span>, <span class="dv">9999</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    okno_5min.append(tx[<span class="st">'kwota'</span>])</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    suma_okno <span class="op">=</span> <span class="bu">sum</span>(okno_5min)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> suma_okno <span class="op">&gt;</span> alert_prog:</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> <span class="st">" &lt;&lt; ALERT: wysoka aktywność!"</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        okno_5min <span class="op">=</span> []  <span class="co"># reset okna</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"[</span><span class="sc">{</span>tx[<span class="st">'czas'</span>]<span class="sc">}</span><span class="ss">] Klient </span><span class="sc">{</span>tx[<span class="st">'klient'</span>]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>tx[<span class="st">'kwota'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> PLN | Suma okna: </span><span class="sc">{</span>suma_okno<span class="sc">:&gt;9.2f}{</span>status<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[-1.6764535903930664, 3.037797689437866, -6.599167823791504, -1.7495818138122559]</code></pre>
+<pre><code>[01:48:12] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
+[01:48:12] Klient 7938:   236.83 PLN | Suma okna:   1526.58
+[01:48:13] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
+[01:48:13] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
+[01:48:13] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
+[01:48:13] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
+[01:48:13] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
+[01:48:14] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
+[01:48:14] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
+[01:48:14] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
 </div>
 </div>
+<p>Różnica jest fundamentalna: w trybie batch dowiadujemy się o problemie <strong>następnego dnia</strong>. W trybie stream — <strong>natychmiast</strong>.</p>
 <hr>
 </section>
 </section>
-<section id="dane-multimedialne-obrazy-dźwięk-wideo" class="level2">
-<h2 class="anchored" data-anchor-id="dane-multimedialne-obrazy-dźwięk-wideo">Dane multimedialne (obrazy, dźwięk, wideo)</h2>
-<p>Nowoczesne systemy analizy danych wykorzystują również obrazy i dźwięk.</p>
-<section id="cechy-4" class="level3">
-<h3 class="anchored" data-anchor-id="cechy-4">📌 Cechy:</h3>
-<p>✅ Wymagają dużej mocy obliczeniowej (sztuczna inteligencja, deep learning).<br>
-✅ Przetwarzane przez modele CNN (obrazy) i RNN/Transformers (dźwięk).</p>
+<section id="architektura-lambda" class="level2">
+<h2 class="anchored" data-anchor-id="architektura-lambda">Architektura Lambda</h2>
+<p>W praktyce firmy potrzebują <strong>obu</strong> podejść jednocześnie. Architektura Lambda, zaproponowana przez Nathana Marza, łączy przetwarzanie wsadowe i strumieniowe w jednym systemie.</p>
+<section id="trzy-warstwy-lambdy" class="level3">
+<h3 class="anchored" data-anchor-id="trzy-warstwy-lambdy">Trzy warstwy Lambdy</h3>
+<p><strong>Warstwa wsadowa (Batch Layer)</strong> — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem. Typowe narzędzia: Spark (batch), Hadoop.</p>
+<p><strong>Warstwa szybka (Speed Layer)</strong> — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast. Typowe narzędzia: Spark Streaming, Kafka Streams.</p>
+<p><strong>Warstwa serwująca (Serving Layer)</strong> — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym. Typowe narzędzia: bazy danych, API, dashboardy.</p>
+<pre><code>                  ┌─────────────────────────┐
+                  │     Źródło danych       │
+                  │  (strumień zdarzeń)     │
+                  └────────┬────────────────┘
+                           │
+              ┌────────────┴────────────┐
+              ▼                         ▼
+   ┌──────────────────┐     ┌──────────────────┐
+   │  Warstwa wsadowa │     │  Warstwa szybka  │
+   │  (Batch Layer)   │     │  (Speed Layer)   │
+   │                  │     │                  │
+   │  Kompletne dane  │     │  Najnowsze dane  │
+   │  Dokładne wyniki │     │  Przybliżone     │
+   │  Duże opóźnienie │     │  Niska latencja  │
+   └────────┬─────────┘     └────────┬─────────┘
+            │                        │
+            └───────────┬────────────┘
+                        ▼
+             ┌──────────────────┐
+             │ Warstwa serwująca│
+             │ (Serving Layer)  │
+             └──────────────────┘</code></pre>
+<p><strong>Przykład biznesowy:</strong> Bank analizujący transakcje kartowe.</p>
+<ul>
+<li>Warstwa wsadowa: co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.</li>
+<li>Warstwa szybka: w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.</li>
+<li>Warstwa serwująca: dashboard dla analityków + API dla aplikacji mobilnej.</li>
+</ul>
 </section>
-<section id="przykłady-4" class="level3">
-<h3 class="anchored" data-anchor-id="przykłady-4">📌 Przykłady:</h3>
-<p>➡️ Rozpoznawanie twarzy, analiza mowy, biometria, analiza treści wideo.</p>
-</section>
-<section id="przykładowy-kod-w-pythonie-obraz---opencv" class="level3">
-<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-obraz---opencv">🖥️ Przykładowy kod w Pythonie (Obraz - OpenCV):</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.imread(<span class="st">'cloud.jpeg'</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>cv2.waitKey(<span class="dv">0</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>cv2.destroyAllWindows()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="zalety-i-wady-lambdy" class="level3">
+<h3 class="anchored" data-anchor-id="zalety-i-wady-lambdy">Zalety i wady Lambdy</h3>
+<p>Zaleta: kompletność — batch layer koryguje błędy speed layer. Wada: <strong>utrzymujesz dwie oddzielne ścieżki przetwarzania</strong> — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.</p>
 <hr>
 </section>
 </section>
-<section id="dane-strumieniowe" class="level2">
-<h2 class="anchored" data-anchor-id="dane-strumieniowe">Dane strumieniowe</h2>
-<p>Obecnie najbardziej dynamicznie rozwija się analiza <strong>danych strumieniowych</strong>, gdzie dane są analizowane na bieżąco, w miarę ich napływania.</p>
-<section id="cechy-5" class="level3">
-<h3 class="anchored" data-anchor-id="cechy-5">📌 Cechy:</h3>
-<p>✅ Przetwarzanie w czasie rzeczywistym.<br>
-✅ Wykorzystanie technologii takich jak Apache Kafka, Flink, Spark Streaming.</p>
+<section id="architektura-kappa" class="level2">
+<h2 class="anchored" data-anchor-id="architektura-kappa">Architektura Kappa</h2>
+<p>Jay Kreps (twórca Apache Kafka) zaproponował uproszczenie: <strong>a co, gdyby potrzebna była tylko warstwa strumieniowa?</strong></p>
+<p>Architektura Kappa to Lambda bez warstwy wsadowej. Cały przepływ danych opiera się na strumieniu zdarzeń. Jeśli trzeba przeliczyć dane historyczne — odtwarzamy strumień od początku (replay).</p>
+<pre><code>   ┌─────────────────────────┐
+   │     Źródło danych       │
+   │  (strumień zdarzeń)     │
+   └────────┬────────────────┘
+            │
+            ▼
+   ┌──────────────────────┐
+   │  Warstwa strumieniowa│
+   │  (Stream Layer)      │
+   │                      │
+   │  Jeden kod           │
+   │  Jeden pipeline      │
+   └────────┬─────────────┘
+            │
+            ▼
+   ┌──────────────────┐
+   │ Warstwa serwująca│
+   └──────────────────┘</code></pre>
+<section id="lambda-vs-kappa-kiedy-co-stosować" class="level3">
+<h3 class="anchored" data-anchor-id="lambda-vs-kappa-kiedy-co-stosować">Lambda vs Kappa — kiedy co stosować?</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 36%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Cecha</th>
+<th>Lambda</th>
+<th>Kappa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Złożoność</td>
+<td>Wysoka (dwie ścieżki)</td>
+<td>Niska (jedna ścieżka)</td>
+</tr>
+<tr class="even">
+<td>Dokładność</td>
+<td>Batch koryguje stream</td>
+<td>Zależna od jakości streamingu</td>
+</tr>
+<tr class="odd">
+<td>Historyczne przeliczanie</td>
+<td>Naturalne (batch)</td>
+<td>Replay strumienia</td>
+</tr>
+<tr class="even">
+<td>Kiedy stosować</td>
+<td>Gdy batch i stream mają różną logikę</td>
+<td>Gdy jedna logika wystarcza</td>
+</tr>
+<tr class="odd">
+<td>Przykład</td>
+<td>Bank (nocny retrenowanie + real-time scoring)</td>
+<td>E-commerce (personalizacja)</td>
+</tr>
+</tbody>
+</table>
+<hr>
 </section>
-<section id="przykłady-5" class="level3">
-<h3 class="anchored" data-anchor-id="przykłady-5">📌 Przykłady:</h3>
-<p>➡️ Transakcje bankowe (detekcja oszustw), analiza social media, IoT.</p>
 </section>
-<section id="przykładowy-kod-w-pythonie-strumieniowe-transakcje-bankowe" class="level3">
-<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-strumieniowe-transakcje-bankowe">🖥️ Przykładowy kod w Pythonie (Strumieniowe transakcje bankowe):</h3>
-<div id="44a145e0" class="cell" data-execution_count="4">
+<section id="czas-w-przetwarzaniu-strumieniowym" class="level2">
+<h2 class="anchored" data-anchor-id="czas-w-przetwarzaniu-strumieniowym">Czas w przetwarzaniu strumieniowym</h2>
+<p>W przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczne, kiedy chcemy. W przetwarzaniu strumieniowym czas staje się <strong>kluczowym wymiarem analizy</strong>.</p>
+<section id="dwa-rodzaje-czasu" class="level3">
+<h3 class="anchored" data-anchor-id="dwa-rodzaje-czasu">Dwa rodzaje czasu</h3>
+<p><strong>Czas zdarzenia (event time)</strong> — moment, w którym zdarzenie faktycznie nastąpiło. Np. klient kliknął „Kup” o 14:23:45.</p>
+<p><strong>Czas przetwarzania (processing time)</strong> — moment, w którym system odebrał i przetworzył zdarzenie. Np. system Kafki odebrał zdarzenie o 14:23:47.</p>
+<p>W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje <strong>opóźnienie</strong> (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.</p>
+<div id="19429a7e" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>transactions <span class="op">=</span> [{<span class="st">'id'</span>: <span class="dv">1</span>, <span class="st">'amount'</span>: <span class="dv">100</span>}, {<span class="st">'id'</span>: <span class="dv">2</span>, <span class="st">'amount'</span>: <span class="dv">200</span>}]</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> transaction <span class="kw">in</span> transactions:</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Processing transaction: </span><span class="sc">{</span>transaction<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: zdarzenia docierają z losowym opóźnieniem</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> []</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    event_time <span class="op">=</span> datetime(<span class="dv">2026</span>, <span class="dv">3</span>, <span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">23</span>, i <span class="op">*</span> <span class="dv">2</span>)  <span class="co"># co 2 sekundy</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    delay <span class="op">=</span> random.uniform(<span class="fl">0.1</span>, <span class="fl">5.0</span>)  <span class="co"># opóźnienie 0.1–5s</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    processing_time <span class="op">=</span> event_time <span class="op">+</span> timedelta(seconds<span class="op">=</span>delay)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    zdarzenia.append({</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'event_time'</span>: event_time.strftime(<span class="st">'%H:%M:%S'</span>),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'processing_time'</span>: processing_time.strftime(<span class="st">'%H:%M:%S.'</span>) <span class="op">+</span> <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(delay<span class="op">*</span><span class="dv">100</span>)<span class="sc">:02d}</span><span class="ss">'</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'opóźnienie'</span>: <span class="ss">f'</span><span class="sc">{</span>delay<span class="sc">:.1f}</span><span class="ss">s'</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(zdarzenia)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Processing transaction: {'id': 1, 'amount': 100}
-Processing transaction: {'id': 2, 'amount': 200}</code></pre>
+<pre><code>event_time processing_time opóźnienie
+  14:23:00    14:23:03.367       3.7s
+  14:23:02    14:23:06.499       5.0s
+  14:23:04    14:23:08.455       4.6s
+  14:23:06    14:23:10.432       4.3s
+  14:23:08    14:23:12.449       4.5s
+  14:23:10    14:23:14.444       4.4s
+  14:23:12    14:23:13.187       1.9s
+  14:23:14    14:23:17.384       3.8s</code></pre>
 </div>
 </div>
+</section>
+<section id="dlaczego-to-ważne" class="level3">
+<h3 class="anchored" data-anchor-id="dlaczego-to-ważne">Dlaczego to ważne?</h3>
+<p>Wyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą <strong>przeszłości</strong>, a nie teraźniejszości.</p>
+<p>Opóźnione zdarzenia możemy obsłużyć na dwa sposoby:</p>
+<ul>
+<li><strong>Ignorowanie</strong> — odrzucamy zdarzenia, które przyszły zbyt późno (ryzyko utraty danych).</li>
+<li><strong>Watermarking</strong> — definiujemy „znacznik wodny” — maksymalne dopuszczalne opóźnienie. Zdarzenia, które mieszczą się w oknie watermarku, są uwzględniane. Reszta odrzucana.</li>
+</ul>
 <hr>
 </section>
 </section>
-<section id="dane-sensoryczne-i-iot" class="level2">
-<h2 class="anchored" data-anchor-id="dane-sensoryczne-i-iot">Dane sensoryczne i IoT</h2>
-<p>Dane z czujników i urządzeń IoT są kolejnym krokiem w ewolucji.</p>
-<section id="cechy-6" class="level3">
-<h3 class="anchored" data-anchor-id="cechy-6">📌 Cechy:</h3>
-<p>✅ Często pochodzą z miliardów urządzeń (big data).<br>
-✅ Wymagają analizy brzegowej (<em>edge computing</em>).</p>
-</section>
-<section id="przykłady-6" class="level3">
-<h3 class="anchored" data-anchor-id="przykłady-6">📌 Przykłady:</h3>
-<p>➡️ Smart home, wearables, samochody autonomiczne, systemy przemysłowe.</p>
-</section>
-<section id="przykładowy-kod-w-pythonie-sensor---temperatura" class="level3">
-<h3 class="anchored" data-anchor-id="przykładowy-kod-w-pythonie-sensor---temperatura">🖥️ Przykładowy kod w Pythonie (Sensor - temperatura):</h3>
-<div id="43fa7cd2" class="cell" data-execution_count="5">
+<section id="okna-czasowe" class="level2">
+<h2 class="anchored" data-anchor-id="okna-czasowe">Okna czasowe</h2>
+<p>W przetwarzaniu strumieniowym nie możemy analizować „wszystkich danych” — strumień jest nieskończony. Zamiast tego grupujemy zdarzenia w <strong>okna czasowe</strong> o skończonej długości.</p>
+<section id="okno-rozłączne-tumbling-window" class="level3">
+<h3 class="anchored" data-anchor-id="okno-rozłączne-tumbling-window">Okno rozłączne (Tumbling Window)</h3>
+<p>Stała długość, brak nakładania. Każde zdarzenie należy do dokładnie jednego okna.</p>
+<p>Przykład: suma transakcji co 5 minut.</p>
+<div id="e3bfcb8b" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_temperature():</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">round</span>(random.uniform(<span class="fl">20.0</span>, <span class="fl">25.0</span>), <span class="dv">2</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Current temperature: </span><span class="sc">{</span>get_temperature()<span class="sc">}</span><span class="ss">°C"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja okna rozłącznego (tumbling) 5-minutowego</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czas'</span>: pd.date_range(<span class="st">'2026-03-12 14:00'</span>, periods<span class="op">=</span><span class="dv">30</span>, freq<span class="op">=</span><span class="st">'30s'</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">10</span>, <span class="dv">500</span>, <span class="dv">30</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Tumbling window: grupowanie co 5 minut</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>zdarzenia[<span class="st">'okno'</span>] <span class="op">=</span> zdarzenia[<span class="st">'czas'</span>].dt.floor(<span class="st">'5min'</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>wynik <span class="op">=</span> zdarzenia.groupby(<span class="st">'okno'</span>)[<span class="st">'kwota'</span>].agg([<span class="st">'sum'</span>, <span class="st">'count'</span>]).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>wynik.columns <span class="op">=</span> [<span class="st">'suma'</span>, <span class="st">'liczba'</span>]</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Okno rozłączne (5 min):"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(wynik)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Current temperature: 21.51°C</code></pre>
+<pre><code>Okno rozłączne (5 min):
+                        suma  liczba
+okno                                
+2026-03-12 14:00:00  2648.68      10
+2026-03-12 14:05:00  2036.82      10
+2026-03-12 14:10:00  2061.89      10</code></pre>
 </div>
 </div>
 </section>
+<section id="okno-przesuwne-sliding-window" class="level3">
+<h3 class="anchored" data-anchor-id="okno-przesuwne-sliding-window">Okno przesuwne (Sliding Window)</h3>
+<p>Stała długość, ale okno przesuwa się o zadany interwał — zdarzenia mogą należeć do <strong>wielu okien</strong>.</p>
+<p>Przykład: średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.</p>
 </section>
+<section id="okno-skokowe-hopping-window" class="level3">
+<h3 class="anchored" data-anchor-id="okno-skokowe-hopping-window">Okno skokowe (Hopping Window)</h3>
+<p>Podobne do sliding, ale z możliwością nakładania się okien o określony krok. Stosowane do wygładzania danych.</p>
 </section>
-<section id="rzeczywisty-proces-generowania-danych" class="level1">
-<h1>Rzeczywisty proces generowania danych</h1>
-<p>Dane generowane są w postaci nieograniczonej - pojawiają się na skutek ciągłych działań systemów. W swoim telefonie wygenerowałeś dziś (a nawet na tych zajęciach!) wiele danych. Czy na następnych zajęciach lub też jutro nie będziesz ich generował?</p>
-<blockquote class="blockquote">
-<p>Dane zawsze generowane są jako forma strumienia danych.</p>
-</blockquote>
-<p>📌 Systemy obsługujące strumienie danych:</p>
-<ul>
-<li>Hurtownie danych</li>
-<li>Systemy monitorujące działania urządzeń (IoT)</li>
-<li>Systemy transakcyjne</li>
-<li>Systemy analityczne stron www</li>
-<li>Reklamy on-line</li>
-<li>Media społecznościowe</li>
-<li>Systemy logowania</li>
-</ul>
-<blockquote class="blockquote">
-<p>Firma to organizacja, która generuje i odpowiada na ciągły strumień danych.</p>
-</blockquote>
-<p>W przetwarzaniu wsadowym źródłem (ale i wynikiem przetwarzania) danych jest <strong>plik</strong>.</p>
-<p>Jest on zapisywany raz i można się do niego odwołać (może na nim działać wiele procesów - zadań).</p>
-<p>Nazwa pliku to element identyfikujący zbiór rekordów.</p>
-<p>W przypadku strumienia zdarzenie jest generowane tylko raz przez tzw. producenta (zwanego też nadawcą lub dostawcą). Powstałe zdarzenie przetwarzane może być przez wielu tzw. konsumentów (odbiorców). Zdarzenia strumieniowe grupowane są w tzw. tematy (ang. topics).</p>
+<section id="okno-sesyjne-session-window" class="level3">
+<h3 class="anchored" data-anchor-id="okno-sesyjne-session-window">Okno sesyjne (Session Window)</h3>
+<p>Dynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (gap).</p>
+<p>Przykład: sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.</p>
 </section>
-<section id="duże-dane" class="level1">
-<h1>Duże dane</h1>
-<p>Kiedy podjąć decyzję biznesową ?</p>
-<p><img alt="Batch Processing" src="../img/batch0.png" class="center"></p>
-<section id="hadoop-map-reduce-skalowanie-obliczeń-na-big-data" class="level2">
-<h2 class="anchored" data-anchor-id="hadoop-map-reduce-skalowanie-obliczeń-na-big-data">Hadoop Map-Reduce – Skalowanie obliczeń na Big Data</h2>
-<p>Kiedy mówimy o skalowalnym przetwarzaniu danych, pierwszym skojarzeniem może być Google.<br>
-Ale co tak naprawdę sprawia, że możemy wyszukiwać informacje w ułamku sekundy, przetwarzając petabajty danych?</p>
-<p>👉 Czy wiesz, że nazwa “Google” pochodzi od słowa “Googol”, czyli liczby równej 10¹⁰⁰?<br>
-To więcej niż liczba atomów w znanym Wszechświecie! 🌌</p>
-<section id="wyzwanie-czy-uda-ci-się-zapisać-liczbę-googol-do-końca-zajęć" class="level3">
-<h3 class="anchored" data-anchor-id="wyzwanie-czy-uda-ci-się-zapisać-liczbę-googol-do-końca-zajęć">🔥 Wyzwanie: Czy uda Ci się zapisać liczbę Googol do końca zajęć?</h3>
+<section id="porównanie-okien" class="level3">
+<h3 class="anchored" data-anchor-id="porównanie-okien">Porównanie okien</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Typ okna</th>
+<th>Długość</th>
+<th>Nakładanie</th>
+<th>Zastosowanie</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Rozłączne (Tumbling)</td>
+<td>Stała</td>
+<td>Nie</td>
+<td>Raporty okresowe</td>
+</tr>
+<tr class="even">
+<td>Przesuwne (Sliding)</td>
+<td>Stała</td>
+<td>Tak</td>
+<td>Wykrywanie trendów</td>
+</tr>
+<tr class="odd">
+<td>Skokowe (Hopping)</td>
+<td>Stała</td>
+<td>Częściowe</td>
+<td>Wygładzanie danych</td>
+</tr>
+<tr class="even">
+<td>Sesyjne (Session)</td>
+<td>Dynamiczna</td>
+<td>Nie</td>
+<td>Analiza sesji użytkowników</td>
+</tr>
+</tbody>
+</table>
+<div id="ed404eb3" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Porównanie: tumbling vs sliding window na tych samych danych</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Tumbling (5 min) ==="</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tumbling <span class="op">=</span> zdarzenia.groupby(zdarzenia[<span class="st">'czas'</span>].dt.floor(<span class="st">'5min'</span>))[<span class="st">'kwota'</span>].<span class="bu">sum</span>().<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tumbling)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Sliding (okno 5 min, krok 1 min) ==="</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> start_min <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dv">1</span>):</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    start <span class="op">=</span> pd.Timestamp(<span class="st">'2026-03-12 14:00'</span>) <span class="op">+</span> pd.Timedelta(minutes<span class="op">=</span>start_min)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    end <span class="op">=</span> start <span class="op">+</span> pd.Timedelta(minutes<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> (zdarzenia[<span class="st">'czas'</span>] <span class="op">&gt;=</span> start) <span class="op">&amp;</span> (zdarzenia[<span class="st">'czas'</span>] <span class="op">&lt;</span> end)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    suma <span class="op">=</span> zdarzenia.loc[mask, <span class="st">'kwota'</span>].<span class="bu">sum</span>()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> suma <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  [</span><span class="sc">{</span>start<span class="sc">.</span>strftime(<span class="st">'%H:%M'</span>)<span class="sc">}</span><span class="ss">–</span><span class="sc">{</span>end<span class="sc">.</span>strftime(<span class="st">'%H:%M'</span>)<span class="sc">}</span><span class="ss">) suma = </span><span class="sc">{</span>suma<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Tumbling (5 min) ===
+czas
+2026-03-12 14:00:00    2648.68
+2026-03-12 14:05:00    2036.82
+2026-03-12 14:10:00    2061.89
+Name: kwota, dtype: float64
+
+=== Sliding (okno 5 min, krok 1 min) ===
+  [14:00–14:05) suma = 2648.68
+  [14:01–14:06) suma = 2484.66
+  [14:02–14:07) suma = 2344.59
+  [14:03–14:08) suma = 2370.66
+  [14:04–14:09) suma = 2323.98
+  [14:05–14:10) suma = 2036.82
+  [14:06–14:11) suma = 1919.63
+  [14:07–14:12) suma = 1730.35
+  [14:08–14:13) suma = 2159.60
+  [14:09–14:14) suma = 2103.20
+  [14:10–14:15) suma = 2061.89
+  [14:11–14:16) suma = 1673.73
+  [14:12–14:17) suma = 1331.06
+  [14:13–14:18) suma = 702.85
+  [14:14–14:19) suma = 333.04</code></pre>
+</div>
+</div>
 <hr>
 </section>
 </section>
-<section id="dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają" class="level2">
-<h2 class="anchored" data-anchor-id="dlaczego-sql-i-klasyczne-algorytmy-nie-wystarczają">🔍 Dlaczego SQL i klasyczne algorytmy nie wystarczają?</h2>
-<p>Tradycyjne <strong>bazy danych SQL</strong> czy <strong>jednowątkowe algorytmy</strong> zawodzą, gdy skala danych przekracza pojedynczy komputer.<br>
-W tym miejscu pojawia się <strong>MapReduce</strong> – rewolucyjny model obliczeniowy stworzony przez Google.</p>
-<section id="rozwiązania-google-dla-big-data" class="level3">
-<h3 class="anchored" data-anchor-id="rozwiązania-google-dla-big-data">🛠️ Rozwiązania Google dla Big Data:</h3>
-<p>✅ <strong>Google File System (GFS)</strong> – rozproszony system plików.<br>
-✅ <strong>Bigtable</strong> – system do przechowywania ogromnych ilości ustrukturyzowanych danych.<br>
-✅ <strong>MapReduce</strong> – algorytm podziału pracy na wiele maszyn.</p>
-</section>
-</section>
-<section id="graficzne-przedstawienie-mapreduce" class="level2">
-<h2 class="anchored" data-anchor-id="graficzne-przedstawienie-mapreduce">Graficzne przedstawienie MapReduce</h2>
-<section id="mapowanie-rozdziela-zadania-map" class="level3">
-<h3 class="anchored" data-anchor-id="mapowanie-rozdziela-zadania-map">Mapowanie rozdziela zadania (Map)</h3>
-<p>Każde wejście dzielone jest na mniejsze części i przetwarzane równolegle.</p>
-<p>🌍 Wyobraź sobie, że masz <strong>książkę telefoniczną</strong> i chcesz znaleźć wszystkie osoby o nazwisku “Nowak”.<br>
-➡️ <strong>Podziel książkę na fragmenty i daj każdemu do przeanalizowania jeden fragment.</strong></p>
-</section>
-<section id="redukcja-zbiera-wyniki-reduce" class="level3">
-<h3 class="anchored" data-anchor-id="redukcja-zbiera-wyniki-reduce">Redukcja zbiera wyniki (Reduce)</h3>
-<p>Wszystkie częściowe wyniki są łączone w jedną, końcową odpowiedź.</p>
-<p>🔄 Wszyscy uczniowie zgłaszają swoje wyniki, a jeden student zbiera i podsumowuje odpowiedź.</p>
-</section>
-</section>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section"><img alt="MapReduce w działaniu – rozdzielanie i agregowanie danych" src="../img/mapreduce_flow.png" class="center"></h2>
-</section>
-<section id="klasyczny-przykład-liczenie-słów-w-tekście" class="level2">
-<h2 class="anchored" data-anchor-id="klasyczny-przykład-liczenie-słów-w-tekście">💡 Klasyczny przykład: Liczenie słów w tekście</h2>
-<p>Załóżmy, że mamy miliony książek i chcemy policzyć, ile razy występuje każde słowo.</p>
-<section id="kod-mapreduce-w-pythonie-z-użyciem-multiprocessing" class="level3">
-<h3 class="anchored" data-anchor-id="kod-mapreduce-w-pythonie-z-użyciem-multiprocessing">🖥️ Kod MapReduce w Pythonie (z użyciem multiprocessing)</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> multiprocessing <span class="im">import</span> Pool</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Funkcja Map (podział tekstu na słowa)</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> map_function(text):</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> text.split()</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Counter(words)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Funkcja Reduce (sumowanie wyników)</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reduce_function(counters):</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    total_count <span class="op">=</span> Counter()</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> counter <span class="kw">in</span> counters:</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        total_count.update(counter)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> total_count</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>texts <span class="op">=</span> [</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"big data is amazing"</span>,</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"data science and big data"</span>,</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"big data is everywhere"</span></span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:    </span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> Pool() <span class="im">as</span> pool:</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        mapped_results <span class="op">=</span> pool.<span class="bu">map</span>(map_function, texts)</span>
-<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    final_result <span class="op">=</span> reduce_function(mapped_results)</span>
-<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(final_result)</span>
-<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Counter({'data': 4, 'big': 3, 'is': 2, 'amazing': 1, 'science': 1, 'and': 1, 'everywhere': 1})</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="co-tu-się-dzieje" class="level3">
-<h3 class="anchored" data-anchor-id="co-tu-się-dzieje">🔹 Co tu się dzieje?</h3>
-<p>✅ Każdy fragment tekstu jest przetwarzany niezależnie (<strong>map</strong>).<br>
-✅ Wyniki są zbierane i sumowane (<strong>reduce</strong>).<br>
-✅ <strong>Efekt:</strong> Możemy przetwarzać <strong>terabajty tekstu równolegle</strong>!</p>
-<p><img alt="Batch Processing" src="../img/batch3.png" class="center"></p>
-<hr>
-</section>
-</section>
-<section id="wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce" class="level2">
-<h2 class="anchored" data-anchor-id="wizualizacja-porównanie-klasycznego-podejścia-i-mapreduce">🎨 Wizualizacja – Porównanie klasycznego podejścia i MapReduce</h2>
-<p>📊 <strong>Stare podejście</strong> – Jeden komputer wykonuje wszystko sekwencyjnie.<br>
-📊 <strong>Nowe podejście (MapReduce)</strong> – Każda maszyna liczy fragment i wyniki są agregowane.</p>
-<p><img alt="MapReduce Processing" src="../img/mapreduce_vs_classic.png" class="center"></p>
-<hr>
-</section>
-<section id="wyzwanie-dla-ciebie" class="level2">
-<h2 class="anchored" data-anchor-id="wyzwanie-dla-ciebie">🚀 Wyzwanie dla Ciebie!</h2>
-<p>🔹 <strong>Znajdź i uruchom swój własny algorytm MapReduce w dowolnym języku!</strong><br>
-🔹 <strong>Czy potrafisz zaimplementować własny MapReduce do innego zadania?</strong> (np. analiza logów, zliczanie kliknięć na stronie)</p>
-</section>
-<section id="big-data" class="level2">
-<h2 class="anchored" data-anchor-id="big-data">Big Data</h2>
-<p>Systemy Big data mogą być częścią (źródłem) dla hurtowni danych (np. Data Lake, Enterprise Data Hub)</p>
-<p>Ale Hurtownie danych nie są systemami Big Data!</p>
-<ol type="1">
-<li>Hurtownie danych</li>
-</ol>
-<ul>
-<li>przetrzymywanie danych wysoko strukturyzowanych</li>
-<li>skupione na analizach i procesie raportowania</li>
-<li>100% accuracy</li>
-</ul>
-<ol start="2" type="1">
-<li>Big Data</li>
-</ol>
-<ul>
-<li>dane o dowolnej strukturze</li>
-<li>służy do różnorodnych celów opartych na danych (analityka, data science …)</li>
-<li>poniżej 100% accuracy</li>
-</ul>
-<blockquote class="blockquote">
-<p><em>,,Big Data is like teenage sex: everyone talks about it, nobody really knows how to do it, everyone thinks everyone else is doing it, so every one claims they are doing it.’’</em> — Dan Ariely, Professor of Psychology and Behavioral Economics, Duke University</p>
-</blockquote>
-<section id="one-two-four-v" class="level3">
-<h3 class="anchored" data-anchor-id="one-two-four-v">one, two, … four V</h3>
-<ol type="1">
-<li><strong>Volume</strong> (Objętość) - rozmiar danych produkowanych na całym świecie przyrasta w tempie wykładniczym.</li>
-<li><strong>Velocity</strong> (Szybkość) - tempo produkowania danych, szybkości ich przesyłania i przetwarzania.</li>
-<li><strong>Variety</strong> (Zróżnicowanie) - tradycyjne dane kojarzą się nam z postacią alfanumeryczną złożoną z liter i cyfr. Obecnie mamy do dyspozycji obrazy, dźwięki, pliki wideo, strumienie danych z IoT</li>
-<li><strong>Veracity</strong> (Wiarygodność) - Czy dane są kompletne i poprawne? Czy obiektywnie odzwierciedlają rzeczywistość? Czy są podstawą do podejmowania decyzji?</li>
-<li><strong>Value</strong> - The value that the data actually holds. In the end, it’s all about cost and benefits.</li>
-</ol>
-<blockquote class="blockquote">
-<p><em>Celem obliczeń nie są liczby, lecz ich zrozumienie</em> R.W. Hamming 1962.</p>
-</blockquote>
-</section>
-</section>
-<section id="modele-przetwarzania-danych" class="level2">
-<h2 class="anchored" data-anchor-id="modele-przetwarzania-danych">Modele przetwarzania danych</h2>
-<p>Dane w biznesie przetwarzane są praktycznie od zawsze. W ciągu ostatnich dziesięcioleci ilość przetwarzanych danych systematycznie rośnie co wpływa na proces przygotowania i przetwarzania danych.</p>
-<section id="trochę-historii" class="level3">
-<h3 class="anchored" data-anchor-id="trochę-historii">Trochę historii</h3>
-<ul>
-<li>Lata 60-te : Kolekcje danych, bazy danych</li>
-<li>Lata 70-te : Relacyjne modele danych i ich implementacja w systemach OLTP</li>
-<li>1975 : Pierwsze komputery osobiste</li>
-<li>Lata 80-te : Zaawansowane modele danych, extended-relational, objective oriented, aplikacyjno-zorientowane itp.</li>
-<li>1983 : Początek internetu</li>
-<li>Lata 90-te : Data mining, hurtownie danych, systemy OLAP</li>
-<li>Później : NoSQL, Hadoop, SPARK, data lake</li>
-<li>2002 : AWS , 2005: Hadoop, Cloud computing</li>
-</ul>
-<p>Większość danych przechowywana jest w bazach lub hurtowniach danych. Standardowo dostęp do danych sprowadza się najczęściej do realizacji zapytań poprzez aplikację.</p>
-<p>Sposób wykorzystania i realizacji procesu dostępu do bazy danych nazywamy <strong>modelem przetwarzania</strong>. Najczęściej używane są dwie implementacje:</p>
-</section>
-<section id="model-tradycyjny" class="level3">
-<h3 class="anchored" data-anchor-id="model-tradycyjny">Model Tradycyjny</h3>
-<p><strong>Model tradycyjny</strong> - przetwarzanie transakcyjne w trybie on-line, OLTP (on-line transaction processing). Świetnie sprawdza się w przypadku obsługi bieżącej np. obsługa klienta, rejestr zamówień, obsługa sprzedaży itp. Wykorzystywany w systemach Enterprise Resource Planning (ERP) Systems, Customer Relationship Management (CRM) software, and web-based applications.</p>
-<p><img src="../img/baza1.png" class="center img-fluid"></p>
-<p>Model ten dostarcza efektywnych rozwiązań m.in do:</p>
-<ul>
-<li>efektywnego i bezpiecznego przechowywania danych,</li>
-<li>transakcyjnego odtwarzanie danych po awarii,</li>
-<li>optymalizacji dostępu do danych,</li>
-<li>zarządzania współbieżnością,</li>
-<li>przetwarzania zdarzeń -&gt; odczyt -&gt; zapis</li>
-</ul>
-<p>Co w przypadku gdy mamy do czynienia z:</p>
-<ul>
-<li>agregacjami danych z wielu systemów (np. dla wielu sklepów),</li>
-<li>raportowanie i podsumowania danych,</li>
-<li>optymalizacja złożonych zapytań,</li>
-<li>wspomaganie decyzji biznesowych.</li>
-</ul>
-<p>Badania nad tego typu zagadnieniami doprowadziły do sformułowania nowego modelu przetwarzania danych oraz nowego typu baz danych - <strong>Hurtownie Danych</strong> <em>(Data warehouse)</em>.</p>
-</section>
-<section id="model-olap" class="level3">
-<h3 class="anchored" data-anchor-id="model-olap">Model OLAP</h3>
-<p><strong>Przetwarzanie analityczne on-line OLAP (on-line analytic processing).</strong></p>
-<p>Wspieranie procesów analizy i dostarczanie narzędzi umożliwiających analizę wielowymiarową (<code>czas</code>, <code>miejsce</code>, <code>produkt</code>).</p>
-<p>Proces zrzucania danych z różnych systemów do jednej bazy nazywamy Extract-Transform-Load (ETL) (normalizacja i encoding and schema transaction).</p>
-<p>Analiza danych z hurtowni to przede wszystkim obliczanie <strong>agregatów</strong> (podsumowań) dotyczących wymiarów hurtowni. Proces ten jest całkowicie sterowany przez użytkownika.</p>
-<p><strong>Przykład</strong></p>
-<p>Załóżmy, że mamy dostęp do hurtowni danych gdzie przechowywane są informacje dotyczące sprzedaży produktów w supermarkecie. Jak przeanalizować zapytania:</p>
-<ol type="1">
-<li>Jaka jest łączna sprzedaż produktów w kolejnych kwartałach, miesiącach, tygodniach ?</li>
-<li>Jaka jest sprzedaż produktów z podziałem na rodzaje produktów ?</li>
-<li>Jaka jest sprzedaż produktów z podziałem na oddziały supermarketu ?</li>
-</ol>
-<p>Odpowiedzi na te pytania pozwalają określić <code>wąskie gardła</code> sprzedaży produktów przynoszących deficyt, zaplanować zapasy w magazynach czy porównać sprzedaż różnych grup w różnych oddziałach supermarketu.</p>
-<p>W ramach Hurtowni Danych najczęściej wykonuje się dwa rodzaje zapytań(oba w trybie batchowym): 1. Wykonywane okresowo w czasie zapytania raportowe obliczające biznesowe statystyki 2. Wykonywane ad-hoc zapytania wspomagające krytyczne decyzje biznesowe.</p>
-<p><img src="../img/baza2.png" class="center img-fluid"></p>
-</section>
-</section>
-<section id="business-impact" class="level2">
-<h2 class="anchored" data-anchor-id="business-impact">Business Impact:</h2>
-<p>Różnorodność danych (Variety) pozwala firmie budować pełny obraz klienta (Customer 360). Zdolność do łączenia sztywnych danych sprzedażowych (SQL) z luźnymi opiniami z mediów społecznościowych (NoSQL/NLP) pozwala odkrywać nisze rynkowe niewidoczne w tradycyjnych raportach. Skalowalność typu MapReduce gwarantuje, że koszty analityki nie wzrosną liniowo wraz z przyrostem danych, co jest kluczowe dla rentowności projektów Big Data.</p>
+<section id="podsumowanie" class="level2">
+<h2 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h2>
+<p>Na tym wykładzie poznaliśmy dwie kluczowe architektury (Lambda i Kappa) oraz fundamentalne pojęcia przetwarzania strumieniowego: czas zdarzenia, czas przetwarzania, watermarking i okna czasowe. To pojęcia, które będą towarzyszyć nam na laboratoriach podczas pracy z Apache Kafka i Spark Structured Streaming.</p>
+<p><strong>Na następnym wykładzie:</strong> uczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.</p>
+<p><strong>Do przemyślenia:</strong> Twój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

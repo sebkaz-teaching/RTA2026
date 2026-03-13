@@ -1,444 +1,249 @@
 ---
-title:  Wykład 4
-
+title: "Wykład 4 — Apache Kafka"
 format:
   html:
     code-fold: true
 jupyter: python3
 ---
 
-## Historia podejścia do architektury 
+*Czas trwania: 1,5h*
 
-Rozwój technologii, szczególnie przejście od `monolitów` do `mikroserwisów`, miał ogromny wpływ na współczesne systemy informatyczne. 
-Monolityczne aplikacje, które były dominującym podejściem w przeszłości, stanowiły jedną, dużą jednostkę kodu. 
-Takie podejście miało swoje zalety, takie jak prostota na początkowych etapach rozwoju systemu, ale także istotne wady, w tym trudności w skalowaniu, ograniczoną elastyczność i skomplikowaną konserwację.
+**Cel wykładu:** Poznanie architektury Apache Kafka — brokerów, tematów, partycji, producentów, konsumentów i grup konsumentów. Zrozumienie, dlaczego Kafka jest fundamentem nowoczesnych systemów real-time.
 
-W miarę jak technologia ewoluowała, pojawiły się `mikroserwisy` – podejście, które polega na dzieleniu aplikacji na mniejsze, niezależne usługi, z których każda odpowiada za określoną funkcjonalność.
-Przejście na mikroserwisy umożliwiło większą elastyczność, łatwiejsze skalowanie systemów oraz szybkie wdrażanie nowych funkcji. 
-Ponadto każda usługa może być rozwijana, testowana i wdrażana niezależnie, co upraszcza zarządzanie kodem i zmniejsza ryzyko błędów.
+---
 
-Dzięki mikroserwisom organizacje mogą lepiej dostosować się do zmieniających się potrzeb biznesowych, poprawić dostępność systemów (poprzez izolowanie awarii do pojedynczych usług) oraz szybciej wprowadzać innowacje. 
-Dodatkowo, mikroserwisy sprzyjają stosowaniu nowoczesnych metod takich jak konteneryzacja i chmurowe rozwiązania, co dodatkowo ułatwia zarządzanie infrastrukturą i pozwala na lepsze wykorzystanie zasobów.
+## Od monolitu do mikroserwisów — kontekst
 
-Jednakże, mimo wielu korzyści, przejście do mikroserwisów wiąże się również z wyzwaniami, takimi jak:
+Zanim przejdziemy do Kafki, krótki kontekst. Tradycyjna aplikacja to **monolit** — jeden duży program, który robi wszystko: obsługuje użytkowników, przetwarza dane, generuje raporty. Łatwy na start, ale trudny do skalowania i modyfikowania.
 
-- złożoność zarządzania komunikacją między usługami, 
-- konieczność monitorowania i utrzymania większej liczby komponentów
-- zarządzanie transakcjami rozproszonymi. 
+**Mikroserwisy** to podejście, w którym aplikację dzielimy na małe, niezależne usługi — każda odpowiedzialna za jedno zadanie. Usługa „płatności" nie zna szczegółów usługi „rekomendacji". Komunikują się przez **API** lub **kolejki wiadomości**.
 
-Wymaga to nowych narzędzi i podejść do zarządzania oraz wdrożenia kultury DevOps.
+Problem: gdy masz 20 mikroserwisów, które muszą wymieniać dane, tworzysz siatkę połączeń punkt-punkt. Każdy nowy serwis wymaga integracji z wieloma innymi. To nie skaluje się.
 
-Wraz z rozwojem mikroserwisów, pojawiły się także nowe technologie, takie jak `serverless` i `konteneryzacja`, które stanowią naturalne rozszerzenie elastyczności systemów. 
-Te technologie jeszcze bardziej zwiększają efektywność zarządzania i skalowania nowoczesnych aplikacji, stając się kluczowymi elementami w ekosystemie chmurowym.
+Rozwiązanie: **centralny broker wiadomości** — jedno miejsce, przez które przepływają wszystkie dane. I tu wchodzi Apache Kafka.
 
-### Serverless
+---
 
-Serverless to model, w którym deweloperzy nie muszą zarządzać serwerami ani infrastrukturą. 
-Zamiast tego, dostawcy chmurowi zajmują się całą infrastrukturą, a programiści koncentrują się jedynie na kodzie aplikacji. 
-Kluczowym atutem tego podejścia jest jego skalowalność – aplikacje automatycznie skalują się w zależności od zapotrzebowania na zasoby. 
-Systemy serverless pozwalają na dynamiczne uruchamianie i zatrzymywanie funkcji w odpowiedzi na konkretne zdarzenia, co prowadzi do optymalizacji kosztów (płacisz tylko za faktyczne wykorzystanie zasobów). 
-To podejście ułatwia zarządzanie aplikacjami o zmiennym lub trudnym do przewidzenia ruchu.
+## Co to jest Apache Kafka?
 
-Serverless jest także doskonałym uzupełnieniem dla mikroserwisów, pozwalając na uruchamianie niezależnych funkcji w odpowiedzi na różne zdarzenia, co daje jeszcze większą elastyczność. 
-Może być wykorzystywane w takich zastosowaniach jak przetwarzanie danych w czasie rzeczywistym, obsługa API czy automatyzacja zadań.
+Kafka to **rozproszona platforma strumieniowa** stworzona w LinkedIn (2011), obecnie rozwijana jako projekt Apache. Nie jest „kolejnym systemem kolejkowym" — to coś więcej.
 
-### Konteneryzacja
+Kluczowe cechy:
 
-Konteneryzacja (np. przy użyciu Docker) to kolejny krok w kierunku zwiększenia elastyczności. Dzięki kontenerom, aplikacje oraz ich zależności są zapakowane w izolowane jednostki, które można uruchamiać w różnych środowiskach w sposób spójny i przewidywalny. Kontenery są lekkie, szybkie do uruchomienia i oferują łatwość w przenoszeniu aplikacji między różnymi platformami, co jest kluczowe w architekturach mikroserwisowych.
+- **Rozproszona** — działa na wielu serwerach (brokerach) jako klaster.
+- **Trwała** — wiadomości zapisywane na dysku, nie znikają po odczytaniu (w przeciwieństwie do klasycznych kolejek).
+- **Szybka** — obsługuje miliony wiadomości na sekundę.
+- **Skalowalna** — dodajesz brokerów i partycji w miarę wzrostu danych.
 
-Konteneryzacja zyskuje na znaczeniu, szczególnie w połączeniu z narzędziami do zarządzania kontenerami, takimi jak Kubernetes, które automatycznie skalują aplikacje, monitorują ich stan, zapewniają wysoką dostępność oraz zarządzają ich cyklem życia. To podejście idealnie wspiera zarówno mikroserwisy, jak i serverless, umożliwiając łatwe wdrażanie, skalowanie i monitorowanie aplikacji.
+### Kafka to nie kolejka
 
-### Wspólny Cel – Elastyczność
+W klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest usuwana po przetworzeniu. Kafka tego nie robi — wiadomości są **przechowywane na dysku** przez konfigurowalny czas (domyślnie 7 dni). Dzięki temu:
 
-Zarówno serverless, jak i konteneryzacja, stanowią dalszy krok w kierunku elastyczności, oferując możliwość szybkiej reakcji na zmieniające się warunki i zapotrzebowanie. Wspólnie z mikroserwisami tworzą nowoczesne podejście do architektury aplikacji, które pozwala na rozdzielenie odpowiedzialności, łatwiejsze skalowanie, dynamiczne dostosowywanie zasobów i lepsze wykorzystanie infrastruktury chmurowej.
+- wielu konsumentów może odczytać te same dane,
+- konsument może wrócić do wcześniejszych wiadomości (replay),
+- awaria konsumenta nie powoduje utraty danych.
 
-Kombinacja tych technologii umożliwia firmom szybkie wdrażanie nowych funkcji, reagowanie na zmieniające się potrzeby użytkowników oraz minimalizowanie kosztów poprzez optymalne wykorzystanie zasobów, co jest szczególnie istotne w dzisiejszym, dynamicznie zmieniającym się środowisku technologicznym.
+---
 
+## Architektura Kafki
 
-## Wpływ technologii na systemy informatyczne
+### Wzorzec Publish/Subscribe
 
-Komunikacja sieciowa, relacyjne bazy danych, rozwiązania chmurowe oraz Big Data znacząco zmieniły sposób budowania systemów informatycznych i wykonywania w nich pracy.  
+Kafka implementuje wzorzec **pub/sub** (publikuj/subskrybuj). Nadawca (producent) nie wysyła wiadomości bezpośrednio do odbiorcy — publikuje ją do **tematu**. Odbiorcy (konsumenci) subskrybują tematy, które ich interesują.
 
-Podobnie, narzędzia do przekazu informacji – takie jak **gazeta, radio, telewizja, internet, komunikatory i media społecznościowe** – wpłynęły na interakcje międzyludzkie oraz struktury społeczne.  
-Każde nowe medium technologiczne kształtuje sposób, w jaki ludzie korzystają z informatyki i postrzegają jej rolę w codziennym życiu.
+```
+  Producent A ──┐                    ┌── Konsument X
+  Producent B ──┤── Temat: zamówienia ──┤── Konsument Y
+  Producent C ──┘                    └── Konsument Z
+```
 
-## Mikrousługi (Mikroserwisy) w nowoczesnej architekturze IT
+### Tematy (Topics)
 
-Jednym z najpopularniejszych podejść do budowy systemów informatycznych jest **koncepcja mikrousług (microservices)**.  
-Jest ona szeroko stosowana zarówno w **tworzeniu oprogramowania**, jak i w prowadzeniu firm opartych na analizie danych (**Data-Driven**).
+**Temat** to logiczny kanał danych — jak folder, do którego trafiają wiadomości określonego typu. Np. `transakcje`, `zamowienia`, `logi-serwera`, `odczyty-sensorow`.
 
-### Główne zalety mikroserwisów:
+### Partycje (Partitions)
 
-- **Wydajność** – każda usługa realizuje jedno, dobrze określone zadanie (*"rób jedną rzecz, ale dobrze"*).
-- **Elastyczność** – umożliwiają łatwe modyfikacje i skalowanie systemu.
-- **Przejrzystość architektury** – system składa się z niewielkich, niezależnych modułów.
+Każdy temat jest podzielony na jedną lub więcej **partycji**. Partycja to uporządkowana, niezmienna sekwencja wiadomości — każda wiadomość otrzymuje unikalny numer (**offset**).
 
-Mikroserwisy można porównać do **czystych funkcji** w programowaniu funkcyjnym – każda usługa działa niezależnie i posiada jasno określone wejścia oraz wyjścia.  
+Partycje służą dwóm celom:
 
-Aby umożliwić komunikację między mikroserwisami, często wykorzystuje się **Application Programming Interfaces (API)**, które pozwalają na wymianę danych i integrację różnych usług.
+- **Skalowalność** — dane jednego tematu mogą być rozproszone na wielu brokerach.
+- **Równoległość** — wielu konsumentów może czytać różne partycje jednocześnie.
 
-### Przykład API w mikroserwisach – Python & FastAPI
+```
+  Temat: transakcje
+  ┌──────────────────────────────────┐
+  │ Partycja 0: [msg0][msg1][msg2].. │  ← Broker 1
+  │ Partycja 1: [msg0][msg1][msg2].. │  ← Broker 2
+  │ Partycja 2: [msg0][msg1][msg2].. │  ← Broker 3
+  └──────────────────────────────────┘
+```
 
-Poniżej znajduje się przykładowy mikroserwis REST API w **Pythonie** z użyciem **FastAPI**, który zwraca informacje o użytkownikach:
+### Brokerzy (Brokers)
+
+**Broker** to pojedynczy serwer Kafki. Klaster Kafki składa się z wielu brokerów. Każdy broker przechowuje część partycji.
+
+Aby zapewnić niezawodność, Kafka **replikuje** partycje na wielu brokerach. Współczynnik replikacji (np. 3) oznacza, że każda partycja ma 3 kopie na różnych serwerach. Jeśli jeden broker padnie — dane nie giną.
+
+---
+
+## Producenci (Producers)
+
+Producent to aplikacja, która wysyła wiadomości do Kafki. Producent wskazuje temat, a Kafka przypisuje wiadomość do partycji:
+
+- domyślnie: **round-robin** (kolejno do każdej partycji),
+- z kluczem: Kafka oblicza hash klucza i na tej podstawie wybiera partycję — wiadomości z tym samym kluczem zawsze trafiają do tej samej partycji.
+
+```python
+from kafka import KafkaProducer
+import json
+from datetime import datetime
+
+producer = KafkaProducer(
+    bootstrap_servers='localhost:9092',
+    value_serializer=lambda v: json.dumps(v).encode('utf-8')
+)
+
+# Wysyłanie transakcji do tematu "transakcje"
+transakcja = {
+    'id': 'TX0042',
+    'kwota': 1250.00,
+    'klient': 'K-1001',
+    'czas': datetime.now().isoformat(),
+    'sklep': 'Warszawa'
+}
+
+producer.send('transakcje', value=transakcja)
+producer.flush()
+print(f"Wysłano: {transakcja}")
+```
+
+### Producent z kluczem
+
+Jeśli chcemy, żeby wszystkie transakcje tego samego klienta trafiały do jednej partycji (np. w celu analizy sesji):
+
+```python
+# Klucz = ID klienta → ten sam klient zawsze w tej samej partycji
+producer.send(
+    'transakcje',
+    key=b'K-1001',       # klucz partycjonowania
+    value=transakcja
+)
+```
+
+---
+
+## Konsumenci (Consumers)
+
+Konsument to aplikacja, która odczytuje wiadomości z tematu. Konsument śledzi swój **offset** — wie, którą wiadomość ostatnio przetworzył. Po awarii wznawia od tego miejsca.
+
+```python
+from kafka import KafkaConsumer
+import json
+
+consumer = KafkaConsumer(
+    'transakcje',
+    bootstrap_servers='localhost:9092',
+    auto_offset_reset='earliest',
+    value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+)
+
+for message in consumer:
+    tx = message.value
+    if tx['kwota'] > 1000:
+        print(f"Duża transakcja: {tx['id']} = {tx['kwota']} PLN ({tx['sklep']})")
+```
+
+### Grupy konsumentów (Consumer Groups)
+
+Gdy jeden konsument nie nadąża z przetwarzaniem — dodajesz kolejnych. Konsumenci w **tej samej grupie** dzielą między siebie partycje:
+
+- Kafka automatycznie przypisuje partycje do konsumentów w grupie.
+- Każdą partycję czyta **dokładnie jeden** konsument z grupy.
+- Jeśli konsument padnie — jego partycje przejmuje inny.
+
+Ideał: **liczba konsumentów w grupie = liczba partycji**. Jeśli konsumentów jest więcej niż partycji — nadmiarowi będą bezczynni.
+
+```
+  Temat: transakcje (3 partycje)
+  Grupa konsumentów: "fraud-detection"
+
+  Partycja 0 ──→ Konsument A
+  Partycja 1 ──→ Konsument B
+  Partycja 2 ──→ Konsument C
+```
+
+Różne grupy konsumentów mogą czytać **te same dane** niezależnie. Np. grupa `fraud-detection` analizuje transakcje pod kątem oszustw, a grupa `reporting` buduje raporty — obie czytają temat `transakcje`, ale mają osobne offsety.
+
+---
+
+## Mikroserwis z modelem ML — FastAPI
+
+W praktyce konsument Kafki często przekazuje dane do modelu ML serwowanego przez API. FastAPI to lekki framework Pythonowy idealny do tego celu.
 
 ```python
 from fastapi import FastAPI
-
-app = FastAPI()
-
-# Przykładowe dane użytkowników
-users = {
-    1: {"name": "Anna", "age": 28},
-    2: {"name": "Piotr", "age": 35},
-    3: {"name": "Kasia", "age": 22},
-}
-
-@app.get("/users/{user_id}")
-def get_user(user_id: int):
-    """Zwraca dane użytkownika na podstawie ID."""
-    return users.get(user_id, {"error": "User not found"})
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
-```
-
-Jak to działa?
-
-1. Uruchamiamy serwer FastAPI.
-2. Możemy uzyskać dane użytkownika, wysyłając żądanie GET do `http://127.0.0.1:8000/users/1`. 
-3. API zwróci dane w formacie JSON, np.:
-```json
-{
-    "name": "Anna",
-    "age": 28
-}
-```
-
-### Komunikacja przez API
-
-Centralnym elementem architektury mikrousług jest wykorzystanie interfejsów **API** (**Application Programming Interface**).  
-API umożliwia komunikację i integrację między różnymi mikroserwisami, podobnie jak strona internetowa komunikuje się z przeglądarką.  
-Gdy odwiedzasz stronę internetową, serwer wysyła kod, który Twoja przeglądarka interpretuje i wyświetla jako stronę internetową.  
-Podobnie działa API – wysyła odpowiedzi na zapytania klienta.
-
-## Przypadek biznesowy: Model ML jako usługa
-
-Załóżmy, że pracujesz w firmie zajmującej się sprzedażą nieruchomości w **Bostonie**.  
-Chcesz zwiększyć sprzedaż i poprawić jakość obsługi klientów poprzez nową aplikację mobilną, z której może korzystać nawet **1 000 000 użytkowników jednocześnie**.  
-
-Jednym z rozwiązań jest **udostępnienie prognozy wartości domu** w czasie rzeczywistym.  
-Gdy użytkownik prosi o wycenę nieruchomości, aplikacja wysyła zapytanie do serwera, który przetwarza je za pomocą modelu **Machine Learning (ML)** i zwraca oszacowaną wartość.
-
-### Czym jest serwowanie modelu ML?
-
-Trening dobrego modelu **ML** to dopiero **pierwszy krok** całego procesu.  
-Aby model był użyteczny, musisz go **udostępnić użytkownikom końcowym**, np. w formie **API**.
-
-### Jak to zrobić?
-
-1. Potrzebujesz:
-
-- wytrenowanego **modelu ML**,
-- **interpreter** modelu (np. TensorFlow, Scikit-Learn, PyTorch),
-- danych wejściowych dla modelu.  
-
-2. Kluczowe **metryki** jakości serwowania modelu:
-
-1. **Czas odpowiedzi** (latency),
-2. **Koszt uruchomienia** modelu (infrastruktura serwerowa),
-3. **Liczba zapytań na sekundę** (QPS – Queries Per Second).
-
-> **Udostępnianie danych między systemami** zawsze było kluczowym wyzwaniem w tworzeniu oprogramowania.  
-> W obszarze tradycyjnego **DevOps** koncentrujemy się na infrastrukturze, a w **MLOps** – na wdrażaniu i utrzymaniu modeli uczenia maszynowego.
-
-Zbudowanie systemu przygotowanego do środowiska produkcyjnego jest bardziej skomplikowane niż wytrenowanie samego modelu: 
-
-- czyszczenie i załadowanie odpowiednich i zwalidowanych danych
-- Obliczenie zmiennych i ich serwowanie na właściwym środowisku
-- Serwowanie modelu w sposób najbardziej efektywny ze względu na koszty
-- Wersjonowanie, śledzenie i udostępnianie danych i modeli oraz innych artefaktów
-- Monitorowanie infrastruktury i modelu
-- Wdrożenie modelu na skalowalnej infrastrukturze
-- Automatyzacja procesu wdrażania i treningu 
-
-## Jak działa API?
-
-Kiedy wywołasz **interfejs API**, serwer otrzymuje Twoje żądanie, przetwarza je i generuje odpowiedź.  
-Jeśli wszystko działa poprawnie, otrzymasz wynik w formacie **JSON** lub **XML**.  
-Jeśli wystąpi błąd, API zwróci **kod błędu HTTP** (np. 400 – nieprawidłowe żądanie, 500 – błąd serwera).
-
-### Kluczowe zasady REST API:
-
-- **Klient-Serwer** → Klient (np. aplikacja mobilna) wysyła żądanie HTTP do API hostowanego na serwerze, który zwraca odpowiedź.  
-  *Działa to identycznie jak przeglądarka internetowa, która wysyła żądanie do serwera WWW i otrzymuje stronę HTML.*
-  
-- **Bezstanowość** → Każde żądanie klienta musi zawierać wszystkie niezbędne informacje do przetworzenia odpowiedzi,  
-  *API nie powinno przechowywać informacji o wcześniejszych żądaniach użytkownika.*
-
-
-### Przykład: API serwujące model ML
-
-Poniżej znajduje się przykładowy **serwis API**, który udostępnia model **ML** do prognozowania ceny nieruchomości,  
-z wykorzystaniem **FastAPI** oraz **Scikit-Learn**:
-
-```python
-from fastapi import FastAPI
-import pickle
 import numpy as np
+import pickle
 
-# Tworzymy API
 app = FastAPI()
 
-# Wczytujemy wcześniej wytrenowany model ML (np. regresję liniową)
-with open("model.pkl", "rb") as f:
-    model = pickle.load(f)
+# Wczytanie wytrenowanego modelu
+# with open("model.pkl", "rb") as f:
+#     model = pickle.load(f)
 
 @app.get("/predict/")
 def predict_price(area: float, bedrooms: int, age: int):
-    """
-    Prognoza ceny nieruchomości na podstawie cech:
-    - area (powierzchnia w m²),
-    - bedrooms (liczba sypialni),
-    - age (wiek budynku w latach).
-    """
+    """Prognoza ceny nieruchomości."""
     features = np.array([[area, bedrooms, age]])
-    price = model.predict(features)[0]
+    # price = model.predict(features)[0]
+    price = area * 8500 + bedrooms * 50000 - age * 2000  # uproszczony model
     return {"estimated_price": round(price, 2)}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+# Uruchomienie: uvicorn main:app --reload
+# Zapytanie: http://localhost:8000/predict/?area=75&bedrooms=3&age=10
 ```
 
+### Request i Response — jak działa API?
 
-### Zapytanie - Request
+**Zapytanie (Request):**
 
-1.  Adres URL (np. _http://mydomain:8000/getapi?&val1=43&val2=3_) zawiera: 
-- domenę, 
-- port, 
-- dodatkowe ścieżki, 
-- zapytanie
+- URL: `http://localhost:8000/predict/?area=75&bedrooms=3&age=10`
+- Metoda HTTP: GET lub POST
+- Nagłówki: Content-Type, Authorization
+- Ciało (body): dane w formacie JSON
 
-2.  Metody HTTP:
-- GET, 
-- POST
+**Odpowiedź (Response):**
 
-3.  Nagłówki HTTP zawierają:
-
-- informacje o autoryzacji, 
-- cookies metadata
-
-Cała informacja zawarta jest w _Content-Type: application/json, text ... Accept: application/json, Authorization: Basic abase64string, Tokens_ 
-4.  Ciało zapytania
-
-Najczęściej wybieranym formatem dla wymiany informacji między serwisami jest format `JavaScript Object Notation`  (JSON).
-Przypomina on pythonowy obiekt słownika - "klucz": "wartość".
+- Status HTTP: `200 OK`, `400 Bad Request`, `500 Internal Server Error`
+- Ciało: wynik w formacie JSON
 
 ```json
-{
-"RAD": 1,
-"PTRATIO": 15.3, "INDUS": 2.31, "B": 396.9,
-"ZN": 18,
-"DIS": 4.09, "CRIM": 0.00632, "RM": 6.575, 
-"AGE": 65.2, "CHAS": 0, "NOX": 0.538, 
-"TAX": 296, "LSTAT": 4.98
-}
+{"estimated_price": 787500.0}
 ```
 
-### Odpowiedź - Response
+---
 
-1. Treść odpowiedzi przekazywana jest razem z nagłówkiem oraz statusem: 
-```bash
-200 OK
-Content-Encoding: gzip
-Content-Type: text/html; charset=utf-8
-Date: Mon, 18 Jul 2016 16:06:00 GMT Server: Apache
-Path=/;
+## Kafka + ML — kompletny obraz
+
+Łącząc elementy z ostatnich wykładów, oto schemat typowego systemu real-time analytics:
+
+```
+  Źródło danych          Kafka              Przetwarzanie        Wynik
+  ─────────────          ─────              ──────────────        ─────
+  Aplikacja webowa ─┐                    ┌─ Spark Streaming ──→ Dashboard
+  Sensory IoT ──────┼─→ Temat: events ──┼─ FastAPI + model ML → Alerty
+  System płatności ──┘                    └─ Zapis do bazy ───→ Raporty
 ```
 
-2. np.: "_Content-Type" => "application/json; charset=utf-8", "Server" => "Genie/Julia/1.8.5_"
+Producenci (aplikacje, sensory, systemy) wysyłają zdarzenia do Kafki. Konsumenci (Spark, FastAPI, systemy raportowe) odczytują je i przetwarzają — każdy na swój sposób, niezależnie od pozostałych.
 
-3. Treść (ciało) odpowiedzi: 
+---
 
-```json
-{":input":{"RAD":1,"PTRATIO":15.3,"INDUS":2.31,.....}}, {":prediction":[29.919737211857683]}
-```
-4. HTTP status code:
+## Podsumowanie
 
-- 200 OK  - prawidłowe wykonanie zapytania,
-- 40X Access Denied
-- 50X Internal server error
+Kafka to centralny element architektury strumieniowej. Jej siła tkwi w trwałości danych (wiadomości nie znikają), skalowalności (partycje, replikacja) i elastyczności (wielu niezależnych konsumentów). Na laboratoriach sami uruchomicie klaster Kafki w Dockerze i napiszecie producentów i konsumentów w Pythonie.
 
-> Wyszukaj informacje czym jest `REST API`. 
+**Na następnym wykładzie:** Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę, integracja z Kafką.
 
-
-## Publikuj/Subskrybuj
-
-System przesyłania wiadomości „Publikuj/Subskrybuj” ma kluczowe znaczenie dla aplikacji opartych na danych. 
-_Komunikaty Pub/Sub_ to wzorzec charakteryzujący się tym, że nadawca (publikujący) fragmentu danych (wiadomości) nie kieruje go wprost do odbiorcy.
-pub/sub to systemy, które często posiadają brokera czyli centralny punkt, w którym znajdują się wiadomości.
-
-## Apache Kafka
-
-Na [witrynie Kafki](https://kafka.apache.org) znajdziesz definicję:
-
-### Rozproszona platforma streamingowa
-
-**Co to jest „platforma rozproszonego przesyłania strumieniowego”?**
-
-Najpierw chcę przypomnieć, czym jest „strumień”.
-Strumienie to po prostu nieograniczone dane, dane, które nigdy się nie kończą.
-Ciągle ich przybywa i możesz przetwarzać je w czasie rzeczywistym.
-
-A „rozproszone”? Rozproszony oznacza, że ​​Kafka działa w klastrze, a każdy węzeł w grupie nazywa się Brokerem.
-Ci brokerzy to po prostu serwery wykonujące kopię Apache Kafka.
-
-Tak więc Kafka to zestaw współpracujących ze sobą maszyn, aby móc obsługiwać i przetwarzać nieograniczone dane w czasie rzeczywistym.
-
-Brokerzy sprawiają, że jest niezawodny, skalowalny i odporny na błędy.
-Ale dlaczego panuje błędne przekonanie, że Kafka to kolejny „kolejkowy system przesyłania wiadomości”?
-
-Aby odpowiedzieć na tę odpowiedź, musimy najpierw wyjaśnić, jak działa kolejkowe przesyłanie wiadomości.
-
-### Kolejkowy system przesyłania wiadomości
-
-Przesyłanie wiadomości, to po prostu czynność wysyłania wiadomości z jednego miejsca do drugiego. Ma trzech głównych "aktorów":
-
-- Producent: Który tworzy i wysyła komunikaty do jednej lub więcej kolejek;
-- Kolejka: struktura danych bufora, która odbiera (od producentów) i dostarcza komunikaty (do konsumentów) w sposób FIFO (First-In-First-Out). Po otrzymaniu powiadomienia jest ono na zawsze usuwane z kolejki; nie ma szans na odzyskanie go;
-- Konsument: subskrybuje jedną lub więcej kolejek i otrzymuje ich wiadomości po opublikowaniu.
-
-I to jest to; tak działa przesyłanie wiadomości.
-Jak widać, nie ma tu nic o strumieniach, czasie rzeczywistym czy klastrach.
-
-### Architektura Apache Kafka
-
-Więcej informacji na temat Kafki znajdziesz w tym [linku](https://www.cloudkarafka.com/blog/part1-kafka-for-beginners-what-is-apache-kafka.html).
-
-Teraz, gdy rozumiemy podstawy przesyłania wiadomości, zagłębmy się w świat **Apache Kafka**.  
-W Kafce mamy dwa kluczowe pojęcia: **Producentów** (*Producers*) i **Konsumentów** (*Consumers*),  
-którzy działają w podobny sposób jak w klasycznych systemach kolejkowych, produkując i konsumując wiadomości.
-
-<br>
-
-<img src="../img/kafka1.png" class="center" />
-
-Jak widać, Kafka przypomina klasyczny system przesyłania wiadomości, jednak w odróżnieniu od tradycyjnych kolejek,  
-zamiast pojęcia **kolejki** (*queue*) mamy **Tematy** (*Topics*).
-
-### Tematy (Topics) i Partycje (Partitions)
-
-**Temat (Topic)** to podstawowy kanał przesyłania danych w Kafce.  
-Można go porównać do folderu, w którym przechowywane są wiadomości.  
-
-Każdy temat posiada jedną lub więcej **partycji (Partitions)** – podział ten wpływa na skalowalność i równoważenie obciążenia.  
-Podczas tworzenia tematu określamy liczbę partycji.  
-
-#### Kluczowe cechy tematów i partycji:
-
-- **Temat** to logiczna jednostka, do której producenci wysyłają wiadomości, a konsumenci je odczytują.
-- **Partycja** to fizyczny podział tematu. Można ją porównać do plików w folderze.
-- **Offset** – każda wiadomość w partycji otrzymuje unikalny identyfikator (*offset*),  
-  który pozwala konsumentom śledzić, które wiadomości zostały już przetworzone.
-- **Kafka przechowuje wiadomości na dysku**, dzięki czemu może je ponownie odczytać (w przeciwieństwie do klasycznych kolejek, gdzie wiadomość jest usuwana po przetworzeniu).
-- **Konsumenci odczytują wiadomości sekwencyjnie**, od najstarszej do najnowszej.
-- W przypadku awarii konsument może wznowić przetwarzanie od ostatniego zapisanego *offsetu*.
-
-<br>
-
-<img src="../img/kafka2.png" class="center" />
-
-
-### Brokerzy (Brokers) i Klaster Kafka
-
-Kafka działa w sposób **rozproszony** – oznacza to, że może składać się z wielu **brokerów (Brokers)**,  
-które współpracują jako jeden klaster.
-
-<br>
-
-<img src="../img/kafka3.png" class="center" />
-
-#### Kluczowe informacje o brokerach
-
-- **Broker** to pojedynczy serwer w klastrze Kafki, odpowiedzialny za przechowywanie partycji tematów.
-- Każdy broker w klastrze ma unikalny identyfikator.
-- Aby zwiększyć dostępność i niezawodność, Kafka wykorzystuje **replikację danych**.
-- **Współczynnik replikacji** określa, ile kopii danej partycji ma być przechowywane na różnych brokerach.
-- Jeśli temat ma **trzy partycje** i współczynnik replikacji równy **trzy**,  
-  oznacza to, że każda partycja zostanie powielona na trzech różnych brokerach.
-
-Liczba partycji powinna być dobrana w taki sposób, aby każdy broker miał co najmniej jedną partycję do obsługi.
-
-
-### Producenci (Producers)
-
-W **Kafka** producenci to aplikacje lub usługi, które **tworzą i wysyłają wiadomości** do tematów.  
-Działa to podobnie do systemów kolejkowych, z tą różnicą, że Kafka zapisuje wiadomości w partycjach.  
-
-#### Jak Kafka przypisuje wiadomości do partycji?
-
-- Wiadomości są rozsyłane **okrężnie** (*round-robin*) do dostępnych partycji.
-- Możemy określić **klucz wiadomości**, a Kafka wyliczy jego **hash**,  
-  aby określić, do której partycji trafi wiadomość.
-- **Klucz wiadomości determinuje przypisanie do partycji** – jeśli temat został już utworzony,  
-  liczba partycji nie może być zmieniona bez zakłócenia tego mechanizmu.
-
-**Przykład przypisania wiadomości do partycji:**
-
-- Wiadomość **01** trafia do **partycji 0** tematu **Topic_1**.
-- Wiadomość **02** trafia do **partycji 1** tego samego tematu.
-- Kolejna wiadomość może ponownie trafić do **partycji 0**, jeśli stosujemy przypisanie *round-robin*.
-
-```python 
-from kafka import KafkaProducer
-
-# Tworzymy producenta Kafka
-producer = KafkaProducer(bootstrap_servers="localhost:9092")
-
-# Wysyłamy wiadomość do tematu "real_estate"
-topic = "real_estate"
-message = b"Nowe mieszkanie na sprzedaż"
-
-producer.send(topic, message)
-producer.flush()
-
-print(f"Wiadomość wysłana do tematu '{topic}'")
-```
-
-### Konsumenci (Consumers)
-
-Konsumenci w Kafce odczytują i przetwarzają wiadomości z tematów.
-Każdy konsument może należeć do grupy konsumentów (Consumer Group),
-co pozwala na równoległe przetwarzanie wiadomości.
--	Jeśli wielu konsumentów należy do tej samej grupy, Kafka równoważy obciążenie między nimi.
--	Jeśli jeden konsument przestanie działać, Kafka automatycznie przypisze jego partycje do innego aktywnego konsumenta.
-
-Przykład konsumenta w Pythonie:
-```python
-from kafka import KafkaConsumer
-
-# Tworzymy konsumenta, który nasłuchuje temat "real_estate"
-consumer = KafkaConsumer("real_estate", bootstrap_servers="localhost:9092")
-
-print("Oczekiwanie na wiadomości...")
-
-for message in consumer:
-    print(f"Otrzymano wiadomość: {message.value.decode()}")
-```
-
-Innym ważnym pojęciem Kafki są „Grupy konsumentów”.
-Jest to bardzo ważne, gdy musimy skalować odczytywanie wiadomości.
-Staje się to bardzo kosztowne, gdy pojedynczy konsument musi czytać z wielu partycji, więc musimy zrównoważyć obciążenie między naszymi konsumentami, wtedy wchodzą grupy konsumentów.
-
-Dane z jednego tematu będą równoważone obciążeniem między konsumentami, dzięki czemu możemy zagwarantować, że nasi konsumenci będą w stanie obsługiwać i przetwarzać dane.
-Ideałem jest posiadanie takiej samej liczby konsumentów w grupie, jaką mamy jako partycje w temacie, w ten sposób każdy konsument czyta tylko z jednego.
-Podczas dodawania konsumentów do grupy należy uważać, jeśli liczba konsumentów jest większa niż liczba partycji, niektórzy konsumenci nie będą czytać z żadnego tematu i pozostaną bezczynni.
-
-</br>
-<img src="../img/kafka4.png" class="center" /> 
-
-## Business Impact:
-Architektura mikrousług oparta na Kafce pozwala organizacji na niespotykaną elastyczność – nowe funkcje biznesowe można wdrażać bez zatrzymywania całego systemu (tzw. Agility). 
-Z punktu widzenia ekonomii skali, model Serverless i konteneryzacja optymalizują wydatki na infrastrukturę IT (Capex zamieniamy na Opex). 
-Udostępnianie modeli ML przez API otwiera drogę do tzw. API Economy, czyli monetyzacji własnych algorytmów jako produktów dla partnerów zewnętrznych.
+**Do przemyślenia:** Projektujesz system monitorowania cen konkurencji dla sieci sklepów. Jakie tematy Kafki byś utworzył? Ile partycji? Jakie grupy konsumentów?

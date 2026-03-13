@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Wprowadzenie do Apache Spark – Analiza danych w czasie rzeczywistym</title>
+<title>Lab 6: Apache Spark — DataFrame, SQL, transformacje – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Wprowadzenie do Apache Spark</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab6.html">Lab 6: Apache Spark — DataFrame, SQL, transformacje</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -182,31 +182,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 1</span></a>
+ <span class="menu-text">Wykład 1 — Od plików płaskich do Data Lake</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 2</span></a>
+ <span class="menu-text">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 3</span></a>
+ <span class="menu-text">Wykład 3 — Uczenie maszynowe: batch vs online</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 4</span></a>
+ <span class="menu-text">Wykład 4 — Apache Kafka</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 5</span></a>
+ <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
   </div>
 </li>
       </ul>
@@ -221,20 +292,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title"><strong>Sections</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#architektura-spark" id="toc-architektura-spark" class="nav-link active" data-scroll-target="#architektura-spark">Architektura Spark</a></li>
-  <li><a href="#główne-komponenty-apache-spark" id="toc-główne-komponenty-apache-spark" class="nav-link" data-scroll-target="#główne-komponenty-apache-spark">Główne komponenty Apache Spark</a></li>
-  <li><a href="#uruchomienie-apache-spark" id="toc-uruchomienie-apache-spark" class="nav-link" data-scroll-target="#uruchomienie-apache-spark">Uruchomienie Apache Spark</a></li>
-  <li><a href="#źródła-danych-w-spark-structured-streaming" id="toc-źródła-danych-w-spark-structured-streaming" class="nav-link" data-scroll-target="#źródła-danych-w-spark-structured-streaming">🔌 Źródła danych w Spark Structured Streaming</a></li>
-  <li><a href="#output-modes-tryby-wypisywania-wyników" id="toc-output-modes-tryby-wypisywania-wyników" class="nav-link" data-scroll-target="#output-modes-tryby-wypisywania-wyników">📤 Output Modes – tryby wypisywania wyników</a></li>
+  <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
+  <li><a href="#przygotowanie" id="toc-przygotowanie" class="nav-link" data-scroll-target="#przygotowanie">Przygotowanie</a></li>
+  <li><a href="#część-1-sparksession-i-dataframe" id="toc-część-1-sparksession-i-dataframe" class="nav-link" data-scroll-target="#część-1-sparksession-i-dataframe">Część 1: SparkSession i DataFrame</a></li>
+  <li><a href="#część-2-agregacje-i-grupowanie" id="toc-część-2-agregacje-i-grupowanie" class="nav-link" data-scroll-target="#część-2-agregacje-i-grupowanie">Część 2: Agregacje i grupowanie</a></li>
+  <li><a href="#część-3-okna-czasowe-w-spark" id="toc-część-3-okna-czasowe-w-spark" class="nav-link" data-scroll-target="#część-3-okna-czasowe-w-spark">Część 3: Okna czasowe w Spark</a></li>
+  <li><a href="#część-4-praca-z-plikami" id="toc-część-4-praca-z-plikami" class="nav-link" data-scroll-target="#część-4-praca-z-plikami">Część 4: Praca z plikami</a></li>
+  <li><a href="#praca-domowa" id="toc-praca-domowa" class="nav-link" data-scroll-target="#praca-domowa">Praca domowa</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab6.html">Lab 6: Apache Spark — DataFrame, SQL, transformacje</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Wprowadzenie do Apache Spark</h1>
+<h1 class="title">Lab 6: Apache Spark — DataFrame, SQL, transformacje</h1>
 </div>
 
 
@@ -251,224 +324,150 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><strong>Apache Spark</strong> to ogólnego przeznaczenia, przetwarzający dane w pamięci silnik obliczeniowy. Spark może być używany wraz z Hadoopem, Yarnem i innymi komponentami Big Data, aby w pełni wykorzystać jego możliwości oraz poprawić wydajność aplikacji. Oferuje wysokopoziomowe interfejsy API w językach Scala, Java, Python, R i SQL.</p>
-<section id="architektura-spark" class="level2">
-<h2 class="anchored" data-anchor-id="architektura-spark">Architektura Spark</h2>
-<p>Apache Spark działa w architekturze mistrz-podwładny (master-slave), gdzie główny węzeł nazywany jest „Driver”, a węzły podrzędne to „Workers”. Punktem startowym aplikacji Spark jest <code>sc</code>, czyli instancja klasy SparkContext, która działa wewnątrz Drivera.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1192/0*XzNeTtwEgIy5yWR_.png" class="img-fluid figure-img"></p>
-<figcaption>Architektura Spark 1</figcaption>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://miro.medium.com/v2/resize:fit:1266/0*-PltnPR9row8iUDo.png" class="img-fluid figure-img"></p>
-<figcaption>Architektura Spark 2</figcaption>
-</figure>
-</div>
-</section>
-<section id="główne-komponenty-apache-spark" class="level2">
-<h2 class="anchored" data-anchor-id="główne-komponenty-apache-spark">Główne komponenty Apache Spark</h2>
-<section id="spark-core" class="level3">
-<h3 class="anchored" data-anchor-id="spark-core"><strong>Spark Core</strong></h3>
-<p>Często nazywany również samym „Spark”. Podstawowym elementem Sparka jest <strong>RDD (Resilient Distributed Dataset)</strong> — odporna na błędy, rozproszona kolekcja danych, przetwarzana równolegle na wielu węzłach klastra.</p>
-</section>
-<section id="spark-sql" class="level3">
-<h3 class="anchored" data-anchor-id="spark-sql"><strong>Spark SQL</strong></h3>
-<p>W tej bibliotece dane reprezentowane są jako <strong>DataFrame</strong>, czyli struktura danych podobna do tabeli relacyjnej. Spark SQL umożliwia analizę danych z użyciem składni podobnej do SQL oraz funkcji przetwarzających dane.</p>
-</section>
-<section id="spark-streaming" class="level3">
-<h3 class="anchored" data-anchor-id="spark-streaming"><strong>Spark Streaming</strong></h3>
-<p>Biblioteka ta wprowadza pojęcie <strong>D-Stream (Discretized Stream)</strong> — strumienia danych dzielonego na małe porcje (mikropartie), które można przetwarzać niemal w czasie rzeczywistym.</p>
-</section>
-<section id="mllib" class="level3">
-<h3 class="anchored" data-anchor-id="mllib"><strong>MLlib</strong></h3>
-<p>Biblioteka do uczenia maszynowego, zawierająca popularne algorytmy, takie jak filtrowanie kolaboracyjne, klasyfikacja, klasteryzacja czy regresja.</p>
-</section>
-<section id="graphx" class="level3">
-<h3 class="anchored" data-anchor-id="graphx"><strong>GraphX</strong></h3>
-<p>Biblioteka służąca do przetwarzania grafów. Umożliwia rozwiązywanie problemów z zakresu teorii grafów, takich jak PageRank, komponenty spójne i inne.</p>
-</section>
-</section>
-<section id="uruchomienie-apache-spark" class="level2">
-<h2 class="anchored" data-anchor-id="uruchomienie-apache-spark">Uruchomienie Apache Spark</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder.appName(<span class="st">"Lab6"</span>).getOrCreate()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>spark</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>SparkSession <span class="op">-</span> <span class="kw">in</span><span class="op">-</span>memory</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>SparkContext</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="przykład-1---dane-ralizujące-szereg-czasowy" class="level3">
-<h3 class="anchored" data-anchor-id="przykład-1---dane-ralizujące-szereg-czasowy">Przykład 1 - dane ralizujące szereg czasowy</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>czujnik_temperatury <span class="op">=</span> ((<span class="fl">12.5</span>, <span class="st">"2019-01-02 12:00:00"</span>),</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>(<span class="fl">17.6</span>, <span class="st">"2019-01-02 12:00:20"</span>),</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(<span class="fl">14.6</span>,  <span class="st">"2019-01-02 12:00:30"</span>),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>(<span class="fl">22.9</span>,  <span class="st">"2019-01-02 12:01:15"</span>),</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>(<span class="fl">17.4</span>,  <span class="st">"2019-01-02 12:01:30"</span>),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>(<span class="fl">25.8</span>,  <span class="st">"2019-01-02 12:03:25"</span>),</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>(<span class="fl">27.1</span>,  <span class="st">"2019-01-02 12:02:40"</span>),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Dane realizujące pomiar temperatury w czasie.</p>
-<p>Aby wygenerować DataFrame należy użyć metod <code>createDataFrame</code>. Jednak należy pamiętać aby zdefiniować typy danych.</p>
-<p>W następnych laboratoriach szerzej opiszemy typy danych w Sparku.</p>
-<p>Zdefiuniujmy schemat naszych danych.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> to_timestamp</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StructField, StringType, DoubleType</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>schema <span class="op">=</span> StructType([</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"temperatura"</span>, DoubleType(), <span class="va">True</span>),</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"czas"</span>, StringType(), <span class="va">True</span>),</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Jak widać praktycznie wszystkie elementy poza nazwą kolumny oraz parametrem True są przedstawione jako obiekty.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (spark.createDataFrame(czujnik_temperatury, schema<span class="op">=</span>schema)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>      .withColumn(<span class="st">"czas"</span>, to_timestamp(<span class="st">"czas"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Sprawdźmy jak wygląda schemat utworzonej tabeli.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df.printSchema()</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>root</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a> <span class="op">|--</span> temperatura: double (nullable <span class="op">=</span> true)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a> <span class="op">|--</span> czas: timestamp (nullable <span class="op">=</span> true)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Następnie możemy sprawdzić jak przedstawia się sama tabela.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.show()</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">+-----------+-------------------+</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>temperatura<span class="op">|</span>               czas<span class="op">|</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="op">+-----------+-------------------+</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>       <span class="fl">12.5</span><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">00</span>:<span class="dv">00</span><span class="op">|</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>       <span class="fl">17.6</span><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">00</span>:<span class="dv">20</span><span class="op">|</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>       <span class="fl">14.6</span><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">00</span>:<span class="dv">30</span><span class="op">|</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>       <span class="fl">22.9</span><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">1</span>:<span class="dv">15</span><span class="op">|</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>       <span class="fl">17.4</span><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">1</span>:<span class="dv">30</span><span class="op">|</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>       <span class="fl">25.8</span><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">3</span>:<span class="dv">25</span><span class="op">|</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>       <span class="fl">27.1</span><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">2</span>:<span class="dv">40</span><span class="op">|</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="op">+-----------+-------------------+</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="spark-jako-sql" class="level3">
-<h3 class="anchored" data-anchor-id="spark-jako-sql">Spark jako SQL</h3>
-<p>Ramki danych w sparku pozwalają wykorzystać język sql:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df.createOrReplaceTempView(<span class="st">"czujnik_temperatury"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"SELECT * FROM czujnik_temperatury where temperatura &gt; 21"</span>).show()</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="op">+-------------------+-----------+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>               czas<span class="op">|</span>temperatura<span class="op">|</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="op">+-------------------+-----------+</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">1</span>:<span class="dv">15</span><span class="op">|</span>       <span class="fl">22.9</span><span class="op">|</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">3</span>:<span class="dv">25</span><span class="op">|</span>       <span class="fl">25.8</span><span class="op">|</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="op">|</span><span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">2</span>:<span class="dv">40</span><span class="op">|</span>       <span class="fl">27.1</span><span class="op">|</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="op">+-------------------+-----------+</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="grupowanie-danych" class="level3">
-<h3 class="anchored" data-anchor-id="grupowanie-danych">Grupowanie danych</h3>
-<p>Standardowy grupowanie danych w sparku po zmiennej “czas” wygeneruje nam liczbę wierszy w każdym grupie. Ze względu, iż zmienne czasowe mają różne wartości, ilość otrzymanych grup będzie równa ilości wierszy w tabeli.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> df.groupBy(<span class="st">"czas"</span>).count()</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df2.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Wykorzystując funkcję <code>window</code> możemy wygenerować grupy czasowe w zależności od wybranego okna czasowego.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Thumbling window</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark.sql.functions <span class="im">as</span> F</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> df.groupBy(F.window(<span class="st">"czas"</span>,<span class="st">"30 seconds"</span>)).count()</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>df2.show(truncate<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="op">+------------------------------------------+-----+</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>window                                    <span class="op">|</span>count<span class="op">|</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="op">+------------------------------------------+-----+</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>{<span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">00</span>:<span class="dv">00</span>, <span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">00</span>:<span class="dv">30</span>}<span class="op">|</span><span class="dv">2</span>    <span class="op">|</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>{<span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">00</span>:<span class="dv">30</span>, <span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">1</span>:<span class="dv">00</span>}<span class="op">|</span><span class="dv">1</span>    <span class="op">|</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>{<span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">1</span>:<span class="dv">00</span>, <span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">1</span>:<span class="dv">30</span>}<span class="op">|</span><span class="dv">1</span>    <span class="op">|</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>{<span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">1</span>:<span class="dv">30</span>, <span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">2</span>:<span class="dv">00</span>}<span class="op">|</span><span class="dv">1</span>    <span class="op">|</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>{<span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">3</span>:<span class="dv">00</span>, <span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">3</span>:<span class="dv">30</span>}<span class="op">|</span><span class="dv">1</span>    <span class="op">|</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="op">|</span>{<span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">2</span>:<span class="dv">30</span>, <span class="dv">2019</span><span class="op">-</span><span class="dv">0</span><span class="er">1</span><span class="op">-</span><span class="dv">0</span><span class="er">2</span> <span class="dv">12</span>:<span class="dv">0</span><span class="er">3</span>:<span class="dv">00</span>}<span class="op">|</span><span class="dv">1</span>    <span class="op">|</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="op">+------------------------------------------+-----+</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Sprawdźmy schemat</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df2.printSchema()</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>root</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a> <span class="op">|--</span> window: struct (nullable <span class="op">=</span> false)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a> <span class="op">|</span>    <span class="op">|--</span> start: timestamp (nullable <span class="op">=</span> true)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a> <span class="op">|</span>    <span class="op">|--</span> end: timestamp (nullable <span class="op">=</span> true)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a> <span class="op">|--</span> count: <span class="bu">long</span> (nullable <span class="op">=</span> false)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Podstawowa różnica między pandasowymi ramkami danych i sparkowymi jest taka, że w komórce danych sparkowych można używać typów złożonych - np <code>struct</code>.</p>
-</section>
-</section>
-<section id="źródła-danych-w-spark-structured-streaming" class="level1">
-<h1>🔌 Źródła danych w Spark Structured Streaming</h1>
-<p>Spark Structured Streaming pozwala na przetwarzanie danych w czasie rzeczywistym z różnych źródeł strumieniowych. Najpopularniejsze z nich to:</p>
-<section id="rate-źródło-testowe" class="level3">
-<h3 class="anchored" data-anchor-id="rate-źródło-testowe">✅ rate — źródło testowe</h3>
+<section id="cel" class="level2">
+<h2 class="anchored" data-anchor-id="cel">Cel</h2>
 <ul>
-<li>Automatycznie generuje dane: co sekundę dodaje wiersz.</li>
-<li>Każdy wiersz zawiera:</li>
-<li>timestamp – znacznik czasu,</li>
-<li>value – licznik rosnący (0, 1, 2, …).</li>
-<li>Używane do testowania logiki strumieniowania bez konieczności podpinania zewnętrznych źródeł.</li>
+<li>Uruchomienie SparkSession,</li>
+<li>Tworzenie DataFrame z różnych źródeł,</li>
+<li>Transformacje, filtrowanie, agregacje,</li>
+<li>Użycie Spark SQL.</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.readStream.<span class="bu">format</span>(<span class="st">"rate"</span>).option(<span class="st">"rowsPerSecond"</span>, <span class="dv">1</span>).load()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 </section>
-<section id="inne-źródła-strumieni" class="level3">
-<h3 class="anchored" data-anchor-id="inne-źródła-strumieni">📡 Inne źródła strumieni:</h3>
-<p><code>Socket</code> (do testów np. nc -lk 9999): To źródło nasłuchuje na wskazanym porcie gniazda (socket) i wczytuje dowolne dane do Spark Streaming. Również służy wyłącznie do celów testowych.</p>
-<p><code>Plik</code> (File): Nasłuchuje określonego katalogu i traktuje pojawiające się tam pliki jako dane strumieniowe. Obsługuje formaty takie jak CSV, JSON, ORC oraz Parquet (np. .csv, .json, .parquet).</p>
-<p><code>Kafka</code>: Odczytuje dane z Apache Kafka® i jest kompatybilne z brokerami w wersji 0.10.0 lub wyższej.</p>
+<section id="przygotowanie" class="level2">
+<h2 class="anchored" data-anchor-id="przygotowanie">Przygotowanie</h2>
+<p>Upewnij się, że masz zainstalowany PySpark:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pyspark</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="część-1-sparksession-i-dataframe" class="level2">
+<h2 class="anchored" data-anchor-id="część-1-sparksession-i-dataframe">Część 1: SparkSession i DataFrame</h2>
+<section id="zadanie-1.1-uruchom-sparka" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.1-uruchom-sparka">Zadanie 1.1 — Uruchom Sparka</h3>
+<div id="cell-2" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder <span class="op">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"Lab6"</span>) <span class="op">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    .master(<span class="st">"local[*]"</span>) <span class="op">\</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(spark.version)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-1.2-utwórz-dataframe-z-danych-w-pythonie" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.2-utwórz-dataframe-z-danych-w-pythonie">Zadanie 1.2 — Utwórz DataFrame z danych w Pythonie</h3>
+<p>Utwórz DataFrame z danymi o transakcjach (id, kwota, sklep, data).</p>
+<div id="cell-4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StructField, StringType, DoubleType, TimestampType</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> to_timestamp</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>dane <span class="op">=</span> [</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX001"</span>, <span class="fl">150.0</span>, <span class="st">"Warszawa"</span>, <span class="st">"2026-03-01 10:00:00"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX002"</span>, <span class="fl">4500.0</span>, <span class="st">"Kraków"</span>, <span class="st">"2026-03-01 10:05:00"</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX003"</span>, <span class="fl">89.0</span>, <span class="st">"Warszawa"</span>, <span class="st">"2026-03-01 10:10:00"</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX004"</span>, <span class="fl">220.0</span>, <span class="st">"Gdańsk"</span>, <span class="st">"2026-03-01 10:15:00"</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX005"</span>, <span class="fl">7800.0</span>, <span class="st">"Warszawa"</span>, <span class="st">"2026-03-01 10:20:00"</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX006"</span>, <span class="fl">55.0</span>, <span class="st">"Kraków"</span>, <span class="st">"2026-03-01 10:25:00"</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX007"</span>, <span class="fl">1200.0</span>, <span class="st">"Gdańsk"</span>, <span class="st">"2026-03-01 10:30:00"</span>),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX008"</span>, <span class="fl">340.0</span>, <span class="st">"Wrocław"</span>, <span class="st">"2026-03-01 10:35:00"</span>),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Zdefiniuj schemat (schema) i utwórz DataFrame</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Kolumna 'data' powinna byc typu timestamp (uzyj to_timestamp)</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Wyswietl df.show() i df.printSchema()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-1.3-podstawowe-operacje" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.3-podstawowe-operacje">Zadanie 1.3 — Podstawowe operacje</h3>
+<ol type="1">
+<li>Wyfiltruj transakcje powyżej 1000 PLN</li>
+<li>Dodaj kolumnę <code>duza_transakcja</code> (True jeśli kwota &gt; 1000, False w przeciwnym razie)</li>
+<li>Posortuj malejąco po kwocie</li>
+</ol>
+<div id="cell-6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> col, when</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
 </section>
 </section>
-<section id="output-modes-tryby-wypisywania-wyników" class="level1">
-<h1>📤 Output Modes – tryby wypisywania wyników</h1>
-<p>outputMode określa jak Spark wypisuje dane po każdej mikroserii (micro-batch). Dostępne tryby to:</p>
-<p><code>append</code> Wypisuje tylko nowe wiersze, które zostały dodane w tej mikroserii. Najczęściej używany.</p>
-<p><code>update</code> Wypisuje zmienione wiersze - czyli zaktualizowane agregaty.</p>
-<p><code>complete</code> Wypisuje całą tabelę agregacji po każdej mikroserii. Wymaga pełnej agregacji (np. groupBy).</p>
-<p>Utwórzmy nasz pierwszy strumieniowy DataFrame w Sparku, korzystając ze źródła danych typu <code>rate</code>.</p>
-<p>Możemy zrealizować kod skryptu</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> streamrate.py</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">## uruchom przez spark-submit streamrate.py</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder.appName(<span class="st">"StreamingDemo"</span>).getOrCreate()</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"WARN"</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (spark.readStream</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>      .<span class="bu">format</span>(<span class="st">"rate"</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>      .option(<span class="st">"rowsPerSecond"</span>, <span class="dv">1</span>)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>      .load()</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> (df.writeStream </span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">format</span>(<span class="st">"console"</span>) </span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    .outputMode(<span class="st">"append"</span>) </span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"truncate"</span>, <span class="va">False</span>) </span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    .start()</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>) </span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>query.awaitTermination()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Albo uruchomić kod w notatniku</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder.appName(<span class="st">"StreamingDemo"</span>).getOrCreate()</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"WARN"</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_batch(df, batch_id, tstop<span class="op">=</span><span class="dv">5</span>):</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Batch ID: </span><span class="sc">{</span>batch_id<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    df.show(truncate<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> batch_id <span class="op">==</span> tstop:</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        df.stop()</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (spark.readStream</span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>      .<span class="bu">format</span>(<span class="st">"rate"</span>)</span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      .option(<span class="st">"rowsPerSecond"</span>, <span class="dv">1</span>)</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      .load()</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> (df.writeStream </span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">format</span>(<span class="st">"console"</span>) </span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    .outputMode(<span class="st">"append"</span>)</span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    .foreachBatch(process_batch)</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"truncate"</span>, <span class="va">False</span>) </span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    .start()</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="część-2-agregacje-i-grupowanie" class="level2">
+<h2 class="anchored" data-anchor-id="część-2-agregacje-i-grupowanie">Część 2: Agregacje i grupowanie</h2>
+<section id="zadanie-2.1-grupowanie-po-sklepie" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.1-grupowanie-po-sklepie">Zadanie 2.1 — Grupowanie po sklepie</h3>
+<p>Oblicz: liczbę transakcji, sumę i średnią kwotę per sklep.</p>
+<div id="cell-8" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> count, <span class="bu">sum</span> <span class="im">as</span> spark_sum, avg, <span class="bu">round</span> <span class="im">as</span> spark_round</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-2.2-spark-sql" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.2-spark-sql">Zadanie 2.2 — Spark SQL</h3>
+<p>Zarejestruj DataFrame jako widok SQL i napisz zapytanie.</p>
+<div id="cell-10" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Zarejestruj widok</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD: df.createOrReplaceTempView("transakcje")</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Napisz zapytanie SQL: srednia kwota per sklep, posortowane malejaco</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD: spark.sql("...").show()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="część-3-okna-czasowe-w-spark" class="level2">
+<h2 class="anchored" data-anchor-id="część-3-okna-czasowe-w-spark">Część 3: Okna czasowe w Spark</h2>
+<section id="zadanie-3.1-tumbling-window" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.1-tumbling-window">Zadanie 3.1 — Tumbling Window</h3>
+<p>Pogrupuj transakcje w okna 10-minutowe i oblicz sumę kwot w każdym oknie.</p>
+<div id="cell-12" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark.sql.functions <span class="im">as</span> F</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Uzyj F.window("data", "10 minutes")</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Pogrupuj i oblicz sume kwot</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-3.2-sliding-window" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.2-sliding-window">Zadanie 3.2 — Sliding Window</h3>
+<p>Pogrupuj transakcje w okna 15-minutowe z krokiem 5 minut.</p>
+<div id="cell-14" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Uzyj F.window("data", "15 minutes", "5 minutes")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="część-4-praca-z-plikami" class="level2">
+<h2 class="anchored" data-anchor-id="część-4-praca-z-plikami">Część 4: Praca z plikami</h2>
+<section id="zadanie-4.1-zapis-i-odczyt" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4.1-zapis-i-odczyt">Zadanie 4.1 — Zapis i odczyt</h3>
+<ol type="1">
+<li>Zapisz DataFrame do formatu Parquet.</li>
+<li>Wczytaj go z powrotem i wyświetl.</li>
+</ol>
+<div id="cell-16" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># df.write.parquet("transakcje.parquet")</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># spark.read.parquet("transakcje.parquet").show()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="praca-domowa" class="level2">
+<h2 class="anchored" data-anchor-id="praca-domowa">Praca domowa</h2>
+<ol type="1">
+<li>Wczytaj dowolną ramkę danych z pliku CSV (np. z Kaggle).</li>
+<li>Wykonaj analizę eksploracjyną w Spark SQL (min. 3 zapytania).</li>
+<li>Zapisz wyniki do Parquet.</li>
+<li>Wyślij kod do repozytorium Git.</li>
+</ol>
+<p>Na następnych zajęciach: Spark Structured Streaming.</p>
+<div id="cell-18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>spark.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 
 
 </section>

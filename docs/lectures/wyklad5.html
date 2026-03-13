@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Wykład 5 – Analiza danych w czasie rzeczywistym</title>
+<title>Wykład 5 — Apache Spark i Structured Streaming – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -104,35 +104,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -181,7 +152,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad5.html">Wykład 5</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad5.html">Wykład 5 — Apache Spark i Structured Streaming</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -211,31 +182,102 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 1</span></a>
+ <span class="menu-text">Wykład 1 — Od plików płaskich do Data Lake</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 2</span></a>
+ <span class="menu-text">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 3</span></a>
+ <span class="menu-text">Wykład 3 — Uczenie maszynowe: batch vs online</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Wykład 4</span></a>
+ <span class="menu-text">Wykład 4 — Apache Kafka</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../lectures/wyklad5.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Wykład 5</span></a>
+ <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
   </div>
 </li>
       </ul>
@@ -250,19 +292,23 @@ window.Quarto = {
     <h2 id="toc-title"><strong>Sections</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#algorytmy" id="toc-algorytmy" class="nav-link active" data-scroll-target="#algorytmy">Algorytmy</a></li>
-  <li><a href="#wyjaśnialność-algorytmów" id="toc-wyjaśnialność-algorytmów" class="nav-link" data-scroll-target="#wyjaśnialność-algorytmów">Wyjaśnialność algorytmów</a></li>
-  <li><a href="#detekcja-anomalii" id="toc-detekcja-anomalii" class="nav-link" data-scroll-target="#detekcja-anomalii">Detekcja anomalii</a></li>
-  <li><a href="#business-impact" id="toc-business-impact" class="nav-link" data-scroll-target="#business-impact">Business Impact:</a></li>
+  <li><a href="#dlaczego-spark" id="toc-dlaczego-spark" class="nav-link active" data-scroll-target="#dlaczego-spark">Dlaczego Spark?</a></li>
+  <li><a href="#pyspark-podstawy" id="toc-pyspark-podstawy" class="nav-link" data-scroll-target="#pyspark-podstawy">PySpark — podstawy</a></li>
+  <li><a href="#structured-streaming-strumienie-jako-tabele" id="toc-structured-streaming-strumienie-jako-tabele" class="nav-link" data-scroll-target="#structured-streaming-strumienie-jako-tabele">Structured Streaming — strumienie jako tabele</a></li>
+  <li><a href="#integracja-spark-kafka" id="toc-integracja-spark-kafka" class="nav-link" data-scroll-target="#integracja-spark-kafka">Integracja Spark + Kafka</a></li>
+  <li><a href="#kompletny-pipeline-podsumowanie-kursu" id="toc-kompletny-pipeline-podsumowanie-kursu" class="nav-link" data-scroll-target="#kompletny-pipeline-podsumowanie-kursu">Kompletny pipeline — podsumowanie kursu</a></li>
+  <li><a href="#złożoność-algorytmów-uwaga-praktyczna" id="toc-złożoność-algorytmów-uwaga-praktyczna" class="nav-link" data-scroll-target="#złożoność-algorytmów-uwaga-praktyczna">Złożoność algorytmów — uwaga praktyczna</a></li>
+  <li><a href="#co-dalej-laboratoria" id="toc-co-dalej-laboratoria" class="nav-link" data-scroll-target="#co-dalej-laboratoria">Co dalej — laboratoria</a></li>
+  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie">Podsumowanie</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad5.html">Wykład 5</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad5.html">Wykład 5 — Apache Spark i Structured Streaming</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Wykład 5</h1>
+<h1 class="title">Wykład 5 — Apache Spark i Structured Streaming</h1>
 </div>
 
 
@@ -279,306 +325,309 @@ window.Quarto = {
 </header>
 
 
-<section id="algorytmy" class="level2">
-<h2 class="anchored" data-anchor-id="algorytmy">Algorytmy</h2>
-<p>Zanim zaprojektujesz rozwiązanie problemu biznesowego, warto zastanowić się nad złożonością Twojego problemu.</p>
-<section id="klasyfikacja-algorytmów" class="level3">
-<h3 class="anchored" data-anchor-id="klasyfikacja-algorytmów">Klasyfikacja algorytmów</h3>
-<p><strong>1. Algorytmy przetwarzające duże ilości danych</strong></p>
-<p>Przetwarzanie ogromnych zbiorów danych wymaga odpowiedniego podejścia do ich organizacji i analizy. W sytuacji, gdy ilość danych przekracza dostępną pamięć jednostki obliczeniowej, często stosuje się iteracyjne sposoby ich przetwarzania.</p>
-<p>🔹 Przykład: System rekomendacji w e-commerce (np. Amazon, Netflix)</p>
+<p><em>Czas trwania: 1,5h</em></p>
+<p><strong>Cel wykładu:</strong> Poznanie Apache Spark jako silnika do rozproszonego przetwarzania danych. Wprowadzenie do Structured Streaming i integracji Spark–Kafka. Przegląd kompletnego pipeline’u real-time analytics.</p>
+<hr>
+<section id="dlaczego-spark" class="level2">
+<h2 class="anchored" data-anchor-id="dlaczego-spark">Dlaczego Spark?</h2>
+<p>Na poprzednich wykładach poznaliśmy Kafkę — system, który <strong>transportuje</strong> strumienie danych. Ale Kafka sama w sobie nie wykonuje złożonych analiz. Do tego potrzebujemy silnika przetwarzania — i tu wchodzi <strong>Apache Spark</strong>.</p>
+<p>Spark to silnik do <strong>rozproszonego przetwarzania danych</strong>, który obsługuje zarówno tryb wsadowy (batch), jak i strumieniowy (streaming). Powstał na UC Berkeley w 2009 roku jako odpowiedź na ograniczenia Hadoop MapReduce — głównie na jego powolność wynikającą z ciągłego zapisu na dysk.</p>
+<p>Kluczowe cechy Sparka:</p>
 <ul>
-<li>Analizuje ogromne zbiory danych o użytkownikach, ich historii zakupów i oglądanych treści.</li>
-<li>Przetwarza dane w sposób iteracyjny (np. strumieniowe przetwarzanie w Apache Spark).</li>
-<li>Wykorzystuje algorytmy filtracji kolaboratywnej lub algorytmy grafowe do przewidywania preferencji użytkownika.</li>
+<li><strong>Przetwarzanie w pamięci</strong> — dane trzymane w RAM, nie na dysku. Nawet 100x szybciej niż MapReduce.</li>
+<li><strong>Jeden silnik, wiele trybów</strong> — batch, streaming, SQL, ML, grafy — wszystko w jednym frameworku.</li>
+<li><strong>API w Pythonie (PySpark)</strong>, Scali, Javie i R.</li>
+<li><strong>Lazy evaluation</strong> — Spark buduje plan wykonania i optymalizuje go zanim cokolwiek obliczy.</li>
 </ul>
-<p>🔹 Inne zastosowania:</p>
-<ul>
-<li>Analiza logów serwerowych w czasie rzeczywistym (np. wykrywanie ataków DDoS).</li>
-<li>Monitoring sieci IoT (np. analiza danych z sensorów w inteligentnym mieście).</li>
-</ul>
-<p><strong>2. Algorytmy dokonujące wielu obliczeń</strong></p>
-<p>Wymagają dużej mocy obliczeniowej, ale zazwyczaj nie operują na wielkich zbiorach danych. Przykładem może być algorytm wyszukujący dużą liczbę pierwszą. Często wykorzystuje się tutaj podział obliczeń na równoległe procesy w celu optymalizacji wydajności.</p>
-<p>🔹 Przykład: Kryptografia i znalezienie dużej liczby pierwszej (np. RSA)</p>
-<ul>
-<li>Algorytm generuje bardzo duże liczby pierwsze, które są podstawą dla szyfrowania RSA.</li>
-<li>Proces wymaga intensywnych obliczeń, ale nie operuje na ogromnych zbiorach danych.</li>
-<li>Często wykorzystywane są metody równoległe, np. algorytm probabilistyczny Millera-Rabina do testowania pierwszości.</li>
-</ul>
-<p>🔹 Inne zastosowania:</p>
-<ul>
-<li>Symulacje fizyczne (np. prognozowanie pogody, modele klimatyczne).</li>
-<li>Algorytmy optymalizacyjne (np. znajdowanie najkrótszej trasy w problemie komiwojażera).</li>
-</ul>
-<p><strong>3. Algorytmy przetwarzające duże ilości danych i dokonujące wielu obliczeń</strong></p>
-<p>Łączą wymagania obu poprzednich typów, potrzebując zarówno dużych zasobów obliczeniowych, jak i obsługi dużych zbiorów danych. Przykładem może być analiza sentymentu w transmisjach wideo na żywo.</p>
-<p>🔹 Przykład: Analiza sentymentu w transmisjach wideo na żywo (np. YouTube, Twitch)</p>
-<ul>
-<li>Algorytm analizuje zarówno tekst (czat), jak i obraz/wideo w czasie rzeczywistym.</li>
-<li>Wymaga zarówno dużych zasobów obliczeniowych (przetwarzanie NLP i CV), jak i obsługi dużej ilości danych.</li>
-<li>Może wykorzystywać modele Transformer (np. BERT) do analizy tekstu oraz CNN/RNN do analizy obrazu i dźwięku.</li>
-</ul>
-<p>🔹 Inne zastosowania:</p>
-<ul>
-<li>Autonomiczne pojazdy (analiza obrazu i decyzje w czasie rzeczywistym).</li>
-<li>Wyszukiwanie anomalii w ogromnych zbiorach danych finansowych (np. wykrywanie oszustw bankowych).</li>
-</ul>
+<hr>
 </section>
-<section id="wymiar-danych" class="level3">
-<h3 class="anchored" data-anchor-id="wymiar-danych">Wymiar danych</h3>
-<p>Aby określić wymiar danych problemu, nie wystarczy podać jedynie ilości miejsca zajmowanego przez dane. Istotne są trzy główne aspekty:</p>
-<ol type="1">
-<li><strong>Rozmiar wejścia</strong> – oczekiwany rozmiar danych do przetwarzania.</li>
-<li><strong>Szybkość narastania</strong> – tempo generowania nowych danych podczas działania algorytmu.</li>
-<li><strong>Różnorodność struktury</strong> – typy danych, jakie algorytm musi obsłużyć.</li>
-</ol>
+<section id="pyspark-podstawy" class="level2">
+<h2 class="anchored" data-anchor-id="pyspark-podstawy">PySpark — podstawy</h2>
+<section id="sparksession-punkt-wejścia" class="level3">
+<h3 class="anchored" data-anchor-id="sparksession-punkt-wejścia">SparkSession — punkt wejścia</h3>
+<p>Każdy program PySpark zaczyna się od utworzenia <code>SparkSession</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder <span class="op">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"MojaPierwszaAplikacja"</span>) <span class="op">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    .master(<span class="st">"local[*]"</span>) <span class="op">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>local[*]</code> oznacza: uruchom Sparka lokalnie, używając wszystkich dostępnych rdzeni procesora. W produkcji zamiast tego podaje się adres klastra.</p>
 </section>
-<section id="wymiar-obliczeniowy" class="level3">
-<h3 class="anchored" data-anchor-id="wymiar-obliczeniowy">Wymiar obliczeniowy</h3>
-<p>Dotyczy zasobów procesowania i mocy obliczeniowej. Na przykład algorytmy uczenia głębokiego (DL) wymagają dużej mocy obliczeniowej, dlatego warto zapewnić zrównolegloną architekturę, wykorzystującą GPU lub TPU, co znacząco przyspiesza obliczenia.</p>
-</section>
-</section>
-<section id="wyjaśnialność-algorytmów" class="level2">
-<h2 class="anchored" data-anchor-id="wyjaśnialność-algorytmów">Wyjaśnialność algorytmów</h2>
-<p>W wielu przypadkach modelowanie jest wykorzystywane w sytuacjach krytycznych, np. w oprogramowaniu do podawania leków. W takich sytuacjach kluczowe staje się wyjaśnienie przyczyny każdego wyniku działania algorytmu. Jest to konieczne, aby zapewnić, że decyzje podejmowane na jego podstawie są wolne od błędów i uprzedzeń.</p>
-<p>Zdolność algorytmu do wskazania mechanizmów generujących wyniki nazywamy <strong>możliwością wyjaśnienia</strong>. Analiza etyczna stanowi standardowy element procesu walidacji algorytmu.</p>
-<p>Uzyskanie wysokiej wyjaśnialności jest szczególnie trudne w przypadku algorytmów uczenia maszynowego (ML) i głębokiego uczenia (DL). Na przykład banki korzystające z algorytmów do podejmowania decyzji kredytowych muszą zapewnić transparentność i wskazać powody wydanej decyzji.</p>
-<p>Jedną z metod poprawy wyjaśnialności algorytmów jest <strong>LIME</strong> (<em>Local Interpretable Model-Agnostic Explanations</em>), opublikowana w 2016 roku. Metoda ta polega na wprowadzaniu niewielkich zmian w danych wejściowych i analizowaniu ich wpływu na wynik, co pozwala określić lokalne zasady podejmowania decyzji przez model.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#from lime.lime_tabular import LimeTabularExplainer</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Wczytanie danych Iris</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> iris.data</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> iris.target</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Podział na zbiór treningowy i testowy</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Trenowanie modelu</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Tworzenie obiektu LIME do interpretacji modelu</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># explainer = LimeTabularExplainer(X_train, feature_names=iris.feature_names, class_names=iris.target_names, discretize_continuous=True)</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Interpretacja losowego przykładu ze zbioru testowego</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># i = np.random.randint(0, len(X_test))  # Wybór losowego przykładu</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># exp = explainer.explain_instance(X_test[i], model.predict_proba)</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Wyświetlenie interpretacji</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># exp.show_in_notebook()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Jak działa ten kod? 1. Ładowanie danych i trenowanie modelu</p>
-<ul>
-<li>Używamy zbioru Iris, który zawiera 150 przykładów kwiatów z trzema gatunkami:</li>
-<li>Setosa</li>
-<li>Versicolor</li>
-<li>Virginica</li>
-<li>Model RandomForestClassifier trenuje się na tych danych.</li>
-</ul>
-<ol start="2" type="1">
-<li>Tworzenie interpretowalnego modelu za pomocą LIME</li>
-</ol>
-<ul>
-<li>LIME generuje lokalne wyjaśnienia, czyli interpretuje model dla pojedynczych predykcji.</li>
-<li>Wybieramy losowy przykład z danych testowych.</li>
-</ul>
-<ol start="3" type="1">
-<li>Eksploracja wyniku dla jednego przykładu</li>
-</ol>
-<ul>
-<li>LIME modyfikuje lekko wartości wejściowe i obserwuje, jak zmienia się wynik predykcji.</li>
-<li>Tworzy „lokalny” model liniowy, który pokazuje, które cechy miały największy wpływ na decyzję.</li>
-</ul>
-<p>Załóżmy, że nasz model wybrał przykładową roślinę i sklasyfikował ją jako Virginica.</p>
-<p>Oto interpretacja wyników:</p>
-<ol type="1">
-<li>Najważniejsze cechy wpływające na decyzję modelu:</li>
-</ol>
-<ul>
-<li>Długość płatka (petal length): największy wpływ na predykcję (np. im większa, tym większe prawdopodobieństwo, że to Virginica).</li>
-<li>Szerokość płatka (petal width): również istotny czynnik (np. powyżej pewnej wartości sugeruje Virginica).</li>
-<li>Długość kielicha (sepal length): mniejszy wpływ, ale nadal istotny.</li>
-<li>Szerokość kielicha (sepal width): zwykle najmniej istotna cecha.</li>
-</ul>
-<ol start="2" type="1">
-<li>Wizualizacja wyników</li>
-</ol>
-<ul>
-<li>LIME generuje wykres słupkowy, który pokazuje wpływ każdej cechy na klasyfikację.</li>
-<li>Na wykresie widać, które cechy zwiększały, a które zmniejszały prawdopodobieństwo przypisania do danej klasy.</li>
-</ul>
-<ol start="3" type="1">
-<li>Co oznacza wynik?</li>
-</ol>
-<ul>
-<li>Jeśli model przewidział klasę Virginica z wysokim prawdopodobieństwem, oznacza to, że kluczowe cechy (np. długi płatek) mocno wskazują na ten gatunek.</li>
-<li>Jeśli cechy miały zróżnicowany wpływ, oznacza to, że model miał pewne trudności w klasyfikacji (np. szerokość płatka nie była jednoznaczna).</li>
-</ul>
-</section>
-<section id="detekcja-anomalii" class="level2">
-<h2 class="anchored" data-anchor-id="detekcja-anomalii">Detekcja anomalii</h2>
-<section id="wartość-odstająca-outlier" class="level3">
-<h3 class="anchored" data-anchor-id="wartość-odstająca-outlier">Wartość odstająca (Outlier)</h3>
-<p><strong>Wartość odstająca</strong> (ang. <em>outlier</em>) to obserwacja (wiersz w tabeli danych), która jest znacznie oddalona od pozostałych elementów próbki. Oznacza to, że zależność między zmiennymi niezależnymi i zależnymi dla tej obserwacji może różnić się od pozostałych przypadków.</p>
-<p>Dla pojedynczych zmiennych wartości odstające można określić, korzystając z wykresu pudełkowego (<em>box plot</em>). Wykres ten bazuje na kwartylach:</p>
-<ul>
-<li><strong>Pierwszy kwartyl</strong> <span class="math inline">\(Q_1\)</span> i <strong>trzeci kwartyl</strong> <span class="math inline">\(Q_3\)</span> wyznaczają boki pudełka,</li>
-<li><strong>Drugi kwartyl</strong> <span class="math inline">\(Q_2\)</span> (mediana) jest zaznaczony wewnątrz pudełka,</li>
-</ul>
-<p>Wartości odstające spełniają zależność:</p>
-<p><span class="math display">\[
-x_{out} &lt; Q_1 - 1.5 \times IQR \quad \text{lub} \quad x_{out} &gt; Q_3 + 1.5 \times IQR
-\]</span></p>
-<p>Gdzie: <span class="math display">\[
-IQR = Q_3 - Q_1
-\]</span></p>
-<p>Przykładem wartości odstającej może być bolid Formuły 1 – pod względem prędkości jest on anomalią wśród zwykłych samochodów.</p>
-</section>
-<section id="wykorzystanie-detekcji-anomalii" class="level3">
-<h3 class="anchored" data-anchor-id="wykorzystanie-detekcji-anomalii">Wykorzystanie detekcji anomalii</h3>
-<p>Wykrywanie wartości odstających ma szerokie zastosowanie, np.:</p>
-<ul>
-<li><strong>Finanse</strong> – wykrywanie transakcji fraudowych w analizie danych bankowych,</li>
-<li><strong>Cyberbezpieczeństwo</strong> – identyfikacja intruzów w sieci na podstawie zachowań użytkowników,</li>
-<li><strong>Medycyna</strong> – monitorowanie parametrów zdrowotnych i wykrywanie nieprawidłowości,</li>
-<li><strong>Przemysł</strong> – wykrywanie wadliwych komponentów poprzez analizę obrazu.</li>
-</ul>
-</section>
-<section id="metody-wykrywania-anomalii" class="level3">
-<h3 class="anchored" data-anchor-id="metody-wykrywania-anomalii">Metody wykrywania anomalii</h3>
-<section id="metody-nadzorowane-supervised-learning" class="level4">
-<h4 class="anchored" data-anchor-id="metody-nadzorowane-supervised-learning">1. Metody nadzorowane (supervised learning)</h4>
-<p>Stosowane, gdy mamy oznaczone dane (np. przypadki oszustw w transakcjach).</p>
-<ul>
-<li>Sieci neuronowe,</li>
-<li>Algorytm K-najbliższych sąsiadów (KNN),</li>
-<li>Sieci Bayesowskie.</li>
-</ul>
-</section>
-<section id="metody-nienadzorowane-unsupervised-learning" class="level4">
-<h4 class="anchored" data-anchor-id="metody-nienadzorowane-unsupervised-learning">2. Metody nienadzorowane (unsupervised learning)</h4>
-<p>Zakładają, że większość danych jest poprawna, a anomalie to niewielki odsetek przypadków.</p>
-<ul>
-<li>Klasteryzacja metodą K-średnich (<em>K-Means</em>),</li>
-<li>Autoenkodery w sieciach neuronowych,</li>
-<li>Testy statystyczne.</li>
-</ul>
-</section>
-</section>
-<section id="metoda-klasyczna-detekcja-na-podstawie-prawdopodobieństwa" class="level3">
-<h3 class="anchored" data-anchor-id="metoda-klasyczna-detekcja-na-podstawie-prawdopodobieństwa">Metoda klasyczna – detekcja na podstawie prawdopodobieństwa</h3>
-<p>Aby określić, czy dana obserwacja jest anomalią, można użyć prawdopodobieństwa <span class="math inline">\(p(x)\)</span>:</p>
-<ul>
-<li>Jeśli <span class="math inline">\(p(x) &lt; \epsilon\)</span>, uznajemy wartość za odstającą.</li>
-<li>W praktyce zakładamy, że dane mają <strong>rozkład normalny</strong> <span class="math inline">\(N(\mu, \sigma)\)</span>.</li>
-<li>Szacujemy parametry <span class="math inline">\(\mu\)</span> (średnia) i <span class="math inline">\(\sigma^2\)</span> (wariancja) na podstawie próbki.</li>
-<li>Następnie dla każdej wartości obliczamy prawdopodobieństwo jej wystąpienia i porównujemy z <span class="math inline">\(\epsilon\)</span>.</li>
-</ul>
-<p><strong>Przykład: Analiza wynagrodzeń w firmie</strong></p>
-<p>Wykrywamy, czy w danej firmie są osoby o wynagrodzeniach znacznie odbiegających od średniej.</p>
-<div id="7a87d396" class="cell" data-execution_count="1">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Przykładowe wynagrodzenia w firmie (w tysiącach)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>salaries <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">90</span>, <span class="dv">150</span>]  <span class="co"># 150 to outlier</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Obliczenie kwartylów</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Q1 <span class="op">=</span> np.percentile(salaries, <span class="dv">25</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Q3 <span class="op">=</span> np.percentile(salaries, <span class="dv">75</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Definicja wartości odstających</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>outlier_threshold_low <span class="op">=</span> Q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>outlier_threshold_high <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<section id="dataframe-api" class="level3">
+<h3 class="anchored" data-anchor-id="dataframe-api">DataFrame API</h3>
+<p>Spark DataFrame to odpowiednik tabeli SQL lub DataFrame z Pandas — ale <strong>rozproszony</strong> na wielu maszynach.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> col, avg, <span class="bu">sum</span>, count</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder.appName(<span class="st">"Demo"</span>).master(<span class="st">"local[*]"</span>).getOrCreate()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Tworzenie DataFrame</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>dane <span class="op">=</span> [</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Warszawa"</span>, <span class="st">"Elektronika"</span>, <span class="fl">4299.00</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Kraków"</span>, <span class="st">"Odzież"</span>, <span class="fl">189.99</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Warszawa"</span>, <span class="st">"Żywność"</span>, <span class="fl">87.50</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Gdańsk"</span>, <span class="st">"Elektronika"</span>, <span class="fl">2599.00</span>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Kraków"</span>, <span class="st">"Elektronika"</span>, <span class="fl">1299.00</span>),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Warszawa"</span>, <span class="st">"Odzież"</span>, <span class="fl">349.99</span>),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"Gdańsk"</span>, <span class="st">"Żywność"</span>, <span class="fl">156.00</span>),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>]</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Znalezienie outlierów</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>outliers <span class="op">=</span> [x <span class="cf">for</span> x <span class="kw">in</span> salaries <span class="cf">if</span> x <span class="op">&lt;</span> outlier_threshold_low <span class="kw">or</span> x <span class="op">&gt;</span> outlier_threshold_high]</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Outliers: </span><span class="sc">{</span>outliers<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Wizualizacja</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>sns.boxplot(salaries)</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Wykres pudełkowy wynagrodzeń"</span>)</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Outliers: [150]</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="wyklad5_files/figure-html/cell-2-output-2.png" width="575" height="414" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Wynik: Na wykresie pudełkowym widać, że 150 tys. to anomalia.</p>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.createDataFrame(dane, [<span class="st">"miasto"</span>, <span class="st">"kategoria"</span>, <span class="st">"kwota"</span>])</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>df.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="isolation-forest-detekcja-anomalii-za-pomocą-lasu-izolacyjnego" class="level3">
-<h3 class="anchored" data-anchor-id="isolation-forest-detekcja-anomalii-za-pomocą-lasu-izolacyjnego">Isolation Forest – detekcja anomalii za pomocą lasu izolacyjnego</h3>
-<p><strong>Isolation Forest</strong> to algorytm bazujący na drzewach decyzyjnych, zaproponowany przez Fei Tony Liu, Kai Ming Ting oraz Zhi-Hua Zhou w 2008 roku. Identyfikuje anomalie poprzez izolowanie wartości odstających w procesie podziału danych:</p>
+<section id="transformacje-i-akcje" class="level3">
+<h3 class="anchored" data-anchor-id="transformacje-i-akcje">Transformacje i akcje</h3>
+<p>Spark rozróżnia dwa typy operacji:</p>
+<p><strong>Transformacje</strong> — definiują <em>co</em> chcesz zrobić, ale nie wykonują obliczeń. Są <strong>leniwe</strong> (lazy). Przykłady: <code>filter</code>, <code>groupBy</code>, <code>select</code>, <code>join</code>.</p>
+<p><strong>Akcje</strong> — wyzwalają faktyczne obliczenia. Przykłady: <code>show</code>, <code>count</code>, <code>collect</code>, <code>write</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transformacje (lazy — nic się jeszcze nie liczy)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>wynik <span class="op">=</span> df <span class="op">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(col(<span class="st">"kwota"</span>) <span class="op">&gt;</span> <span class="dv">100</span>) <span class="op">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .groupBy(<span class="st">"miasto"</span>) <span class="op">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">sum</span>(<span class="st">"kwota"</span>).alias(<span class="st">"suma"</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        count(<span class="st">"kwota"</span>).alias(<span class="st">"liczba"</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        avg(<span class="st">"kwota"</span>).alias(<span class="st">"srednia"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Akcja (tu Spark faktycznie wykonuje obliczenia)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>wynik.show()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>spark.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="spark-sql" class="level3">
+<h3 class="anchored" data-anchor-id="spark-sql">Spark SQL</h3>
+<p>Możesz też używać zwykłego SQL-a:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df.createOrReplaceTempView(<span class="st">"sprzedaz"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>spark.sql(<span class="st">"""</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="st">    SELECT miasto, </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="st">           SUM(kwota) as suma,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="st">           COUNT(*) as liczba</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="st">    FROM sprzedaz</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="st">    WHERE kwota &gt; 100</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="st">    GROUP BY miasto</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="st">    ORDER BY suma DESC</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="structured-streaming-strumienie-jako-tabele" class="level2">
+<h2 class="anchored" data-anchor-id="structured-streaming-strumienie-jako-tabele">Structured Streaming — strumienie jako tabele</h2>
+<p>Structured Streaming to moduł Sparka, który traktuje <strong>strumień danych jak tabelę, do której ciągle dopisywane są nowe wiersze</strong>. Dzięki temu piszesz kod strumieniowy prawie identycznie jak batch — używasz tego samego DataFrame API.</p>
+<section id="koncepcja" class="level3">
+<h3 class="anchored" data-anchor-id="koncepcja">Koncepcja</h3>
+<pre><code>  Czas:    t1    t2    t3    t4    ...
+           │     │     │     │
+           ▼     ▼     ▼     ▼
+  ┌───────────────────────────────────┐
+  │  Nieograniczona tabela wejściowa  │
+  │  (nowe wiersze dopisywane ciągle) │
+  └───────────────────────────────────┘
+           │
+           ▼ Zapytanie (query)
+  ┌───────────────────────────────────┐
+  │     Tabela wynikowa               │
+  │  (aktualizowana z każdym triggerem)│
+  └───────────────────────────────────┘</code></pre>
+</section>
+<section id="tryby-wyjścia-output-modes" class="level3">
+<h3 class="anchored" data-anchor-id="tryby-wyjścia-output-modes">Tryby wyjścia (Output Modes)</h3>
 <ul>
-<li>Wybiera losowo cechę oraz wartość podziału,</li>
-<li>Wartości odstające szybciej zostają odizolowane (są bliżej korzenia drzewa),</li>
-<li>Wynik jest agregowany na podstawie wielu drzew.</li>
+<li><strong>Append</strong> — do wyniku dopisywane są tylko nowe wiersze. Domyślny tryb.</li>
+<li><strong>Complete</strong> — cała tabela wynikowa jest nadpisywana (np. po agregacji).</li>
+<li><strong>Update</strong> — zapisywane są tylko zmienione wiersze.</li>
 </ul>
-<p>Jego zalety to <strong>niskie wymagania obliczeniowe</strong> i skuteczność w analizie wielowymiarowych danych.</p>
-<p><a href="https://scikit-learn.org/0.20/auto_examples/plot_anomaly_comparison.html">Metody detekcji anomalii sklearn</a></p>
-<p><strong>Przykład: Wykrywanie oszustw bankowych</strong></p>
-<p>Bank analizuje transakcje kartą kredytową i wykrywa te, które mogą być nieautoryzowane.</p>
-<div id="22d90c49" class="cell" data-execution_count="2">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Przykładowe dane transakcji (kwota, liczba transakcji w tygodniu)</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.array([</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">100</span>, <span class="dv">5</span>], [<span class="dv">120</span>, <span class="dv">6</span>], [<span class="dv">130</span>, <span class="dv">5</span>], [<span class="dv">110</span>, <span class="dv">4</span>], [<span class="dv">5000</span>, <span class="dv">1</span>],  <span class="co"># Outlier (duża kwota, rzadkość)</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">125</span>, <span class="dv">5</span>], [<span class="dv">115</span>, <span class="dv">5</span>], [<span class="dv">140</span>, <span class="dv">7</span>], [<span class="dv">135</span>, <span class="dv">6</span>], [<span class="dv">145</span>, <span class="dv">5</span>]</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Model Isolation Forest</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> IsolationForest(contamination<span class="op">=</span><span class="fl">0.1</span>)  <span class="co"># 10% transakcji uznajemy za anomalie</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>clf.fit(data)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Predykcja (1 = normalna transakcja, -1 = oszustwo)</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> clf.predict(data)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data, columns<span class="op">=</span>[<span class="st">"Kwota"</span>, <span class="st">"Liczba transakcji"</span>])</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Anomalia"</span>] <span class="op">=</span> predictions</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Kwota  Liczba transakcji  Anomalia
-0    100                  5         1
-1    120                  6         1
-2    130                  5         1
-3    110                  4         1
-4   5000                  1        -1
-5    125                  5         1
-6    115                  5         1
-7    140                  7         1
-8    135                  6         1
-9    145                  5         1</code></pre>
-</div>
-</div>
-<p>Wynik: Transakcja 5000 zł zostanie wykryta jako anomalia.</p>
+</section>
+<section id="przykład-streaming-z-plików-csv" class="level3">
+<h3 class="anchored" data-anchor-id="przykład-streaming-z-plików-csv">Przykład: streaming z plików CSV</h3>
+<p>Najprostszy przykład — Spark monitoruje katalog i przetwarza nowe pliki CSV w miarę ich pojawiania się:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> col, window, <span class="bu">sum</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StringType, DoubleType, TimestampType</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder.appName(<span class="st">"StreamingDemo"</span>).master(<span class="st">"local[*]"</span>).getOrCreate()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Schemat danych</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>schema <span class="op">=</span> StructType() <span class="op">\</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"transaction_id"</span>, StringType()) <span class="op">\</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"amount"</span>, DoubleType()) <span class="op">\</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"store"</span>, StringType()) <span class="op">\</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"timestamp"</span>, TimestampType())</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Czytanie strumienia z katalogu CSV</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>streaming_df <span class="op">=</span> spark.readStream <span class="op">\</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    .schema(schema) <span class="op">\</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"header"</span>, <span class="va">True</span>) <span class="op">\</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    .csv(<span class="st">"/data/incoming/"</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregacja w oknach 5-minutowych</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> streaming_df <span class="op">\</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    .groupBy(</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        window(col(<span class="st">"timestamp"</span>), <span class="st">"5 minutes"</span>),</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        col(<span class="st">"store"</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">\</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    .agg(<span class="bu">sum</span>(<span class="st">"amount"</span>).alias(<span class="st">"total"</span>))</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Zapis wyniku do konsoli</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> result.writeStream <span class="op">\</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    .outputMode(<span class="st">"complete"</span>) <span class="op">\</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">format</span>(<span class="st">"console"</span>) <span class="op">\</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    .trigger(processingTime<span class="op">=</span><span class="st">"10 seconds"</span>) <span class="op">\</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    .start()</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># query.awaitTermination()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 </section>
 </section>
-<section id="business-impact" class="level2">
-<h2 class="anchored" data-anchor-id="business-impact">Business Impact:</h2>
-<p>Detekcja anomalii to fundament nowoczesnego zarządzania ryzykiem (Risk Management) – od wykrywania nadużyć finansowych po przewidywanie awarii maszyn. Z kolei wyjaśnialność algorytmów (LIME) to konieczność w sektorach regulowanych (bankowość, medycyna, ubezpieczenia). Zrozumienie, “dlaczego system powiedział NIE”, chroni firmę przed stratami wizerunkowymi, prawnymi oraz zapewnia zgodność z regulacjami takimi jak AI Act czy RODO.</p>
+<section id="integracja-spark-kafka" class="level2">
+<h2 class="anchored" data-anchor-id="integracja-spark-kafka">Integracja Spark + Kafka</h2>
+<p>To jest serce naszego kursu: <strong>Kafka transportuje dane, Spark je przetwarza</strong>.</p>
+<section id="czytanie-z-kafki" class="level3">
+<h3 class="anchored" data-anchor-id="czytanie-z-kafki">Czytanie z Kafki</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> from_json, col, window, avg, count</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StringType, DoubleType, TimestampType</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> SparkSession.builder <span class="op">\</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"KafkaStreaming"</span>) <span class="op">\</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    .master(<span class="st">"local[*]"</span>) <span class="op">\</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Odczyt strumienia z Kafki</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>kafka_df <span class="op">=</span> spark.readStream <span class="op">\</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">format</span>(<span class="st">"kafka"</span>) <span class="op">\</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"kafka.bootstrap.servers"</span>, <span class="st">"localhost:9092"</span>) <span class="op">\</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"subscribe"</span>, <span class="st">"transakcje"</span>) <span class="op">\</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"startingOffsets"</span>, <span class="st">"latest"</span>) <span class="op">\</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    .load()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Kafka zwraca dane jako bajty — trzeba je sparsować</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>schema <span class="op">=</span> StructType() <span class="op">\</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"id"</span>, StringType()) <span class="op">\</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"kwota"</span>, DoubleType()) <span class="op">\</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"sklep"</span>, StringType()) <span class="op">\</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    .add(<span class="st">"czas"</span>, TimestampType())</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>parsed_df <span class="op">=</span> kafka_df <span class="op">\</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    .selectExpr(<span class="st">"CAST(value AS STRING) as json"</span>) <span class="op">\</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    .select(from_json(col(<span class="st">"json"</span>), schema).alias(<span class="st">"data"</span>)) <span class="op">\</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    .select(<span class="st">"data.*"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="przetwarzanie-i-zapis" class="level3">
+<h3 class="anchored" data-anchor-id="przetwarzanie-i-zapis">Przetwarzanie i zapis</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregacja: średnia kwota i liczba transakcji w oknach 5-minutowych per sklep</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>wynik <span class="op">=</span> parsed_df <span class="op">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .withWatermark(<span class="st">"czas"</span>, <span class="st">"2 minutes"</span>) <span class="op">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    .groupBy(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        window(col(<span class="st">"czas"</span>), <span class="st">"5 minutes"</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        col(<span class="st">"sklep"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    ) <span class="op">\</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        avg(<span class="st">"kwota"</span>).alias(<span class="st">"srednia_kwota"</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        count(<span class="st">"*"</span>).alias(<span class="st">"liczba_transakcji"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Zapis do konsoli (na lab: do bazy danych lub dashboardu)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> wynik.writeStream <span class="op">\</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    .outputMode(<span class="st">"update"</span>) <span class="op">\</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">format</span>(<span class="st">"console"</span>) <span class="op">\</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"truncate"</span>, <span class="va">False</span>) <span class="op">\</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    .trigger(processingTime<span class="op">=</span><span class="st">"10 seconds"</span>) <span class="op">\</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    .start()</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># query.awaitTermination()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Zwróć uwagę na <code>.withWatermark("czas", "2 minutes")</code> — to mechanizm watermarkingu, o którym mówiliśmy na Wykładzie 2. Spark toleruje opóźnienie zdarzeń do 2 minut i automatycznie odrzuca te, które przyszły później.</p>
+<hr>
+</section>
+</section>
+<section id="kompletny-pipeline-podsumowanie-kursu" class="level2">
+<h2 class="anchored" data-anchor-id="kompletny-pipeline-podsumowanie-kursu">Kompletny pipeline — podsumowanie kursu</h2>
+<p>Łączmy wszystko, co poznaliśmy na wykładach:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    PIPELINE REAL-TIME ANALYTICS                  │
+│                                                                  │
+│  [Źródła danych]                                                │
+│  Aplikacja webowa ──┐                                           │
+│  System płatności ──┼──→  Apache Kafka  ──→  Spark Streaming    │
+│  Sensory IoT ───────┘     (transport)       (przetwarzanie)     │
+│                                                    │             │
+│                              ┌─────────────────────┤             │
+│                              ▼                     ▼             │
+│                        FastAPI + ML          Dashboard/Baza     │
+│                        (predykcja)           (raportowanie)     │
+│                              │                     │             │
+│                              ▼                     ▼             │
+│                         Alerty               Raporty             │
+│                      (real-time)            (near RT)            │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Komponent</th>
+<th>Rola</th>
+<th>Wykład</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Typy danych, OLTP/OLAP, Data Lake</td>
+<td>Kontekst i historia</td>
+<td>W1</td>
+</tr>
+<tr class="even">
+<td>Lambda/Kappa, okna czasowe</td>
+<td>Architektura</td>
+<td>W2</td>
+</tr>
+<tr class="odd">
+<td>ML batch vs online, SGD, anomalie</td>
+<td>Modele i algorytmy</td>
+<td>W3</td>
+</tr>
+<tr class="even">
+<td>Apache Kafka</td>
+<td>Transport danych</td>
+<td>W4</td>
+</tr>
+<tr class="odd">
+<td>Apache Spark + Structured Streaming</td>
+<td>Przetwarzanie</td>
+<td>W5</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="złożoność-algorytmów-uwaga-praktyczna" class="level2">
+<h2 class="anchored" data-anchor-id="złożoność-algorytmów-uwaga-praktyczna">Złożoność algorytmów — uwaga praktyczna</h2>
+<p>Projektując pipeline real-time, warto rozważyć <strong>wymiar obliczeniowy</strong> problemu:</p>
+<ul>
+<li><strong>Duże dane, proste obliczenia</strong> — np. filtrowanie logów, agregacje. Spark radzi sobie świetnie.</li>
+<li><strong>Małe dane, ciężkie obliczenia</strong> — np. trenowanie modelu deep learning. Lepiej offline na GPU.</li>
+<li><strong>Duże dane, ciężkie obliczenia</strong> — np. analiza wideo w czasie rzeczywistym. Wymaga specjalistycznej architektury (GPU cluster, edge computing).</li>
+</ul>
+<p>Dla systemów real-time kluczowe jest, żeby czas przetwarzania jednego zdarzenia był <strong>krótszy</strong> niż interwał między zdarzeniami. Inaczej kolejka rośnie bez końca.</p>
+<hr>
+</section>
+<section id="co-dalej-laboratoria" class="level2">
+<h2 class="anchored" data-anchor-id="co-dalej-laboratoria">Co dalej — laboratoria</h2>
+<p>Na laboratoriach zbudujecie kompletny system krok po kroku:</p>
+<ol type="1">
+<li><strong>Lab 1–2:</strong> Środowisko (Git, Docker, Python), analiza eksploracyjna danych.</li>
+<li><strong>Lab 3–4:</strong> Model ML (scikit-learn), przygotowanie do wdrożenia.</li>
+<li><strong>Lab 5–6:</strong> Kafka w Dockerze — producent i konsument w Pythonie.</li>
+<li><strong>Lab 7–8:</strong> PySpark + Structured Streaming + Kafka.</li>
+<li><strong>Lab 9–10:</strong> Kompletny pipeline + projekt grupowy.</li>
+</ol>
+<hr>
+</section>
+<section id="podsumowanie" class="level2">
+<h2 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h2>
+<p>Apache Spark to silnik, który zamienia surowe strumienie danych w wartość biznesową. W połączeniu z Kafką tworzy potężną platformę real-time analytics. Structured Streaming upraszcza programowanie strumieniowe — piszesz kod jak dla batch, a Spark zajmuje się resztą.</p>
+<p>To był ostatni wykład. Na laboratoriach przełożycie tę wiedzę na praktykę — od pierwszego <code>docker compose up</code> po kompletny system przetwarzania danych w czasie rzeczywistym.</p>
+<p><strong>Przed Lab 1:</strong> Upewnij się, że masz zainstalowanego Dockera i Gita (patrz strona <a href="info.qmd">Narzędzia</a>). Sklonuj repozytorium kursu i uruchom <code>docker compose up</code> — jeśli działa, jesteś gotowy.</p>
 
 
 </section>

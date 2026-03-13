@@ -1,240 +1,321 @@
 ---
-title:  Wykład 3
+title: "Wykład 3 — Uczenie maszynowe: batch vs online"
 format:
   html:
     code-fold: true
 jupyter: python3
 ---
 
-⏳ Czas trwania: 1,5h
-*🎯 Cel wykładu* 
+*Czas trwania: 1,5h*
 
-zrozumienie, podstawowych sposobów przetwarzania i analizowania danych strumieniowych.
-
----
-
-# Strumienie danych
-
-Strumieniowanie możesz kojarzyć z serwisów przesyłających wideo online. Gdy oglądasz swój ulubiony serial (tak jak teraz na zajęciach), platforma streamingowa w sposób nieprzerwany dostarcza do Ciebie kolejne „porcje” wideo.
-
-Podobna koncepcja dotyczy danych strumieniowych. Przesyłane porcje nie muszą mieć formatu wideo – wszystko zależy od celu biznesowego. Przykładem może być ciągły pomiar z czujników w fabrykach, elektrowniach czy innych systemach monitorujących.
-
-Kluczowe jest to, że masz do czynienia z nieprzerwanym strumieniem danych, które musisz przetwarzać w czasie rzeczywistym. Nie możesz czekać na zatrzymanie linii produkcyjnej, aby przeprowadzić analizę – wszelkie pojawiające się problemy powinny być rejestrowane natychmiast, aby szybko na nie reagować.
-
-> Analiza strumieniowa to ciągłe przetwarzanie i analiza dużych zbiorów danych w ruchu.
-
-Można to porównać do innych aspektów Big Data. Przetwarzanie wsadowe (batchowe) to przeciwieństwo przetwarzania strumieniowego – najpierw gromadzisz duże ilości danych, a dopiero potem je analizujesz. Oczywiście, możesz pobrać całe wideo przed obejrzeniem, ale czy miałoby to sens?
-
-Istnieją sytuacje, w których podejście wsadowe jest wystarczające, ale już teraz widzisz, że przetwarzanie strumieniowe może dostarczyć biznesowi dodatkową wartość, której trudno oczekiwać przy klasycznym przetwarzaniu wsadowym.
-
-[ciekawe informacje](https://aws.amazon.com/streaming-data/)
-
-### Analiza danych w czasie rzeczywistym a przetwarzanie strumienia zdarzeń
-
-Łatwo jest połączyć analizę w czasie rzeczywistym z analizą strumieniową (lub przetwarzaniem strumienia zdarzeń). Choć technologie analizy strumieniowej mogą umożliwiać analizę w czasie rzeczywistym, to nie to samo!
-
-Analiza strumieniowa polega na przetwarzaniu danych w ruchu, natomiast analityka w czasie rzeczywistym odnosi się do każdej metody przetwarzania danych, w której opóźnienie jest na tyle krótkie, że spełnia określone wymagania biznesowe dotyczące „czasu rzeczywistego”.
-
-Zazwyczaj systemy analizy w czasie rzeczywistym dzieli się na twarde i miękkie systemy czasu rzeczywistego:
-
--	Twarde systemy czasu rzeczywistego (np. systemy sterujące w samolotach) wymagają ścisłego dotrzymania terminów – każde opóźnienie może mieć katastrofalne skutki.
--	Miękkie systemy czasu rzeczywistego (np. stacje pogodowe) mogą tolerować pewne opóźnienia, choć w skrajnych przypadkach może to prowadzić do utraty wartości danych.
-
-Co więcej, podczas gdy analiza strumieniowa zakłada istnienie dedykowanej architektury strumieniowej, analiza w czasie rzeczywistym nie jest powiązana z żadną konkretną architekturą.
-
-Kluczowe jest to, że analityka w czasie rzeczywistym oznacza przetwarzanie danych w okresie, który dana firma uznaje za „czas rzeczywisty” – może to być zarówno kilka milisekund, jak i kilka sekund, w zależności od potrzeb biznesowych.
-
-### Źródła danych przesyłanych strumieniowo obejmują:
-
-- czujniki sprzętu,
-- strumienie kliknięć,
-- śledzenie lokalizacji,
-- interakcję z użytkownikiem,
-- kanały mediów społecznościowych,
-- notowania giełdowe,
-- aktywność w aplikacjach,
-- inne.
-
-Firmy wykorzystują analitykę strumieniową do wykrywania i interpretowania wzorców, tworzenia wizualizacji, generowania spostrzeżeń i alertów oraz uruchamiania procesów w czasie rzeczywistym lub bliskim rzeczywistemu.
-
-### Uzasadnienie biznesowe
-
-Analityka służy do identyfikowania istotnych wzorców w danych i odkrywania nowej wiedzy – zarówno w przypadku transmisji strumieniowych, jak i tradycyjnych analiz.
-
-Jednak w dzisiejszym świecie natura „znajdowania sensownych wzorców w danych” uległa zmianie, ponieważ zmienił się charakter samych danych. Ich szybkość, objętość i różnorodność eksplodowały.
-
-Twitter generuje ponad 500 milionów tweetów dziennie, a według prognoz IDC do 2025 roku urządzenia IoT będą w stanie wytworzyć 79,4 zettabajta (ZB) danych. Trend ten wciąż przyspiesza.
-
-
-
-### Przykładowe biznesowe zastosowania
-
-1. Dane z sensorów IoT i detekcja anomalii
-2. Stock Trading (problemy regresyjne) - czas reagowania na zmiany i czas zakupy i sprzedaży akcji. 
-3. Clickstream for websites (problem klasyfikacji) - śledzenie i analiza gości na stronie serwisu internetowego - personalizacja strony i treści. 
-
-[8 najlepszych przykładów analizy w czasie rzeczywistym](https://www.linkedin.com/pulse/8-best-examples-real-time-data-analytics-bernard-marr/)
-
-[Biznesowe zastosowania](https://www.forbes.com/sites/forbestechcouncil/2021/10/26/how-to-build-a-strong-business-case-for-streaming-analytics/?sh=eee8eaa465d0)
-
-## Definicje
-
-### Zapoznaj się z tematem [danych strumieniowych](https://medium.com/cuelogic-technologies/analyzing-data-streaming-using-spark-vs-kafka-bcfdc33ac828)
-
-> **Definicja 1** – *Zdarzenie* to wszystko, co można zaobserwować w danym momencie czasu. Jest generowane jako bezpośredni skutek działania.  
->
-> **Definicja 2** – W kontekście danych *zdarzenie* to **niezmienialny** rekord w strumieniu danych, zakodowany jako JSON, XML, CSV lub w formacie binarnym.  
->
-> **Definicja 3** – *Ciągły strumień zdarzeń* to nieskończony zbiór pojedynczych zdarzeń uporządkowanych w czasie, np. logi z urządzeń.  
->
-> **Definicja 4** – *Strumień danych* to dane tworzone przyrostowo w czasie, generowane ze źródeł statycznych (baza danych, odczyt linii z pliku) lub dynamicznych (logi, sensory, funkcje).  
->
-> **Przedsiębiorstwo to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.**
+**Cel wykładu:** Zrozumienie różnic między uczeniem wsadowym (offline) a przyrostowym (online), algorytmu SGD, problemu concept drift, detekcji anomalii oraz wyjaśnialności modeli.
 
 ---
 
-### Analityka strumieniowa  
+## Dwa tryby uczenia maszynowego
 
-**Analityka strumieniowa** (ang. _stream analytics_) nazywana jest również **przetwarzaniem strumieniowym zdarzeń** (ang. _event stream processing_) – czyli przetwarzaniem dużych ilości danych już na etapie ich generowania.  
+Na poprzednich wykładach mówiliśmy o przetwarzaniu wsadowym i strumieniowym. Ten sam podział dotyczy uczenia maszynowego.
 
-Niezależnie od zastosowanej technologii, wszystkie dane powstają jako **ciągły strumień zdarzeń** – obejmuje to m.in.:
+### Uczenie wsadowe (offline/batch learning)
 
-- działania użytkowników na stronach internetowych,  
-- logi systemowe,  
-- pomiary z sensorów.  
+Model jest trenowany na **całym zbiorze** danych historycznych. Po wytrenowaniu jest wdrażany do produkcji, gdzie dokonuje predykcji na nowych danych. Gdy pojawiają się nowe dane — model jest retrenowany od zera.
 
-## Czas w analizie danych w czasie rzeczywistym
+```{python}
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
-W przypadku przetwarzania wsadowego analizujemy dane historyczne, a czas uruchomienia procesu nie ma żadnego związku z momentem wystąpienia analizowanych zdarzeń.
+np.random.seed(42)
 
-Natomiast w przetwarzaniu strumieniowym wyróżniamy dwie koncepcje czasu:
+# Symulacja: klasyfikacja transakcji (0 = legalna, 1 = podejrzana)
+n = 1000
+X = np.column_stack([
+    np.random.uniform(10, 5000, n),       # kwota
+    np.random.uniform(0, 23, n),           # godzina
+    np.random.randint(1, 50, n)            # liczba transakcji w miesiącu
+])
+y = ((X[:, 0] > 3000) & (X[:, 1] > 22) | (X[:, 0] > 4000)).astype(int)
 
-1.	Czas zdarzenia (event time) – moment, w którym zdarzenie faktycznie miało miejsce.
-2.	Czas przetwarzania (processing time) – moment, w którym system przetwarza zdarzenie.
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-Idealne przetwarzanie danych
+# Batch learning: trenujesz raz na całym zbiorze
+model = LogisticRegression()
+model.fit(X_train, y_train)
+print(f"Batch accuracy: {accuracy_score(y_test, model.predict(X_test)):.3f}")
+```
 
-W idealnej sytuacji przetwarzanie następuje natychmiast po wystąpieniu zdarzenia:
+To podejście jest proste i skuteczne, ale ma ograniczenia:
 
-<img alt="Batch Processing" src="../img/rys2_1.png" class="center" />
+- retrenowanie na dużych zbiorach danych jest kosztowne,
+- model nie uczy się z nowych danych między retrenowaniami,
+- jeśli wzorce się zmienią (np. nowy typ oszustwa), model będzie nieaktualny do następnego retrenowania.
 
-Rzeczywiste przetwarzanie danych
+### Uczenie przyrostowe (online learning)
 
-W praktyce przetwarzanie danych zawsze odbywa się z pewnym opóźnieniem, co jest widoczne jako punkty poniżej linii idealnego przetwarzania (poniżej przekątnej na wykresie).
+Model uczy się **na bieżąco** — każda nowa obserwacja (lub mały batch) aktualizuje parametry modelu. Nie trzeba retrenować od zera.
 
-<img alt="Batch Processing" src="../img/rys2_2.png" class="center" />
+```{python}
+from sklearn.linear_model import SGDClassifier
+from sklearn.preprocessing import StandardScaler
 
-W aplikacjach przetwarzania strumieniowego istotna jest różnica między czasem powstania zdarzenia a czasem jego przetwarzania. Do najczęstszych przyczyn opóźnień należą:
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+X_train_s, X_test_s, y_train_s, y_test_s = train_test_split(X_scaled, y, test_size=0.2)
 
-- przesyłanie danych przez sieć,
-- brak komunikacji między urządzeniem a siecią.
+# Online learning: model uczy się na kolejnych mini-batchach
+model_online = SGDClassifier(loss='log_loss', random_state=42)
 
-Przykładem jest śledzenie położenia samochodu przez aplikację GPS – przejazd przez tunel może spowodować chwilową utratę danych.
+batch_size = 50
+accuracies = []
 
-Obsługa opóźnień w przetwarzaniu strumieniowym
+for i in range(0, len(X_train_s), batch_size):
+    X_batch = X_train_s[i:i+batch_size]
+    y_batch = y_train_s[i:i+batch_size]
 
-Opóźnienia w przetwarzaniu zdarzeń można obsłużyć na dwa sposoby:
+    model_online.partial_fit(X_batch, y_batch, classes=[0, 1])
 
-1.	Monitorowanie liczby pominiętych zdarzeń i wyzwalanie alarmu w przypadku zbyt dużej liczby odrzuceń.
-2.	Zastosowanie korekty za pomocą watermarkingu, czyli dodatkowego mechanizmu uwzględniającego opóźnione zdarzenia.
+    acc = accuracy_score(y_test_s, model_online.predict(X_test_s))
+    accuracies.append(acc)
 
-Proces przetwarzania zdarzeń w czasie rzeczywistym można przedstawić jako funkcję schodkową:
+print(f"Online accuracy po {len(accuracies)} mini-batchach: {accuracies[-1]:.3f}")
+print(f"Progresja accuracy: {[f'{a:.2f}' for a in accuracies[:5]]} ... {[f'{a:.2f}' for a in accuracies[-3:]]}")
+```
 
-<img alt="Batch Processing" src="../img/rys2_3.png" class="center" />
+### Porównanie
 
-Nie wszystkie zdarzenia wnoszą wkład do analizy – niektóre mogą zostać odrzucone ze względu na zbyt duże opóźnienie.
-
-Wykorzystanie watermarkingu pozwala na uwzględnienie dodatkowego czasu na pojawienie się opóźnionych zdarzeń. Proces ten obejmuje wszystkie zdarzenia powyżej przerywanej linii. Mimo to nadal mogą zdarzyć się przypadki, w których niektóre punkty zostaną pominięte.
-
-<img alt="Batch Processing" src="../img/rys2_4.png" class="center" />
-
-
-Przedstawione na wykresach sytuacje jawnie wskazują dlaczego pojęcie czasu jest istotnym czynnikiem i wymaga ścisłego określenia już na poziomie definiowania potrzeb biznesowych.
-Przypisywanie znaczników czasu do danych (zdarzeń) to trudne zadanie. 
-
-## Okna czasowe w analizie strumieniowej 
-
-W przetwarzaniu strumieniowym **okna czasowe** pozwalają na grupowanie danych w ograniczone czasowo segmenty, co umożliwia analizę zdarzeń w określonych przedziałach czasowych. W zależności od zastosowania stosuje się różne typy okien, dostosowane do charakterystyki danych i wymagań analitycznych.  
-
----
-
-###  Okno rozłączne (_Tumbling Window_)  
-Jest to okno o stałej długości, które **nie nakłada się na siebie** – każde zdarzenie należy tylko do jednego okna.  
-
-✅ **Charakterystyka:** 
-
-- Stała długość okna  
-- Brak nakładania się na siebie  
-- Idealne do podziału danych na równe segmenty czasowe  
-
-📌 **Przykład:** Analiza liczby zamówień w sklepie internetowym co 5 minut.  
-
-<img alt="Tumbling Window" src="../img/rys2_5.png" class="center" />  
-
----
-
-### Okno przesuwne (_Sliding Window_)  
-Obejmuje wszystkie zdarzenia następujące w określonym przedziale czasu, gdzie okno **przesuwa się w sposób ciągły**.  
-
-✅ **Charakterystyka:**
-
-- Każde zdarzenie może należeć do kilku okien  
-- Okno przesuwa się o zadany interwał  
-- Przydatne do wykrywania trendów i anomalii  
-
-📌 **Przykład:** Śledzenie średniej temperatury w ciągu ostatnich 10 minut, aktualizowane co 2 minuty.  
-
-<img alt="Sliding Window" src="../img/rys2_6.png" class="center" />  
+| Cecha | Batch (offline) | Online (przyrostowe) |
+|-------|-----------------|---------------------|
+| Dane treningowe | Cały zbiór naraz | Porcjami (mini-batch) |
+| Aktualizacja modelu | Retrenowanie od zera | Inkrementalna |
+| Koszt retrenowania | Wysoki | Niski |
+| Adaptacja do zmian | Wolna | Szybka |
+| Stabilność | Wysoka | Ryzyko „zapominania" |
+| Typowe algorytmy | RandomForest, XGBoost | SGD, Perceptron, online k-means |
 
 ---
 
-### Okno skokowe (_Hopping Window_)  
-Jest podobne do okna rozłącznego, ale pozwala na **nakładanie się okien** na siebie, dzięki czemu jedno zdarzenie może należeć do kilku okien. Jest stosowane do wygładzania danych.  
+## Stochastic Gradient Descent (SGD)
 
-✅ **Charakterystyka:** 
+SGD to fundament uczenia online. W klasycznym spadku gradientowym obliczamy gradient na **całym** zbiorze danych. W SGD — na **jednej obserwacji** (lub małym batchu).
 
-- Stała długość okna  
-- Możliwość nakładania się na siebie  
-- Przydatne do redukcji szumów w danych  
+### Intuicja
 
-📌 **Przykład:** Analiza liczby odwiedzających stronę co 10 minut, ale aktualizowana co 5 minut, aby lepiej wychwytywać trendy.  
+Wyobraź sobie, że szukasz najniższego punktu w górach we mgle. Gradient Descent to sytuacja, gdy obliczasz nachylenie terenu na podstawie mapy całych gór. SGD to sytuacja, gdy patrzysz tylko pod nogi i robisz krok w kierunku, który wygląda na najbardziej stromy w dół. Każdy krok jest mniej precyzyjny, ale robisz ich **dużo więcej** i dużo szybciej.
 
-<img alt="Hopping Window" src="../img/rys2_7.png" class="center" />  
+### Matematycznie
+
+Dla funkcji straty $L(\theta)$ i parametrów modelu $\theta$:
+
+**Gradient Descent (batch):**
+$$\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{N} \sum_{i=1}^{N} \nabla L_i(\theta_t)$$
+
+**Stochastic Gradient Descent:**
+$$\theta_{t+1} = \theta_t - \eta \cdot \nabla L_i(\theta_t)$$
+
+gdzie $\eta$ to learning rate, a $i$ to losowo wybrana obserwacja.
+
+**Mini-batch SGD** — kompromis: obliczamy gradient na małej próbce (np. 32–256 obserwacji):
+$$\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{|B|} \sum_{i \in B} \nabla L_i(\theta_t)$$
+
+```{python}
+import matplotlib.pyplot as plt
+
+# Wizualizacja: SGD vs Batch GD na prostym problemie regresji
+np.random.seed(42)
+X_reg = np.random.uniform(0, 10, 100)
+y_reg = 2.5 * X_reg + 3 + np.random.normal(0, 2, 100)
+
+# Batch GD
+theta_batch = [0.0, 0.0]  # [slope, intercept]
+lr = 0.001
+batch_path = [tuple(theta_batch)]
+
+for _ in range(50):
+    pred = theta_batch[0] * X_reg + theta_batch[1]
+    error = pred - y_reg
+    theta_batch[0] -= lr * (2/len(X_reg)) * np.dot(error, X_reg)
+    theta_batch[1] -= lr * (2/len(X_reg)) * np.sum(error)
+    batch_path.append(tuple(theta_batch))
+
+# SGD
+theta_sgd = [0.0, 0.0]
+sgd_path = [tuple(theta_sgd)]
+
+for _ in range(50):
+    i = np.random.randint(len(X_reg))
+    pred_i = theta_sgd[0] * X_reg[i] + theta_sgd[1]
+    error_i = pred_i - y_reg[i]
+    theta_sgd[0] -= lr * 2 * error_i * X_reg[i]
+    theta_sgd[1] -= lr * 2 * error_i
+    sgd_path.append(tuple(theta_sgd))
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+
+batch_slopes = [p[0] for p in batch_path]
+sgd_slopes = [p[0] for p in sgd_path]
+
+ax1.plot(batch_slopes, label='Batch GD', linewidth=2)
+ax1.plot(sgd_slopes, label='SGD', linewidth=1, alpha=0.7)
+ax1.axhline(y=2.5, color='red', linestyle='--', label='Prawdziwa wartość')
+ax1.set_xlabel('Iteracja')
+ax1.set_ylabel('Estymacja slope')
+ax1.set_title('Zbieżność parametru')
+ax1.legend()
+
+ax2.scatter(X_reg, y_reg, alpha=0.5, s=15)
+ax2.plot([0, 10], [theta_batch[1], theta_batch[0]*10 + theta_batch[1]], label='Batch GD', linewidth=2)
+ax2.plot([0, 10], [theta_sgd[1], theta_sgd[0]*10 + theta_sgd[1]], label='SGD', linewidth=2)
+ax2.set_title('Wynik dopasowania')
+ax2.legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+SGD jest „zaszumiony" — ale właśnie to jest jego siła w uczeniu online: każda nowa obserwacja natychmiast wpływa na model.
 
 ---
 
-### Okno sesyjne (_Session Window_) 
-Okno sesyjne grupuje zdarzenia na podstawie **okresów aktywności** i zamyka się po określonym czasie braku aktywności.  
+## Concept drift — gdy świat się zmienia
 
-✅ **Charakterystyka:**
+Kluczowe wyzwanie uczenia online: **rozkład danych zmienia się w czasie** (concept drift). Model wytrenowany na danych z zeszłego roku może być bezużyteczny dzisiaj.
 
-- Dynamiczna długość okna  
-- Definiowane przez aktywność użytkownika  
-- Stosowane w analizie sesji użytkowników  
+Typy driftu:
 
-📌 **Przykład:** Analiza sesji użytkowników na stronie internetowej – sesja trwa tak długo, jak długo użytkownik wykonuje akcje, ale kończy się po 15 minutach braku aktywności.  
+- **Nagły (sudden)** — np. pandemia zmienia wzorce zakupowe z dnia na dzień.
+- **Stopniowy (gradual)** — np. preferencje klientów zmieniają się powoli przez miesiące.
+- **Cykliczny (recurring)** — np. sezonowość sprzedaży.
+
+```{python}
+# Symulacja concept drift: nagła zmiana wzorca
+np.random.seed(42)
+
+# Faza 1: normalne transakcje (kwota < 1000 = OK)
+X_faza1 = np.random.uniform(10, 2000, 500).reshape(-1, 1)
+y_faza1 = (X_faza1.ravel() > 1000).astype(int)
+
+# Faza 2: po zmianie — próg podejrzaności spada do 500
+X_faza2 = np.random.uniform(10, 2000, 500).reshape(-1, 1)
+y_faza2 = (X_faza2.ravel() > 500).astype(int)
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+
+# Model batch — trenowany na fazie 1
+model_batch = LogisticRegression()
+model_batch.fit(scaler.fit_transform(X_faza1), y_faza1)
+acc_batch_f2 = accuracy_score(y_faza2, model_batch.predict(scaler.transform(X_faza2)))
+
+# Model online — adaptuje się
+model_sgd = SGDClassifier(loss='log_loss')
+model_sgd.fit(scaler.transform(X_faza1), y_faza1)
+
+# Trenowanie online na fazie 2
+for i in range(0, len(X_faza2), 10):
+    X_b = scaler.transform(X_faza2[i:i+10])
+    y_b = y_faza2[i:i+10]
+    model_sgd.partial_fit(X_b, y_b)
+
+acc_online_f2 = accuracy_score(y_faza2, model_sgd.predict(scaler.transform(X_faza2)))
+
+print(f"Po concept drift:")
+print(f"  Batch model accuracy:  {acc_batch_f2:.3f}")
+print(f"  Online model accuracy: {acc_online_f2:.3f}")
+```
+
 ---
 
-### Podsumowanie  
-Różne rodzaje okien czasowych są stosowane w zależności od specyfiki danych i celów analizy. Wybór odpowiedniego okna wpływa na dokładność wyników i efektywność systemu analitycznego.  
+## Detekcja anomalii
 
-| Typ okna | Charakterystyka | Zastosowanie |
-|----------|---------------|--------------|
-| **Rozłączne (_Tumbling_)** | Stała długość, brak nakładania | Raporty okresowe |
-| **Przesuwne (_Sliding_)** | Stała długość, nakładające się okna | Trendy, wykrywanie anomalii |
-| **Skokowe (_Hopping_)** | Stała długość, częściowe nakładanie | Wygładzanie danych |
-| **Sesyjne (_Session_)** | Dynamiczna długość, zależna od aktywności | Analiza sesji użytkowników |
+Detekcja anomalii to jedno z najważniejszych zastosowań analizy danych w czasie rzeczywistym. Anomalia (wartość odstająca, outlier) to obserwacja znacznie oddalona od reszty danych.
 
-Każdy typ okna ma swoje unikalne zastosowania i pomaga w lepszej interpretacji danych strumieniowych. Wybór właściwej metody zależy od potrzeb biznesowych i charakterystyki analizowanych danych.
+### Metoda klasyczna — IQR
 
+Dla pojedynczej zmiennej możemy użyć rozstępu międzykwartylowego:
 
-W analizie danych strumieniowych interpretacja czasu jest złożonym zagadnieniem, ponieważ:
+$$x_{\text{out}} < Q_1 - 1.5 \times IQR \quad \text{lub} \quad x_{\text{out}} > Q_3 + 1.5 \times IQR$$
 
-1. Różne systemy mają różne zegary, co może prowadzić do niespójności,
-2. Dane mogą docierać z opóźnieniem, co wymaga technik watermarkingu i okien czasowych,
-3. Różne podejścia do analizy czasu zdarzenia i czasu przetwarzania wpływają na dokładność wyników.
+```{python}
+wynagrodzenia = [40, 42, 45, 47, 50, 55, 60, 70, 90, 150]
 
-## Business Impact:
-Wykorzystanie okien czasowych pozwala na automatyzację procesów decyzyjnych, takich jak dynamiczne ustalanie cen (Dynamic Pricing) czy zarządzanie zapasami w czasie rzeczywistym. 
-Dzięki analityce strumieniowej firma może wykryć "wąskie gardła" w procesach biznesowych w momencie ich powstawania, a nie tydzień po fakcie. 
-To technologia, która zamienia dane z "kosztu przechowywania" w "paliwo dla automatyzacji marży".
+Q1 = np.percentile(wynagrodzenia, 25)
+Q3 = np.percentile(wynagrodzenia, 75)
+IQR = Q3 - Q1
+
+granica_dolna = Q1 - 1.5 * IQR
+granica_gorna = Q3 + 1.5 * IQR
+
+outliers = [x for x in wynagrodzenia if x < granica_dolna or x > granica_gorna]
+print(f"Q1={Q1}, Q3={Q3}, IQR={IQR}")
+print(f"Granice: [{granica_dolna:.1f}, {granica_gorna:.1f}]")
+print(f"Anomalie: {outliers}")
+```
+
+### Isolation Forest — detekcja wielowymiarowa
+
+Algorytm bazujący na drzewach decyzyjnych (Liu et al., 2008). Kluczowa intuicja: **anomalie są łatwiejsze do odizolowania** — losowe podziały szybciej oddzielają je od reszty danych.
+
+```{python}
+from sklearn.ensemble import IsolationForest
+
+# Symulacja: transakcje bankowe (kwota, częstotliwość tygodniowa)
+dane = np.array([
+    [100, 5], [120, 6], [130, 5], [110, 4], [125, 5],
+    [115, 5], [140, 7], [135, 6], [145, 5], [105, 4],
+    [5000, 1],  # anomalia: duża kwota, rzadko
+    [50, 30],   # anomalia: mała kwota, bardzo często
+])
+
+clf = IsolationForest(contamination=0.15, random_state=42)
+predykcje = clf.fit_predict(dane)
+
+df = pd.DataFrame(dane, columns=["Kwota", "Transakcje/tydzień"])
+df["Status"] = ["Anomalia" if p == -1 else "OK" for p in predykcje]
+print(df.to_string(index=False))
+```
+
+### Detekcja anomalii w strumieniu
+
+W kontekście real-time nie możemy przeanalizować całego zbioru danych — musimy wykrywać anomalie na bieżąco, w oknie czasowym. Na laboratoriach zbudujemy taki system z Kafką i Sparkiem.
+
+---
+
+## Wyjaśnialność algorytmów
+
+W branżach regulowanych (bankowość, ubezpieczenia, medycyna) nie wystarczy powiedzieć „model odrzucił wniosek kredytowy". Trzeba wyjaśnić **dlaczego**. Regulacje takie jak AI Act i RODO wymagają transparentności decyzji algorytmicznych.
+
+### LIME (Local Interpretable Model-Agnostic Explanations)
+
+LIME wyjaśnia pojedyncze predykcje dowolnego modelu. Działa tak: wprowadza drobne zmiany w danych wejściowych i obserwuje, jak zmienia się wynik. Na tej podstawie buduje prosty, interpretowalny model lokalny (np. regresję liniową), który przybliża zachowanie oryginalnego modelu w otoczeniu danej obserwacji.
+
+```{python}
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+X_iris, y_iris = iris.data, iris.target
+X_tr, X_te, y_tr, y_te = train_test_split(X_iris, y_iris, test_size=0.2, random_state=42)
+
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_tr, y_tr)
+
+# Feature importance — prostsza alternatywa dla LIME
+importances = pd.Series(rf.feature_importances_, index=iris.feature_names)
+print("Ważność cech (Random Forest):")
+print(importances.sort_values(ascending=False).round(3))
+print(f"\nNa lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.")
+```
+
+---
+
+## Podsumowanie
+
+Uczenie wsadowe i przyrostowe to dwa komplementarne podejścia. W praktyce często łączy się je: model bazowy trenowany w trybie batch jest stopniowo aktualizowany w trybie online. SGD umożliwia uczenie na strumieniu danych, ale wymaga uwagi na concept drift i stabilność.
+
+Detekcja anomalii i wyjaśnialność modeli to kluczowe zastosowania ML w real-time analytics — na laboratoriach przełożymy je na praktyczne systemy z Kafką i Sparkiem.
+
+**Na następnym wykładzie:** Apache Kafka — architektura, producenci, konsumenci, tematy, partycje.
+
+**Do przemyślenia:** Twój bank trenuje model fraud detection raz w miesiącu (batch). Jakie ryzyko biznesowe niesie takie podejście? Co by się zmieniło, gdyby model uczył się online?
