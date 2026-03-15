@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Sylabus – Analiza danych w czasie rzeczywistym</title>
+<title>Zadania przedlaboratoryjne: Przygotowanie środowiska – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,27 +20,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../style.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -80,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Analiza danych w czasie rzeczywistym</span>
     </a>
   </div>
@@ -91,19 +126,19 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./indexS.html"> 
+    <a class="nav-link" href="../indexS.html"> 
 <span class="menu-text">222890-S</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./sylabus.html" aria-current="page"> 
+    <a class="nav-link" href="../sylabus.html"> 
 <span class="menu-text">Sylabus</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./info.html"> 
+    <a class="nav-link" href="../info.html"> 
 <span class="menu-text">Narzędzia</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ksiazki.html"> 
+    <a class="nav-link" href="../ksiazki.html"> 
 <span class="menu-text">Książki</span></a>
   </li>  
 </ul>
@@ -117,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Sylabus</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../labs/pl_lab0_prework.html">Zadania przedlaboratoryjne: Przygotowanie środowiska</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -131,7 +166,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Informacje ogólne</span></a>
   </div>
 </li>
@@ -146,37 +181,37 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 1 — Od plików płaskich do Data Lake</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 3 — Uczenie maszynowe: batch vs online</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 4 — Apache Kafka</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
+  <a href="../labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Zadania przedlaboratoryjne: Przygotowanie środowiska</span></a>
   </div>
 </li>
@@ -192,20 +227,21 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title"><strong>Sections</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#cel-przedmiotu" id="toc-cel-przedmiotu" class="nav-link active" data-scroll-target="#cel-przedmiotu">Cel przedmiotu</a></li>
-  <li><a href="#program-przedmiotu" id="toc-program-przedmiotu" class="nav-link" data-scroll-target="#program-przedmiotu">Program przedmiotu</a></li>
-  <li><a href="#efekty-kształcenia" id="toc-efekty-kształcenia" class="nav-link" data-scroll-target="#efekty-kształcenia">Efekty kształcenia</a></li>
-  <li><a href="#realizacja-przedmiotu" id="toc-realizacja-przedmiotu" class="nav-link" data-scroll-target="#realizacja-przedmiotu">Realizacja przedmiotu</a></li>
-  <li><a href="#literatura" id="toc-literatura" class="nav-link" data-scroll-target="#literatura">Literatura</a></li>
+  <li><a href="#gdzie-co-uruchamiam" id="toc-gdzie-co-uruchamiam" class="nav-link active" data-scroll-target="#gdzie-co-uruchamiam">Gdzie co uruchamiam?</a></li>
+  <li><a href="#część-1-python" id="toc-część-1-python" class="nav-link" data-scroll-target="#część-1-python">Część 1: Python</a></li>
+  <li><a href="#część-2-git" id="toc-część-2-git" class="nav-link" data-scroll-target="#część-2-git">Część 2: Git</a></li>
+  <li><a href="#część-3-docker" id="toc-część-3-docker" class="nav-link" data-scroll-target="#część-3-docker">Część 3: Docker</a></li>
+  <li><a href="#część-4-środowisko-kursu" id="toc-część-4-środowisko-kursu" class="nav-link" data-scroll-target="#część-4-środowisko-kursu">Część 4: Środowisko kursu</a></li>
+  <li><a href="#checklist" id="toc-checklist" class="nav-link" data-scroll-target="#checklist">Checklist</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../labs/pl_lab0_prework.html">Zadania przedlaboratoryjne: Przygotowanie środowiska</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Sylabus</h1>
+<h1 class="title">Zadania przedlaboratoryjne: Przygotowanie środowiska</h1>
 </div>
 
 
@@ -222,182 +258,153 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<blockquote class="blockquote">
-<p>Nazwa przedmiotu: Analiza danych w czasie rzeczywistym</p>
-<p>Jednostka: Szkoła Główna Handlowa w Warszawie</p>
-<p>Kod przedmiotu: 222890-D, 222890-S</p>
-<p>Punkty ECTS: 3</p>
-<p>Język prowadzenia: polski</p>
-<p>Poziom przedmiotu: średniozaawansowany</p>
-</blockquote>
-<p><strong>Prowadzący:</strong> <a href="https://sebastianzajac.pl">Sebastian Zając</a>, <a href="mailto:sebastian.zajac@sgh.waw.pl">sebastian.zajac@sgh.waw.pl</a></p>
-<p><strong>Strona kursu:</strong> <a href="https://sebkaz-teaching.github.io/RTA2026/">https://sebkaz-teaching.github.io/RTA2026/</a></p>
-<section id="cel-przedmiotu" class="level2">
-<h2 class="anchored" data-anchor-id="cel-przedmiotu">Cel przedmiotu</h2>
-<p>Współczesny biznes opiera się na podejmowaniu decyzji opartych na danych. Coraz większa ilość informacji, rosnące wymagania rynku oraz potrzeba natychmiastowej reakcji sprawiają, że analiza danych w czasie rzeczywistym staje się kluczowym elementem nowoczesnych procesów biznesowych.</p>
-<p>Na zajęciach studenci zapoznają się z metodami i technologiami umożliwiającymi przetwarzanie danych w czasie rzeczywistym. Szczególną uwagę poświęcimy zastosowaniu uczenia maszynowego (machine learning), sztucznej inteligencji (artificial intelligence) oraz głębokich sieci neuronowych (deep learning) w analizie danych. Zrozumienie tych metod pozwala nie tylko lepiej interpretować zjawiska biznesowe, ale także podejmować szybkie i trafne decyzje.</p>
-<p>W ramach kursu omówimy zarówno dane ustrukturyzowane, jak i nieustrukturyzowane (obrazy, dźwięk, strumienie danych). Studenci poznają architektury przetwarzania danych, takie jak Lambda i Kappa, wykorzystywane w systemach Data Lake, a także wyzwania związane z modelowaniem danych w czasie rzeczywistym na dużą skalę.</p>
-<p>Kurs obejmuje część teoretyczną oraz praktyczne laboratoria, podczas których studenci będą pracować z rzeczywistymi danymi w środowiskach takich jak JupyterLab, PyTorch, Apache Spark i Apache Kafka. Dzięki temu studenci nie tylko zdobędą wiedzę na temat metod analitycznych, ale także nauczą się korzystać z najnowszych technologii stosowanych w analizie danych w czasie rzeczywistym.</p>
-</section>
-<section id="program-przedmiotu" class="level2">
-<h2 class="anchored" data-anchor-id="program-przedmiotu">Program przedmiotu</h2>
-<p><strong>Wykłady</strong> (część teoretyczna):</p>
-<ol type="1">
-<li>Od plików płaskich do Data Lake. Modele przetwarzania danych w erze Big Data. Mity i fakty przetwarzania danych w czasie rzeczywistym.</li>
-<li>Przetwarzanie wsadowe (batch) a strumieniowe (stream). Architektura Lambda i Kappa. Systemy NRT (near real-time).</li>
-<li>Uczenie maszynowe w trybie wsadowym (offline) i przyrostowym (online). Stochastic Gradient Descent. Problemy online learning.</li>
-<li>Apache Kafka — architektura rozproszonego systemu komunikacji. Producent, konsument, tematy, partycje, grupy konsumentów.</li>
-<li>Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę. Integracja Spark–Kafka.</li>
-</ol>
-<p><strong>Laboratoria</strong> (część praktyczna):</p>
-<ol start="6" type="1">
-<li>Środowisko pracy: Git, Docker, Docker Compose, Python. Konfiguracja środowiska do przetwarzania danych.</li>
-<li>Przetwarzanie danych w Pythonie (Pandas, NumPy). Analiza eksploracyjna danych (EDA) w trybie wsadowym.</li>
-<li>Modele uczenia maszynowego (scikit-learn): regresja, klasyfikacja, ewaluacja modeli. Przygotowanie modelu do wdrożenia.</li>
-<li>Apache Kafka w praktyce — producent i konsument w Pythonie (<code>confluent-kafka</code>). Przesyłanie i odbieranie danych w czasie rzeczywistym.</li>
-<li>Wprowadzenie do PySpark — DataFrame API, transformacje, akcje. Praca z danymi ustrukturyzowanymi i nieustrukturyzowanymi.</li>
-<li>Spark Structured Streaming + Kafka — budowa pipeline’u przetwarzania danych strumieniowych.</li>
-<li>Mikroserwisy z FastAPI — deployment modelu ML jako usługi REST. Konteneryzacja z Dockerem.</li>
-<li>Budowa kompletnego pipeline’u: źródło danych → Kafka → Spark Streaming → model ML → dashboard/raportowanie.</li>
-<li>Projekt grupowy — praca nad realnym problemem biznesowym z użyciem poznanych technologii (cz. 1).</li>
-<li>Projekt grupowy — finalizacja, prezentacje i zaliczenie (cz. 2).</li>
-</ol>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Powyższy program może ulec drobnym modyfikacjom w trakcie semestru.</p>
-</div>
-</div>
-</section>
-<section id="efekty-kształcenia" class="level2">
-<h2 class="anchored" data-anchor-id="efekty-kształcenia">Efekty kształcenia</h2>
-<section id="wiedza" class="level3">
-<h3 class="anchored" data-anchor-id="wiedza">1. Wiedza</h3>
-<ul>
-<li>Zna historię i filozofię modeli przetwarzania danych.
-<ul>
-<li><em>Powiązania:</em> K2A_W01, K2A_W03, O2_W01, O2_W02, O2_W04, O2_W07</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Zna typy danych ustrukturyzowanych i nieustrukturyzowanych.
-<ul>
-<li><em>Powiązania:</em> K2A_W02, K2A_W04, O2_W04, O2_W07</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Zna możliwości i obszary zastosowania przetwarzania danych w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_W01, K2A_W02, O2_W01, O2_W04, O2_W08</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Zna teoretyczne aspekty architektury Lambda i Kappa.
-<ul>
-<li><em>Powiązania:</em> K2A_W03, K2A_W05, O2_W04, O2_W06, O2_W08</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Umie wybrać architekturę IT dla danego problemu biznesowego.
-<ul>
-<li><em>Powiązania:</em> K2A_W02, K2A_W03, O2_W01, O2_W04, O2_W06, O2_W08</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Rozumie potrzeby biznesowe podejmowania decyzji w bardzo krótkim czasie.
-<ul>
-<li><em>Powiązania:</em> K2A_W01, K2A_W05, O2_W01, O2_W04, O2_W06, O2_W08</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-</ul>
-</section>
-<section id="umiejętności" class="level3">
-<h3 class="anchored" data-anchor-id="umiejętności">2. Umiejętności</h3>
-<ul>
-<li>Rozróżnia typy danych ustrukturyzowanych i nieustrukturyzowanych.
-<ul>
-<li><em>Powiązania:</em> K2A_U02, K2A_U07, K2A_U10, O2_U02</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Umie przygotować, przetwarzać oraz przechowywać dane generowane w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_U03, K2A_U05, K2A_U09, O2_U02, O2_U04</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Rozumie ograniczenia wynikające z czasu przetwarzania przez urządzenia i systemy informatyczne.
-<ul>
-<li><em>Powiązania:</em> K2A_U01, K2A_U07, K2A_U11, O2_U02</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Umie zastosować i skonstruować system do przetwarzania w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_U05, K2A_U10, O2_U05, O2_U06, O2_U07</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Umie przygotować raportowanie dla systemu przetwarzania w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_U02, K2A_U08, K2A_U10, O2_U06, O2_U07</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-</ul>
-</section>
-<section id="kompetencje" class="level3">
-<h3 class="anchored" data-anchor-id="kompetencje">3. Kompetencje</h3>
-<ul>
-<li>Formułuje problem analityczny wraz z jego informatycznym rozwiązaniem.
-<ul>
-<li><em>Powiązania:</em> K2A_K01, K2A_K03, O2_K02, O2_K06, O2_K07</li>
-<li><em>Weryfikacja:</em> projekt, prezentacja</li>
-</ul></li>
-<li>Samodzielnie uzupełnia wiedzę teoretyczną i praktyczną w zakresie programowania, modelowania i nowych technologii informatycznych.
-<ul>
-<li><em>Powiązania:</em> K2A_K02, K2A_K04, O2_K01, O2_K02, O2_K05, O2_K06</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-</ul>
-</section>
-</section>
-<section id="realizacja-przedmiotu" class="level2">
-<h2 class="anchored" data-anchor-id="realizacja-przedmiotu">Realizacja przedmiotu</h2>
+<p>Te zadania należy wykonać <strong>przed pierwszymi zajęciami laboratoryjnymi</strong>.</p>
+<hr>
+<section id="gdzie-co-uruchamiam" class="level2">
+<h2 class="anchored" data-anchor-id="gdzie-co-uruchamiam">Gdzie co uruchamiam?</h2>
+<p>Na kursie będziesz pracować w trzech różnych miejscach:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Składnik</th>
-<th>Waga</th>
+<th>Gdzie</th>
+<th>Co</th>
+<th>Jak otworzyć</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Test z wykładów</td>
-<td>20%</td>
+<td><strong>Terminal systemowy</strong></td>
+<td>Komendy Git, Docker, uruchamianie plików <code>.py</code></td>
+<td>macOS: Terminal. Windows: PowerShell. Linux: dowolny terminal.</td>
 </tr>
 <tr class="even">
-<td>Zadania domowe</td>
-<td>40%</td>
+<td><strong>JupyterLab</strong></td>
+<td>Notatniki (<code>.ipynb</code>), eksploracja danych</td>
+<td>Przeglądarka: <code>localhost:8888</code> po uruchomieniu środowiska</td>
 </tr>
 <tr class="odd">
-<td>Projekt grupowy</td>
-<td>40%</td>
+<td><strong>Edytor tekstu / IDE</strong></td>
+<td>Pliki <code>.py</code> (serwery API, producenci, konsumenci)</td>
+<td>VS Code lub dowolny edytor</td>
 </tr>
 </tbody>
 </table>
+<p>Gdy zadanie mówi <strong>„w terminalu”</strong> — chodzi o terminal systemowy (nie terminal JupyterLab). Gdy mówi <strong>„w JupyterLab”</strong> — otwórz nowy notatnik lub użyj terminala JupyterLab. Gdy mówi <strong>„utwórz plik”</strong> — napisz go w edytorze lub użyj <code>%%file nazwa.py</code> w JupyterLab.</p>
+<hr>
 </section>
-<section id="literatura" class="level2">
-<h2 class="anchored" data-anchor-id="literatura">Literatura</h2>
+<section id="część-1-python" class="level2">
+<h2 class="anchored" data-anchor-id="część-1-python">Część 1: Python</h2>
+<section id="zadanie-1.1-sprawdź-wersję-pythona" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.1-sprawdź-wersję-pythona">Zadanie 1.1 — Sprawdź wersję Pythona</h3>
+<p>W <strong>terminalu systemowym</strong>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Potrzebujesz Python 3.10+.</p>
+</section>
+<section id="zadanie-1.2-utwórz-środowisko-wirtualne" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.2-utwórz-środowisko-wirtualne">Zadanie 1.2 — Utwórz środowisko wirtualne</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv rta_env</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> rta_env/bin/activate   <span class="co"># Linux/macOS</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">--upgrade</span> pip</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install jupyterlab pandas numpy matplotlib scikit-learn requests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="zadanie-1.3-uruchom-jupyterlab" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.3-uruchom-jupyterlab">Zadanie 1.3 — Uruchom JupyterLab</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> lab</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Otworzy się w przeglądarce pod <code>localhost:8888</code>. Utwórz nowy notatnik i uruchom:</p>
+<div id="cell-2" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sklearn</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"pandas:  </span><span class="sc">{</span>pd<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"numpy:   </span><span class="sc">{</span>np<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"sklearn: </span><span class="sc">{</span>sklearn<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Wszystko działa!"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="część-2-git" class="level2">
+<h2 class="anchored" data-anchor-id="część-2-git">Część 2: Git</h2>
+<section id="zadanie-2.1-konfiguracja" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.1-konfiguracja">Zadanie 2.1 — Konfiguracja</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name <span class="st">"Twoje Imię"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">"twoj@email.com"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="zadanie-2.2-utwórz-konto-na-github" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.2-utwórz-konto-na-github">Zadanie 2.2 — Utwórz konto na GitHub</h3>
+<p>Jeśli nie masz: <a href="https://github.com">github.com</a></p>
+</section>
+<section id="zadanie-2.3-utwórz-repozytorium-kursu" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.3-utwórz-repozytorium-kursu">Zadanie 2.3 — Utwórz repozytorium kursu</h3>
 <ol type="1">
-<li>Zając S. (red.), <em>Modelowanie dla biznesu. Analityka w czasie rzeczywistym — narzędzia informatyczne i biznesowe</em>, SGH, Warszawa 2022.</li>
-<li>Frątczak E. (red.), <em>Modelowanie dla biznesu: Regresja logistyczna, Regresja Poissona, Survival Data Mining, CRM, Credit Scoring</em>, SGH, Warszawa 2019.</li>
-<li>Bellemare A., <em>Mikrousługi oparte na zdarzeniach. Wykorzystanie danych w organizacji na dużą skalę</em>, O’Reilly 2021.</li>
-<li>Shapira G., Palino T., Sivaram R., Petty K., <em>Kafka: The Definitive Guide. Real-time data and stream processing at scale</em>, O’Reilly 2022.</li>
-<li>Lakshmanan V., Robinson S., Munn M., <em>Wzorce projektowe uczenia maszynowego</em>, O’Reilly 2021.</li>
-<li>Gift N., Deza A., <em>Practical MLOps: Operationalizing Machine Learning Models</em>, O’Reilly 2022.</li>
-<li>Akidau T., Chernyak S., Lax R., <em>Streaming Systems: The What, Where, When, and How of Large-Scale Data Processing</em>, O’Reilly 2018.</li>
-<li>Géron A., <em>Uczenie maszynowe z użyciem Scikit-Learn i TensorFlow. Wydanie II</em>, Helion.</li>
-<li>Hastie T., Tibshirani R., Friedman J., <em>The Elements of Statistical Learning</em>, Springer 2017.</li>
-<li>Koul A., Ganju S., Kasam M., <em>Practical Deep Learning for Cloud, Mobile &amp; Edge</em>, O’Reilly 2019.</li>
+<li>Na GitHubie kliknij „New repository”</li>
+<li>Nazwa: <code>RTA_&lt;twoje_inicjaly&gt;</code></li>
+<li>Zaznacz „Add a README file”</li>
+<li>Sklonuj:</li>
 </ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/<span class="op">&lt;</span>login<span class="op">&gt;</span>/RTA_<span class="op">&lt;</span>inicjaly<span class="op">&gt;</span>.git</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> RTA_<span class="op">&lt;</span>inicjaly<span class="op">&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"# Analiza danych w czasie rzeczywistym"</span> <span class="op">&gt;</span> README.md</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add . <span class="kw">&amp;&amp;</span> <span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Pierwszy commit"</span> <span class="kw">&amp;&amp;</span> <span class="fu">git</span> push origin main</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="część-3-docker" class="level2">
+<h2 class="anchored" data-anchor-id="część-3-docker">Część 3: Docker</h2>
+<section id="zadanie-3.1-instalacja" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.1-instalacja">Zadanie 3.1 — Instalacja</h3>
+<p>Pobierz Docker Desktop: <a href="https://docs.docker.com/get-docker/">docker.com</a></p>
+</section>
+<section id="zadanie-3.2-weryfikacja" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.2-weryfikacja">Zadanie 3.2 — Weryfikacja</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> <span class="at">--version</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose version</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run hello-world</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="część-4-środowisko-kursu" class="level2">
+<h2 class="anchored" data-anchor-id="część-4-środowisko-kursu">Część 4: Środowisko kursu</h2>
+<section id="zadanie-4.1-sklonuj-infrastrukturę" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4.1-sklonuj-infrastrukturę">Zadanie 4.1 — Sklonuj infrastrukturę</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">-b</span> 2026Redis https://github.com/sebkaz/jupyterlab-project.git</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> jupyterlab-project</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="zadanie-4.2-uruchom-środowisko" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4.2-uruchom-środowisko">Zadanie 4.2 — Uruchom środowisko</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose ps</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Poczekaj 1–2 minuty. Otwórz przeglądarkę: <code>http://localhost:8999</code></p>
+<p>Hasło: root</p>
+</section>
+<section id="zadanie-4.3-sprawdź-kafkę" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4.3-sprawdź-kafkę">Zadanie 4.3 — Sprawdź Kafkę</h3>
+<p>W <strong>terminalu JupyterLab</strong> (File &gt; New &gt; Terminal):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-topics.sh</span> <span class="at">--list</span> <span class="at">--bootstrap-server</span> broker:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="zadanie-4.4-zatrzymaj-środowisko" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4.4-zatrzymaj-środowisko">Zadanie 4.4 — Zatrzymaj środowisko</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose down</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="checklist" class="level2">
+<h2 class="anchored" data-anchor-id="checklist">Checklist</h2>
+<ul class="task-list">
+<li><label><input type="checkbox">Python 3.10+ z pandas, numpy, sklearn</label></li>
+<li><label><input type="checkbox">Konto GitHub z repozytorium kursu</label></li>
+<li><label><input type="checkbox">Docker Compose działa, JupyterLab pod localhost:8888</label></li>
+<li><label><input type="checkbox">Kafka odpowiada w terminalu JupyterLab</label></li>
+</ul>
+<p><strong>Wyślij</strong> link do repozytorium przez MS Teams.</p>
 
 
 </section>

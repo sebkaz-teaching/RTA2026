@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lab 4: Docker Compose + Apache Kafka – Analiza danych w czasie rzeczywistym</title>
+<title>Lab 2: Kafka + Spark Structured Streaming – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab4.html">Lab 4: Docker Compose + Apache Kafka</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lab 2: Kafka + Spark Structured Streaming</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -209,75 +209,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Laboratoria</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
+  <a href="../labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zadania przedlaboratoryjne: Przygotowanie środowiska</span></a>
   </div>
 </li>
       </ul>
@@ -293,9 +228,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
-  <li><a href="#część-1-uruchomienie-kafki" id="toc-część-1-uruchomienie-kafki" class="nav-link" data-scroll-target="#część-1-uruchomienie-kafki">Część 1: Uruchomienie Kafki</a></li>
-  <li><a href="#część-2-kafka-z-pythona" id="toc-część-2-kafka-z-pythona" class="nav-link" data-scroll-target="#część-2-kafka-z-pythona">Część 2: Kafka z Pythona</a></li>
-  <li><a href="#część-3-wiele-konsumentów" id="toc-część-3-wiele-konsumentów" class="nav-link" data-scroll-target="#część-3-wiele-konsumentów">Część 3: Wiele konsumentów</a></li>
+  <li><a href="#część-1-podstawy-sparka-tryb-batch" id="toc-część-1-podstawy-sparka-tryb-batch" class="nav-link" data-scroll-target="#część-1-podstawy-sparka-tryb-batch">Część 1: Podstawy Sparka (tryb batch)</a></li>
+  <li><a href="#część-2-streaming-ze-źródła-rate" id="toc-część-2-streaming-ze-źródła-rate" class="nav-link" data-scroll-target="#część-2-streaming-ze-źródła-rate">Część 2: Streaming ze źródła <code>rate</code></a></li>
+  <li><a href="#część-3-odczyt-z-kafki" id="toc-część-3-odczyt-z-kafki" class="nav-link" data-scroll-target="#część-3-odczyt-z-kafki">Część 3: Odczyt z Kafki</a></li>
   <li><a href="#praca-domowa" id="toc-praca-domowa" class="nav-link" data-scroll-target="#praca-domowa">Praca domowa</a></li>
   </ul>
 </nav>
@@ -303,9 +238,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab4.html">Lab 4: Docker Compose + Apache Kafka</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lab 4: Docker Compose + Apache Kafka</h1>
+<h1 class="title">Lab 2: Kafka + Spark Structured Streaming</h1>
 </div>
 
 
@@ -324,172 +259,152 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="cel" class="level2">
 <h2 class="anchored" data-anchor-id="cel">Cel</h2>
+<p>Przetwarzamy ten sam strumień transakcji z Lab 1, ale teraz w Apache Spark:</p>
 <ul>
-<li>Uruchomienie klastra Kafka w Docker Compose,</li>
-<li>Tworzenie tematów (topics),</li>
-<li>Wysyłanie i odbieranie wiadomości z poziomu terminala,</li>
-<li>Zrozumienie architektury: broker, temat, partycja, offset.</li>
+<li>Połączenie Sparka z Kafką,</li>
+<li>Okna tumbling i sliding,</li>
+<li>Transformacje bezstanowe i stanowe na skalę.</li>
 </ul>
+<p><strong>Case biznesowy (ciąg dalszy):</strong> System monitoringu musi generować raporty okienkowe — np. łączny przychód per sklep co 5 minut.</p>
 <hr>
 </section>
-<section id="część-1-uruchomienie-kafki" class="level2">
-<h2 class="anchored" data-anchor-id="część-1-uruchomienie-kafki">Część 1: Uruchomienie Kafki</h2>
-<section id="zadanie-1.1-docker-compose-z-kafka" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.1-docker-compose-z-kafka">Zadanie 1.1 — Docker Compose z Kafka</h3>
-<p>Utwórz plik <code>docker-compose.yml</code>, który uruchomi:</p>
-<ol type="1">
-<li><strong>Zookeeper</strong> (zarządza klastrem Kafki)</li>
-<li><strong>Kafka</strong> (broker wiadomości)</li>
-</ol>
-<p>Użyj obrazów <code>confluentinc/cp-zookeeper:7.6.0</code> i <code>confluentinc/cp-kafka:7.6.0</code>.</p>
+<section id="część-1-podstawy-sparka-tryb-batch" class="level2">
+<h2 class="anchored" data-anchor-id="część-1-podstawy-sparka-tryb-batch">Część 1: Podstawy Sparka (tryb batch)</h2>
+<section id="zadanie-1.1-utwórz-sparksession" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.1-utwórz-sparksession">Zadanie 1.1 — Utwórz SparkSession</h3>
 <div id="cell-2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> docker<span class="op">-</span>compose.yml</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>services:</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  zookeeper:</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    image: confluentinc<span class="op">/</span>cp<span class="op">-</span>zookeeper:<span class="fl">7.6.0</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    environment:</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      ZOOKEEPER_CLIENT_PORT: <span class="dv">2181</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  kafka:</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    image: confluentinc<span class="op">/</span>cp<span class="op">-</span>kafka:<span class="fl">7.6.0</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    depends_on:</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">-</span> zookeeper</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    ports:</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="op">-</span> <span class="st">"9092:9092"</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    environment:</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      KAFKA_BROKER_ID: <span class="dv">1</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      KAFKA_ZOOKEEPER_CONNECT: zookeeper:<span class="dv">2181</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT:<span class="op">//</span>localhost:<span class="dv">9092</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (SparkSession.builder</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"Lab2"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"WARN"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spark: </span><span class="sc">{</span>spark<span class="sc">.</span>version<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Uruchom:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose ps</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Poczekaj ok. 30 sekund, aż Kafka się uruchomi.</p>
 </section>
-<section id="zadanie-1.2-utwórz-temat" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.2-utwórz-temat">Zadanie 1.2 — Utwórz temat</h3>
-<p>Utwórz temat <code>test-topic</code> z 3 partycjami:</p>
+<section id="zadanie-1.2-utwórz-dataframe-z-przykładowych-danych" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.2-utwórz-dataframe-z-przykładowych-danych">Zadanie 1.2 — Utwórz DataFrame z przykładowych danych</h3>
+<p>Utwórz Spark DataFrame o tej samej strukturze co transakcje z Kafki. Użyj <code>StructType</code>.</p>
 <div id="cell-4" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># W terminalu:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># docker compose exec kafka kafka-topics --create \</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   --topic test-topic \</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   --bootstrap-server localhost:9092 \</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   --partitions 3 \</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   --replication-factor 1</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Sprawdz liste tematow:</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># docker compose exec kafka kafka-topics --list --bootstrap-server localhost:9092</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Wklej wynik:</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ WYNIK</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StructField, StringType, DoubleType</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> to_timestamp</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX001"</span>, <span class="st">"u05"</span>, <span class="fl">150.0</span>, <span class="st">"Warszawa"</span>, <span class="st">"elektronika"</span>, <span class="st">"2026-04-01 10:00:00"</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX002"</span>, <span class="st">"u12"</span>, <span class="fl">4500.0</span>, <span class="st">"Kraków"</span>, <span class="st">"odzież"</span>, <span class="st">"2026-04-01 10:01:00"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX003"</span>, <span class="st">"u05"</span>, <span class="fl">89.0</span>, <span class="st">"Warszawa"</span>, <span class="st">"żywność"</span>, <span class="st">"2026-04-01 10:02:30"</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX004"</span>, <span class="st">"u08"</span>, <span class="fl">7800.0</span>, <span class="st">"Gdańsk"</span>, <span class="st">"elektronika"</span>, <span class="st">"2026-04-01 10:03:00"</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX005"</span>, <span class="st">"u12"</span>, <span class="fl">55.0</span>, <span class="st">"Kraków"</span>, <span class="st">"książki"</span>, <span class="st">"2026-04-01 10:05:00"</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX006"</span>, <span class="st">"u03"</span>, <span class="fl">1200.0</span>, <span class="st">"Wrocław"</span>, <span class="st">"elektronika"</span>, <span class="st">"2026-04-01 10:06:30"</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Zdefiniuj schemat</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Utwórz DataFrame</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Skonwertuj kolumnę timestamp</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Pokaż df.show() i df.printSchema()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="zadanie-1.3-wyślij-i-odbierz-wiadomości-z-terminala" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.3-wyślij-i-odbierz-wiadomości-z-terminala">Zadanie 1.3 — Wyślij i odbierz wiadomości z terminala</h3>
-<p>Otwórz <strong>dwa terminale</strong>.</p>
-<p>Terminal 1 — konsument (najpierw uruchom!):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose exec kafka kafka-console-consumer <span class="dt">\</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--topic</span> test-topic <span class="dt">\</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bootstrap-server</span> localhost:9092 <span class="dt">\</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--from-beginning</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Terminal 2 — producent:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose exec kafka kafka-console-producer <span class="dt">\</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--topic</span> test-topic <span class="dt">\</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bootstrap-server</span> localhost:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Wpisz kilka wiadomości w terminalu producenta i obserwuj, jak pojawiają się u konsumenta.</p>
-</section>
-<section id="zadanie-1.4-szczegóły-tematu" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.4-szczegóły-tematu">Zadanie 1.4 — Szczegóły tematu</h3>
-<p>Sprawdź szczegóły tematu (partycje, lider, repliki):</p>
+<section id="zadanie-1.3-tumbling-window-na-danych-batch" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.3-tumbling-window-na-danych-batch">Zadanie 1.3 — Tumbling window na danych batch</h3>
+<p>Pogrupuj transakcje w okna 3-minutowe. Policz transakcje i zsumuj kwoty per okno.</p>
 <div id="cell-6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># docker compose exec kafka kafka-topics --describe \</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   --topic test-topic \</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   --bootstrap-server localhost:9092</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Wklej wynik i odpowiedz:</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ile partycji ma temat?</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Który broker jest liderem?</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ WYNIK</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark.sql.functions <span class="im">as</span> F</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Użyj F.window("kolumna_czasu", "3 minutes")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
 </section>
-<section id="część-2-kafka-z-pythona" class="level2">
-<h2 class="anchored" data-anchor-id="część-2-kafka-z-pythona">Część 2: Kafka z Pythona</h2>
-<p>Zainstaluj bibliotekę:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install confluent-kafka</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="zadanie-2.1-producent-w-pythonie" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.1-producent-w-pythonie">Zadanie 2.1 — Producent w Pythonie</h3>
-<p>Napisz producenta, który wysyła 20 wiadomości JSON do tematu <code>transakcje</code>. Każda wiadomość powinna zawierać: <code>id</code>, <code>kwota</code>, <code>sklep</code>, <code>timestamp</code>.</p>
+<section id="część-2-streaming-ze-źródła-rate" class="level2">
+<h2 class="anchored" data-anchor-id="część-2-streaming-ze-źródła-rate">Część 2: Streaming ze źródła <code>rate</code></h2>
+<section id="zadanie-2.1-pierwszy-strumień" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.1-pierwszy-strumień">Zadanie 2.1 — Pierwszy strumień</h3>
 <div id="cell-8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> producer.py</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> confluent_kafka <span class="im">import</span> Producer</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json, random, time</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>conf <span class="op">=</span> {<span class="st">'bootstrap.servers'</span>: <span class="st">'localhost:9092'</span>}</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>producer <span class="op">=</span> Producer(conf)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> delivery_report(err, msg):</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> err:</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Błąd: </span><span class="sc">{</span>err<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'Wysłano do </span><span class="sc">{</span>msg<span class="sc">.</span>topic()<span class="sc">}</span><span class="ss"> [</span><span class="sc">{</span>msg<span class="sc">.</span>partition()<span class="sc">}</span><span class="ss">] offset=</span><span class="sc">{</span>msg<span class="sc">.</span>offset()<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Petla wysylajaca 20 transakcji (po jednej na sekunde)</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Kazda transakcja to JSON z polami: id, kwota, sklep, timestamp</span></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Uzyj producer.produce(topic, value=json.dumps(msg).encode('utf-8'), callback=delivery_report)</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Na koncu: producer.flush()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>batch_counter <span class="op">=</span> {<span class="st">"count"</span>: <span class="dv">0</span>}</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_batch(df, batch_id, max_batches<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    batch_counter[<span class="st">"count"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"--- Batch </span><span class="sc">{</span>batch_id<span class="sc">}</span><span class="ss"> ---"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    df.show(truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> batch_counter[<span class="st">"count"</span>] <span class="op">&gt;=</span> max_batches:</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"Stop"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>rate_df <span class="op">=</span> (spark.readStream.<span class="bu">format</span>(<span class="st">"rate"</span>).option(<span class="st">"rowsPerSecond"</span>, <span class="dv">2</span>).load())</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>rate_df.printSchema()</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> (rate_df.writeStream.<span class="bu">format</span>(<span class="st">"console"</span>).outputMode(<span class="st">"append"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    .foreachBatch(process_batch).start())</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    query.awaitTermination()</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span>:</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    query.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="zadanie-2.2-konsument-w-pythonie" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.2-konsument-w-pythonie">Zadanie 2.2 — Konsument w Pythonie</h3>
-<p>Napisz konsumenta, który: 1. Subskrybuje temat <code>transakcje</code> 2. Odczytuje wiadomości 3. Wyświetla ALERT dla transakcji powyżej 5000 PLN</p>
+<section id="zadanie-2.2-wzbogać-i-filtruj-strumień" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.2-wzbogać-i-filtruj-strumień">Zadanie 2.2 — Wzbogać i filtruj strumień</h3>
+<p>Dodaj kolumny: <code>user_id</code>, <code>amount</code>, <code>store</code>. Filtruj <code>amount &gt; 2000</code> (tryb append).</p>
 <div id="cell-10" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> consumer.py</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> confluent_kafka <span class="im">import</span> Consumer</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>conf <span class="op">=</span> {</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'bootstrap.servers'</span>: <span class="st">'localhost:9092'</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'group.id'</span>: <span class="st">'fraud-detector'</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'auto.offset.reset'</span>: <span class="st">'earliest'</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>consumer <span class="op">=</span> Consumer(conf)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Subskrybuj temat 'transakcje'</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># W petli: pobieraj wiadomosci (consumer.poll(1.0))</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Dekoduj JSON i wyswietl </span><span class="al">ALERT</span><span class="co"> jesli kwota &gt; 5000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> expr</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>batch_counter[<span class="st">"count"</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="zadanie-2.3-przetestuj" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.3-przetestuj">Zadanie 2.3 — Przetestuj</h3>
-<p>Uruchom w dwóch terminalach:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 1:</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> consumer.py</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 2:</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> producer.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Obserwuj, jak konsument reaguje na wiadomości producenta.</p>
+<section id="zadanie-2.3-tumbling-window-watermark-na-strumieniu" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.3-tumbling-window-watermark-na-strumieniu">Zadanie 2.3 — Tumbling window + watermark na strumieniu</h3>
+<p>Okna 10-sekundowe, watermark 5 sekund. Zlicz i zsumuj per okno per store.</p>
+<div id="cell-12" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>batch_counter[<span class="st">"count"</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <hr>
 </section>
 </section>
-<section id="część-3-wiele-konsumentów" class="level2">
-<h2 class="anchored" data-anchor-id="część-3-wiele-konsumentów">Część 3: Wiele konsumentów</h2>
-<section id="zadanie-3.1-grupy-konsumentów" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.1-grupy-konsumentów">Zadanie 3.1 — Grupy konsumentów</h3>
-<p>Uruchom <strong>dwa</strong> konsumenty z tą samą <code>group.id</code> i jednego producenta.</p>
-<ol type="1">
-<li>Jak Kafka rozdziela wiadomości między konsumentów?</li>
-<li>Co się stanie, jeśli wyłączysz jednego konsumenta?</li>
-</ol>
-<div id="cell-12" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Odpowiedz na pytania:</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. ...</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="część-3-odczyt-z-kafki" class="level2">
+<h2 class="anchored" data-anchor-id="część-3-odczyt-z-kafki">Część 3: Odczyt z Kafki</h2>
+<section id="zadanie-3.1-połącz-sparka-z-kafką" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.1-połącz-sparka-z-kafką">Zadanie 3.1 — Połącz Sparka z Kafką</h3>
+<p>Uruchom producenta z Lab 1 w terminalu.</p>
+<div id="cell-14" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>kafka_df <span class="op">=</span> (spark.readStream</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">format</span>(<span class="st">"kafka"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"kafka.bootstrap.servers"</span>, <span class="st">"broker:9092"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"subscribe"</span>, <span class="st">"transactions"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"startingOffsets"</span>, <span class="st">"earliest"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    .load())</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>kafka_df.printSchema()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-3.2-parsuj-json-z-kafki" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.2-parsuj-json-z-kafki">Zadanie 3.2 — Parsuj JSON z Kafki</h3>
+<div id="cell-16" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> col, from_json</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StructField, StringType, DoubleType</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>tx_schema <span class="op">=</span> StructType([</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"tx_id"</span>, StringType()),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"user_id"</span>, StringType()),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"amount"</span>, DoubleType()),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"store"</span>, StringType()),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"category"</span>, StringType()),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"timestamp"</span>, StringType()),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. col("value").cast("string")</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. from_json(..., tx_schema)</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Wyciągnij pola</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Skonwertuj timestamp</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-3.3-agregacja-okienkowa-na-strumieniu-z-kafki" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.3-agregacja-okienkowa-na-strumieniu-z-kafki">Zadanie 3.3 — Agregacja okienkowa na strumieniu z Kafki</h3>
+<p>Okna 1-minutowe per sklep. Watermark 30 sekund. Policz transakcje, sumę, średnią.</p>
+<div id="cell-18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -497,12 +412,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="praca-domowa" class="level2">
 <h2 class="anchored" data-anchor-id="praca-domowa">Praca domowa</h2>
 <ol type="1">
-<li>Utwórz temat <code>zamowienia</code> z 5 partycjami.</li>
-<li>Napisz producenta, który wysyła zamówienia z kluczem = <code>miasto</code> (użyj parametru <code>key</code> w <code>produce()</code>).</li>
-<li>Sprawdź, że wiadomości z tego samego miasta trafiają do tej samej partycji.</li>
-<li>Wyślij kod do repozytorium Git.</li>
+<li>Dodaj sliding window: 5 minut, krok 1 minuta, per kategoria.</li>
+<li>Zapisz alerty (amount &gt; 3000) do nowego tematu Kafka <code>alerts</code>.</li>
+<li>Wypchnij kod do repozytorium Git.</li>
 </ol>
-<p>Na następnych zajęciach: zaawansowany producent/konsument Kafka w Pythonie.</p>
+<p><strong>Następne zajęcia:</strong> Reguły decyzyjne na danych strumieniowych.</p>
+<div id="cell-20" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>spark.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 
 
 </section>

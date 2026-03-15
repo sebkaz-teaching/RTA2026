@@ -25,6 +25,28 @@ Kluczowe cechy Sparka:
 - **API w Pythonie (PySpark)**, Scali, Javie i R.
 - **Lazy evaluation** — Spark buduje plan wykonania i optymalizuje go zanim cokolwiek obliczy.
 
+```{mermaid}
+%%| fig-cap: "Ekosystem Apache Spark"
+flowchart TB
+    subgraph "Apache Spark"
+        CORE["Spark Core\n(RDD, zarządzanie pamięcią)"]
+        SQL["Spark SQL\n& DataFrames"]
+        SS["Structured\nStreaming"]
+        ML["MLlib\n(Machine Learning)"]
+        GR["GraphX\n(Grafy)"]
+    end
+    SQL --> CORE
+    SS --> CORE
+    ML --> CORE
+    GR --> CORE
+
+    style CORE fill:#FF9800,color:#fff
+    style SQL fill:#2196F3,color:#fff
+    style SS fill:#F44336,color:#fff
+    style ML fill:#4CAF50,color:#fff
+    style GR fill:#9C27B0,color:#fff
+```
+
 ---
 
 ## PySpark — podstawy
@@ -120,20 +142,21 @@ Structured Streaming to moduł Sparka, który traktuje **strumień danych jak ta
 
 ### Koncepcja
 
-```
-  Czas:    t1    t2    t3    t4    ...
-           │     │     │     │
-           ▼     ▼     ▼     ▼
-  ┌───────────────────────────────────┐
-  │  Nieograniczona tabela wejściowa  │
-  │  (nowe wiersze dopisywane ciągle) │
-  └───────────────────────────────────┘
-           │
-           ▼ Zapytanie (query)
-  ┌───────────────────────────────────┐
-  │     Tabela wynikowa               │
-  │  (aktualizowana z każdym triggerem)│
-  └───────────────────────────────────┘
+```{mermaid}
+%%| fig-cap: "Structured Streaming: strumień jako nieograniczona tabela"
+flowchart TB
+    subgraph "Strumień wejściowy"
+        T1["Batch t1"] --> TAB["Nieograniczona\ntabela wejściowa\n(nowe wiersze\ndopisywane ciągle)"]
+        T2["Batch t2"] --> TAB
+        T3["Batch t3"] --> TAB
+        T4["Batch t4..."] --> TAB
+    end
+    TAB -->|"Zapytanie\n(query)"| RES["Tabela wynikowa\n(aktualizowana\nz każdym triggerem)"]
+    RES --> OUT["Wyjście:\nkonsola / Kafka / pliki / baza"]
+
+    style TAB fill:#2196F3,color:#fff
+    style RES fill:#4CAF50,color:#fff
+    style OUT fill:#FF9800,color:#fff
 ```
 
 ### Tryby wyjścia (Output Modes)
@@ -257,24 +280,40 @@ Zwróć uwagę na `.withWatermark("czas", "2 minutes")` — to mechanizm waterma
 
 Łączmy wszystko, co poznaliśmy na wykładach:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PIPELINE REAL-TIME ANALYTICS                  │
-│                                                                  │
-│  [Źródła danych]                                                │
-│  Aplikacja webowa ──┐                                           │
-│  System płatności ──┼──→  Apache Kafka  ──→  Spark Streaming    │
-│  Sensory IoT ───────┘     (transport)       (przetwarzanie)     │
-│                                                    │             │
-│                              ┌─────────────────────┤             │
-│                              ▼                     ▼             │
-│                        FastAPI + ML          Dashboard/Baza     │
-│                        (predykcja)           (raportowanie)     │
-│                              │                     │             │
-│                              ▼                     ▼             │
-│                         Alerty               Raporty             │
-│                      (real-time)            (near RT)            │
-└─────────────────────────────────────────────────────────────────┘
+```{mermaid}
+%%| fig-cap: "Kompletny pipeline real-time analytics — podsumowanie kursu"
+flowchart LR
+    subgraph "Źródła danych"
+        WEB["Aplikacja\nwebowa"]
+        PAY["System\npłatności"]
+        IOT["Sensory\nIoT"]
+    end
+    subgraph "Transport"
+        K["Apache Kafka\n(W4)"]
+    end
+    subgraph "Przetwarzanie"
+        SS["Spark Streaming\n(W5)"]
+        ML["FastAPI + ML\n(W3)"]
+    end
+    subgraph "Wyniki"
+        DASH["Dashboard\n(near RT)"]
+        ALERT["Alerty\n(real-time)"]
+        REP["Raporty\n(batch)"]
+    end
+
+    WEB --> K
+    PAY --> K
+    IOT --> K
+    K --> SS --> DASH
+    K --> ML --> ALERT
+    SS --> REP
+
+    style K fill:#FF9800,color:#fff
+    style SS fill:#2196F3,color:#fff
+    style ML fill:#4CAF50,color:#fff
+    style DASH fill:#E3F2FD,stroke:#2196F3
+    style ALERT fill:#FFEBEE,stroke:#F44336
+    style REP fill:#F3E5F5,stroke:#9C27B0
 ```
 
 | Komponent | Rola | Wykład |

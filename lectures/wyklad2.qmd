@@ -90,29 +90,17 @@ W praktyce firmy potrzebują **obu** podejść jednocześnie. Architektura Lambd
 
 **Warstwa serwująca (Serving Layer)** — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym. Typowe narzędzia: bazy danych, API, dashboardy.
 
-```
-                  ┌─────────────────────────┐
-                  │     Źródło danych       │
-                  │  (strumień zdarzeń)     │
-                  └────────┬────────────────┘
-                           │
-              ┌────────────┴────────────┐
-              ▼                         ▼
-   ┌──────────────────┐     ┌──────────────────┐
-   │  Warstwa wsadowa │     │  Warstwa szybka  │
-   │  (Batch Layer)   │     │  (Speed Layer)   │
-   │                  │     │                  │
-   │  Kompletne dane  │     │  Najnowsze dane  │
-   │  Dokładne wyniki │     │  Przybliżone     │
-   │  Duże opóźnienie │     │  Niska latencja  │
-   └────────┬─────────┘     └────────┬─────────┘
-            │                        │
-            └───────────┬────────────┘
-                        ▼
-             ┌──────────────────┐
-             │ Warstwa serwująca│
-             │ (Serving Layer)  │
-             └──────────────────┘
+```{mermaid}
+%%| fig-cap: "Architektura Lambda"
+flowchart TD
+    SRC["Źródło danych\n(strumień zdarzeń)"] --> BATCH["Warstwa wsadowa\n(Batch Layer)\nKompletne dane\nDuże opóźnienie"]
+    SRC --> SPEED["Warstwa szybka\n(Speed Layer)\nNajnowsze dane\nNiska latencja"]
+    BATCH --> SERVE["Warstwa serwująca\n(Serving Layer)\nDashboard / API"]
+    SPEED --> SERVE
+
+    style BATCH fill:#2196F3,color:#fff
+    style SPEED fill:#F44336,color:#fff
+    style SERVE fill:#4CAF50,color:#fff
 ```
 
 **Przykład biznesowy:** Bank analizujący transakcje kartowe.
@@ -134,25 +122,15 @@ Jay Kreps (twórca Apache Kafka) zaproponował uproszczenie: **a co, gdyby potrz
 
 Architektura Kappa to Lambda bez warstwy wsadowej. Cały przepływ danych opiera się na strumieniu zdarzeń. Jeśli trzeba przeliczyć dane historyczne — odtwarzamy strumień od początku (replay).
 
-```
-   ┌─────────────────────────┐
-   │     Źródło danych       │
-   │  (strumień zdarzeń)     │
-   └────────┬────────────────┘
-            │
-            ▼
-   ┌──────────────────────┐
-   │  Warstwa strumieniowa│
-   │  (Stream Layer)      │
-   │                      │
-   │  Jeden kod           │
-   │  Jeden pipeline      │
-   └────────┬─────────────┘
-            │
-            ▼
-   ┌──────────────────┐
-   │ Warstwa serwująca│
-   └──────────────────┘
+```{mermaid}
+%%| fig-cap: "Architektura Kappa — uproszczenie Lambdy"
+flowchart TD
+    SRC["Źródło danych\n(strumień zdarzeń)"] --> STREAM["Warstwa strumieniowa\n(Stream Layer)\nJeden kod, jeden pipeline"]
+    STREAM --> SERVE["Warstwa serwująca\nDashboard / API"]
+    STREAM -.->|replay| SRC
+
+    style STREAM fill:#FF9800,color:#fff
+    style SERVE fill:#4CAF50,color:#fff
 ```
 
 ### Lambda vs Kappa — kiedy co stosować?
@@ -196,6 +174,41 @@ for i in range(8):
 
 df = pd.DataFrame(zdarzenia)
 print(df.to_string(index=False))
+```
+
+```{python}
+#| label: fig-event-vs-processing
+#| fig-cap: "Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach strumieniowych"
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+np.random.seed(42)
+n = 20
+evt = np.sort(np.random.uniform(0, 60, n))
+delays = np.random.exponential(3, n)
+proc = evt + delays
+watermark = 5
+
+fig, ax = plt.subplots(figsize=(9, 6))
+ax.plot([0, 70], [0, 70], 'k--', alpha=0.3, label='Idealne (opóźnienie=0)')
+ax.plot([0, 70], [watermark, 70+watermark], 'b--', alpha=0.3, label=f'Watermark ({watermark}s)')
+
+for i in range(n):
+    in_wm = proc[i] <= evt[i] + watermark + 1
+    color = '#4CAF50' if in_wm else '#F44336'
+    ax.scatter(evt[i], proc[i], c=color, s=50, zorder=5, edgecolors='white')
+    ax.plot([evt[i], evt[i]], [evt[i], proc[i]], color=color, alpha=0.2, linewidth=1)
+
+gp = mpatches.Patch(color='#4CAF50', label='W oknie watermarku')
+rp = mpatches.Patch(color='#F44336', label='Za późno (odrzucone)')
+ax.legend(handles=[gp, rp, ax.lines[0], ax.lines[1]], loc='upper left')
+ax.set_xlabel('Event time (sekundy)')
+ax.set_ylabel('Processing time (sekundy)')
+ax.set_title('Opóźnienia i watermarking')
+ax.set_xlim(-2, 70)
+ax.set_ylim(-2, 75)
+plt.tight_layout()
+plt.show()
 ```
 
 ### Dlaczego to ważne?
@@ -260,6 +273,61 @@ Przykład: sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użyt
 | Przesuwne (Sliding) | Stała | Tak | Wykrywanie trendów |
 | Skokowe (Hopping) | Stała | Częściowe | Wygładzanie danych |
 | Sesyjne (Session) | Dynamiczna | Nie | Analiza sesji użytkowników |
+
+```{python}
+#| label: fig-window-types
+#| fig-cap: "Typy okien czasowych — wizualizacja"
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
+fig, axes = plt.subplots(3, 1, figsize=(10, 7), sharex=True)
+
+events_x = [1, 2.5, 3, 4.5, 5.5, 7, 8, 9, 11, 12, 14]
+
+# Tumbling
+ax = axes[0]
+ax.set_title('Okno rozłączne (Tumbling)', fontweight='bold')
+for start in range(0, 15, 5):
+    rect = mpatches.FancyBboxPatch((start, 0.2), 4.9, 0.6, boxstyle="round,pad=0.1",
+        facecolor='#2196F3', alpha=0.3, edgecolor='#2196F3')
+    ax.add_patch(rect)
+ax.scatter(events_x, [0.5]*len(events_x), c='black', s=30, zorder=5)
+ax.set_ylim(0, 1.2)
+ax.set_yticks([])
+
+# Sliding
+ax = axes[1]
+ax.set_title('Okno przesuwne (Sliding: 5 min, krok 2 min)', fontweight='bold')
+colors = ['#F44336', '#FF9800', '#4CAF50', '#2196F3', '#9C27B0', '#795548', '#607D8B']
+for i, start in enumerate(range(0, 12, 2)):
+    y_offset = 0.15 + (i % 3) * 0.25
+    rect = mpatches.FancyBboxPatch((start, y_offset), 4.9, 0.2, boxstyle="round,pad=0.05",
+        facecolor=colors[i % len(colors)], alpha=0.3, edgecolor=colors[i % len(colors)])
+    ax.add_patch(rect)
+ax.scatter(events_x, [0.5]*len(events_x), c='black', s=30, zorder=5)
+ax.set_ylim(0, 1.2)
+ax.set_yticks([])
+
+# Session
+ax = axes[2]
+ax.set_title('Okno sesyjne (Session: gap=2 min)', fontweight='bold')
+session_events = [[1, 2.5, 3], [7, 8, 9], [14]]
+sess_colors = ['#4CAF50', '#FF9800', '#9C27B0']
+for j, (sess, col) in enumerate(zip(session_events, sess_colors)):
+    start = min(sess) - 0.3
+    end = max(sess) + 0.3
+    rect = mpatches.FancyBboxPatch((start, 0.2), end-start, 0.6, boxstyle="round,pad=0.1",
+        facecolor=col, alpha=0.3, edgecolor=col)
+    ax.add_patch(rect)
+ax.scatter(events_x, [0.5]*len(events_x), c='black', s=30, zorder=5)
+ax.set_ylim(0, 1.2)
+ax.set_yticks([])
+ax.set_xlabel('Czas (minuty)')
+ax.set_xlim(-0.5, 16)
+
+plt.tight_layout()
+plt.show()
+```
 
 ```{python}
 # Porównanie: tumbling vs sliding window na tych samych danych

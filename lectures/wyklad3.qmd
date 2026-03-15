@@ -225,6 +225,58 @@ print(f"  Batch model accuracy:  {acc_batch_f2:.3f}")
 print(f"  Online model accuracy: {acc_online_f2:.3f}")
 ```
 
+```{python}
+#| label: fig-concept-drift
+#| fig-cap: "Concept drift: model batch vs online — dokładność w czasie"
+
+# Symulacja rolling accuracy
+from collections import deque
+
+np.random.seed(42)
+X_all = np.vstack([X_faza1, X_faza2])
+y_all = np.concatenate([y_faza1, y_faza2])
+X_all_s = scaler.fit_transform(X_all)
+
+online = SGDClassifier(loss='log_loss')
+batch = LogisticRegression()
+batch.fit(X_all_s[:500], y_all[:500])
+
+window = deque(maxlen=50)
+online_acc, batch_acc = [], []
+
+for i in range(len(X_all)):
+    x_i = X_all_s[i:i+1]
+    y_i = y_all[i:i+1]
+
+    if i == 0:
+        online.partial_fit(x_i, y_i, classes=[0, 1])
+    else:
+        pred_o = online.predict(x_i)[0]
+        pred_b = batch.predict(x_i)[0]
+        window.append((pred_o == y_i[0], pred_b == y_i[0]))
+        online.partial_fit(x_i, y_i)
+
+    if len(window) > 10:
+        online_acc.append(np.mean([w[0] for w in window]))
+        batch_acc.append(np.mean([w[1] for w in window]))
+
+fig, ax = plt.subplots(figsize=(10, 4))
+ax.plot(online_acc, label='Online (SGD)', color='#4CAF50', linewidth=2)
+ax.plot(batch_acc, label='Batch (Logistic Regression)', color='#F44336', linewidth=2)
+ax.axvline(x=490, color='gray', linestyle='--', alpha=0.5, label='Concept drift')
+ax.fill_betweenx([0, 1], 0, 490, alpha=0.05, color='blue')
+ax.fill_betweenx([0, 1], 490, len(online_acc), alpha=0.05, color='red')
+ax.text(250, 0.55, 'Faza 1\n(stary wzorzec)', ha='center', fontsize=10, alpha=0.5)
+ax.text(700, 0.55, 'Faza 2\n(nowy wzorzec)', ha='center', fontsize=10, alpha=0.5)
+ax.set_xlabel('Obserwacja')
+ax.set_ylabel('Krocząca dokładność (50 obs.)')
+ax.set_title('Concept drift: model batch zamiera, online adaptuje się')
+ax.set_ylim(0.5, 1.05)
+ax.legend()
+plt.tight_layout()
+plt.show()
+```
+
 ---
 
 ## Detekcja anomalii
@@ -251,6 +303,17 @@ outliers = [x for x in wynagrodzenia if x < granica_dolna or x > granica_gorna]
 print(f"Q1={Q1}, Q3={Q3}, IQR={IQR}")
 print(f"Granice: [{granica_dolna:.1f}, {granica_gorna:.1f}]")
 print(f"Anomalie: {outliers}")
+
+fig, ax = plt.subplots(figsize=(8, 2.5))
+bp = ax.boxplot(wynagrodzenia, vert=False, patch_artist=True,
+                boxprops=dict(facecolor='#E3F2FD', edgecolor='#2196F3'),
+                medianprops=dict(color='#F44336', linewidth=2),
+                flierprops=dict(marker='o', markerfacecolor='#F44336', markersize=10))
+ax.set_xlabel('Wynagrodzenie (tys. PLN)')
+ax.set_title('Wykres pudełkowy — detekcja anomalii metodą IQR')
+ax.axvspan(granica_dolna, granica_gorna, alpha=0.1, color='green', label='Zakres normalny')
+plt.tight_layout()
+plt.show()
 ```
 
 ### Isolation Forest — detekcja wielowymiarowa
@@ -274,6 +337,21 @@ predykcje = clf.fit_predict(dane)
 df = pd.DataFrame(dane, columns=["Kwota", "Transakcje/tydzień"])
 df["Status"] = ["Anomalia" if p == -1 else "OK" for p in predykcje]
 print(df.to_string(index=False))
+
+colors = ['#F44336' if s == 'Anomalia' else '#2196F3' for s in df['Status']]
+fig, ax = plt.subplots(figsize=(8, 5))
+ax.scatter(df['Kwota'], df['Transakcje/tydzień'], c=colors, s=80, edgecolors='white', zorder=5)
+for _, row in df[df['Status'] == 'Anomalia'].iterrows():
+    ax.annotate('ANOMALIA', (row['Kwota'], row['Transakcje/tydzień']),
+                textcoords="offset points", xytext=(10, 5), fontsize=9, color='#F44336', fontweight='bold')
+ax.set_xlabel('Kwota transakcji')
+ax.set_ylabel('Transakcje / tydzień')
+ax.set_title('Isolation Forest — detekcja anomalii')
+import matplotlib.patches as mpatches
+ax.legend(handles=[mpatches.Patch(color='#2196F3', label='OK'),
+                    mpatches.Patch(color='#F44336', label='Anomalia')])
+plt.tight_layout()
+plt.show()
 ```
 
 ### Detekcja anomalii w strumieniu

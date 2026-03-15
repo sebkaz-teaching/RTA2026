@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lab 9: Detekcja anomalii w czasie rzeczywistym – Analiza danych w czasie rzeczywistym</title>
+<title>Lab 9: Kompletny system w Docker Compose – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab9.html">Lab 9: Detekcja anomalii w czasie rzeczywistym</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lab 9: Kompletny system w Docker Compose</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -209,75 +209,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Laboratoria</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
+  <a href="../labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zadania przedlaboratoryjne: Przygotowanie środowiska</span></a>
   </div>
 </li>
       </ul>
@@ -293,19 +228,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
-  <li><a href="#część-1-trenowanie-modelu-offline" id="toc-część-1-trenowanie-modelu-offline" class="nav-link" data-scroll-target="#część-1-trenowanie-modelu-offline">Część 1: Trenowanie modelu offline</a></li>
-  <li><a href="#część-2-pipeline-strumieniowy" id="toc-część-2-pipeline-strumieniowy" class="nav-link" data-scroll-target="#część-2-pipeline-strumieniowy">Część 2: Pipeline strumieniowy</a></li>
-  <li><a href="#część-3-mikroserwis-fastapi" id="toc-część-3-mikroserwis-fastapi" class="nav-link" data-scroll-target="#część-3-mikroserwis-fastapi">Część 3: Mikroserwis FastAPI</a></li>
-  <li><a href="#praca-domowa" id="toc-praca-domowa" class="nav-link" data-scroll-target="#praca-domowa">Praca domowa</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab9.html">Lab 9: Detekcja anomalii w czasie rzeczywistym</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lab 9: Detekcja anomalii w czasie rzeczywistym</h1>
+<h1 class="title">Lab 9: Kompletny system w Docker Compose</h1>
 </div>
 
 
@@ -325,186 +256,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="cel" class="level2">
 <h2 class="anchored" data-anchor-id="cel">Cel</h2>
 <ul>
-<li>Wytrenowanie modelu detekcji anomalii (Isolation Forest),</li>
-<li>Integracja modelu z pipeline’em strumieniowym,</li>
-<li>Kompletny system: źródło → Kafka → Spark → ML → alert,</li>
-<li>Mikroserwis FastAPI z modelem ML.</li>
+<li>Konteneryzacja wszystkich komponentów,</li>
+<li>Uruchomienie całości przez <code>docker compose up</code>,</li>
+<li>Monitoring systemu.</li>
 </ul>
+<p><strong>Case (finał):</strong> Pakujemy system detekcji fraudów do produkcji.</p>
 <hr>
-</section>
-<section id="część-1-trenowanie-modelu-offline" class="level2">
-<h2 class="anchored" data-anchor-id="część-1-trenowanie-modelu-offline">Część 1: Trenowanie modelu offline</h2>
-<section id="zadanie-1.1-przygotuj-dane-treningowe" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.1-przygotuj-dane-treningowe">Zadanie 1.1 — Przygotuj dane treningowe</h3>
-<p>Wygeneruj sztuczne dane transakcji (normalne + anomalie).</p>
+<p>Szczegółowe zadania — patrz angielska wersja <code>en_lab9.ipynb</code> (identyczna struktura, tłumaczenie nazw zmiennych na polskie).</p>
 <div id="cell-2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalne transakcje: kwota 50-500, czestotliwosc 5-15/tydzien</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>normalne <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.normal(<span class="dv">200</span>, <span class="dv">80</span>, <span class="dv">1000</span>).clip(<span class="dv">20</span>, <span class="dv">800</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czestotliwosc'</span>: np.random.normal(<span class="dv">10</span>, <span class="dv">3</span>, <span class="dv">1000</span>).clip(<span class="dv">1</span>, <span class="dv">25</span>),</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'godzina'</span>: np.random.normal(<span class="dv">14</span>, <span class="dv">4</span>, <span class="dv">1000</span>).clip(<span class="dv">6</span>, <span class="dv">23</span>),</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>normalne[<span class="st">'label'</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Anomalie: duze kwoty, nietypowe godziny, rzadkie</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>anomalie <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">3000</span>, <span class="dv">10000</span>, <span class="dv">50</span>),</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czestotliwosc'</span>: np.random.uniform(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">50</span>),</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'godzina'</span>: np.random.uniform(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">50</span>),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>anomalie[<span class="st">'label'</span>] <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([normalne, anomalie], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Dane: </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">}</span><span class="ss"> wierszy, anomalii: </span><span class="sc">{</span>df[<span class="st">'label'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lab 9 — TWÓJ KOD</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Szczegółowe instrukcje w pełnej wersji notatnika</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="zadanie-1.2-wytrenuj-isolation-forest" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.2-wytrenuj-isolation-forest">Zadanie 1.2 — Wytrenuj Isolation Forest</h3>
-<p>Wytrenuj model na danych <strong>bez etykiet</strong> (metoda nienadzorowana).</p>
-<div id="cell-4" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">'kwota'</span>, <span class="st">'czestotliwosc'</span>, <span class="st">'godzina'</span>]</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[features].values</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># model = IsolationForest(contamination=0.05, random_state=42)</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># model.fit(X)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-1.3-ewaluacja-modelu" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.3-ewaluacja-modelu">Zadanie 1.3 — Ewaluacja modelu</h3>
-<p>Sprawdź, jak model radzi sobie z wykrywaniem anomalii (porównaj predykcje z etykietami).</p>
-<div id="cell-6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># predictions = model.predict(X)</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Zamien: -1 -&gt; 1 (anomalia), 1 -&gt; 0 (normalna)</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Wyswietl classification_report</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-1.4-zapisz-model" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.4-zapisz-model">Zadanie 1.4 — Zapisz model</h3>
-<div id="cell-8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pickle.dump(model, open('anomaly_model.pkl', 'wb'))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-</section>
-<section id="część-2-pipeline-strumieniowy" class="level2">
-<h2 class="anchored" data-anchor-id="część-2-pipeline-strumieniowy">Część 2: Pipeline strumieniowy</h2>
-<section id="zadanie-2.1-producent-transakcji" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.1-producent-transakcji">Zadanie 2.1 — Producent transakcji</h3>
-<p>Napisz producenta Kafka, który wysyła losowe transakcje (w tym 5% anomalii) do tematu <code>transactions</code>.</p>
-<div id="cell-10" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> tx_producer.py</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> confluent_kafka <span class="im">import</span> Producer</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json, random, time</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>conf <span class="op">=</span> {<span class="st">'bootstrap.servers'</span>: <span class="st">'localhost:9092'</span>}</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>producer <span class="op">=</span> Producer(conf)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_transaction():</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    is_anomaly <span class="op">=</span> random.random() <span class="op">&lt;</span> <span class="fl">0.05</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> is_anomaly:</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">'tx_id'</span>: <span class="ss">f'TX</span><span class="sc">{</span>random<span class="sc">.</span>randint(<span class="dv">10000</span>,<span class="dv">99999</span>)<span class="sc">}</span><span class="ss">'</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">'kwota'</span>: <span class="bu">round</span>(random.uniform(<span class="dv">3000</span>, <span class="dv">10000</span>), <span class="dv">2</span>),</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">'czestotliwosc'</span>: <span class="bu">round</span>(random.uniform(<span class="dv">0</span>, <span class="dv">2</span>), <span class="dv">1</span>),</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">'godzina'</span>: <span class="bu">round</span>(random.uniform(<span class="dv">0</span>, <span class="dv">5</span>), <span class="dv">1</span>),</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">'timestamp'</span>: datetime.now().isoformat(),</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># TWÓJ KOD - normalna transakcja</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">pass</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Petla wysylajaca transakcje do tematu 'transactions'</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Co 0.5 sekundy</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-2.2-konsument-z-modelem-ml" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.2-konsument-z-modelem-ml">Zadanie 2.2 — Konsument z modelem ML</h3>
-<p>Napisz konsumenta Kafka, który: 1. Odczytuje transakcje z tematu <code>transactions</code> 2. Wczytuje model z <code>anomaly_model.pkl</code> 3. Klasyfikuje każdą transakcję 4. Wyświetla ALERT dla anomalii</p>
-<div id="cell-12" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> fraud_detector.py</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> confluent_kafka <span class="im">import</span> Consumer</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json, pickle</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Wczytaj model</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pickle.load(<span class="bu">open</span>(<span class="st">'anomaly_model.pkl'</span>, <span class="st">'rb'</span>))</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>conf <span class="op">=</span> {</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'bootstrap.servers'</span>: <span class="st">'localhost:9092'</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'group.id'</span>: <span class="st">'fraud-detection'</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'auto.offset.reset'</span>: <span class="st">'earliest'</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Subskrybuj temat 'transactions'</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># W petli: pobieraj wiadomosci, parsuj JSON</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Klasyfikuj za pomoca modelu</span></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Wyswietlaj </span><span class="al">ALERT</span><span class="co"> jesli anomalia</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-</section>
-<section id="część-3-mikroserwis-fastapi" class="level2">
-<h2 class="anchored" data-anchor-id="część-3-mikroserwis-fastapi">Część 3: Mikroserwis FastAPI</h2>
-<section id="zadanie-3.1-api-do-klasyfikacji-transakcji" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.1-api-do-klasyfikacji-transakcji">Zadanie 3.1 — API do klasyfikacji transakcji</h3>
-<p>Utwórz API, które przyjmuje dane transakcji i zwraca predykcję: fraud/not fraud.</p>
-<div id="cell-14" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> fraud_api.py</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI()</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pickle.load(<span class="bu">open</span>(<span class="st">'anomaly_model.pkl'</span>, <span class="st">'rb'</span>))</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transaction(BaseModel):</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    kwota: <span class="bu">float</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    czestotliwosc: <span class="bu">float</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    godzina: <span class="bu">float</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Endpoint POST /classify</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Przyjmuje Transaction, zwraca {"is_fraud": True/False, "score": ...}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-3.2-konteneryzacja" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.2-konteneryzacja">Zadanie 3.2 — Konteneryzacja</h3>
-<p>Utwórz Dockerfile dla API i dodaj usługę do docker-compose.yml.</p>
-<div id="cell-16" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> Dockerfile.api</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># FROM python:3.11-slim</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-</section>
-<section id="praca-domowa" class="level2">
-<h2 class="anchored" data-anchor-id="praca-domowa">Praca domowa</h2>
-<ol type="1">
-<li>Uruchom pełny pipeline: producent → Kafka → konsument z modelem → alerty.</li>
-<li>Dodaj zapis alertów do pliku CSV.</li>
-<li>Skonteneryzuj całość w Docker Compose (Kafka + API + producent).</li>
-<li>Wyślij kod do repozytorium Git.</li>
-</ol>
-<p>Na następnych zajęciach: projekt końcowy.</p>
 
 
 </section>

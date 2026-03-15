@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Sylabus – Analiza danych w czasie rzeczywistym</title>
+<title>Lab 5: Uczenie przyrostowe — modele aktualizujące się w czasie rzeczywistym – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,27 +20,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -70,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../style.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -80,7 +115,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Analiza danych w czasie rzeczywistym</span>
     </a>
   </div>
@@ -91,19 +126,19 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./indexS.html"> 
+    <a class="nav-link" href="../indexS.html"> 
 <span class="menu-text">222890-S</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./sylabus.html" aria-current="page"> 
+    <a class="nav-link" href="../sylabus.html"> 
 <span class="menu-text">Sylabus</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./info.html"> 
+    <a class="nav-link" href="../info.html"> 
 <span class="menu-text">Narzędzia</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./ksiazki.html"> 
+    <a class="nav-link" href="../ksiazki.html"> 
 <span class="menu-text">Książki</span></a>
   </li>  
 </ul>
@@ -117,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Sylabus</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lab 5: Uczenie przyrostowe — modele aktualizujące się w czasie rzeczywistym</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -131,7 +166,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Informacje ogólne</span></a>
   </div>
 </li>
@@ -146,37 +181,37 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad1.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 1 — Od plików płaskich do Data Lake</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad2.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad3.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 3 — Uczenie maszynowe: batch vs online</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad4.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 4 — Apache Kafka</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
+  <a href="../lectures/wyklad5.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
+  <a href="../labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Zadania przedlaboratoryjne: Przygotowanie środowiska</span></a>
   </div>
 </li>
@@ -192,11 +227,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title"><strong>Sections</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#cel-przedmiotu" id="toc-cel-przedmiotu" class="nav-link active" data-scroll-target="#cel-przedmiotu">Cel przedmiotu</a></li>
-  <li><a href="#program-przedmiotu" id="toc-program-przedmiotu" class="nav-link" data-scroll-target="#program-przedmiotu">Program przedmiotu</a></li>
-  <li><a href="#efekty-kształcenia" id="toc-efekty-kształcenia" class="nav-link" data-scroll-target="#efekty-kształcenia">Efekty kształcenia</a></li>
-  <li><a href="#realizacja-przedmiotu" id="toc-realizacja-przedmiotu" class="nav-link" data-scroll-target="#realizacja-przedmiotu">Realizacja przedmiotu</a></li>
-  <li><a href="#literatura" id="toc-literatura" class="nav-link" data-scroll-target="#literatura">Literatura</a></li>
+  <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
   </ul>
 </nav>
     </div>
@@ -205,7 +236,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Sylabus</h1>
+<h1 class="title">Lab 5: Uczenie przyrostowe — modele aktualizujące się w czasie rzeczywistym</h1>
 </div>
 
 
@@ -222,182 +253,20 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<blockquote class="blockquote">
-<p>Nazwa przedmiotu: Analiza danych w czasie rzeczywistym</p>
-<p>Jednostka: Szkoła Główna Handlowa w Warszawie</p>
-<p>Kod przedmiotu: 222890-D, 222890-S</p>
-<p>Punkty ECTS: 3</p>
-<p>Język prowadzenia: polski</p>
-<p>Poziom przedmiotu: średniozaawansowany</p>
-</blockquote>
-<p><strong>Prowadzący:</strong> <a href="https://sebastianzajac.pl">Sebastian Zając</a>, <a href="mailto:sebastian.zajac@sgh.waw.pl">sebastian.zajac@sgh.waw.pl</a></p>
-<p><strong>Strona kursu:</strong> <a href="https://sebkaz-teaching.github.io/RTA2026/">https://sebkaz-teaching.github.io/RTA2026/</a></p>
-<section id="cel-przedmiotu" class="level2">
-<h2 class="anchored" data-anchor-id="cel-przedmiotu">Cel przedmiotu</h2>
-<p>Współczesny biznes opiera się na podejmowaniu decyzji opartych na danych. Coraz większa ilość informacji, rosnące wymagania rynku oraz potrzeba natychmiastowej reakcji sprawiają, że analiza danych w czasie rzeczywistym staje się kluczowym elementem nowoczesnych procesów biznesowych.</p>
-<p>Na zajęciach studenci zapoznają się z metodami i technologiami umożliwiającymi przetwarzanie danych w czasie rzeczywistym. Szczególną uwagę poświęcimy zastosowaniu uczenia maszynowego (machine learning), sztucznej inteligencji (artificial intelligence) oraz głębokich sieci neuronowych (deep learning) w analizie danych. Zrozumienie tych metod pozwala nie tylko lepiej interpretować zjawiska biznesowe, ale także podejmować szybkie i trafne decyzje.</p>
-<p>W ramach kursu omówimy zarówno dane ustrukturyzowane, jak i nieustrukturyzowane (obrazy, dźwięk, strumienie danych). Studenci poznają architektury przetwarzania danych, takie jak Lambda i Kappa, wykorzystywane w systemach Data Lake, a także wyzwania związane z modelowaniem danych w czasie rzeczywistym na dużą skalę.</p>
-<p>Kurs obejmuje część teoretyczną oraz praktyczne laboratoria, podczas których studenci będą pracować z rzeczywistymi danymi w środowiskach takich jak JupyterLab, PyTorch, Apache Spark i Apache Kafka. Dzięki temu studenci nie tylko zdobędą wiedzę na temat metod analitycznych, ale także nauczą się korzystać z najnowszych technologii stosowanych w analizie danych w czasie rzeczywistym.</p>
-</section>
-<section id="program-przedmiotu" class="level2">
-<h2 class="anchored" data-anchor-id="program-przedmiotu">Program przedmiotu</h2>
-<p><strong>Wykłady</strong> (część teoretyczna):</p>
-<ol type="1">
-<li>Od plików płaskich do Data Lake. Modele przetwarzania danych w erze Big Data. Mity i fakty przetwarzania danych w czasie rzeczywistym.</li>
-<li>Przetwarzanie wsadowe (batch) a strumieniowe (stream). Architektura Lambda i Kappa. Systemy NRT (near real-time).</li>
-<li>Uczenie maszynowe w trybie wsadowym (offline) i przyrostowym (online). Stochastic Gradient Descent. Problemy online learning.</li>
-<li>Apache Kafka — architektura rozproszonego systemu komunikacji. Producent, konsument, tematy, partycje, grupy konsumentów.</li>
-<li>Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę. Integracja Spark–Kafka.</li>
-</ol>
-<p><strong>Laboratoria</strong> (część praktyczna):</p>
-<ol start="6" type="1">
-<li>Środowisko pracy: Git, Docker, Docker Compose, Python. Konfiguracja środowiska do przetwarzania danych.</li>
-<li>Przetwarzanie danych w Pythonie (Pandas, NumPy). Analiza eksploracyjna danych (EDA) w trybie wsadowym.</li>
-<li>Modele uczenia maszynowego (scikit-learn): regresja, klasyfikacja, ewaluacja modeli. Przygotowanie modelu do wdrożenia.</li>
-<li>Apache Kafka w praktyce — producent i konsument w Pythonie (<code>confluent-kafka</code>). Przesyłanie i odbieranie danych w czasie rzeczywistym.</li>
-<li>Wprowadzenie do PySpark — DataFrame API, transformacje, akcje. Praca z danymi ustrukturyzowanymi i nieustrukturyzowanymi.</li>
-<li>Spark Structured Streaming + Kafka — budowa pipeline’u przetwarzania danych strumieniowych.</li>
-<li>Mikroserwisy z FastAPI — deployment modelu ML jako usługi REST. Konteneryzacja z Dockerem.</li>
-<li>Budowa kompletnego pipeline’u: źródło danych → Kafka → Spark Streaming → model ML → dashboard/raportowanie.</li>
-<li>Projekt grupowy — praca nad realnym problemem biznesowym z użyciem poznanych technologii (cz. 1).</li>
-<li>Projekt grupowy — finalizacja, prezentacje i zaliczenie (cz. 2).</li>
-</ol>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Powyższy program może ulec drobnym modyfikacjom w trakcie semestru.</p>
-</div>
-</div>
-</section>
-<section id="efekty-kształcenia" class="level2">
-<h2 class="anchored" data-anchor-id="efekty-kształcenia">Efekty kształcenia</h2>
-<section id="wiedza" class="level3">
-<h3 class="anchored" data-anchor-id="wiedza">1. Wiedza</h3>
+<section id="cel" class="level2">
+<h2 class="anchored" data-anchor-id="cel">Cel</h2>
 <ul>
-<li>Zna historię i filozofię modeli przetwarzania danych.
-<ul>
-<li><em>Powiązania:</em> K2A_W01, K2A_W03, O2_W01, O2_W02, O2_W04, O2_W07</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Zna typy danych ustrukturyzowanych i nieustrukturyzowanych.
-<ul>
-<li><em>Powiązania:</em> K2A_W02, K2A_W04, O2_W04, O2_W07</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Zna możliwości i obszary zastosowania przetwarzania danych w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_W01, K2A_W02, O2_W01, O2_W04, O2_W08</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Zna teoretyczne aspekty architektury Lambda i Kappa.
-<ul>
-<li><em>Powiązania:</em> K2A_W03, K2A_W05, O2_W04, O2_W06, O2_W08</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Umie wybrać architekturę IT dla danego problemu biznesowego.
-<ul>
-<li><em>Powiązania:</em> K2A_W02, K2A_W03, O2_W01, O2_W04, O2_W06, O2_W08</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Rozumie potrzeby biznesowe podejmowania decyzji w bardzo krótkim czasie.
-<ul>
-<li><em>Powiązania:</em> K2A_W01, K2A_W05, O2_W01, O2_W04, O2_W06, O2_W08</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
+<li>Różnica między uczeniem batch a online,</li>
+<li>Implementacja SGD z partial_fit,</li>
+<li>Konsument, który uczy się i scoruje jednocześnie.</li>
 </ul>
-</section>
-<section id="umiejętności" class="level3">
-<h3 class="anchored" data-anchor-id="umiejętności">2. Umiejętności</h3>
-<ul>
-<li>Rozróżnia typy danych ustrukturyzowanych i nieustrukturyzowanych.
-<ul>
-<li><em>Powiązania:</em> K2A_U02, K2A_U07, K2A_U10, O2_U02</li>
-<li><em>Weryfikacja:</em> test</li>
-</ul></li>
-<li>Umie przygotować, przetwarzać oraz przechowywać dane generowane w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_U03, K2A_U05, K2A_U09, O2_U02, O2_U04</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Rozumie ograniczenia wynikające z czasu przetwarzania przez urządzenia i systemy informatyczne.
-<ul>
-<li><em>Powiązania:</em> K2A_U01, K2A_U07, K2A_U11, O2_U02</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Umie zastosować i skonstruować system do przetwarzania w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_U05, K2A_U10, O2_U05, O2_U06, O2_U07</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-<li>Umie przygotować raportowanie dla systemu przetwarzania w czasie rzeczywistym.
-<ul>
-<li><em>Powiązania:</em> K2A_U02, K2A_U08, K2A_U10, O2_U06, O2_U07</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-</ul>
-</section>
-<section id="kompetencje" class="level3">
-<h3 class="anchored" data-anchor-id="kompetencje">3. Kompetencje</h3>
-<ul>
-<li>Formułuje problem analityczny wraz z jego informatycznym rozwiązaniem.
-<ul>
-<li><em>Powiązania:</em> K2A_K01, K2A_K03, O2_K02, O2_K06, O2_K07</li>
-<li><em>Weryfikacja:</em> projekt, prezentacja</li>
-</ul></li>
-<li>Samodzielnie uzupełnia wiedzę teoretyczną i praktyczną w zakresie programowania, modelowania i nowych technologii informatycznych.
-<ul>
-<li><em>Powiązania:</em> K2A_K02, K2A_K04, O2_K01, O2_K02, O2_K05, O2_K06</li>
-<li><em>Weryfikacja:</em> projekt</li>
-</ul></li>
-</ul>
-</section>
-</section>
-<section id="realizacja-przedmiotu" class="level2">
-<h2 class="anchored" data-anchor-id="realizacja-przedmiotu">Realizacja przedmiotu</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Składnik</th>
-<th>Waga</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Test z wykładów</td>
-<td>20%</td>
-</tr>
-<tr class="even">
-<td>Zadania domowe</td>
-<td>40%</td>
-</tr>
-<tr class="odd">
-<td>Projekt grupowy</td>
-<td>40%</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="literatura" class="level2">
-<h2 class="anchored" data-anchor-id="literatura">Literatura</h2>
-<ol type="1">
-<li>Zając S. (red.), <em>Modelowanie dla biznesu. Analityka w czasie rzeczywistym — narzędzia informatyczne i biznesowe</em>, SGH, Warszawa 2022.</li>
-<li>Frątczak E. (red.), <em>Modelowanie dla biznesu: Regresja logistyczna, Regresja Poissona, Survival Data Mining, CRM, Credit Scoring</em>, SGH, Warszawa 2019.</li>
-<li>Bellemare A., <em>Mikrousługi oparte na zdarzeniach. Wykorzystanie danych w organizacji na dużą skalę</em>, O’Reilly 2021.</li>
-<li>Shapira G., Palino T., Sivaram R., Petty K., <em>Kafka: The Definitive Guide. Real-time data and stream processing at scale</em>, O’Reilly 2022.</li>
-<li>Lakshmanan V., Robinson S., Munn M., <em>Wzorce projektowe uczenia maszynowego</em>, O’Reilly 2021.</li>
-<li>Gift N., Deza A., <em>Practical MLOps: Operationalizing Machine Learning Models</em>, O’Reilly 2022.</li>
-<li>Akidau T., Chernyak S., Lax R., <em>Streaming Systems: The What, Where, When, and How of Large-Scale Data Processing</em>, O’Reilly 2018.</li>
-<li>Géron A., <em>Uczenie maszynowe z użyciem Scikit-Learn i TensorFlow. Wydanie II</em>, Helion.</li>
-<li>Hastie T., Tibshirani R., Friedman J., <em>The Elements of Statistical Learning</em>, Springer 2017.</li>
-<li>Koul A., Ganju S., Kasam M., <em>Practical Deep Learning for Cloud, Mobile &amp; Edge</em>, O’Reilly 2019.</li>
-</ol>
+<p><strong>Case (cd.):</strong> Statyczny model z Lab 4 się starzeje. Nowe wzorce fraudów. Potrzebujesz modelu, który się adaptuje.</p>
+<hr>
+<p>Szczegółowe zadania — patrz angielska wersja <code>en_lab5.ipynb</code> (identyczna struktura, tłumaczenie nazw zmiennych na polskie).</p>
+<div id="cell-2" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lab 5 — TWÓJ KOD</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Szczegółowe instrukcje w pełnej wersji notatnika</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 
 
 </section>

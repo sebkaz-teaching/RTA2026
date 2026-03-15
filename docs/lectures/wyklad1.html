@@ -103,6 +103,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../style.css">
@@ -209,75 +212,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Laboratoria</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
+  <a href="../labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zadania przedlaboratoryjne: Przygotowanie środowiska</span></a>
   </div>
 </li>
       </ul>
@@ -382,10 +320,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="ewolucja-modeli-przetwarzania-danych" class="level2">
 <h2 class="anchored" data-anchor-id="ewolucja-modeli-przetwarzania-danych">Ewolucja modeli przetwarzania danych</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">timeline
+    title Od plików płaskich do streamingu
+    1960s-70s : Pliki płaskie
+              : Bazy hierarchiczne
+    1970s-80s : Model relacyjny (OLTP)
+              : SQL, ACID, CRUD
+    1990s : Hurtownie danych (OLAP)
+          : ETL, kostki, raporty
+    2000s : Big Data
+          : Hadoop, MapReduce
+    2010s : Data Lake
+          : Schema-on-read, S3/HDFS
+    2020s : Streaming + Lakehouse
+          : Kafka, Spark, Flink
+</pre>
+</div>
+<p></p><figcaption> Ewolucja modeli przetwarzania danych</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
 <section id="pliki-płaskie-punkt-wyjścia" class="level3">
 <h3 class="anchored" data-anchor-id="pliki-płaskie-punkt-wyjścia">Pliki płaskie — punkt wyjścia</h3>
 <p>Zanim pojawiły się bazy danych, informacje przechowywano w plikach tekstowych — CSV, TSV, plikach o stałej szerokości kolumn. Każdy program czytał plik od początku do końca, przetwarzał dane i zapisywał wynik do nowego pliku.</p>
-<div id="62a0360d" class="cell" data-execution_count="1">
+<div id="1c551b32" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -417,7 +380,7 @@ Warszawa  88847.85  2468.00      36</code></pre>
 <h3 class="anchored" data-anchor-id="model-oltp-bazy-relacyjne">Model OLTP — bazy relacyjne</h3>
 <p>W latach 70. Edgar Codd zaproponował model relacyjny, który stał się fundamentem systemów transakcyjnych. <strong>OLTP</strong> (On-Line Transaction Processing) to model zoptymalizowany pod szybki zapis i odczyt pojedynczych rekordów.</p>
 <p>Cechy OLTP: operacje CRUD, gwarancje ACID, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.</p>
-<div id="543f5e85" class="cell" data-execution_count="2">
+<div id="a5c0608c" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
@@ -447,7 +410,7 @@ Warszawa  88847.85  2468.00      36</code></pre>
 <h3 class="anchored" data-anchor-id="model-olap-hurtownie-danych">Model OLAP — hurtownie danych</h3>
 <p>Potrzeba analityki doprowadziła do powstania <strong>OLAP</strong> (On-Line Analytical Processing) i <strong>hurtowni danych</strong>. Dane z wielu systemów OLTP ładowane są w procesie <strong>ETL</strong> (Extract–Transform–Load), gdzie można je analizować bez wpływu na systemy produkcyjne.</p>
 <p>Cechy OLAP: agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.</p>
-<div id="1a4a5abd" class="cell" data-execution_count="3">
+<div id="b215360f" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
@@ -524,7 +487,7 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 <h2 class="anchored" data-anchor-id="dane-zawsze-powstają-jako-strumień">Dane zawsze powstają jako strumień</h2>
 <p>Wszystkie powyższe modele zakładają, że dane są <strong>w spoczynku</strong> — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane <strong>zawsze powstają jako strumień zdarzeń</strong> — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.</p>
 <p>Przetwarzanie wsadowe to tylko <strong>uproszczenie</strong> — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.</p>
-<div id="f83c9b55" class="cell" data-execution_count="4">
+<div id="e5a24537" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -549,11 +512,11 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Suma przetworzona na bieżąco: </span><span class="sc">{</span>suma<span class="sc">:.2f}</span><span class="ss"> PLN"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[01:48:19] TX0001:  1001.75 PLN (Kraków)
-[01:48:19] TX0002:    77.42 PLN (Warszawa)
-[01:48:19] TX0003:   731.16 PLN (Gdańsk)
-[01:48:20] TX0004:   562.40 PLN (Kraków)
-[01:48:20] TX0005:    36.06 PLN (Warszawa)
+<pre><code>[23:53:10] TX0001:  1001.75 PLN (Kraków)
+[23:53:10] TX0002:    77.42 PLN (Warszawa)
+[23:53:10] TX0003:   731.16 PLN (Gdańsk)
+[23:53:11] TX0004:   562.40 PLN (Kraków)
+[23:53:11] TX0005:    36.06 PLN (Warszawa)
 
 Suma przetworzona na bieżąco: 2408.79 PLN</code></pre>
 </div>
@@ -609,27 +572,71 @@ Suma przetworzona na bieżąco: 2408.79 PLN</code></pre>
 </tbody>
 </table>
 <p>Nie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.</p>
+<div id="cell-fig-processing-modes" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>modes <span class="op">=</span> [<span class="st">'Batch'</span>, <span class="st">'Near</span><span class="ch">\n</span><span class="st">Real-Time'</span>, <span class="st">'Real-Time'</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>latency <span class="op">=</span> [<span class="dv">3600</span>, <span class="dv">30</span>, <span class="fl">0.1</span>]  <span class="co"># seconds</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>cost <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">8</span>]  <span class="co"># relative</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#2196F3'</span>, <span class="st">'#FF9800'</span>, <span class="st">'#F44336'</span>]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>ax1.barh(modes, latency, color<span class="op">=</span>colors, edgecolor<span class="op">=</span><span class="st">'white'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>ax1.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Opóźnienie (sekundy, skala log)'</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Opóźnienie'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(latency):</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">s"</span> <span class="cf">if</span> v <span class="op">&gt;=</span> <span class="dv">1</span> <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span><span class="bu">int</span>(v<span class="op">*</span><span class="dv">1000</span>)<span class="sc">}</span><span class="ss">ms"</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    ax1.text(v <span class="op">*</span> <span class="fl">1.5</span>, i, label, va<span class="op">=</span><span class="st">'center'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>ax2.barh(modes, cost, color<span class="op">=</span>colors, edgecolor<span class="op">=</span><span class="st">'white'</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>ax2.set_xlabel(<span class="st">'Koszt relatywny'</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Koszt infrastruktury'</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(cost):</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    ax2.text(v <span class="op">+</span> <span class="fl">0.2</span>, i, <span class="ss">f'</span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">x'</span>, va<span class="op">=</span><span class="st">'center'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-processing-modes" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-processing-modes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="wyklad1_files/figure-html/fig-processing-modes-output-1.png" width="949" height="373" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-processing-modes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="typy-danych-krótki-przegląd" class="level2">
 <h2 class="anchored" data-anchor-id="typy-danych-krótki-przegląd">Typy danych — krótki przegląd</h2>
 <p><strong>Ustrukturyzowane</strong> — tabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.</p>
 <p><strong>Półustrukturyzowane</strong> — JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.</p>
-<div id="ca674179" class="cell" data-execution_count="5">
+<div id="d3f1eb32" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>zamowienie <span class="op">=</span> {</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span>: <span class="st">"ORD-2026-0042"</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"klient"</span>: {<span class="st">"imie"</span>: <span class="st">"Anna"</span>, <span class="st">"miasto"</span>: <span class="st">"Warszawa"</span>},</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"produkty"</span>: [</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"nazwa"</span>: <span class="st">"Laptop"</span>, <span class="st">"cena"</span>: <span class="fl">4299.00</span>},</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"nazwa"</span>: <span class="st">"Myszka"</span>, <span class="st">"cena"</span>: <span class="fl">89.99</span>}</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"status"</span>: <span class="st">"wysłane"</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(json.dumps(zamowienie, indent<span class="op">=</span><span class="dv">2</span>, ensure_ascii<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>zamowienie <span class="op">=</span> {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span>: <span class="st">"ORD-2026-0042"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"klient"</span>: {<span class="st">"imie"</span>: <span class="st">"Anna"</span>, <span class="st">"miasto"</span>: <span class="st">"Warszawa"</span>},</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"produkty"</span>: [</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"nazwa"</span>: <span class="st">"Laptop"</span>, <span class="st">"cena"</span>: <span class="fl">4299.00</span>},</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"nazwa"</span>: <span class="st">"Myszka"</span>, <span class="st">"cena"</span>: <span class="fl">89.99</span>}</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"status"</span>: <span class="st">"wysłane"</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(json.dumps(zamowienie, indent<span class="op">=</span><span class="dv">2</span>, ensure_ascii<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>{

@@ -103,6 +103,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../style.css">
@@ -209,75 +212,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Laboratoria</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
+  <a href="../labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zadania przedlaboratoryjne: Przygotowanie środowiska</span></a>
   </div>
 </li>
       </ul>
@@ -332,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Porównajmy oba podejścia na tym samym problemie biznesowym: <strong>monitorowanie transakcji w sklepie internetowym</strong>.</p>
 <section id="podejście-wsadowe-batch" class="level3">
 <h3 class="anchored" data-anchor-id="podejście-wsadowe-batch">Podejście wsadowe (batch)</h3>
-<div id="1b0f8298" class="cell" data-execution_count="1">
+<div id="0fba7443" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -374,7 +312,7 @@ czas
 </section>
 <section id="podejście-strumieniowe-stream" class="level3">
 <h3 class="anchored" data-anchor-id="podejście-strumieniowe-stream">Podejście strumieniowe (stream)</h3>
-<div id="1bbfb89c" class="cell" data-execution_count="2">
+<div id="ab1bb3ed" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -401,16 +339,16 @@ czas
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[01:48:12] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
-[01:48:12] Klient 7938:   236.83 PLN | Suma okna:   1526.58
-[01:48:13] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
-[01:48:13] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
-[01:48:13] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
-[01:48:13] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
-[01:48:13] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
-[01:48:14] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
-[01:48:14] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
-[01:48:14] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
+<pre><code>[23:53:03] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
+[23:53:03] Klient 7938:   236.83 PLN | Suma okna:   1526.58
+[23:53:03] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
+[23:53:03] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
+[23:53:03] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
+[23:53:04] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
+[23:53:04] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
+[23:53:04] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
+[23:53:04] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
+[23:53:04] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
 </div>
 </div>
 <p>Różnica jest fundamentalna: w trybie batch dowiadujemy się o problemie <strong>następnego dnia</strong>. W trybie stream — <strong>natychmiast</strong>.</p>
@@ -425,28 +363,26 @@ czas
 <p><strong>Warstwa wsadowa (Batch Layer)</strong> — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem. Typowe narzędzia: Spark (batch), Hadoop.</p>
 <p><strong>Warstwa szybka (Speed Layer)</strong> — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast. Typowe narzędzia: Spark Streaming, Kafka Streams.</p>
 <p><strong>Warstwa serwująca (Serving Layer)</strong> — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym. Typowe narzędzia: bazy danych, API, dashboardy.</p>
-<pre><code>                  ┌─────────────────────────┐
-                  │     Źródło danych       │
-                  │  (strumień zdarzeń)     │
-                  └────────┬────────────────┘
-                           │
-              ┌────────────┴────────────┐
-              ▼                         ▼
-   ┌──────────────────┐     ┌──────────────────┐
-   │  Warstwa wsadowa │     │  Warstwa szybka  │
-   │  (Batch Layer)   │     │  (Speed Layer)   │
-   │                  │     │                  │
-   │  Kompletne dane  │     │  Najnowsze dane  │
-   │  Dokładne wyniki │     │  Przybliżone     │
-   │  Duże opóźnienie │     │  Niska latencja  │
-   └────────┬─────────┘     └────────┬─────────┘
-            │                        │
-            └───────────┬────────────┘
-                        ▼
-             ┌──────────────────┐
-             │ Warstwa serwująca│
-             │ (Serving Layer)  │
-             └──────────────────┘</code></pre>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    SRC["Źródło danych\n(strumień zdarzeń)"] --&gt; BATCH["Warstwa wsadowa\n(Batch Layer)\nKompletne dane\nDuże opóźnienie"]
+    SRC --&gt; SPEED["Warstwa szybka\n(Speed Layer)\nNajnowsze dane\nNiska latencja"]
+    BATCH --&gt; SERVE["Warstwa serwująca\n(Serving Layer)\nDashboard / API"]
+    SPEED --&gt; SERVE
+
+    style BATCH fill:#2196F3,color:#fff
+    style SPEED fill:#F44336,color:#fff
+    style SERVE fill:#4CAF50,color:#fff
+</pre>
+</div>
+<p></p><figcaption> Architektura Lambda</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
 <p><strong>Przykład biznesowy:</strong> Bank analizujący transakcje kartowe.</p>
 <ul>
 <li>Warstwa wsadowa: co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.</li>
@@ -464,24 +400,24 @@ czas
 <h2 class="anchored" data-anchor-id="architektura-kappa">Architektura Kappa</h2>
 <p>Jay Kreps (twórca Apache Kafka) zaproponował uproszczenie: <strong>a co, gdyby potrzebna była tylko warstwa strumieniowa?</strong></p>
 <p>Architektura Kappa to Lambda bez warstwy wsadowej. Cały przepływ danych opiera się na strumieniu zdarzeń. Jeśli trzeba przeliczyć dane historyczne — odtwarzamy strumień od początku (replay).</p>
-<pre><code>   ┌─────────────────────────┐
-   │     Źródło danych       │
-   │  (strumień zdarzeń)     │
-   └────────┬────────────────┘
-            │
-            ▼
-   ┌──────────────────────┐
-   │  Warstwa strumieniowa│
-   │  (Stream Layer)      │
-   │                      │
-   │  Jeden kod           │
-   │  Jeden pipeline      │
-   └────────┬─────────────┘
-            │
-            ▼
-   ┌──────────────────┐
-   │ Warstwa serwująca│
-   └──────────────────┘</code></pre>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    SRC["Źródło danych\n(strumień zdarzeń)"] --&gt; STREAM["Warstwa strumieniowa\n(Stream Layer)\nJeden kod, jeden pipeline"]
+    STREAM --&gt; SERVE["Warstwa serwująca\nDashboard / API"]
+    STREAM -.-&gt;|replay| SRC
+
+    style STREAM fill:#FF9800,color:#fff
+    style SERVE fill:#4CAF50,color:#fff
+</pre>
+</div>
+<p></p><figcaption> Architektura Kappa — uproszczenie Lambdy</figcaption> </figure><p></p>
+</div>
+</div>
+</div>
 <section id="lambda-vs-kappa-kiedy-co-stosować" class="level3">
 <h3 class="anchored" data-anchor-id="lambda-vs-kappa-kiedy-co-stosować">Lambda vs Kappa — kiedy co stosować?</h3>
 <table class="caption-top table">
@@ -536,36 +472,83 @@ czas
 <p><strong>Czas zdarzenia (event time)</strong> — moment, w którym zdarzenie faktycznie nastąpiło. Np. klient kliknął „Kup” o 14:23:45.</p>
 <p><strong>Czas przetwarzania (processing time)</strong> — moment, w którym system odebrał i przetworzył zdarzenie. Np. system Kafki odebrał zdarzenie o 14:23:47.</p>
 <p>W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje <strong>opóźnienie</strong> (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.</p>
-<div id="19429a7e" class="cell" data-execution_count="3">
+<div id="6508d010" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: zdarzenia docierają z losowym opóźnieniem</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> []</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    event_time <span class="op">=</span> datetime(<span class="dv">2026</span>, <span class="dv">3</span>, <span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">23</span>, i <span class="op">*</span> <span class="dv">2</span>)  <span class="co"># co 2 sekundy</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    delay <span class="op">=</span> random.uniform(<span class="fl">0.1</span>, <span class="fl">5.0</span>)  <span class="co"># opóźnienie 0.1–5s</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    processing_time <span class="op">=</span> event_time <span class="op">+</span> timedelta(seconds<span class="op">=</span>delay)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    zdarzenia.append({</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'event_time'</span>: event_time.strftime(<span class="st">'%H:%M:%S'</span>),</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'processing_time'</span>: processing_time.strftime(<span class="st">'%H:%M:%S.'</span>) <span class="op">+</span> <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(delay<span class="op">*</span><span class="dv">100</span>)<span class="sc">:02d}</span><span class="ss">'</span>,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'opóźnienie'</span>: <span class="ss">f'</span><span class="sc">{</span>delay<span class="sc">:.1f}</span><span class="ss">s'</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    })</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(zdarzenia)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: zdarzenia docierają z losowym opóźnieniem</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> []</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    event_time <span class="op">=</span> datetime(<span class="dv">2026</span>, <span class="dv">3</span>, <span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">23</span>, i <span class="op">*</span> <span class="dv">2</span>)  <span class="co"># co 2 sekundy</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    delay <span class="op">=</span> random.uniform(<span class="fl">0.1</span>, <span class="fl">5.0</span>)  <span class="co"># opóźnienie 0.1–5s</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    processing_time <span class="op">=</span> event_time <span class="op">+</span> timedelta(seconds<span class="op">=</span>delay)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    zdarzenia.append({</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'event_time'</span>: event_time.strftime(<span class="st">'%H:%M:%S'</span>),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'processing_time'</span>: processing_time.strftime(<span class="st">'%H:%M:%S.'</span>) <span class="op">+</span> <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(delay<span class="op">*</span><span class="dv">100</span>)<span class="sc">:02d}</span><span class="ss">'</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'opóźnienie'</span>: <span class="ss">f'</span><span class="sc">{</span>delay<span class="sc">:.1f}</span><span class="ss">s'</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(zdarzenia)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>event_time processing_time opóźnienie
-  14:23:00    14:23:03.367       3.7s
-  14:23:02    14:23:06.499       5.0s
-  14:23:04    14:23:08.455       4.6s
-  14:23:06    14:23:10.432       4.3s
-  14:23:08    14:23:12.449       4.5s
-  14:23:10    14:23:14.444       4.4s
-  14:23:12    14:23:13.187       1.9s
-  14:23:14    14:23:17.384       3.8s</code></pre>
+  14:23:00    14:23:03.353       3.5s
+  14:23:02    14:23:03.196       2.0s
+  14:23:04    14:23:06.278       2.8s
+  14:23:06    14:23:07.189       1.9s
+  14:23:08     14:23:08.77       0.8s
+  14:23:10    14:23:11.167       1.7s
+  14:23:12    14:23:13.108       1.1s
+  14:23:14    14:23:17.315       3.2s</code></pre>
+</div>
+</div>
+<div id="cell-fig-event-vs-processing" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>evt <span class="op">=</span> np.sort(np.random.uniform(<span class="dv">0</span>, <span class="dv">60</span>, n))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>delays <span class="op">=</span> np.random.exponential(<span class="dv">3</span>, n)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>proc <span class="op">=</span> evt <span class="op">+</span> delays</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>watermark <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="dv">0</span>, <span class="dv">70</span>], [<span class="dv">0</span>, <span class="dv">70</span>], <span class="st">'k--'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="st">'Idealne (opóźnienie=0)'</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="dv">0</span>, <span class="dv">70</span>], [watermark, <span class="dv">70</span><span class="op">+</span>watermark], <span class="st">'b--'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="ss">f'Watermark (</span><span class="sc">{</span>watermark<span class="sc">}</span><span class="ss">s)'</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    in_wm <span class="op">=</span> proc[i] <span class="op">&lt;=</span> evt[i] <span class="op">+</span> watermark <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">'#4CAF50'</span> <span class="cf">if</span> in_wm <span class="cf">else</span> <span class="st">'#F44336'</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    ax.scatter(evt[i], proc[i], c<span class="op">=</span>color, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">5</span>, edgecolors<span class="op">=</span><span class="st">'white'</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    ax.plot([evt[i], evt[i]], [evt[i], proc[i]], color<span class="op">=</span>color, alpha<span class="op">=</span><span class="fl">0.2</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>gp <span class="op">=</span> mpatches.Patch(color<span class="op">=</span><span class="st">'#4CAF50'</span>, label<span class="op">=</span><span class="st">'W oknie watermarku'</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>rp <span class="op">=</span> mpatches.Patch(color<span class="op">=</span><span class="st">'#F44336'</span>, label<span class="op">=</span><span class="st">'Za późno (odrzucone)'</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>ax.legend(handles<span class="op">=</span>[gp, rp, ax.lines[<span class="dv">0</span>], ax.lines[<span class="dv">1</span>]], loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Event time (sekundy)'</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Processing time (sekundy)'</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Opóźnienia i watermarking'</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">70</span>)</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">75</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-event-vs-processing" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-event-vs-processing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="wyklad2_files/figure-html/fig-event-vs-processing-output-1.png" width="854" height="566" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-event-vs-processing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach strumieniowych
+</figcaption>
+</figure>
+</div>
 </div>
 </div>
 </section>
@@ -587,23 +570,23 @@ czas
 <h3 class="anchored" data-anchor-id="okno-rozłączne-tumbling-window">Okno rozłączne (Tumbling Window)</h3>
 <p>Stała długość, brak nakładania. Każde zdarzenie należy do dokładnie jednego okna.</p>
 <p>Przykład: suma transakcji co 5 minut.</p>
-<div id="e3bfcb8b" class="cell" data-execution_count="4">
+<div id="895bd516" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja okna rozłącznego (tumbling) 5-minutowego</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czas'</span>: pd.date_range(<span class="st">'2026-03-12 14:00'</span>, periods<span class="op">=</span><span class="dv">30</span>, freq<span class="op">=</span><span class="st">'30s'</span>),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">10</span>, <span class="dv">500</span>, <span class="dv">30</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Tumbling window: grupowanie co 5 minut</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>zdarzenia[<span class="st">'okno'</span>] <span class="op">=</span> zdarzenia[<span class="st">'czas'</span>].dt.floor(<span class="st">'5min'</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>wynik <span class="op">=</span> zdarzenia.groupby(<span class="st">'okno'</span>)[<span class="st">'kwota'</span>].agg([<span class="st">'sum'</span>, <span class="st">'count'</span>]).<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>wynik.columns <span class="op">=</span> [<span class="st">'suma'</span>, <span class="st">'liczba'</span>]</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Okno rozłączne (5 min):"</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(wynik)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja okna rozłącznego (tumbling) 5-minutowego</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czas'</span>: pd.date_range(<span class="st">'2026-03-12 14:00'</span>, periods<span class="op">=</span><span class="dv">30</span>, freq<span class="op">=</span><span class="st">'30s'</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">10</span>, <span class="dv">500</span>, <span class="dv">30</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Tumbling window: grupowanie co 5 minut</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>zdarzenia[<span class="st">'okno'</span>] <span class="op">=</span> zdarzenia[<span class="st">'czas'</span>].dt.floor(<span class="st">'5min'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>wynik <span class="op">=</span> zdarzenia.groupby(<span class="st">'okno'</span>)[<span class="st">'kwota'</span>].agg([<span class="st">'sum'</span>, <span class="st">'count'</span>]).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>wynik.columns <span class="op">=</span> [<span class="st">'suma'</span>, <span class="st">'liczba'</span>]</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Okno rozłączne (5 min):"</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(wynik)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Okno rozłączne (5 min):
@@ -667,7 +650,74 @@ okno
 </tr>
 </tbody>
 </table>
-<div id="ed404eb3" class="cell" data-execution_count="5">
+<div id="cell-fig-window-types" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>events_x <span class="op">=</span> [<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">4.5</span>, <span class="fl">5.5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">14</span>]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Tumbling</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>]</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Okno rozłączne (Tumbling)'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> start <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dv">5</span>):</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> mpatches.FancyBboxPatch((start, <span class="fl">0.2</span>), <span class="fl">4.9</span>, <span class="fl">0.6</span>, boxstyle<span class="op">=</span><span class="st">"round,pad=0.1"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span><span class="st">'#2196F3'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, edgecolor<span class="op">=</span><span class="st">'#2196F3'</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>ax.scatter(events_x, [<span class="fl">0.5</span>]<span class="op">*</span><span class="bu">len</span>(events_x), c<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">30</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Sliding</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>]</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Okno przesuwne (Sliding: 5 min, krok 2 min)'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#F44336'</span>, <span class="st">'#FF9800'</span>, <span class="st">'#4CAF50'</span>, <span class="st">'#2196F3'</span>, <span class="st">'#9C27B0'</span>, <span class="st">'#795548'</span>, <span class="st">'#607D8B'</span>]</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, start <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)):</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    y_offset <span class="op">=</span> <span class="fl">0.15</span> <span class="op">+</span> (i <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="fl">0.25</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> mpatches.FancyBboxPatch((start, y_offset), <span class="fl">4.9</span>, <span class="fl">0.2</span>, boxstyle<span class="op">=</span><span class="st">"round,pad=0.05"</span>,</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span>colors[i <span class="op">%</span> <span class="bu">len</span>(colors)], alpha<span class="op">=</span><span class="fl">0.3</span>, edgecolor<span class="op">=</span>colors[i <span class="op">%</span> <span class="bu">len</span>(colors)])</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>ax.scatter(events_x, [<span class="fl">0.5</span>]<span class="op">*</span><span class="bu">len</span>(events_x), c<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">30</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Session</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">2</span>]</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Okno sesyjne (Session: gap=2 min)'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>session_events <span class="op">=</span> [[<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">3</span>], [<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>], [<span class="dv">14</span>]]</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>sess_colors <span class="op">=</span> [<span class="st">'#4CAF50'</span>, <span class="st">'#FF9800'</span>, <span class="st">'#9C27B0'</span>]</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j, (sess, col) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(session_events, sess_colors)):</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    start <span class="op">=</span> <span class="bu">min</span>(sess) <span class="op">-</span> <span class="fl">0.3</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    end <span class="op">=</span> <span class="bu">max</span>(sess) <span class="op">+</span> <span class="fl">0.3</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> mpatches.FancyBboxPatch((start, <span class="fl">0.2</span>), end<span class="op">-</span>start, <span class="fl">0.6</span>, boxstyle<span class="op">=</span><span class="st">"round,pad=0.1"</span>,</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span>col, alpha<span class="op">=</span><span class="fl">0.3</span>, edgecolor<span class="op">=</span>col)</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>ax.scatter(events_x, [<span class="fl">0.5</span>]<span class="op">*</span><span class="bu">len</span>(events_x), c<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">30</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Czas (minuty)'</span>)</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">0.5</span>, <span class="dv">16</span>)</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-window-types" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-window-types-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="wyklad2_files/figure-html/fig-window-types-output-1.png" width="950" height="662" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-window-types-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Typy okien czasowych — wizualizacja
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="389cf13c" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Porównanie: tumbling vs sliding window na tych samych danych</span></span>

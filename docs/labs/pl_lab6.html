@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lab 2: REST API z FastAPI + serwowanie modelu ML – Analiza danych w czasie rzeczywistym</title>
+<title>Lab 6: Eksploracyjna analiza danych z pandas – Analiza danych w czasie rzeczywistym</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab2.html">Lab 2: REST API z FastAPI + serwowanie modelu ML</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lab 6: Eksploracyjna analiza danych z pandas</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -209,75 +209,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Wykład 5 — Apache Spark i Structured Streaming</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Laboratoria</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../labs/lab1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 1: Środowisko pracy — Python, Git, Docker</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab2.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Lab 2: REST API z FastAPI + serwowanie modelu ML</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab3.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 3: Dane i model ML — pandas, scikit-learn</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab4.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 4: Docker Compose + Apache Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab5.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 5: Kafka — producent, konsument, JSON, klucze</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 6: Apache Spark — DataFrame, SQL, transformacje</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab7.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 7: Spark Structured Streaming — okna czasowe</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab8.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 8: Spark Structured Streaming + Kafka</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab9.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 9: Detekcja anomalii w czasie rzeczywistym</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../labs/lab10.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Lab 10: Projekt — kompletny system real-time</span></a>
+  <a href="../labs/pl_lab0_prework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zadania przedlaboratoryjne: Przygotowanie środowiska</span></a>
   </div>
 </li>
       </ul>
@@ -293,19 +228,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
-  <li><a href="#część-1-pierwsze-api" id="toc-część-1-pierwsze-api" class="nav-link" data-scroll-target="#część-1-pierwsze-api">Część 1: Pierwsze API</a></li>
-  <li><a href="#część-2-parametry-i-endpointy" id="toc-część-2-parametry-i-endpointy" class="nav-link" data-scroll-target="#część-2-parametry-i-endpointy">Część 2: Parametry i endpointy</a></li>
-  <li><a href="#część-3-model-ml-jako-api" id="toc-część-3-model-ml-jako-api" class="nav-link" data-scroll-target="#część-3-model-ml-jako-api">Część 3: Model ML jako API</a></li>
-  <li><a href="#praca-domowa" id="toc-praca-domowa" class="nav-link" data-scroll-target="#praca-domowa">Praca domowa</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/lab1.html">Laboratoria</a></li><li class="breadcrumb-item"><a href="../labs/lab2.html">Lab 2: REST API z FastAPI + serwowanie modelu ML</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Lab 2: REST API z FastAPI + serwowanie modelu ML</h1>
+<h1 class="title">Lab 6: Eksploracyjna analiza danych z pandas</h1>
 </div>
 
 
@@ -324,174 +255,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="cel" class="level2">
 <h2 class="anchored" data-anchor-id="cel">Cel</h2>
-<p>Nauczysz się:</p>
 <ul>
-<li>tworzyć REST API z FastAPI,</li>
-<li>obsługiwać zapytania GET i POST,</li>
-<li>wczytywać wytrenowany model ML i serwować predykcje przez API,</li>
-<li>testować API z poziomu Jupyter Notebook.</li>
+<li>Wczytywanie i eksploracja danych historycznych,</li>
+<li>Feature engineering dla detekcji fraudów,</li>
+<li>Wizualizacja wzorców do zastosowania w streamingu.</li>
 </ul>
+<p><strong>Case (cd.):</strong> Zanim zbudujesz lepszy model, musisz zrozumieć dane.</p>
 <hr>
-</section>
-<section id="część-1-pierwsze-api" class="level2">
-<h2 class="anchored" data-anchor-id="część-1-pierwsze-api">Część 1: Pierwsze API</h2>
-<section id="zadanie-1.1-hello-world-w-fastapi" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.1-hello-world-w-fastapi">Zadanie 1.1 — Hello World w FastAPI</h3>
-<p>Utwórz plik <code>app.py</code> z aplikacją FastAPI, która na ścieżce <code>/</code> zwraca JSON: <code>{"message": "Witaj w moim API!"}</code></p>
+<p>Szczegółowe zadania — patrz angielska wersja <code>en_lab6.ipynb</code> (identyczna struktura, tłumaczenie nazw zmiennych na polskie).</p>
 <div id="cell-2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> app.py</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI()</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD </span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Endpoint GET / zwracajacy JSON z kluczem 'message'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lab 6 — TWÓJ KOD</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Szczegółowe instrukcje w pełnej wersji notatnika</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Uruchom serwer w terminalu:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uvicorn</span> app:app <span class="at">--reload</span> <span class="at">--port</span> 8000</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="zadanie-1.2-sprawdź-działanie-api" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.2-sprawdź-działanie-api">Zadanie 1.2 — Sprawdź działanie API</h3>
-<p>Wyślij zapytanie GET i sprawdź odpowiedź:</p>
-<div id="cell-4" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(<span class="st">"http://127.0.0.1:8000/"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Sprawdz status_code i wyswietl JSON odpowiedzi</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-1.3-dokumentacja-api" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.3-dokumentacja-api">Zadanie 1.3 — Dokumentacja API</h3>
-<p>FastAPI automatycznie generuje dokumentację. Otwórz w przeglądarce: - <code>http://127.0.0.1:8000/docs</code> (Swagger UI) - <code>http://127.0.0.1:8000/redoc</code> (ReDoc)</p>
-<hr>
-</section>
-</section>
-<section id="część-2-parametry-i-endpointy" class="level2">
-<h2 class="anchored" data-anchor-id="część-2-parametry-i-endpointy">Część 2: Parametry i endpointy</h2>
-<section id="zadanie-2.1-parametr-w-url-path-parameter" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.1-parametr-w-url-path-parameter">Zadanie 2.1 — Parametr w URL (path parameter)</h3>
-<p>Dodaj endpoint <code>/hello/{name}</code>, który zwraca <code>{"message": "Hello {name}!"}</code>.</p>
-<div id="cell-6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> app.py</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI()</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/"</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> home():</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"message"</span>: <span class="st">"Witaj w moim API!"</span>}</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Endpoint GET /hello/{name}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-2.2-parametr-w-url-query-parameter" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.2-parametr-w-url-query-parameter">Zadanie 2.2 — Parametr w URL (query parameter)</h3>
-<p>Dodaj endpoint <code>/suma</code>, który przyjmuje dwa parametry <code>a</code> i <code>b</code> (float) i zwraca ich sumę: <code>GET /suma?a=3.5&amp;b=2.1</code> → <code>{"a": 3.5, "b": 2.1, "suma": 5.6}</code></p>
-<div id="cell-8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Dodaj endpoint do app.py i przetestuj:</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(<span class="st">"http://127.0.0.1:8000/suma"</span>, params<span class="op">=</span>{<span class="st">"a"</span>: <span class="fl">3.5</span>, <span class="st">"b"</span>: <span class="fl">2.1</span>})</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-2.3-endpoint-post-z-danymi-json" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.3-endpoint-post-z-danymi-json">Zadanie 2.3 — Endpoint POST z danymi JSON</h3>
-<p>Dodaj endpoint <code>POST /klient</code>, który przyjmuje dane klienta (imie, wiek, miasto) i zwraca je z dodanym polem <code>segment</code>: - wiek &gt;= 30 i miasto == “Warszawa” → segment = “premium” - w pozostałych przypadkach → segment = “standard”</p>
-<p>Podpowiedź: użyj <code>from pydantic import BaseModel</code> do zdefiniowania schematu danych.</p>
-<div id="cell-10" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> app.py</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI()</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Klasa Klient(BaseModel) z polami: imie, wiek, miasto</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Endpoint POST /klient</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-11" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test endpointu POST</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>klient <span class="op">=</span> {<span class="st">"imie"</span>: <span class="st">"Anna"</span>, <span class="st">"wiek"</span>: <span class="dv">35</span>, <span class="st">"miasto"</span>: <span class="st">"Warszawa"</span>}</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.post(<span class="st">"http://127.0.0.1:8000/klient"</span>, json<span class="op">=</span>klient)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Wyswietl odpowiedz</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-</section>
-<section id="część-3-model-ml-jako-api" class="level2">
-<h2 class="anchored" data-anchor-id="część-3-model-ml-jako-api">Część 3: Model ML jako API</h2>
-<section id="zadanie-3.1-wytrenuj-i-zapisz-model" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.1-wytrenuj-i-zapisz-model">Zadanie 3.1 — Wytrenuj i zapisz model</h3>
-<p>Wytrenuj prostą regresję liniową na danych o nieruchomościach i zapisz model do pliku <code>model.pkl</code>.</p>
-<div id="cell-13" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Dane: [powierzchnia_m2, liczba_pokoi, wiek_budynku]</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array([</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">30</span>, <span class="dv">1</span>, <span class="dv">40</span>], [<span class="dv">45</span>, <span class="dv">2</span>, <span class="dv">25</span>], [<span class="dv">55</span>, <span class="dv">2</span>, <span class="dv">15</span>], [<span class="dv">70</span>, <span class="dv">3</span>, <span class="dv">10</span>],</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">85</span>, <span class="dv">3</span>, <span class="dv">5</span>], [<span class="dv">100</span>, <span class="dv">4</span>, <span class="dv">2</span>], [<span class="dv">120</span>, <span class="dv">4</span>, <span class="dv">0</span>], [<span class="dv">65</span>, <span class="dv">3</span>, <span class="dv">20</span>]</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.array([<span class="dv">250</span>, <span class="dv">370</span>, <span class="dv">430</span>, <span class="dv">560</span>, <span class="dv">680</span>, <span class="dv">790</span>, <span class="dv">950</span>, <span class="dv">480</span>])  <span class="co"># cena w tys. PLN</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Wytrenuj model i zapisz do pliku model.pkl</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-3.2-serwuj-model-przez-api" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.2-serwuj-model-przez-api">Zadanie 3.2 — Serwuj model przez API</h3>
-<p>Utwórz endpoint <code>GET /predict</code>, który:</p>
-<ol type="1">
-<li>Przyjmuje parametry: <code>powierzchnia</code>, <code>pokoje</code>, <code>wiek_budynku</code></li>
-<li>Wczytuje model z <code>model.pkl</code></li>
-<li>Zwraca szacowaną cenę</li>
-</ol>
-<div id="cell-15" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> predict_app.py</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI()</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Wczytaj model przy starcie aplikacji</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/predict"</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict(powierzchnia: <span class="bu">float</span>, pokoje: <span class="bu">int</span>, wiek_budynku: <span class="bu">int</span>):</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TWÓJ KOD</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="cell-16" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Uruchom: uvicorn predict_app:app --reload --port 8001</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Przetestuj:</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"http://127.0.0.1:8001/predict"</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    params<span class="op">=</span>{<span class="st">"powierzchnia"</span>: <span class="dv">75</span>, <span class="st">"pokoje"</span>: <span class="dv">3</span>, <span class="st">"wiek_budynku"</span>: <span class="dv">10</span>}</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response.json())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-</section>
-<section id="praca-domowa" class="level2">
-<h2 class="anchored" data-anchor-id="praca-domowa">Praca domowa</h2>
-<ol type="1">
-<li>Dodaj obsługę błędów (co jeśli użytkownik poda ujemną powierzchnię?).</li>
-<li>Dodaj endpoint POST <code>/predict</code>, który przyjmuje dane jako JSON.</li>
-<li>Napisz 3 testy z <code>pytest</code>, które sprawdzają działanie API.</li>
-<li>Umieść kod w repozytorium Git.</li>
-</ol>
-<p>Na następnych zajęciach: trenowanie modeli ML w pandas i scikit-learn.</p>
 
 
 </section>

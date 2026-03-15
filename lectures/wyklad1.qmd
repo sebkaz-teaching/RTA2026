@@ -38,6 +38,24 @@ Nie zawsze potrzebujesz reakcji w milisekundach. Kluczowe pytanie brzmi: **jaki 
 
 ## Ewolucja modeli przetwarzania danych
 
+```{mermaid}
+%%| fig-cap: "Ewolucja modeli przetwarzania danych"
+timeline
+    title Od plików płaskich do streamingu
+    1960s-70s : Pliki płaskie
+              : Bazy hierarchiczne
+    1970s-80s : Model relacyjny (OLTP)
+              : SQL, ACID, CRUD
+    1990s : Hurtownie danych (OLAP)
+          : ETL, kostki, raporty
+    2000s : Big Data
+          : Hadoop, MapReduce
+    2010s : Data Lake
+          : Schema-on-read, S3/HDFS
+    2020s : Streaming + Lakehouse
+          : Kafka, Spark, Flink
+```
+
 ### Pliki płaskie — punkt wyjścia
 
 Zanim pojawiły się bazy danych, informacje przechowywano w plikach tekstowych — CSV, TSV, plikach o stałej szerokości kolumn. Każdy program czytał plik od początku do końca, przetwarzał dane i zapisywał wynik do nowego pliku.
@@ -169,6 +187,38 @@ Systemy obsługujące strumienie danych to m.in. systemy transakcyjne, hurtownie
 | Technologie | Pandas, Spark (batch), SQL | Kafka + Spark Streaming | Apache Flink, custom |
 
 Nie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.
+
+```{python}
+#| label: fig-processing-modes
+#| fig-cap: "Porównanie trybów przetwarzania: opóźnienie vs koszt"
+import matplotlib.pyplot as plt
+import numpy as np
+
+modes = ['Batch', 'Near\nReal-Time', 'Real-Time']
+latency = [3600, 30, 0.1]  # seconds
+cost = [1, 3, 8]  # relative
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+
+colors = ['#2196F3', '#FF9800', '#F44336']
+
+ax1.barh(modes, latency, color=colors, edgecolor='white')
+ax1.set_xscale('log')
+ax1.set_xlabel('Opóźnienie (sekundy, skala log)')
+ax1.set_title('Opóźnienie')
+for i, v in enumerate(latency):
+    label = f"{v}s" if v >= 1 else f"{int(v*1000)}ms"
+    ax1.text(v * 1.5, i, label, va='center', fontweight='bold')
+
+ax2.barh(modes, cost, color=colors, edgecolor='white')
+ax2.set_xlabel('Koszt relatywny')
+ax2.set_title('Koszt infrastruktury')
+for i, v in enumerate(cost):
+    ax2.text(v + 0.2, i, f'{v}x', va='center', fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+```
 
 ---
 

@@ -51,10 +51,23 @@ W klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest usuwana po prze
 
 Kafka implementuje wzorzec **pub/sub** (publikuj/subskrybuj). Nadawca (producent) nie wysyła wiadomości bezpośrednio do odbiorcy — publikuje ją do **tematu**. Odbiorcy (konsumenci) subskrybują tematy, które ich interesują.
 
-```
-  Producent A ──┐                    ┌── Konsument X
-  Producent B ──┤── Temat: zamówienia ──┤── Konsument Y
-  Producent C ──┘                    └── Konsument Z
+```{mermaid}
+%%| fig-cap: "Wzorzec Publish/Subscribe w Kafce"
+flowchart LR
+    PA["Producent A"] --> T["Temat:\nzamówienia"]
+    PB["Producent B"] --> T
+    PC["Producent C"] --> T
+    T --> CX["Konsument X\n(Grupa 1)"]
+    T --> CY["Konsument Y\n(Grupa 1)"]
+    T --> CZ["Konsument Z\n(Grupa 2)"]
+
+    style T fill:#FF9800,color:#fff
+    style PA fill:#2196F3,color:#fff
+    style PB fill:#2196F3,color:#fff
+    style PC fill:#2196F3,color:#fff
+    style CX fill:#4CAF50,color:#fff
+    style CY fill:#4CAF50,color:#fff
+    style CZ fill:#9C27B0,color:#fff
 ```
 
 ### Tematy (Topics)
@@ -70,13 +83,25 @@ Partycje służą dwóm celom:
 - **Skalowalność** — dane jednego tematu mogą być rozproszone na wielu brokerach.
 - **Równoległość** — wielu konsumentów może czytać różne partycje jednocześnie.
 
-```
-  Temat: transakcje
-  ┌──────────────────────────────────┐
-  │ Partycja 0: [msg0][msg1][msg2].. │  ← Broker 1
-  │ Partycja 1: [msg0][msg1][msg2].. │  ← Broker 2
-  │ Partycja 2: [msg0][msg1][msg2].. │  ← Broker 3
-  └──────────────────────────────────┘
+```{mermaid}
+%%| fig-cap: "Temat z partycjami rozproszonymi na brokerach"
+flowchart LR
+    subgraph "Temat: transakcje"
+        direction TB
+        P0["Partycja 0\noffset: 0,1,2,3..."]
+        P1["Partycja 1\noffset: 0,1,2,3..."]
+        P2["Partycja 2\noffset: 0,1,2,3..."]
+    end
+    P0 -.-> B1["Broker 1"]
+    P1 -.-> B2["Broker 2"]
+    P2 -.-> B3["Broker 3"]
+
+    style P0 fill:#E3F2FD,stroke:#2196F3
+    style P1 fill:#E3F2FD,stroke:#2196F3
+    style P2 fill:#E3F2FD,stroke:#2196F3
+    style B1 fill:#FFF3E0,stroke:#FF9800
+    style B2 fill:#FFF3E0,stroke:#FF9800
+    style B3 fill:#FFF3E0,stroke:#FF9800
 ```
 
 ### Brokerzy (Brokers)
@@ -228,12 +253,39 @@ def predict_price(area: float, bedrooms: int, age: int):
 
 Łącząc elementy z ostatnich wykładów, oto schemat typowego systemu real-time analytics:
 
-```
-  Źródło danych          Kafka              Przetwarzanie        Wynik
-  ─────────────          ─────              ──────────────        ─────
-  Aplikacja webowa ─┐                    ┌─ Spark Streaming ──→ Dashboard
-  Sensory IoT ──────┼─→ Temat: events ──┼─ FastAPI + model ML → Alerty
-  System płatności ──┘                    └─ Zapis do bazy ───→ Raporty
+```{mermaid}
+%%| fig-cap: "Typowy system real-time analytics z Kafką"
+flowchart LR
+    subgraph Źródła
+        WEB["Aplikacja webowa"]
+        IOT["Sensory IoT"]
+        PAY["System płatności"]
+    end
+    subgraph Kafka
+        T["Temat:\nevents"]
+    end
+    subgraph Przetwarzanie
+        SP["Spark Streaming"]
+        API["FastAPI + ML"]
+        DB["Zapis do bazy"]
+    end
+    subgraph Wyniki
+        DASH["Dashboard"]
+        ALERT["Alerty"]
+        REP["Raporty"]
+    end
+
+    WEB --> T
+    IOT --> T
+    PAY --> T
+    T --> SP --> DASH
+    T --> API --> ALERT
+    T --> DB --> REP
+
+    style T fill:#FF9800,color:#fff
+    style SP fill:#2196F3,color:#fff
+    style API fill:#4CAF50,color:#fff
+    style DB fill:#9C27B0,color:#fff
 ```
 
 Producenci (aplikacje, sensory, systemy) wysyłają zdarzenia do Kafki. Konsumenci (Spark, FastAPI, systemy raportowe) odczytują je i przetwarzają — każdy na swój sposób, niezależnie od pozostałych.
