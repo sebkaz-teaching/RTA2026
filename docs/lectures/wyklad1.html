@@ -348,7 +348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pliki-płaskie-punkt-wyjścia" class="level3">
 <h3 class="anchored" data-anchor-id="pliki-płaskie-punkt-wyjścia">Pliki płaskie — punkt wyjścia</h3>
 <p>Zanim pojawiły się bazy danych, informacje przechowywano w plikach tekstowych — CSV, TSV, plikach o stałej szerokości kolumn. Każdy program czytał plik od początku do końca, przetwarzał dane i zapisywał wynik do nowego pliku.</p>
-<div id="1c551b32" class="cell" data-execution_count="1">
+<div id="bc6d6fbe" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -380,7 +380,7 @@ Warszawa  88847.85  2468.00      36</code></pre>
 <h3 class="anchored" data-anchor-id="model-oltp-bazy-relacyjne">Model OLTP — bazy relacyjne</h3>
 <p>W latach 70. Edgar Codd zaproponował model relacyjny, który stał się fundamentem systemów transakcyjnych. <strong>OLTP</strong> (On-Line Transaction Processing) to model zoptymalizowany pod szybki zapis i odczyt pojedynczych rekordów.</p>
 <p>Cechy OLTP: operacje CRUD, gwarancje ACID, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.</p>
-<div id="a5c0608c" class="cell" data-execution_count="2">
+<div id="f15340d3" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
@@ -410,7 +410,7 @@ Warszawa  88847.85  2468.00      36</code></pre>
 <h3 class="anchored" data-anchor-id="model-olap-hurtownie-danych">Model OLAP — hurtownie danych</h3>
 <p>Potrzeba analityki doprowadziła do powstania <strong>OLAP</strong> (On-Line Analytical Processing) i <strong>hurtowni danych</strong>. Dane z wielu systemów OLTP ładowane są w procesie <strong>ETL</strong> (Extract–Transform–Load), gdzie można je analizować bez wpływu na systemy produkcyjne.</p>
 <p>Cechy OLAP: agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.</p>
-<div id="b215360f" class="cell" data-execution_count="3">
+<div id="04212dba" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
@@ -487,7 +487,7 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 <h2 class="anchored" data-anchor-id="dane-zawsze-powstają-jako-strumień">Dane zawsze powstają jako strumień</h2>
 <p>Wszystkie powyższe modele zakładają, że dane są <strong>w spoczynku</strong> — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane <strong>zawsze powstają jako strumień zdarzeń</strong> — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.</p>
 <p>Przetwarzanie wsadowe to tylko <strong>uproszczenie</strong> — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.</p>
-<div id="e5a24537" class="cell" data-execution_count="4">
+<div id="65ea0ab0" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -512,11 +512,11 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Suma przetworzona na bieżąco: </span><span class="sc">{</span>suma<span class="sc">:.2f}</span><span class="ss"> PLN"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[23:53:10] TX0001:  1001.75 PLN (Kraków)
-[23:53:10] TX0002:    77.42 PLN (Warszawa)
-[23:53:10] TX0003:   731.16 PLN (Gdańsk)
-[23:53:11] TX0004:   562.40 PLN (Kraków)
-[23:53:11] TX0005:    36.06 PLN (Warszawa)
+<pre><code>[00:08:49] TX0001:  1001.75 PLN (Kraków)
+[00:08:49] TX0002:    77.42 PLN (Warszawa)
+[00:08:50] TX0003:   731.16 PLN (Gdańsk)
+[00:08:50] TX0004:   562.40 PLN (Kraków)
+[00:08:50] TX0005:    36.06 PLN (Warszawa)
 
 Suma przetworzona na bieżąco: 2408.79 PLN</code></pre>
 </div>
@@ -622,7 +622,7 @@ Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
 <h2 class="anchored" data-anchor-id="typy-danych-krótki-przegląd">Typy danych — krótki przegląd</h2>
 <p><strong>Ustrukturyzowane</strong> — tabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.</p>
 <p><strong>Półustrukturyzowane</strong> — JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.</p>
-<div id="d3f1eb32" class="cell" data-execution_count="6">
+<div id="f74d65e2" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
