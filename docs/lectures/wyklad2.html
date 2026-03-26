@@ -338,7 +338,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">{{&lt; fa database &gt;}} Podejście wsadowe (batch)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">{{&lt; fa bolt &gt;}} Podejście strumieniowe (stream)</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="9c68f997" class="cell" data-execution_count="1">
+<div id="31060b40" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -379,7 +379,7 @@ czas
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="fa275633" class="cell" data-execution_count="2">
+<div id="795e7c5f" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -406,16 +406,16 @@ czas
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[11:33:36] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
-[11:33:37] Klient 7938:   236.83 PLN | Suma okna:   1526.58
-[11:33:37] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
-[11:33:37] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
-[11:33:37] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
-[11:33:38] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
-[11:33:38] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
-[11:33:38] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
-[11:33:38] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
-[11:33:38] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
+<pre><code>[13:20:48] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
+[13:20:48] Klient 7938:   236.83 PLN | Suma okna:   1526.58
+[13:20:49] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
+[13:20:49] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
+[13:20:49] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
+[13:20:49] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
+[13:20:49] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
+[13:20:50] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
+[13:20:50] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
+[13:20:50] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
 </div>
 </div>
 </div>
@@ -657,7 +657,7 @@ czas
 </div>
 </div>
 <p>W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje <strong>opóźnienie</strong> (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.</p>
-<div id="437c3a8b" class="cell" data-execution_count="3">
+<div id="3ff42115" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: zdarzenia docierają z losowym opóźnieniem</span></span>
@@ -679,14 +679,14 @@ czas
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>event_time processing_time opóźnienie
-  14:23:00    14:23:04.413       4.1s
-  14:23:02    14:23:04.260       2.6s
-  14:23:04    14:23:06.240       2.4s
-  14:23:06     14:23:06.79       0.8s
-  14:23:08    14:23:10.273       2.7s
-  14:23:10    14:23:12.283       2.8s
-  14:23:12    14:23:13.140       1.4s
-  14:23:14    14:23:17.338       3.4s</code></pre>
+  14:23:00    14:23:02.291       2.9s
+  14:23:02    14:23:06.409       4.1s
+  14:23:04    14:23:07.315       3.2s
+  14:23:06     14:23:06.78       0.8s
+  14:23:08    14:23:12.497       5.0s
+  14:23:10     14:23:10.33       0.3s
+  14:23:12    14:23:16.426       4.3s
+  14:23:14     14:23:14.21       0.2s</code></pre>
 </div>
 </div>
 <div id="cell-fig-event-vs-processing" class="cell" data-execution_count="4">
@@ -769,7 +769,7 @@ Figure&nbsp;1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Stała długość, brak nakładania. Każde zdarzenie należy do <strong>dokładnie jednego</strong> okna.</p>
 <p><em>Przykład:</em> suma transakcji co 5 minut.</p>
-<div id="2239abce" class="cell" data-execution_count="5">
+<div id="7a509641" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja okna rozłącznego (tumbling) 5-minutowego</span></span>
@@ -922,7 +922,7 @@ Figure&nbsp;2: Typy okien czasowych — wizualizacja
 </div>
 </div>
 </div>
-<div id="f5d96293" class="cell" data-execution_count="7">
+<div id="0809127d" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Porównanie: tumbling vs sliding window na tych samych danych</span></span>
