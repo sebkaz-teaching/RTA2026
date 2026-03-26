@@ -20,7 +20,7 @@ website:
         - href: labs/pl_lab0_prework.ipynb
       - section : "Laboratoria dzienne"
         contents:
-        - href: labs/lab1.ipynb
+        - href: labs/pl_lab1.ipynb
       #   - href: labs/lab2.ipynb
       #   - href: labs/lab3.ipynb
       #   - href: labs/lab4.ipynb

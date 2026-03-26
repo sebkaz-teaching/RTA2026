@@ -257,6 +257,12 @@ window.Quarto = {
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/pl_lab1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -357,7 +363,7 @@ window.Quarto = {
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Model jest trenowany na <strong>całym zbiorze</strong> danych historycznych. Po wytrenowaniu jest wdrażany do produkcji, gdzie dokonuje predykcji na nowych danych. Gdy pojawiają się nowe dane — model jest retrenowany od zera.</p>
-<div id="c7186e33" class="cell" data-execution_count="1">
+<div id="91e8220c" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -408,7 +414,7 @@ window.Quarto = {
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p>Model uczy się <strong>na bieżąco</strong> — każda nowa obserwacja (lub mały batch) aktualizuje parametry modelu. Nie trzeba retrenować od zera.</p>
-<div id="01f40a65" class="cell" data-execution_count="2">
+<div id="ead6ace2" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> SGDClassifier</span>
@@ -670,7 +676,7 @@ Figure&nbsp;1: SGD vs Batch GD — zbieżność i wynik dopasowania
 </div>
 </div>
 </div>
-<div id="d87993f5" class="cell" data-execution_count="4">
+<div id="55f745cb" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja concept drift: nagła zmiana wzorca</span></span>
@@ -798,7 +804,7 @@ Figure&nbsp;2: Concept drift: model batch vs online — dokładność w czasie
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Dla pojedynczej zmiennej możemy użyć rozstępu międzykwartylowego:</p>
 <p><span class="math display">\[x_{\text{out}} &lt; Q_1 - 1.5 \times IQR \quad \text{lub} \quad x_{\text{out}} &gt; Q_3 + 1.5 \times IQR\]</span></p>
-<div id="a1ad7556" class="cell" data-execution_count="6">
+<div id="323ade87" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wynagrodzenia <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">90</span>, <span class="dv">150</span>]</span>
@@ -842,7 +848,7 @@ Anomalie: [150]</code></pre>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>Algorytm bazujący na drzewach decyzyjnych (Liu et al., 2008). Kluczowa intuicja: <strong>anomalie są łatwiejsze do odizolowania</strong> — losowe podziały szybciej oddzielają je od reszty danych.</p>
-<div id="cd0641ec" class="cell" data-execution_count="7">
+<div id="295f483f" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
@@ -926,7 +932,7 @@ Anomalie: [150]</code></pre>
 <section id="lime-local-interpretable-model-agnostic-explanations" class="level3" data-number="5.1">
 <h3 data-number="5.1" class="anchored" data-anchor-id="lime-local-interpretable-model-agnostic-explanations"><span class="header-section-number">5.1</span> LIME (Local Interpretable Model-Agnostic Explanations)</h3>
 <p>LIME wyjaśnia pojedyncze predykcje dowolnego modelu. Działa tak: wprowadza drobne zmiany w danych wejściowych i obserwuje, jak zmienia się wynik. Na tej podstawie buduje prosty, interpretowalny model lokalny (np. regresję liniową), który przybliża zachowanie oryginalnego modelu w otoczeniu danej obserwacji.</p>
-<div id="08507aea" class="cell" data-execution_count="8">
+<div id="43a7cea9" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
