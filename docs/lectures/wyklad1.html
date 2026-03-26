@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Ewolucja modeli przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe.">
 
 <title>Wykład 1 — Od plików płaskich do Data Lake – Analiza danych w czasie rzeczywistym</title>
 <style>
@@ -72,10 +73,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1dce9f32eecb350a510e49baa42f6985.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,6 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
@@ -220,6 +222,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria dzienne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria zaoczne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/zaoczne_cw1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -227,16 +257,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title"><strong>Sections</strong></h2>
+    <h2 id="toc-title">Spis treści</h2>
    
+  <ul>
+  <li><a href="#po-co-nam-analiza-danych-w-czasie-rzeczywistym" id="toc-po-co-nam-analiza-danych-w-czasie-rzeczywistym" class="nav-link active" data-scroll-target="#po-co-nam-analiza-danych-w-czasie-rzeczywistym"><span class="header-section-number">1</span> Po co nam analiza danych w czasie rzeczywistym?</a>
   <ul class="collapse">
-  <li><a href="#po-co-nam-analiza-danych-w-czasie-rzeczywistym" id="toc-po-co-nam-analiza-danych-w-czasie-rzeczywistym" class="nav-link active" data-scroll-target="#po-co-nam-analiza-danych-w-czasie-rzeczywistym">Po co nam analiza danych w czasie rzeczywistym?</a></li>
-  <li><a href="#ewolucja-modeli-przetwarzania-danych" id="toc-ewolucja-modeli-przetwarzania-danych" class="nav-link" data-scroll-target="#ewolucja-modeli-przetwarzania-danych">Ewolucja modeli przetwarzania danych</a></li>
-  <li><a href="#dane-zawsze-powstają-jako-strumień" id="toc-dane-zawsze-powstają-jako-strumień" class="nav-link" data-scroll-target="#dane-zawsze-powstają-jako-strumień">Dane zawsze powstają jako strumień</a></li>
-  <li><a href="#trzy-tryby-przetwarzania-porównanie" id="toc-trzy-tryby-przetwarzania-porównanie" class="nav-link" data-scroll-target="#trzy-tryby-przetwarzania-porównanie">Trzy tryby przetwarzania — porównanie</a></li>
-  <li><a href="#typy-danych-krótki-przegląd" id="toc-typy-danych-krótki-przegląd" class="nav-link" data-scroll-target="#typy-danych-krótki-przegląd">Typy danych — krótki przegląd</a></li>
+  <li><a href="#gdzie-to-ma-znaczenie" id="toc-gdzie-to-ma-znaczenie" class="nav-link" data-scroll-target="#gdzie-to-ma-znaczenie"><span class="header-section-number">1.1</span> Gdzie to ma znaczenie?</a></li>
+  </ul></li>
+  <li><a href="#ewolucja-modeli-przetwarzania-danych" id="toc-ewolucja-modeli-przetwarzania-danych" class="nav-link" data-scroll-target="#ewolucja-modeli-przetwarzania-danych"><span class="header-section-number">2</span> Ewolucja modeli przetwarzania danych</a>
+  <ul class="collapse">
+  <li><a href="#pliki-płaskie-punkt-wyjścia" id="toc-pliki-płaskie-punkt-wyjścia" class="nav-link" data-scroll-target="#pliki-płaskie-punkt-wyjścia"><span class="header-section-number">2.1</span> Pliki płaskie — punkt wyjścia</a></li>
+  <li><a href="#model-oltp-bazy-relacyjne" id="toc-model-oltp-bazy-relacyjne" class="nav-link" data-scroll-target="#model-oltp-bazy-relacyjne"><span class="header-section-number">2.2</span> Model OLTP — bazy relacyjne</a></li>
+  <li><a href="#model-olap-hurtownie-danych" id="toc-model-olap-hurtownie-danych" class="nav-link" data-scroll-target="#model-olap-hurtownie-danych"><span class="header-section-number">2.3</span> Model OLAP — hurtownie danych</a></li>
+  <li><a href="#data-lake-wszystko-w-jednym-miejscu" id="toc-data-lake-wszystko-w-jednym-miejscu" class="nav-link" data-scroll-target="#data-lake-wszystko-w-jednym-miejscu"><span class="header-section-number">2.4</span> Data Lake — wszystko w jednym miejscu</a></li>
+  </ul></li>
+  <li><a href="#dane-zawsze-powstają-jako-strumień" id="toc-dane-zawsze-powstają-jako-strumień" class="nav-link" data-scroll-target="#dane-zawsze-powstają-jako-strumień"><span class="header-section-number">3</span> Dane zawsze powstają jako strumień</a></li>
+  <li><a href="#trzy-tryby-przetwarzania-porównanie" id="toc-trzy-tryby-przetwarzania-porównanie" class="nav-link" data-scroll-target="#trzy-tryby-przetwarzania-porównanie"><span class="header-section-number">4</span> Trzy tryby przetwarzania — porównanie</a></li>
+  <li><a href="#typy-danych-krótki-przegląd" id="toc-typy-danych-krótki-przegląd" class="nav-link" data-scroll-target="#typy-danych-krótki-przegląd"><span class="header-section-number">5</span> Typy danych — krótki przegląd</a></li>
   <li><a href="#big-data-pięć-wymiarów-5v" id="toc-big-data-pięć-wymiarów-5v" class="nav-link" data-scroll-target="#big-data-pięć-wymiarów-5v">Big Data — pięć wymiarów (5V)</a></li>
-  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie">Podsumowanie</a></li>
+  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie"><span class="header-section-number">6</span> Podsumowanie</a></li>
   </ul>
 </nav>
     </div>
@@ -245,9 +284,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykład 1 — Od plików płaskich do Data Lake</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Wykład 1 — Od plików płaskich do Data Lake</h1>
+<div class="quarto-title-block"><div><h1 class="title">Wykład 1 — Od plików płaskich do Data Lake</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Analiza danych w czasie rzeczywistym</p>
 </div>
 
+<div>
+  <div class="description">
+    Ewolucja modeli przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -262,55 +307,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><em>Czas trwania: 1,5h</em></p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa clock &gt;}} Czas trwania: 1,5h
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p><strong>Cel wykładu:</strong> Zrozumienie, jak ewoluowały modele przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe. Wprowadzenie pojęcia analizy danych w czasie rzeczywistym.</p>
+</div>
+</div>
 <hr>
-<section id="po-co-nam-analiza-danych-w-czasie-rzeczywistym" class="level2">
-<h2 class="anchored" data-anchor-id="po-co-nam-analiza-danych-w-czasie-rzeczywistym">Po co nam analiza danych w czasie rzeczywistym?</h2>
+<section id="po-co-nam-analiza-danych-w-czasie-rzeczywistym" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="po-co-nam-analiza-danych-w-czasie-rzeczywistym"><span class="header-section-number">1</span> Po co nam analiza danych w czasie rzeczywistym?</h2>
 <p>Wyobraź sobie, że prowadzisz sklep internetowy. Na koniec miesiąca generujesz raport sprzedaży — dowiadujesz się, że dwa tygodnie temu kampania reklamowa przestała działać. Straciłeś dwa tygodnie budżetu.</p>
 <p>A teraz wyobraź sobie, że widzisz to <strong>w ciągu minuty</strong> od momentu, gdy współczynnik konwersji spada. Reagujesz natychmiast — wyłączasz kampanię, zmieniasz kreację, ratujesz budżet.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Kluczowa różnica
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>To jest różnica między przetwarzaniem <strong>wsadowym</strong> (batch) a <strong>analizą w czasie rzeczywistym</strong> (real-time analytics).</p>
 <p>Analiza danych w czasie rzeczywistym to proces przetwarzania danych natychmiast (lub niemal natychmiast) po ich wygenerowaniu — bez czekania na zgromadzenie ich w pliku czy hurtowni.</p>
-<section id="gdzie-to-ma-znaczenie" class="level3">
-<h3 class="anchored" data-anchor-id="gdzie-to-ma-znaczenie">Gdzie to ma znaczenie?</h3>
-<table class="caption-top table">
+</div>
+</div>
+<section id="gdzie-to-ma-znaczenie" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="gdzie-to-ma-znaczenie"><span class="header-section-number">1.1</span> Gdzie to ma znaczenie?</h3>
+<table class="table-striped table-hover caption-top table">
+<caption>Przykłady zastosowań real-time analytics</caption>
 <colgroup>
 <col style="width: 25%">
-<col style="width: 32%">
-<col style="width: 41%">
+<col style="width: 31%">
+<col style="width: 43%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Branża</th>
 <th>Przykład</th>
-<th>Czas reakcji</th>
+<th style="text-align: center;">Czas reakcji</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Bankowość</td>
+<td>{{&lt; fa building-columns &gt;}} Bankowość</td>
 <td>Blokowanie podejrzanej transakcji kartą</td>
-<td>Milisekundy</td>
+<td style="text-align: center;">Milisekundy</td>
 </tr>
 <tr class="even">
-<td>E-commerce</td>
+<td>{{&lt; fa cart-shopping &gt;}} E-commerce</td>
 <td>Personalizacja oferty w trakcie sesji</td>
-<td>Sekundy</td>
+<td style="text-align: center;">Sekundy</td>
 </tr>
 <tr class="odd">
-<td>Logistyka</td>
+<td>{{&lt; fa truck &gt;}} Logistyka</td>
 <td>Przekierowanie przesyłki po wykryciu opóźnienia</td>
-<td>Minuty</td>
+<td style="text-align: center;">Minuty</td>
 </tr>
 <tr class="even">
-<td>Telekomunikacja</td>
+<td>{{&lt; fa tower-cell &gt;}} Telekomunikacja</td>
 <td>Wykrycie awarii sieci przed zgłoszeniem klienta</td>
-<td>Sekundy</td>
+<td style="text-align: center;">Sekundy</td>
 </tr>
 <tr class="odd">
-<td>Ochrona zdrowia</td>
+<td>{{&lt; fa heart-pulse &gt;}} Ochrona zdrowia</td>
 <td>Alert z monitora pacjenta na OIOM</td>
-<td>Milisekundy</td>
+<td style="text-align: center;">Milisekundy</td>
 </tr>
 </tbody>
 </table>
@@ -318,9 +387,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <hr>
 </section>
 </section>
-<section id="ewolucja-modeli-przetwarzania-danych" class="level2">
-<h2 class="anchored" data-anchor-id="ewolucja-modeli-przetwarzania-danych">Ewolucja modeli przetwarzania danych</h2>
-<div class="cell" data-layout-align="default">
+<section id="ewolucja-modeli-przetwarzania-danych" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="ewolucja-modeli-przetwarzania-danych"><span class="header-section-number">2</span> Ewolucja modeli przetwarzania danych</h2>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -345,12 +414,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<section id="pliki-płaskie-punkt-wyjścia" class="level3">
-<h3 class="anchored" data-anchor-id="pliki-płaskie-punkt-wyjścia">Pliki płaskie — punkt wyjścia</h3>
+<section id="pliki-płaskie-punkt-wyjścia" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="pliki-płaskie-punkt-wyjścia"><span class="header-section-number">2.1</span> Pliki płaskie — punkt wyjścia</h3>
 <p>Zanim pojawiły się bazy danych, informacje przechowywano w plikach tekstowych — CSV, TSV, plikach o stałej szerokości kolumn. Każdy program czytał plik od początku do końca, przetwarzał dane i zapisywał wynik do nowego pliku.</p>
-<div id="bc6d6fbe" class="cell" data-execution_count="1">
+<div id="6cc7945d" class="cell" data-execution_count="1">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -376,13 +445,25 @@ Warszawa  88847.85  2468.00      36</code></pre>
 </div>
 <p>To podejście działa dobrze dla niewielkich danych. Problem pojawia się, gdy dane rosną, wielu użytkowników chce jednocześnie z nich korzystać albo potrzebujemy spójności i bezpieczeństwa.</p>
 </section>
-<section id="model-oltp-bazy-relacyjne" class="level3">
-<h3 class="anchored" data-anchor-id="model-oltp-bazy-relacyjne">Model OLTP — bazy relacyjne</h3>
+<section id="model-oltp-bazy-relacyjne" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="model-oltp-bazy-relacyjne"><span class="header-section-number">2.2</span> Model OLTP — bazy relacyjne</h3>
 <p>W latach 70. Edgar Codd zaproponował model relacyjny, który stał się fundamentem systemów transakcyjnych. <strong>OLTP</strong> (On-Line Transaction Processing) to model zoptymalizowany pod szybki zapis i odczyt pojedynczych rekordów.</p>
-<p>Cechy OLTP: operacje CRUD, gwarancje ACID, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.</p>
-<div id="f15340d3" class="cell" data-execution_count="2">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Cechy OLTP
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Operacje <strong>CRUD</strong>, gwarancje <strong>ACID</strong>, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.</p>
+</div>
+</div>
+<div id="f42d1f83" class="cell" data-execution_count="2">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">':memory:'</span>)</span>
@@ -406,13 +487,25 @@ Warszawa  88847.85  2468.00      36</code></pre>
 </div>
 <p>OLTP świetnie obsługuje bieżące operacje. Ale pytanie <em>„Jaka była łączna sprzedaż wg regionów w ostatnich 12 miesiącach?“</em> na bazie produkcyjnej może zablokować system.</p>
 </section>
-<section id="model-olap-hurtownie-danych" class="level3">
-<h3 class="anchored" data-anchor-id="model-olap-hurtownie-danych">Model OLAP — hurtownie danych</h3>
+<section id="model-olap-hurtownie-danych" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="model-olap-hurtownie-danych"><span class="header-section-number">2.3</span> Model OLAP — hurtownie danych</h3>
 <p>Potrzeba analityki doprowadziła do powstania <strong>OLAP</strong> (On-Line Analytical Processing) i <strong>hurtowni danych</strong>. Dane z wielu systemów OLTP ładowane są w procesie <strong>ETL</strong> (Extract–Transform–Load), gdzie można je analizować bez wpływu na systemy produkcyjne.</p>
-<p>Cechy OLAP: agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.</p>
-<div id="04212dba" class="cell" data-execution_count="3">
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Cechy OLAP
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.</p>
+</div>
+</div>
+<div id="fa04cf7c" class="cell" data-execution_count="3">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>sprzedaz <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'data'</span>: pd.date_range(<span class="st">'2025-01-01'</span>, periods<span class="op">=</span><span class="dv">365</span>, freq<span class="op">=</span><span class="st">'D'</span>),</span>
@@ -435,61 +528,101 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 </div>
 </div>
 </section>
-<section id="data-lake-wszystko-w-jednym-miejscu" class="level3">
-<h3 class="anchored" data-anchor-id="data-lake-wszystko-w-jednym-miejscu">Data Lake — wszystko w jednym miejscu</h3>
+<section id="data-lake-wszystko-w-jednym-miejscu" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="data-lake-wszystko-w-jednym-miejscu"><span class="header-section-number">2.4</span> Data Lake — wszystko w jednym miejscu</h3>
 <p>Hurtownia wymaga, by dane miały strukturę <strong>przed</strong> załadowaniem (schema-on-write). To nie radzi sobie z logami, obrazami, plikami JSON z API, danymi IoT.</p>
 <p><strong>Data Lake</strong> to podejście odwrotne — przechowujemy surowe dane w dowolnym formacie (schema-on-read) i nadajemy im strukturę dopiero podczas analizy.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Hurtownia danych</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Data Lake</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <table class="caption-top table">
-<colgroup>
-<col style="width: 18%">
-<col style="width: 51%">
-<col style="width: 29%">
-</colgroup>
 <thead>
 <tr class="header">
 <th>Cecha</th>
-<th>Hurtownia danych</th>
-<th>Data Lake</th>
+<th>Wartość</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Struktura danych</td>
 <td>Ustrukturyzowane</td>
-<td>Dowolne (surowe)</td>
 </tr>
 <tr class="even">
 <td>Schemat</td>
-<td>Przed załadowaniem</td>
-<td>Przy odczycie</td>
+<td>Przed załadowaniem (schema-on-write)</td>
 </tr>
 <tr class="odd">
 <td>Użytkownicy</td>
 <td>Analitycy biznesowi</td>
-<td>Data scientists, inżynierowie</td>
 </tr>
 <tr class="even">
 <td>Koszt przechowywania</td>
 <td>Wysoki</td>
-<td>Niski</td>
 </tr>
 <tr class="odd">
 <td>Technologie</td>
 <td>SQL Server, Oracle, Teradata</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cecha</th>
+<th>Wartość</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Struktura danych</td>
+<td>Dowolne (surowe)</td>
+</tr>
+<tr class="even">
+<td>Schemat</td>
+<td>Przy odczycie (schema-on-read)</td>
+</tr>
+<tr class="odd">
+<td>Użytkownicy</td>
+<td>Data scientists, inżynierowie</td>
+</tr>
+<tr class="even">
+<td>Koszt przechowywania</td>
+<td>Niski</td>
+</tr>
+<tr class="odd">
+<td>Technologie</td>
 <td>Hadoop HDFS, S3, Azure Data Lake</td>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
 <hr>
 </section>
 </section>
-<section id="dane-zawsze-powstają-jako-strumień" class="level2">
-<h2 class="anchored" data-anchor-id="dane-zawsze-powstają-jako-strumień">Dane zawsze powstają jako strumień</h2>
+<section id="dane-zawsze-powstają-jako-strumień" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="dane-zawsze-powstają-jako-strumień"><span class="header-section-number">3</span> Dane zawsze powstają jako strumień</h2>
 <p>Wszystkie powyższe modele zakładają, że dane są <strong>w spoczynku</strong> — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane <strong>zawsze powstają jako strumień zdarzeń</strong> — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Zmiana perspektywy
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Przetwarzanie wsadowe to tylko <strong>uproszczenie</strong> — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.</p>
-<div id="65ea0ab0" class="cell" data-execution_count="4">
+</div>
+</div>
+<div id="36f6efa4" class="cell" data-execution_count="4">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -512,24 +645,28 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Suma przetworzona na bieżąco: </span><span class="sc">{</span>suma<span class="sc">:.2f}</span><span class="ss"> PLN"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[00:08:49] TX0001:  1001.75 PLN (Kraków)
-[00:08:49] TX0002:    77.42 PLN (Warszawa)
-[00:08:50] TX0003:   731.16 PLN (Gdańsk)
-[00:08:50] TX0004:   562.40 PLN (Kraków)
-[00:08:50] TX0005:    36.06 PLN (Warszawa)
+<pre><code>[11:18:03] TX0001:  1001.75 PLN (Kraków)
+[11:18:04] TX0002:    77.42 PLN (Warszawa)
+[11:18:04] TX0003:   731.16 PLN (Gdańsk)
+[11:18:04] TX0004:   562.40 PLN (Kraków)
+[11:18:04] TX0005:    36.06 PLN (Warszawa)
 
 Suma przetworzona na bieżąco: 2408.79 PLN</code></pre>
 </div>
 </div>
 <p>Systemy obsługujące strumienie danych to m.in. systemy transakcyjne, hurtownie danych, systemy IoT, systemy analityki webowej, platformy reklamowe, media społecznościowe, systemy logowania.</p>
 <blockquote class="blockquote">
-<p>Firma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.</p>
+<p><strong>Firma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.</strong></p>
 </blockquote>
 <hr>
 </section>
-<section id="trzy-tryby-przetwarzania-porównanie" class="level2">
-<h2 class="anchored" data-anchor-id="trzy-tryby-przetwarzania-porównanie">Trzy tryby przetwarzania — porównanie</h2>
-<table class="caption-top table">
+<section id="trzy-tryby-przetwarzania-porównanie" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="trzy-tryby-przetwarzania-porównanie"><span class="header-section-number">4</span> Trzy tryby przetwarzania — porównanie</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Tabela porównawcza</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Wykres</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<table class="table-striped table-hover caption-top table">
 <colgroup>
 <col style="width: 17%">
 <col style="width: 17%">
@@ -539,9 +676,9 @@ Suma przetworzona na bieżąco: 2408.79 PLN</code></pre>
 <thead>
 <tr class="header">
 <th>Cecha</th>
-<th>Batch</th>
-<th>Near Real-Time</th>
-<th>Real-Time</th>
+<th>{{&lt; fa clock &gt;}} Batch</th>
+<th>{{&lt; fa gauge &gt;}} Near Real-Time</th>
+<th>{{&lt; fa bolt &gt;}} Real-Time</th>
 </tr>
 </thead>
 <tbody>
@@ -571,10 +708,11 @@ Suma przetworzona na bieżąco: 2408.79 PLN</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Nie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.</p>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div id="cell-fig-processing-modes" class="cell" data-execution_count="5">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -616,15 +754,37 @@ Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Złota zasada
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.</p>
+</div>
+</div>
 <hr>
 </section>
-<section id="typy-danych-krótki-przegląd" class="level2">
-<h2 class="anchored" data-anchor-id="typy-danych-krótki-przegląd">Typy danych — krótki przegląd</h2>
-<p><strong>Ustrukturyzowane</strong> — tabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.</p>
-<p><strong>Półustrukturyzowane</strong> — JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.</p>
-<div id="f74d65e2" class="cell" data-execution_count="6">
+<section id="typy-danych-krótki-przegląd" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="typy-danych-krótki-przegląd"><span class="header-section-number">5</span> Typy danych — krótki przegląd</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Ustrukturyzowane</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Półustrukturyzowane</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Nieustrukturyzowane</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-4" role="tab" aria-controls="tabset-3-4" aria-selected="false" href="">Strumieniowe</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>Tabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.</p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.</p>
+<div id="bf5df6c0" class="cell" data-execution_count="6">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>zamowienie <span class="op">=</span> {</span>
@@ -659,28 +819,80 @@ Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
 }</code></pre>
 </div>
 </div>
-<p><strong>Nieustrukturyzowane</strong> — tekst (e-maile, opinie), obrazy, dźwięk, wideo. Wymagają NLP, computer vision, deep learning.</p>
-<p><strong>Strumieniowe</strong> — zdarzenia generowane w sposób ciągły. To z nimi będziemy pracować przez resztę kursu.</p>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<p>Tekst (e-maile, opinie), obrazy, dźwięk, wideo. Wymagają NLP, computer vision, deep learning.</p>
+</div>
+<div id="tabset-3-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-4-tab">
+<p>Zdarzenia generowane w sposób ciągły. To z nimi będziemy pracować przez resztę kursu.</p>
+</div>
+</div>
+</div>
 <hr>
 </section>
-<section id="big-data-pięć-wymiarów-5v" class="level2">
-<h2 class="anchored" data-anchor-id="big-data-pięć-wymiarów-5v">Big Data — pięć wymiarów (5V)</h2>
+<section id="big-data-pięć-wymiarów-5v" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="big-data-pięć-wymiarów-5v">Big Data — pięć wymiarów (5V)</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
-<li><strong>Volume</strong> — rozmiar (terabajty, petabajty),</li>
-<li><strong>Velocity</strong> — tempo napływu danych,</li>
-<li><strong>Variety</strong> — różnorodność formatów i źródeł,</li>
-<li><strong>Veracity</strong> — wiarygodność i jakość danych,</li>
-<li><strong>Value</strong> — wartość biznesowa ukryta w danych.</li>
+<li><strong>Volume</strong> — rozmiar (terabajty, petabajty)</li>
+<li><strong>Velocity</strong> — tempo napływu danych</li>
+<li><strong>Variety</strong> — różnorodność formatów i źródeł</li>
 </ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><strong>Veracity</strong> — wiarygodność i jakość danych</li>
+<li><strong>Value</strong> — wartość biznesowa ukryta w danych</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Hurtownia ≠ Big Data
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Hurtownia danych <strong>nie</strong> jest systemem Big Data. Hurtownia przechowuje dane ustrukturyzowane i służy do raportowania (100% accuracy). System Big Data obsługuje dane o dowolnej strukturze i toleruje pewien poziom niedokładności.</p>
+</div>
+</div>
 <hr>
 </section>
-<section id="podsumowanie" class="level2">
-<h2 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h2>
+<section id="podsumowanie" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="podsumowanie"><span class="header-section-number">6</span> Podsumowanie</h2>
 <p>Na tym wykładzie prześledziliśmy ewolucję od plików płaskich, przez OLTP, OLAP i Data Lake, aż po przetwarzanie strumieniowe. Każdy model odpowiada na inne potrzeby biznesowe — i żaden nie zastępuje poprzedniego. W praktyce firmy używają ich równolegle.</p>
-<p><strong>Na następnym wykładzie:</strong> architektury łączące batch i streaming — Lambda i Kappa — oraz kluczowe pojęcia: czas zdarzenia, czas przetwarzania, okna czasowe.</p>
-<p><strong>Do przemyślenia:</strong> W jakim trybie Twoja firma (lub firma, w której chciałbyś pracować) przetwarza dane? Czy istnieją procesy, które skorzystałyby na przejściu do trybu strumieniowego?</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa forward &gt;}} Na następnym wykładzie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Architektury łączące batch i streaming — <strong>Lambda i Kappa</strong> — oraz kluczowe pojęcia: czas zdarzenia, czas przetwarzania, okna czasowe.</p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa brain &gt;}} Do przemyślenia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>W jakim trybie Twoja firma (lub firma, w której chciałbyś pracować) przetwarza dane? Czy istnieją procesy, które skorzystałyby na przejściu do trybu strumieniowego?</p>
+</div>
+</div>
 
+
+<!-- -->
 
 </section>
 
@@ -755,6 +967,57 @@ Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -1089,7 +1352,367 @@ Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
       }
     }
   });
-  </script>
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Wykład 1 — Od plików płaskich do Data Lake"</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Analiza danych w czasie rzeczywistym"</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Ewolucja modeli przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe."</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-summary: "Pokaż kod"</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Spis treści"</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">    smooth-scroll: true</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">    theme:</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">      light: flatly</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co">    highlight-style: github</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-align: center</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-cap-location: bottom</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="minimal"}</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa clock &gt;}} Czas trwania: 1,5h</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>**Cel wykładu:** Zrozumienie, jak ewoluowały modele przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe. Wprowadzenie pojęcia analizy danych w czasie rzeczywistym.</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Po co nam analiza danych w czasie rzeczywistym?</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>Wyobraź sobie, że prowadzisz sklep internetowy. Na koniec miesiąca generujesz raport sprzedaży — dowiadujesz się, że dwa tygodnie temu kampania reklamowa przestała działać. Straciłeś dwa tygodnie budżetu.</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>A teraz wyobraź sobie, że widzisz to **w ciągu minuty** od momentu, gdy współczynnik konwersji spada. Reagujesz natychmiast — wyłączasz kampanię, zmieniasz kreację, ratujesz budżet.</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Kluczowa różnica</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>To jest różnica między przetwarzaniem **wsadowym** (batch) a **analizą w czasie rzeczywistym** (real-time analytics).</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>Analiza danych w czasie rzeczywistym to proces przetwarzania danych natychmiast (lub niemal natychmiast) po ich wygenerowaniu — bez czekania na zgromadzenie ich w pliku czy hurtowni.</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="fu">### Gdzie to ma znaczenie?</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Branża <span class="pp">|</span> Przykład <span class="pp">|</span> Czas reakcji <span class="pp">|</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|--------|----------|:------------:|</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> {{&lt; fa building-columns &gt;}} Bankowość <span class="pp">|</span> Blokowanie podejrzanej transakcji kartą <span class="pp">|</span> Milisekundy <span class="pp">|</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> {{&lt; fa cart-shopping &gt;}} E-commerce <span class="pp">|</span> Personalizacja oferty w trakcie sesji <span class="pp">|</span> Sekundy <span class="pp">|</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> {{&lt; fa truck &gt;}} Logistyka <span class="pp">|</span> Przekierowanie przesyłki po wykryciu opóźnienia <span class="pp">|</span> Minuty <span class="pp">|</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> {{&lt; fa tower-cell &gt;}} Telekomunikacja <span class="pp">|</span> Wykrycie awarii sieci przed zgłoszeniem klienta <span class="pp">|</span> Sekundy <span class="pp">|</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> {{&lt; fa heart-pulse &gt;}} Ochrona zdrowia <span class="pp">|</span> Alert z monitora pacjenta na OIOM <span class="pp">|</span> Milisekundy <span class="pp">|</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>: Przykłady zastosowań real-time analytics {.striped .hover}</span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>Nie zawsze potrzebujesz reakcji w milisekundach. Kluczowe pytanie brzmi: **jaki czas reakcji wymaga Twój problem biznesowy?**</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ewolucja modeli przetwarzania danych</span></span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>%%| fig-cap: <span class="ot">"</span><span class="st">Ewolucja modeli przetwarzania danych</span><span class="ot">"</span></span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>timeline</span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>    title Od plików płaskich <span class="kw">do</span> streamingu</span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1960</span>s<span class="dv">-70</span>s : Pliki płaskie</span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>              : Bazy hierarchiczne</span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1970</span>s<span class="dv">-80</span>s : Model relacyjny (OLTP)</span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>              : SQL, ACID, CRUD</span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1990</span>s : Hurtownie danych (OLAP)</span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>          : ETL, kostki, raporty</span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2000</span>s : Big Data</span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>          : Hadoop, MapReduce</span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2010</span>s : Data Lake</span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>          : Schema-on-<span class="fu">read</span>, S3/HDFS</span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>    <span class="dv">2020</span>s : Streaming + Lakehouse</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>          : Kafka, Spark, Flink</span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### Pliki płaskie — punkt wyjścia</span></span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>Zanim pojawiły się bazy danych, informacje przechowywano w plikach tekstowych — CSV, TSV, plikach o stałej szerokości kolumn. Każdy program czytał plik od początku do końca, przetwarzał dane i zapisywał wynik do nowego pliku.</span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>transactions <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>    <span class="st">'data'</span>: pd.date_range(<span class="st">'2026-01-01'</span>, periods<span class="op">=</span><span class="dv">100</span>, freq<span class="op">=</span><span class="st">'h'</span>),</span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">10</span>, <span class="dv">5000</span>, <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>),</span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sklep'</span>: np.random.choice([<span class="st">'Warszawa'</span>, <span class="st">'Kraków'</span>, <span class="st">'Gdańsk'</span>], <span class="dv">100</span>)</span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a><span class="co"># Typowa analiza wsadowa: wczytaj → przetwórz → zapisz</span></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>monthly <span class="op">=</span> transactions.groupby(<span class="st">'sklep'</span>)[<span class="st">'kwota'</span>].agg([<span class="st">'sum'</span>, <span class="st">'mean'</span>, <span class="st">'count'</span>])</span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>monthly.columns <span class="op">=</span> [<span class="st">'suma'</span>, <span class="st">'średnia'</span>, <span class="st">'liczba'</span>]</span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(monthly.<span class="bu">round</span>(<span class="dv">2</span>))</span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>To podejście działa dobrze dla niewielkich danych. Problem pojawia się, gdy dane rosną, wielu użytkowników chce jednocześnie z nich korzystać albo potrzebujemy spójności i bezpieczeństwa.</span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model OLTP — bazy relacyjne</span></span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>W latach 70. Edgar Codd zaproponował model relacyjny, który stał się fundamentem systemów transakcyjnych. **OLTP** (On-Line Transaction Processing) to model zoptymalizowany pod szybki zapis i odczyt pojedynczych rekordów.</span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cechy OLTP</span></span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>Operacje **CRUD**, gwarancje **ACID**, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.</span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> sqlite3.<span class="ex">connect</span>(<span class="st">':memory:'</span>)</span>
+<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a>cursor <span class="op">=</span> conn.cursor()</span>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">'''</span></span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a><span class="st">    CREATE TABLE transakcje (</span></span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a><span class="st">        id INTEGER PRIMARY KEY, data TEXT, kwota REAL, sklep TEXT</span></span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a><span class="st">    )</span></span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a><span class="st">'''</span>)</span>
+<span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a>cursor.execute(</span>
+<span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a>    <span class="st">"INSERT INTO transakcje (data, kwota, sklep) VALUES (?, ?, ?)"</span>,</span>
+<span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'2026-03-12 10:30:00'</span>, <span class="fl">299.99</span>, <span class="st">'Warszawa'</span>)</span>
+<span id="cb12-130"><a href="#cb12-130" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-131"><a href="#cb12-131" aria-hidden="true" tabindex="-1"></a>cursor.execute(<span class="st">"SELECT * FROM transakcje WHERE id = 1"</span>)</span>
+<span id="cb12-132"><a href="#cb12-132" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cursor.fetchone())</span>
+<span id="cb12-133"><a href="#cb12-133" aria-hidden="true" tabindex="-1"></a>conn.close()</span>
+<span id="cb12-134"><a href="#cb12-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-135"><a href="#cb12-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-136"><a href="#cb12-136" aria-hidden="true" tabindex="-1"></a>OLTP świetnie obsługuje bieżące operacje. Ale pytanie *„Jaka była łączna sprzedaż wg regionów w ostatnich 12 miesiącach?"* na bazie produkcyjnej może zablokować system.</span>
+<span id="cb12-137"><a href="#cb12-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-138"><a href="#cb12-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### Model OLAP — hurtownie danych</span></span>
+<span id="cb12-139"><a href="#cb12-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-140"><a href="#cb12-140" aria-hidden="true" tabindex="-1"></a>Potrzeba analityki doprowadziła do powstania **OLAP** (On-Line Analytical Processing) i **hurtowni danych**. Dane z wielu systemów OLTP ładowane są w procesie **ETL** (Extract–Transform–Load), gdzie można je analizować bez wpływu na systemy produkcyjne.</span>
+<span id="cb12-141"><a href="#cb12-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-142"><a href="#cb12-142" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb12-143"><a href="#cb12-143" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cechy OLAP</span></span>
+<span id="cb12-144"><a href="#cb12-144" aria-hidden="true" tabindex="-1"></a>Agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.</span>
+<span id="cb12-145"><a href="#cb12-145" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-146"><a href="#cb12-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-149"><a href="#cb12-149" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb12-150"><a href="#cb12-150" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb12-151"><a href="#cb12-151" aria-hidden="true" tabindex="-1"></a>sprzedaz <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb12-152"><a href="#cb12-152" aria-hidden="true" tabindex="-1"></a>    <span class="st">'data'</span>: pd.date_range(<span class="st">'2025-01-01'</span>, periods<span class="op">=</span><span class="dv">365</span>, freq<span class="op">=</span><span class="st">'D'</span>),</span>
+<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">1000</span>, <span class="dv">50000</span>, <span class="dv">365</span>).<span class="bu">round</span>(<span class="dv">2</span>),</span>
+<span id="cb12-154"><a href="#cb12-154" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: np.random.choice([<span class="st">'Mazowieckie'</span>, <span class="st">'Małopolskie'</span>, <span class="st">'Pomorskie'</span>], <span class="dv">365</span>),</span>
+<span id="cb12-155"><a href="#cb12-155" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kategoria'</span>: np.random.choice([<span class="st">'Elektronika'</span>, <span class="st">'Odzież'</span>, <span class="st">'Żywność'</span>], <span class="dv">365</span>)</span>
+<span id="cb12-156"><a href="#cb12-156" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb12-157"><a href="#cb12-157" aria-hidden="true" tabindex="-1"></a>sprzedaz[<span class="st">'kwartal'</span>] <span class="op">=</span> sprzedaz[<span class="st">'data'</span>].dt.to_period(<span class="st">'Q'</span>)</span>
+<span id="cb12-158"><a href="#cb12-158" aria-hidden="true" tabindex="-1"></a>pivot <span class="op">=</span> sprzedaz.pivot_table(values<span class="op">=</span><span class="st">'kwota'</span>, index<span class="op">=</span><span class="st">'region'</span>, columns<span class="op">=</span><span class="st">'kwartal'</span>, aggfunc<span class="op">=</span><span class="st">'sum'</span>)</span>
+<span id="cb12-159"><a href="#cb12-159" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Sprzedaż wg regionów i kwartałów (tys. PLN):"</span>)</span>
+<span id="cb12-160"><a href="#cb12-160" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((pivot <span class="op">/</span> <span class="dv">1000</span>).<span class="bu">round</span>(<span class="dv">1</span>))</span>
+<span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-162"><a href="#cb12-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-163"><a href="#cb12-163" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data Lake — wszystko w jednym miejscu</span></span>
+<span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-165"><a href="#cb12-165" aria-hidden="true" tabindex="-1"></a>Hurtownia wymaga, by dane miały strukturę **przed** załadowaniem (schema-on-write). To nie radzi sobie z logami, obrazami, plikami JSON z API, danymi IoT.</span>
+<span id="cb12-166"><a href="#cb12-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-167"><a href="#cb12-167" aria-hidden="true" tabindex="-1"></a>**Data Lake** to podejście odwrotne — przechowujemy surowe dane w dowolnym formacie (schema-on-read) i nadajemy im strukturę dopiero podczas analizy.</span>
+<span id="cb12-168"><a href="#cb12-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-169"><a href="#cb12-169" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Hurtownia danych</span></span>
+<span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Cecha <span class="pp">|</span> Wartość <span class="pp">|</span></span>
+<span id="cb12-174"><a href="#cb12-174" aria-hidden="true" tabindex="-1"></a><span class="pp">|-------|---------|</span></span>
+<span id="cb12-175"><a href="#cb12-175" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Struktura danych <span class="pp">|</span> Ustrukturyzowane <span class="pp">|</span></span>
+<span id="cb12-176"><a href="#cb12-176" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Schemat <span class="pp">|</span> Przed załadowaniem (schema-on-write) <span class="pp">|</span></span>
+<span id="cb12-177"><a href="#cb12-177" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Użytkownicy <span class="pp">|</span> Analitycy biznesowi <span class="pp">|</span></span>
+<span id="cb12-178"><a href="#cb12-178" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Koszt przechowywania <span class="pp">|</span> Wysoki <span class="pp">|</span></span>
+<span id="cb12-179"><a href="#cb12-179" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Technologie <span class="pp">|</span> SQL Server, Oracle, Teradata <span class="pp">|</span></span>
+<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-181"><a href="#cb12-181" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Data Lake</span></span>
+<span id="cb12-182"><a href="#cb12-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-183"><a href="#cb12-183" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Cecha <span class="pp">|</span> Wartość <span class="pp">|</span></span>
+<span id="cb12-184"><a href="#cb12-184" aria-hidden="true" tabindex="-1"></a><span class="pp">|-------|---------|</span></span>
+<span id="cb12-185"><a href="#cb12-185" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Struktura danych <span class="pp">|</span> Dowolne (surowe) <span class="pp">|</span></span>
+<span id="cb12-186"><a href="#cb12-186" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Schemat <span class="pp">|</span> Przy odczycie (schema-on-read) <span class="pp">|</span></span>
+<span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Użytkownicy <span class="pp">|</span> Data scientists, inżynierowie <span class="pp">|</span></span>
+<span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Koszt przechowywania <span class="pp">|</span> Niski <span class="pp">|</span></span>
+<span id="cb12-189"><a href="#cb12-189" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Technologie <span class="pp">|</span> Hadoop HDFS, S3, Azure Data Lake <span class="pp">|</span></span>
+<span id="cb12-190"><a href="#cb12-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-192"><a href="#cb12-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-193"><a href="#cb12-193" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb12-194"><a href="#cb12-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-195"><a href="#cb12-195" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dane zawsze powstają jako strumień</span></span>
+<span id="cb12-196"><a href="#cb12-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-197"><a href="#cb12-197" aria-hidden="true" tabindex="-1"></a>Wszystkie powyższe modele zakładają, że dane są **w spoczynku** — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane **zawsze powstają jako strumień zdarzeń** — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.</span>
+<span id="cb12-198"><a href="#cb12-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-199"><a href="#cb12-199" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb12-200"><a href="#cb12-200" aria-hidden="true" tabindex="-1"></a><span class="fu">## Zmiana perspektywy</span></span>
+<span id="cb12-201"><a href="#cb12-201" aria-hidden="true" tabindex="-1"></a>Przetwarzanie wsadowe to tylko **uproszczenie** — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.</span>
+<span id="cb12-202"><a href="#cb12-202" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-203"><a href="#cb12-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-206"><a href="#cb12-206" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb12-207"><a href="#cb12-207" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb12-208"><a href="#cb12-208" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb12-209"><a href="#cb12-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-210"><a href="#cb12-210" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generuj_transakcje(n<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb12-211"><a href="#cb12-211" aria-hidden="true" tabindex="-1"></a>    sklepy <span class="op">=</span> [<span class="st">'Warszawa'</span>, <span class="st">'Kraków'</span>, <span class="st">'Gdańsk'</span>]</span>
+<span id="cb12-212"><a href="#cb12-212" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb12-213"><a href="#cb12-213" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> {</span>
+<span id="cb12-214"><a href="#cb12-214" aria-hidden="true" tabindex="-1"></a>            <span class="st">'id'</span>: <span class="ss">f'TX</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">:04d}</span><span class="ss">'</span>,</span>
+<span id="cb12-215"><a href="#cb12-215" aria-hidden="true" tabindex="-1"></a>            <span class="st">'czas'</span>: datetime.now().strftime(<span class="st">'%H:%M:%S'</span>),</span>
+<span id="cb12-216"><a href="#cb12-216" aria-hidden="true" tabindex="-1"></a>            <span class="st">'kwota'</span>: <span class="bu">round</span>(np.random.uniform(<span class="dv">10</span>, <span class="dv">2000</span>), <span class="dv">2</span>),</span>
+<span id="cb12-217"><a href="#cb12-217" aria-hidden="true" tabindex="-1"></a>            <span class="st">'sklep'</span>: np.random.choice(sklepy)</span>
+<span id="cb12-218"><a href="#cb12-218" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb12-219"><a href="#cb12-219" aria-hidden="true" tabindex="-1"></a>        time.sleep(<span class="fl">0.3</span>)</span>
+<span id="cb12-220"><a href="#cb12-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-221"><a href="#cb12-221" aria-hidden="true" tabindex="-1"></a>suma <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-222"><a href="#cb12-222" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tx <span class="kw">in</span> generuj_transakcje():</span>
+<span id="cb12-223"><a href="#cb12-223" aria-hidden="true" tabindex="-1"></a>    suma <span class="op">+=</span> tx[<span class="st">'kwota'</span>]</span>
+<span id="cb12-224"><a href="#cb12-224" aria-hidden="true" tabindex="-1"></a>    alert <span class="op">=</span> <span class="st">" &lt;&lt; DUŻA TRANSAKCJA"</span> <span class="cf">if</span> tx[<span class="st">'kwota'</span>] <span class="op">&gt;</span> <span class="dv">1500</span> <span class="cf">else</span> <span class="st">""</span></span>
+<span id="cb12-225"><a href="#cb12-225" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"[</span><span class="sc">{</span>tx[<span class="st">'czas'</span>]<span class="sc">}</span><span class="ss">] </span><span class="sc">{</span>tx[<span class="st">'id'</span>]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>tx[<span class="st">'kwota'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> PLN (</span><span class="sc">{</span>tx[<span class="st">'sklep'</span>]<span class="sc">}</span><span class="ss">)</span><span class="sc">{</span>alert<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Suma przetworzona na bieżąco: </span><span class="sc">{</span>suma<span class="sc">:.2f}</span><span class="ss"> PLN"</span>)</span>
+<span id="cb12-227"><a href="#cb12-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-228"><a href="#cb12-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-229"><a href="#cb12-229" aria-hidden="true" tabindex="-1"></a>Systemy obsługujące strumienie danych to m.in. systemy transakcyjne, hurtownie danych, systemy IoT, systemy analityki webowej, platformy reklamowe, media społecznościowe, systemy logowania.</span>
+<span id="cb12-230"><a href="#cb12-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-231"><a href="#cb12-231" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **Firma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.**</span></span>
+<span id="cb12-232"><a href="#cb12-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-233"><a href="#cb12-233" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb12-234"><a href="#cb12-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-235"><a href="#cb12-235" aria-hidden="true" tabindex="-1"></a><span class="fu">## Trzy tryby przetwarzania — porównanie</span></span>
+<span id="cb12-236"><a href="#cb12-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-237"><a href="#cb12-237" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb12-238"><a href="#cb12-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-239"><a href="#cb12-239" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Tabela porównawcza</span></span>
+<span id="cb12-240"><a href="#cb12-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-241"><a href="#cb12-241" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Cecha <span class="pp">|</span> {{&lt; fa clock &gt;}} Batch <span class="pp">|</span> {{&lt; fa gauge &gt;}} Near Real-Time <span class="pp">|</span> {{&lt; fa bolt &gt;}} Real-Time <span class="pp">|</span></span>
+<span id="cb12-242"><a href="#cb12-242" aria-hidden="true" tabindex="-1"></a><span class="pp">|-------|-------|----------------|-----------|</span></span>
+<span id="cb12-243"><a href="#cb12-243" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Opóźnienie <span class="pp">|</span> Minuty–godziny–dni <span class="pp">|</span> Sekundy–minuty <span class="pp">|</span> Milisekundy–sekundy <span class="pp">|</span></span>
+<span id="cb12-244"><a href="#cb12-244" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Przykład <span class="pp">|</span> Raport miesięczny <span class="pp">|</span> Dashboard sprzedaży (30s) <span class="pp">|</span> Blokowanie karty <span class="pp">|</span></span>
+<span id="cb12-245"><a href="#cb12-245" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Koszt <span class="pp">|</span> Niski <span class="pp">|</span> Średni <span class="pp">|</span> Wysoki <span class="pp">|</span></span>
+<span id="cb12-246"><a href="#cb12-246" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Technologie <span class="pp">|</span> Pandas, Spark (batch), SQL <span class="pp">|</span> Kafka + Spark Streaming <span class="pp">|</span> Apache Flink, custom <span class="pp">|</span></span>
+<span id="cb12-247"><a href="#cb12-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-248"><a href="#cb12-248" aria-hidden="true" tabindex="-1"></a>: {.striped .hover}</span>
+<span id="cb12-249"><a href="#cb12-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-250"><a href="#cb12-250" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Wykres</span></span>
+<span id="cb12-251"><a href="#cb12-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-254"><a href="#cb12-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb12-255"><a href="#cb12-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-processing-modes</span></span>
+<span id="cb12-256"><a href="#cb12-256" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Porównanie trybów przetwarzania: opóźnienie vs koszt"</span></span>
+<span id="cb12-257"><a href="#cb12-257" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb12-258"><a href="#cb12-258" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-259"><a href="#cb12-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-260"><a href="#cb12-260" aria-hidden="true" tabindex="-1"></a>modes <span class="op">=</span> [<span class="st">'Batch'</span>, <span class="st">'Near</span><span class="ch">\n</span><span class="st">Real-Time'</span>, <span class="st">'Real-Time'</span>]</span>
+<span id="cb12-261"><a href="#cb12-261" aria-hidden="true" tabindex="-1"></a>latency <span class="op">=</span> [<span class="dv">3600</span>, <span class="dv">30</span>, <span class="fl">0.1</span>]  <span class="co"># seconds</span></span>
+<span id="cb12-262"><a href="#cb12-262" aria-hidden="true" tabindex="-1"></a>cost <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">8</span>]  <span class="co"># relative</span></span>
+<span id="cb12-263"><a href="#cb12-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-264"><a href="#cb12-264" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb12-265"><a href="#cb12-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-266"><a href="#cb12-266" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#2196F3'</span>, <span class="st">'#FF9800'</span>, <span class="st">'#F44336'</span>]</span>
+<span id="cb12-267"><a href="#cb12-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-268"><a href="#cb12-268" aria-hidden="true" tabindex="-1"></a>ax1.barh(modes, latency, color<span class="op">=</span>colors, edgecolor<span class="op">=</span><span class="st">'white'</span>)</span>
+<span id="cb12-269"><a href="#cb12-269" aria-hidden="true" tabindex="-1"></a>ax1.set_xscale(<span class="st">'log'</span>)</span>
+<span id="cb12-270"><a href="#cb12-270" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Opóźnienie (sekundy, skala log)'</span>)</span>
+<span id="cb12-271"><a href="#cb12-271" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Opóźnienie'</span>)</span>
+<span id="cb12-272"><a href="#cb12-272" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(latency):</span>
+<span id="cb12-273"><a href="#cb12-273" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">s"</span> <span class="cf">if</span> v <span class="op">&gt;=</span> <span class="dv">1</span> <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span><span class="bu">int</span>(v<span class="op">*</span><span class="dv">1000</span>)<span class="sc">}</span><span class="ss">ms"</span></span>
+<span id="cb12-274"><a href="#cb12-274" aria-hidden="true" tabindex="-1"></a>    ax1.text(v <span class="op">*</span> <span class="fl">1.5</span>, i, label, va<span class="op">=</span><span class="st">'center'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb12-275"><a href="#cb12-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-276"><a href="#cb12-276" aria-hidden="true" tabindex="-1"></a>ax2.barh(modes, cost, color<span class="op">=</span>colors, edgecolor<span class="op">=</span><span class="st">'white'</span>)</span>
+<span id="cb12-277"><a href="#cb12-277" aria-hidden="true" tabindex="-1"></a>ax2.set_xlabel(<span class="st">'Koszt relatywny'</span>)</span>
+<span id="cb12-278"><a href="#cb12-278" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Koszt infrastruktury'</span>)</span>
+<span id="cb12-279"><a href="#cb12-279" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(cost):</span>
+<span id="cb12-280"><a href="#cb12-280" aria-hidden="true" tabindex="-1"></a>    ax2.text(v <span class="op">+</span> <span class="fl">0.2</span>, i, <span class="ss">f'</span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">x'</span>, va<span class="op">=</span><span class="st">'center'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb12-281"><a href="#cb12-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-282"><a href="#cb12-282" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb12-283"><a href="#cb12-283" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb12-284"><a href="#cb12-284" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-285"><a href="#cb12-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-286"><a href="#cb12-286" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-287"><a href="#cb12-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-288"><a href="#cb12-288" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb12-289"><a href="#cb12-289" aria-hidden="true" tabindex="-1"></a><span class="fu">## Złota zasada</span></span>
+<span id="cb12-290"><a href="#cb12-290" aria-hidden="true" tabindex="-1"></a>Nie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.</span>
+<span id="cb12-291"><a href="#cb12-291" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-292"><a href="#cb12-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-293"><a href="#cb12-293" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb12-294"><a href="#cb12-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-295"><a href="#cb12-295" aria-hidden="true" tabindex="-1"></a><span class="fu">## Typy danych — krótki przegląd</span></span>
+<span id="cb12-296"><a href="#cb12-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-297"><a href="#cb12-297" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb12-298"><a href="#cb12-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-299"><a href="#cb12-299" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Ustrukturyzowane</span></span>
+<span id="cb12-300"><a href="#cb12-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-301"><a href="#cb12-301" aria-hidden="true" tabindex="-1"></a>Tabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.</span>
+<span id="cb12-302"><a href="#cb12-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-303"><a href="#cb12-303" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Półustrukturyzowane</span></span>
+<span id="cb12-304"><a href="#cb12-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-305"><a href="#cb12-305" aria-hidden="true" tabindex="-1"></a>JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.</span>
+<span id="cb12-306"><a href="#cb12-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-309"><a href="#cb12-309" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb12-310"><a href="#cb12-310" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb12-311"><a href="#cb12-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-312"><a href="#cb12-312" aria-hidden="true" tabindex="-1"></a>zamowienie <span class="op">=</span> {</span>
+<span id="cb12-313"><a href="#cb12-313" aria-hidden="true" tabindex="-1"></a>    <span class="st">"id"</span>: <span class="st">"ORD-2026-0042"</span>,</span>
+<span id="cb12-314"><a href="#cb12-314" aria-hidden="true" tabindex="-1"></a>    <span class="st">"klient"</span>: {<span class="st">"imie"</span>: <span class="st">"Anna"</span>, <span class="st">"miasto"</span>: <span class="st">"Warszawa"</span>},</span>
+<span id="cb12-315"><a href="#cb12-315" aria-hidden="true" tabindex="-1"></a>    <span class="st">"produkty"</span>: [</span>
+<span id="cb12-316"><a href="#cb12-316" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"nazwa"</span>: <span class="st">"Laptop"</span>, <span class="st">"cena"</span>: <span class="fl">4299.00</span>},</span>
+<span id="cb12-317"><a href="#cb12-317" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"nazwa"</span>: <span class="st">"Myszka"</span>, <span class="st">"cena"</span>: <span class="fl">89.99</span>}</span>
+<span id="cb12-318"><a href="#cb12-318" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb12-319"><a href="#cb12-319" aria-hidden="true" tabindex="-1"></a>    <span class="st">"status"</span>: <span class="st">"wysłane"</span></span>
+<span id="cb12-320"><a href="#cb12-320" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-321"><a href="#cb12-321" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(json.dumps(zamowienie, indent<span class="op">=</span><span class="dv">2</span>, ensure_ascii<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb12-322"><a href="#cb12-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-323"><a href="#cb12-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-324"><a href="#cb12-324" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Nieustrukturyzowane</span></span>
+<span id="cb12-325"><a href="#cb12-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-326"><a href="#cb12-326" aria-hidden="true" tabindex="-1"></a>Tekst (e-maile, opinie), obrazy, dźwięk, wideo. Wymagają NLP, computer vision, deep learning.</span>
+<span id="cb12-327"><a href="#cb12-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-328"><a href="#cb12-328" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Strumieniowe</span></span>
+<span id="cb12-329"><a href="#cb12-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-330"><a href="#cb12-330" aria-hidden="true" tabindex="-1"></a>Zdarzenia generowane w sposób ciągły. To z nimi będziemy pracować przez resztę kursu.</span>
+<span id="cb12-331"><a href="#cb12-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-332"><a href="#cb12-332" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-333"><a href="#cb12-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-334"><a href="#cb12-334" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb12-335"><a href="#cb12-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-336"><a href="#cb12-336" aria-hidden="true" tabindex="-1"></a><span class="fu">## Big Data — pięć wymiarów (5V) {.unnumbered}</span></span>
+<span id="cb12-337"><a href="#cb12-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-338"><a href="#cb12-338" aria-hidden="true" tabindex="-1"></a>:::: {.columns}</span>
+<span id="cb12-339"><a href="#cb12-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-340"><a href="#cb12-340" aria-hidden="true" tabindex="-1"></a>::: {.column width="50%"}</span>
+<span id="cb12-341"><a href="#cb12-341" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Volume** — rozmiar (terabajty, petabajty)</span>
+<span id="cb12-342"><a href="#cb12-342" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Velocity** — tempo napływu danych</span>
+<span id="cb12-343"><a href="#cb12-343" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Variety** — różnorodność formatów i źródeł</span>
+<span id="cb12-344"><a href="#cb12-344" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-345"><a href="#cb12-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-346"><a href="#cb12-346" aria-hidden="true" tabindex="-1"></a>::: {.column width="50%"}</span>
+<span id="cb12-347"><a href="#cb12-347" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Veracity** — wiarygodność i jakość danych</span>
+<span id="cb12-348"><a href="#cb12-348" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Value** — wartość biznesowa ukryta w danych</span>
+<span id="cb12-349"><a href="#cb12-349" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-350"><a href="#cb12-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-351"><a href="#cb12-351" aria-hidden="true" tabindex="-1"></a>::::</span>
+<span id="cb12-352"><a href="#cb12-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-353"><a href="#cb12-353" aria-hidden="true" tabindex="-1"></a>::: {.callout-caution}</span>
+<span id="cb12-354"><a href="#cb12-354" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hurtownia ≠ Big Data</span></span>
+<span id="cb12-355"><a href="#cb12-355" aria-hidden="true" tabindex="-1"></a>Hurtownia danych **nie** jest systemem Big Data. Hurtownia przechowuje dane ustrukturyzowane i służy do raportowania (100% accuracy). System Big Data obsługuje dane o dowolnej strukturze i toleruje pewien poziom niedokładności.</span>
+<span id="cb12-356"><a href="#cb12-356" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-357"><a href="#cb12-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-358"><a href="#cb12-358" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb12-359"><a href="#cb12-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-360"><a href="#cb12-360" aria-hidden="true" tabindex="-1"></a><span class="fu">## Podsumowanie</span></span>
+<span id="cb12-361"><a href="#cb12-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-362"><a href="#cb12-362" aria-hidden="true" tabindex="-1"></a>Na tym wykładzie prześledziliśmy ewolucję od plików płaskich, przez OLTP, OLAP i Data Lake, aż po przetwarzanie strumieniowe. Każdy model odpowiada na inne potrzeby biznesowe — i żaden nie zastępuje poprzedniego. W praktyce firmy używają ich równolegle.</span>
+<span id="cb12-363"><a href="#cb12-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-364"><a href="#cb12-364" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb12-365"><a href="#cb12-365" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa forward &gt;}} Na następnym wykładzie</span></span>
+<span id="cb12-366"><a href="#cb12-366" aria-hidden="true" tabindex="-1"></a>Architektury łączące batch i streaming — **Lambda i Kappa** — oraz kluczowe pojęcia: czas zdarzenia, czas przetwarzania, okna czasowe.</span>
+<span id="cb12-367"><a href="#cb12-367" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb12-368"><a href="#cb12-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-369"><a href="#cb12-369" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb12-370"><a href="#cb12-370" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa brain &gt;}} Do przemyślenia</span></span>
+<span id="cb12-371"><a href="#cb12-371" aria-hidden="true" tabindex="-1"></a>W jakim trybie Twoja firma (lub firma, w której chciałbyś pracować) przetwarza dane? Czy istnieją procesy, które skorzystałyby na przejściu do trybu strumieniowego?</span>
+<span id="cb12-372"><a href="#cb12-372" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -1108,4 +1731,5 @@ Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

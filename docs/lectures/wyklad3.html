@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Uczenie wsadowe vs przyrostowe, SGD, concept drift, detekcja anomalii i wyjaśnialność modeli.">
 
 <title>Wykład 3 — Uczenie maszynowe: batch vs online – Analiza danych w czasie rzeczywistym</title>
 <style>
@@ -72,10 +73,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1dce9f32eecb350a510e49baa42f6985.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,6 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -246,6 +248,34 @@ window.Quarto = {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria dzienne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria zaoczne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/zaoczne_cw1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -253,15 +283,27 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title"><strong>Sections</strong></h2>
+    <h2 id="toc-title">Spis treści</h2>
    
+  <ul>
+  <li><a href="#dwa-tryby-uczenia-maszynowego" id="toc-dwa-tryby-uczenia-maszynowego" class="nav-link active" data-scroll-target="#dwa-tryby-uczenia-maszynowego"><span class="header-section-number">1</span> Dwa tryby uczenia maszynowego</a>
   <ul class="collapse">
-  <li><a href="#dwa-tryby-uczenia-maszynowego" id="toc-dwa-tryby-uczenia-maszynowego" class="nav-link active" data-scroll-target="#dwa-tryby-uczenia-maszynowego">Dwa tryby uczenia maszynowego</a></li>
-  <li><a href="#stochastic-gradient-descent-sgd" id="toc-stochastic-gradient-descent-sgd" class="nav-link" data-scroll-target="#stochastic-gradient-descent-sgd">Stochastic Gradient Descent (SGD)</a></li>
-  <li><a href="#concept-drift-gdy-świat-się-zmienia" id="toc-concept-drift-gdy-świat-się-zmienia" class="nav-link" data-scroll-target="#concept-drift-gdy-świat-się-zmienia">Concept drift — gdy świat się zmienia</a></li>
-  <li><a href="#detekcja-anomalii" id="toc-detekcja-anomalii" class="nav-link" data-scroll-target="#detekcja-anomalii">Detekcja anomalii</a></li>
-  <li><a href="#wyjaśnialność-algorytmów" id="toc-wyjaśnialność-algorytmów" class="nav-link" data-scroll-target="#wyjaśnialność-algorytmów">Wyjaśnialność algorytmów</a></li>
-  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie">Podsumowanie</a></li>
+  <li><a href="#porównanie" id="toc-porównanie" class="nav-link" data-scroll-target="#porównanie"><span class="header-section-number">1.1</span> Porównanie</a></li>
+  </ul></li>
+  <li><a href="#stochastic-gradient-descent-sgd" id="toc-stochastic-gradient-descent-sgd" class="nav-link" data-scroll-target="#stochastic-gradient-descent-sgd"><span class="header-section-number">2</span> Stochastic Gradient Descent (SGD)</a>
+  <ul class="collapse">
+  <li><a href="#matematycznie" id="toc-matematycznie" class="nav-link" data-scroll-target="#matematycznie"><span class="header-section-number">2.1</span> Matematycznie</a></li>
+  </ul></li>
+  <li><a href="#concept-drift-gdy-świat-się-zmienia" id="toc-concept-drift-gdy-świat-się-zmienia" class="nav-link" data-scroll-target="#concept-drift-gdy-świat-się-zmienia"><span class="header-section-number">3</span> Concept drift — gdy świat się zmienia</a>
+  <ul class="collapse">
+  <li><a href="#typy-driftu" id="toc-typy-driftu" class="nav-link" data-scroll-target="#typy-driftu"><span class="header-section-number">3.1</span> Typy driftu</a></li>
+  </ul></li>
+  <li><a href="#detekcja-anomalii" id="toc-detekcja-anomalii" class="nav-link" data-scroll-target="#detekcja-anomalii"><span class="header-section-number">4</span> Detekcja anomalii</a></li>
+  <li><a href="#wyjaśnialność-algorytmów" id="toc-wyjaśnialność-algorytmów" class="nav-link" data-scroll-target="#wyjaśnialność-algorytmów"><span class="header-section-number">5</span> Wyjaśnialność algorytmów</a>
+  <ul class="collapse">
+  <li><a href="#lime-local-interpretable-model-agnostic-explanations" id="toc-lime-local-interpretable-model-agnostic-explanations" class="nav-link" data-scroll-target="#lime-local-interpretable-model-agnostic-explanations"><span class="header-section-number">5.1</span> LIME (Local Interpretable Model-Agnostic Explanations)</a></li>
+  </ul></li>
+  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie"><span class="header-section-number">6</span> Podsumowanie</a></li>
   </ul>
 </nav>
     </div>
@@ -270,9 +312,15 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad3.html">Wykład 3 — Uczenie maszynowe: batch vs online</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Wykład 3 — Uczenie maszynowe: batch vs online</h1>
+<div class="quarto-title-block"><div><h1 class="title">Wykład 3 — Uczenie maszynowe: batch vs online</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Analiza danych w czasie rzeczywistym</p>
 </div>
 
+<div>
+  <div class="description">
+    Uczenie wsadowe vs przyrostowe, SGD, concept drift, detekcja anomalii i wyjaśnialność modeli.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -287,18 +335,31 @@ window.Quarto = {
 </header>
 
 
-<p><em>Czas trwania: 1,5h</em></p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa clock &gt;}} Czas trwania: 1,5h
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p><strong>Cel wykładu:</strong> Zrozumienie różnic między uczeniem wsadowym (offline) a przyrostowym (online), algorytmu SGD, problemu concept drift, detekcji anomalii oraz wyjaśnialności modeli.</p>
+</div>
+</div>
 <hr>
-<section id="dwa-tryby-uczenia-maszynowego" class="level2">
-<h2 class="anchored" data-anchor-id="dwa-tryby-uczenia-maszynowego">Dwa tryby uczenia maszynowego</h2>
+<section id="dwa-tryby-uczenia-maszynowego" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="dwa-tryby-uczenia-maszynowego"><span class="header-section-number">1</span> Dwa tryby uczenia maszynowego</h2>
 <p>Na poprzednich wykładach mówiliśmy o przetwarzaniu wsadowym i strumieniowym. Ten sam podział dotyczy uczenia maszynowego.</p>
-<section id="uczenie-wsadowe-offlinebatch-learning" class="level3">
-<h3 class="anchored" data-anchor-id="uczenie-wsadowe-offlinebatch-learning">Uczenie wsadowe (offline/batch learning)</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">{{&lt; fa database &gt;}} Batch (offline)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">{{&lt; fa bolt &gt;}} Online (przyrostowe)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Model jest trenowany na <strong>całym zbiorze</strong> danych historycznych. Po wytrenowaniu jest wdrażany do produkcji, gdzie dokonuje predykcji na nowych danych. Gdy pojawiają się nowe dane — model jest retrenowany od zera.</p>
-<div id="5c7a83bd" class="cell" data-execution_count="1">
+<div id="c7186e33" class="cell" data-execution_count="1">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
@@ -327,19 +388,29 @@ window.Quarto = {
 <pre><code>Batch accuracy: 0.940</code></pre>
 </div>
 </div>
-<p>To podejście jest proste i skuteczne, ale ma ograniczenia:</p>
+<div class="callout callout-style-simple callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Ograniczenia batch learning
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>retrenowanie na dużych zbiorach danych jest kosztowne,</li>
-<li>model nie uczy się z nowych danych między retrenowaniami,</li>
-<li>jeśli wzorce się zmienią (np. nowy typ oszustwa), model będzie nieaktualny do następnego retrenowania.</li>
+<li>Retrenowanie na dużych zbiorach jest <strong>kosztowne</strong></li>
+<li>Model nie uczy się z nowych danych między retrenowaniami</li>
+<li>Jeśli wzorce się zmienią (np. nowy typ oszustwa), model będzie nieaktualny</li>
 </ul>
-</section>
-<section id="uczenie-przyrostowe-online-learning" class="level3">
-<h3 class="anchored" data-anchor-id="uczenie-przyrostowe-online-learning">Uczenie przyrostowe (online learning)</h3>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p>Model uczy się <strong>na bieżąco</strong> — każda nowa obserwacja (lub mały batch) aktualizuje parametry modelu. Nie trzeba retrenować od zera.</p>
-<div id="f3d25ca0" class="cell" data-execution_count="2">
+<div id="01f40a65" class="cell" data-execution_count="2">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> SGDClassifier</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -370,10 +441,13 @@ window.Quarto = {
 Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92', '0.92']</code></pre>
 </div>
 </div>
-</section>
-<section id="porównanie" class="level3">
-<h3 class="anchored" data-anchor-id="porównanie">Porównanie</h3>
-<table class="caption-top table">
+</div>
+</div>
+</div>
+<section id="porównanie" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="porównanie"><span class="header-section-number">1.1</span> Porównanie</h3>
+<table class="table-striped table-hover caption-top table">
+<caption>Batch vs Online learning</caption>
 <colgroup>
 <col style="width: 15%">
 <col style="width: 37%">
@@ -382,8 +456,8 @@ Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92'
 <thead>
 <tr class="header">
 <th>Cecha</th>
-<th>Batch (offline)</th>
-<th>Online (przyrostowe)</th>
+<th>{{&lt; fa database &gt;}} Batch (offline)</th>
+<th>{{&lt; fa bolt &gt;}} Online (przyrostowe)</th>
 </tr>
 </thead>
 <tbody>
@@ -422,23 +496,39 @@ Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92'
 <hr>
 </section>
 </section>
-<section id="stochastic-gradient-descent-sgd" class="level2">
-<h2 class="anchored" data-anchor-id="stochastic-gradient-descent-sgd">Stochastic Gradient Descent (SGD)</h2>
+<section id="stochastic-gradient-descent-sgd" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="stochastic-gradient-descent-sgd"><span class="header-section-number">2</span> Stochastic Gradient Descent (SGD)</h2>
 <p>SGD to fundament uczenia online. W klasycznym spadku gradientowym obliczamy gradient na <strong>całym</strong> zbiorze danych. W SGD — na <strong>jednej obserwacji</strong> (lub małym batchu).</p>
-<section id="intuicja" class="level3">
-<h3 class="anchored" data-anchor-id="intuicja">Intuicja</h3>
-<p>Wyobraź sobie, że szukasz najniższego punktu w górach we mgle. Gradient Descent to sytuacja, gdy obliczasz nachylenie terenu na podstawie mapy całych gór. SGD to sytuacja, gdy patrzysz tylko pod nogi i robisz krok w kierunku, który wygląda na najbardziej stromy w dół. Każdy krok jest mniej precyzyjny, ale robisz ich <strong>dużo więcej</strong> i dużo szybciej.</p>
-</section>
-<section id="matematycznie" class="level3">
-<h3 class="anchored" data-anchor-id="matematycznie">Matematycznie</h3>
-<p>Dla funkcji straty <span class="math inline">\(L(\theta)\)</span> i parametrów modelu <span class="math inline">\(\theta\)</span>:</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa mountain &gt;}} Intuicja: szukanie drogi w górach
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Wyobraź sobie, że szukasz najniższego punktu w górach we mgle:</p>
+<ul>
+<li><strong>Gradient Descent</strong> — obliczasz nachylenie terenu na podstawie mapy całych gór.</li>
+<li><strong>SGD</strong> — patrzysz tylko pod nogi i robisz krok w kierunku, który wygląda na najbardziej stromy w dół.</li>
+</ul>
+<p>Każdy krok SGD jest mniej precyzyjny, ale robisz ich <strong>dużo więcej</strong> i dużo szybciej.</p>
+</div>
+</div>
+</div>
+<section id="matematycznie" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="matematycznie"><span class="header-section-number">2.1</span> Matematycznie</h3>
 <p><strong>Gradient Descent (batch):</strong> <span class="math display">\[\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{N} \sum_{i=1}^{N} \nabla L_i(\theta_t)\]</span></p>
 <p><strong>Stochastic Gradient Descent:</strong> <span class="math display">\[\theta_{t+1} = \theta_t - \eta \cdot \nabla L_i(\theta_t)\]</span></p>
 <p>gdzie <span class="math inline">\(\eta\)</span> to learning rate, a <span class="math inline">\(i\)</span> to losowo wybrana obserwacja.</p>
 <p><strong>Mini-batch SGD</strong> — kompromis: obliczamy gradient na małej próbce (np. 32–256 obserwacji): <span class="math display">\[\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{|B|} \sum_{i \in B} \nabla L_i(\theta_t)\]</span></p>
-<div id="d593d0da" class="cell" data-execution_count="3">
+<div id="cell-fig-sgd-convergence" class="cell" data-execution_count="3">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Wizualizacja: SGD vs Batch GD na prostym problemie regresji</span></span>
@@ -493,29 +583,96 @@ Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92'
 <span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="wyklad3_files/figure-html/cell-4-output-1.png" width="1142" height="375" class="figure-img"></p>
+<div id="fig-sgd-convergence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sgd-convergence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="wyklad3_files/figure-html/fig-sgd-convergence-output-1.png" width="1142" height="375" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sgd-convergence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: SGD vs Batch GD — zbieżność i wynik dopasowania
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
 <p>SGD jest „zaszumiony” — ale właśnie to jest jego siła w uczeniu online: każda nowa obserwacja natychmiast wpływa na model.</p>
+</div>
+</div>
+</div>
 <hr>
 </section>
 </section>
-<section id="concept-drift-gdy-świat-się-zmienia" class="level2">
-<h2 class="anchored" data-anchor-id="concept-drift-gdy-świat-się-zmienia">Concept drift — gdy świat się zmienia</h2>
-<p>Kluczowe wyzwanie uczenia online: <strong>rozkład danych zmienia się w czasie</strong> (concept drift). Model wytrenowany na danych z zeszłego roku może być bezużyteczny dzisiaj.</p>
-<p>Typy driftu:</p>
-<ul>
-<li><strong>Nagły (sudden)</strong> — np. pandemia zmienia wzorce zakupowe z dnia na dzień.</li>
-<li><strong>Stopniowy (gradual)</strong> — np. preferencje klientów zmieniają się powoli przez miesiące.</li>
-<li><strong>Cykliczny (recurring)</strong> — np. sezonowość sprzedaży.</li>
-</ul>
-<div id="c1ffdfeb" class="cell" data-execution_count="4">
+<section id="concept-drift-gdy-świat-się-zmienia" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="concept-drift-gdy-świat-się-zmienia"><span class="header-section-number">3</span> Concept drift — gdy świat się zmienia</h2>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Kluczowe wyzwanie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Rozkład danych zmienia się w czasie</strong> (concept drift). Model wytrenowany na danych z zeszłego roku może być bezużyteczny dzisiaj.</p>
+</div>
+</div>
+<section id="typy-driftu" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="typy-driftu"><span class="header-section-number">3.1</span> Typy driftu</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>{{&lt; fa bolt &gt;}} Nagły (sudden)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Np. pandemia zmienia wzorce zakupowe z dnia na dzień.</p>
+</div>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa arrow-trend-up &gt;}} Stopniowy (gradual)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Np. preferencje klientów zmieniają się powoli przez miesiące.</p>
+</div>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa rotate &gt;}} Cykliczny (recurring)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Np. sezonowość sprzedaży.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="d87993f5" class="cell" data-execution_count="4">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja concept drift: nagła zmiana wzorca</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -559,7 +716,7 @@ Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92'
 </div>
 <div id="cell-fig-concept-drift" class="cell" data-execution_count="5">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja rolling accuracy</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> deque</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -614,7 +771,7 @@ Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92'
 <img src="wyklad3_files/figure-html/fig-concept-drift-output-1.png" width="951" height="374" class="figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-concept-drift-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Concept drift: model batch vs online — dokładność w czasie
+Figure&nbsp;2: Concept drift: model batch vs online — dokładność w czasie
 </figcaption>
 </figure>
 </div>
@@ -622,16 +779,28 @@ Figure&nbsp;1: Concept drift: model batch vs online — dokładność w czasie
 </div>
 <hr>
 </section>
-<section id="detekcja-anomalii" class="level2">
-<h2 class="anchored" data-anchor-id="detekcja-anomalii">Detekcja anomalii</h2>
-<p>Detekcja anomalii to jedno z najważniejszych zastosowań analizy danych w czasie rzeczywistym. Anomalia (wartość odstająca, outlier) to obserwacja znacznie oddalona od reszty danych.</p>
-<section id="metoda-klasyczna-iqr" class="level3">
-<h3 class="anchored" data-anchor-id="metoda-klasyczna-iqr">Metoda klasyczna — IQR</h3>
+</section>
+<section id="detekcja-anomalii" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="detekcja-anomalii"><span class="header-section-number">4</span> Detekcja anomalii</h2>
+<div class="callout callout-style-simple callout-important">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Detekcja anomalii to jedno z <strong>najważniejszych zastosowań</strong> analizy danych w czasie rzeczywistym. Anomalia (wartość odstająca, outlier) to obserwacja znacznie oddalona od reszty danych.</p>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Metoda IQR</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Isolation Forest</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">W strumieniu</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Dla pojedynczej zmiennej możemy użyć rozstępu międzykwartylowego:</p>
 <p><span class="math display">\[x_{\text{out}} &lt; Q_1 - 1.5 \times IQR \quad \text{lub} \quad x_{\text{out}} &gt; Q_3 + 1.5 \times IQR\]</span></p>
-<div id="a97d312d" class="cell" data-execution_count="6">
+<div id="a1ad7556" class="cell" data-execution_count="6">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wynagrodzenia <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">90</span>, <span class="dv">150</span>]</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>Q1 <span class="op">=</span> np.percentile(wynagrodzenia, <span class="dv">25</span>)</span>
@@ -670,13 +839,12 @@ Anomalie: [150]</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="isolation-forest-detekcja-wielowymiarowa" class="level3">
-<h3 class="anchored" data-anchor-id="isolation-forest-detekcja-wielowymiarowa">Isolation Forest — detekcja wielowymiarowa</h3>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>Algorytm bazujący na drzewach decyzyjnych (Liu et al., 2008). Kluczowa intuicja: <strong>anomalie są łatwiejsze do odizolowania</strong> — losowe podziały szybciej oddzielają je od reszty danych.</p>
-<div id="3d2c9bb5" class="cell" data-execution_count="7">
+<div id="cd0641ec" class="cell" data-execution_count="7">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: transakcje bankowe (kwota, częstotliwość tygodniowa)</span></span>
@@ -732,22 +900,35 @@ Anomalie: [150]</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="detekcja-anomalii-w-strumieniu" class="level3">
-<h3 class="anchored" data-anchor-id="detekcja-anomalii-w-strumieniu">Detekcja anomalii w strumieniu</h3>
-<p>W kontekście real-time nie możemy przeanalizować całego zbioru danych — musimy wykrywać anomalie na bieżąco, w oknie czasowym. Na laboratoriach zbudujemy taki system z Kafką i Sparkiem.</p>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>W kontekście real-time nie możemy przeanalizować całego zbioru danych — musimy wykrywać anomalie <strong>na bieżąco</strong>, w oknie czasowym. Na laboratoriach zbudujemy taki system z Kafką i Sparkiem.</p>
+</div>
+</div>
+</div>
 <hr>
 </section>
-</section>
-<section id="wyjaśnialność-algorytmów" class="level2">
-<h2 class="anchored" data-anchor-id="wyjaśnialność-algorytmów">Wyjaśnialność algorytmów</h2>
-<p>W branżach regulowanych (bankowość, ubezpieczenia, medycyna) nie wystarczy powiedzieć „model odrzucił wniosek kredytowy”. Trzeba wyjaśnić <strong>dlaczego</strong>. Regulacje takie jak AI Act i RODO wymagają transparentności decyzji algorytmicznych.</p>
-<section id="lime-local-interpretable-model-agnostic-explanations" class="level3">
-<h3 class="anchored" data-anchor-id="lime-local-interpretable-model-agnostic-explanations">LIME (Local Interpretable Model-Agnostic Explanations)</h3>
+<section id="wyjaśnialność-algorytmów" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="wyjaśnialność-algorytmów"><span class="header-section-number">5</span> Wyjaśnialność algorytmów</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Regulacje wymagają transparentności
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>W branżach regulowanych (bankowość, ubezpieczenia, medycyna) nie wystarczy powiedzieć „model odrzucił wniosek kredytowy”. Trzeba wyjaśnić <strong>dlaczego</strong>. Regulacje takie jak <strong>AI Act</strong> i <strong>RODO</strong> wymagają transparentności decyzji algorytmicznych.</p>
+</div>
+</div>
+<section id="lime-local-interpretable-model-agnostic-explanations" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="lime-local-interpretable-model-agnostic-explanations"><span class="header-section-number">5.1</span> LIME (Local Interpretable Model-Agnostic Explanations)</h3>
 <p>LIME wyjaśnia pojedyncze predykcje dowolnego modelu. Działa tak: wprowadza drobne zmiany w danych wejściowych i obserwuje, jak zmienia się wynik. Na tej podstawie buduje prosty, interpretowalny model lokalny (np. regresję liniową), który przybliża zachowanie oryginalnego modelu w otoczeniu danej obserwacji.</p>
-<div id="aeadc82a" class="cell" data-execution_count="8">
+<div id="08507aea" class="cell" data-execution_count="8">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -778,13 +959,39 @@ Na lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.</code></pr
 <hr>
 </section>
 </section>
-<section id="podsumowanie" class="level2">
-<h2 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h2>
+<section id="podsumowanie" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="podsumowanie"><span class="header-section-number">6</span> Podsumowanie</h2>
 <p>Uczenie wsadowe i przyrostowe to dwa komplementarne podejścia. W praktyce często łączy się je: model bazowy trenowany w trybie batch jest stopniowo aktualizowany w trybie online. SGD umożliwia uczenie na strumieniu danych, ale wymaga uwagi na concept drift i stabilność.</p>
 <p>Detekcja anomalii i wyjaśnialność modeli to kluczowe zastosowania ML w real-time analytics — na laboratoriach przełożymy je na praktyczne systemy z Kafką i Sparkiem.</p>
-<p><strong>Na następnym wykładzie:</strong> Apache Kafka — architektura, producenci, konsumenci, tematy, partycje.</p>
-<p><strong>Do przemyślenia:</strong> Twój bank trenuje model fraud detection raz w miesiącu (batch). Jakie ryzyko biznesowe niesie takie podejście? Co by się zmieniło, gdyby model uczył się online?</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa forward &gt;}} Na następnym wykładzie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Apache Kafka — architektura, producenci, konsumenci, tematy, partycje.</p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa brain &gt;}} Do przemyślenia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Twój bank trenuje model fraud detection raz w miesiącu (batch). Jakie ryzyko biznesowe niesie takie podejście? Co by się zmieniło, gdyby model uczył się online?</p>
+</div>
+</div>
 
+
+<!-- -->
 
 </section>
 
@@ -859,6 +1066,57 @@ Na lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.</code></pr
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -1193,7 +1451,477 @@ Na lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.</code></pr
       }
     }
   });
-  </script>
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Wykład 3 — Uczenie maszynowe: batch vs online"</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Analiza danych w czasie rzeczywistym"</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Uczenie wsadowe vs przyrostowe, SGD, concept drift, detekcja anomalii i wyjaśnialność modeli."</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-summary: "Pokaż kod"</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Spis treści"</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co">    smooth-scroll: true</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co">    theme:</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co">      light: flatly</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="co">    highlight-style: github</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-align: center</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-cap-location: bottom</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="minimal"}</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa clock &gt;}} Czas trwania: 1,5h</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>**Cel wykładu:** Zrozumienie różnic między uczeniem wsadowym (offline) a przyrostowym (online), algorytmu SGD, problemu concept drift, detekcji anomalii oraz wyjaśnialności modeli.</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dwa tryby uczenia maszynowego</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>Na poprzednich wykładach mówiliśmy o przetwarzaniu wsadowym i strumieniowym. Ten sam podział dotyczy uczenia maszynowego.</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### {{&lt; fa database &gt;}} Batch (offline)</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>Model jest trenowany na **całym zbiorze** danych historycznych. Po wytrenowaniu jest wdrażany do produkcji, gdzie dokonuje predykcji na nowych danych. Gdy pojawiają się nowe dane — model jest retrenowany od zera.</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: klasyfikacja transakcji (0 = legalna, 1 = podejrzana)</span></span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.column_stack([</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>    np.random.uniform(<span class="dv">10</span>, <span class="dv">5000</span>, n),       <span class="co"># kwota</span></span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>    np.random.uniform(<span class="dv">0</span>, <span class="dv">23</span>, n),           <span class="co"># godzina</span></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>    np.random.randint(<span class="dv">1</span>, <span class="dv">50</span>, n)            <span class="co"># liczba transakcji w miesiącu</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> ((X[:, <span class="dv">0</span>] <span class="op">&gt;</span> <span class="dv">3000</span>) <span class="op">&amp;</span> (X[:, <span class="dv">1</span>] <span class="op">&gt;</span> <span class="dv">22</span>) <span class="op">|</span> (X[:, <span class="dv">0</span>] <span class="op">&gt;</span> <span class="dv">4000</span>)).astype(<span class="bu">int</span>)</span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Batch learning: trenujesz raz na całym zbiorze</span></span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LogisticRegression()</span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train)</span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Batch accuracy: </span><span class="sc">{</span>accuracy_score(y_test, model.predict(X_test))<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a>::: {.callout-caution appearance="simple"}</span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ograniczenia batch learning</span></span>
+<span id="cb15-70"><a href="#cb15-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Retrenowanie na dużych zbiorach jest **kosztowne**</span>
+<span id="cb15-71"><a href="#cb15-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Model nie uczy się z nowych danych między retrenowaniami</span>
+<span id="cb15-72"><a href="#cb15-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Jeśli wzorce się zmienią (np. nowy typ oszustwa), model będzie nieaktualny</span>
+<span id="cb15-73"><a href="#cb15-73" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-74"><a href="#cb15-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-75"><a href="#cb15-75" aria-hidden="true" tabindex="-1"></a><span class="fu">### {{&lt; fa bolt &gt;}} Online (przyrostowe)</span></span>
+<span id="cb15-76"><a href="#cb15-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-77"><a href="#cb15-77" aria-hidden="true" tabindex="-1"></a>Model uczy się **na bieżąco** — każda nowa obserwacja (lub mały batch) aktualizuje parametry modelu. Nie trzeba retrenować od zera.</span>
+<span id="cb15-78"><a href="#cb15-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-81"><a href="#cb15-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-82"><a href="#cb15-82" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> SGDClassifier</span>
+<span id="cb15-83"><a href="#cb15-83" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb15-84"><a href="#cb15-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-85"><a href="#cb15-85" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb15-86"><a href="#cb15-86" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb15-87"><a href="#cb15-87" aria-hidden="true" tabindex="-1"></a>X_train_s, X_test_s, y_train_s, y_test_s <span class="op">=</span> train_test_split(X_scaled, y, test_size<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb15-88"><a href="#cb15-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-89"><a href="#cb15-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Online learning: model uczy się na kolejnych mini-batchach</span></span>
+<span id="cb15-90"><a href="#cb15-90" aria-hidden="true" tabindex="-1"></a>model_online <span class="op">=</span> SGDClassifier(loss<span class="op">=</span><span class="st">'log_loss'</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-91"><a href="#cb15-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-92"><a href="#cb15-92" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb15-93"><a href="#cb15-93" aria-hidden="true" tabindex="-1"></a>accuracies <span class="op">=</span> []</span>
+<span id="cb15-94"><a href="#cb15-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-95"><a href="#cb15-95" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(X_train_s), batch_size):</span>
+<span id="cb15-96"><a href="#cb15-96" aria-hidden="true" tabindex="-1"></a>    X_batch <span class="op">=</span> X_train_s[i:i<span class="op">+</span>batch_size]</span>
+<span id="cb15-97"><a href="#cb15-97" aria-hidden="true" tabindex="-1"></a>    y_batch <span class="op">=</span> y_train_s[i:i<span class="op">+</span>batch_size]</span>
+<span id="cb15-98"><a href="#cb15-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-99"><a href="#cb15-99" aria-hidden="true" tabindex="-1"></a>    model_online.partial_fit(X_batch, y_batch, classes<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb15-100"><a href="#cb15-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-101"><a href="#cb15-101" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> accuracy_score(y_test_s, model_online.predict(X_test_s))</span>
+<span id="cb15-102"><a href="#cb15-102" aria-hidden="true" tabindex="-1"></a>    accuracies.append(acc)</span>
+<span id="cb15-103"><a href="#cb15-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-104"><a href="#cb15-104" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Online accuracy po </span><span class="sc">{</span><span class="bu">len</span>(accuracies)<span class="sc">}</span><span class="ss"> mini-batchach: </span><span class="sc">{</span>accuracies[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb15-105"><a href="#cb15-105" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Progresja accuracy: </span><span class="sc">{</span>[<span class="ss">f'</span><span class="sc">{</span>a<span class="sc">:.2f}</span><span class="ss">'</span> <span class="cf">for</span> a <span class="kw">in</span> accuracies[:<span class="dv">5</span>]]<span class="sc">}</span><span class="ss"> ... </span><span class="sc">{</span>[<span class="ss">f'</span><span class="sc">{</span>a<span class="sc">:.2f}</span><span class="ss">'</span> <span class="cf">for</span> a <span class="kw">in</span> accuracies[<span class="op">-</span><span class="dv">3</span>:]]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-106"><a href="#cb15-106" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-107"><a href="#cb15-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-108"><a href="#cb15-108" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-109"><a href="#cb15-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-110"><a href="#cb15-110" aria-hidden="true" tabindex="-1"></a><span class="fu">### Porównanie</span></span>
+<span id="cb15-111"><a href="#cb15-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-112"><a href="#cb15-112" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Cecha <span class="pp">|</span> {{&lt; fa database &gt;}} Batch (offline) <span class="pp">|</span> {{&lt; fa bolt &gt;}} Online (przyrostowe) <span class="pp">|</span></span>
+<span id="cb15-113"><a href="#cb15-113" aria-hidden="true" tabindex="-1"></a><span class="pp">|-------|-----------------|---------------------|</span></span>
+<span id="cb15-114"><a href="#cb15-114" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Dane treningowe <span class="pp">|</span> Cały zbiór naraz <span class="pp">|</span> Porcjami (mini-batch) <span class="pp">|</span></span>
+<span id="cb15-115"><a href="#cb15-115" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Aktualizacja modelu <span class="pp">|</span> Retrenowanie od zera <span class="pp">|</span> Inkrementalna <span class="pp">|</span></span>
+<span id="cb15-116"><a href="#cb15-116" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Koszt retrenowania <span class="pp">|</span> Wysoki <span class="pp">|</span> Niski <span class="pp">|</span></span>
+<span id="cb15-117"><a href="#cb15-117" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Adaptacja do zmian <span class="pp">|</span> Wolna <span class="pp">|</span> Szybka <span class="pp">|</span></span>
+<span id="cb15-118"><a href="#cb15-118" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Stabilność <span class="pp">|</span> Wysoka <span class="pp">|</span> Ryzyko „zapominania" <span class="pp">|</span></span>
+<span id="cb15-119"><a href="#cb15-119" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Typowe algorytmy <span class="pp">|</span> RandomForest, XGBoost <span class="pp">|</span> SGD, Perceptron, online k-means <span class="pp">|</span></span>
+<span id="cb15-120"><a href="#cb15-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-121"><a href="#cb15-121" aria-hidden="true" tabindex="-1"></a>: Batch vs Online learning {.striped .hover}</span>
+<span id="cb15-122"><a href="#cb15-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-123"><a href="#cb15-123" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb15-124"><a href="#cb15-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-125"><a href="#cb15-125" aria-hidden="true" tabindex="-1"></a><span class="fu">## Stochastic Gradient Descent (SGD)</span></span>
+<span id="cb15-126"><a href="#cb15-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-127"><a href="#cb15-127" aria-hidden="true" tabindex="-1"></a>SGD to fundament uczenia online. W klasycznym spadku gradientowym obliczamy gradient na **całym** zbiorze danych. W SGD — na **jednej obserwacji** (lub małym batchu).</span>
+<span id="cb15-128"><a href="#cb15-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-129"><a href="#cb15-129" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb15-130"><a href="#cb15-130" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa mountain &gt;}} Intuicja: szukanie drogi w górach</span></span>
+<span id="cb15-131"><a href="#cb15-131" aria-hidden="true" tabindex="-1"></a>Wyobraź sobie, że szukasz najniższego punktu w górach we mgle:</span>
+<span id="cb15-132"><a href="#cb15-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-133"><a href="#cb15-133" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Gradient Descent** — obliczasz nachylenie terenu na podstawie mapy całych gór.</span>
+<span id="cb15-134"><a href="#cb15-134" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**SGD** — patrzysz tylko pod nogi i robisz krok w kierunku, który wygląda na najbardziej stromy w dół.</span>
+<span id="cb15-135"><a href="#cb15-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-136"><a href="#cb15-136" aria-hidden="true" tabindex="-1"></a>Każdy krok SGD jest mniej precyzyjny, ale robisz ich **dużo więcej** i dużo szybciej.</span>
+<span id="cb15-137"><a href="#cb15-137" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-138"><a href="#cb15-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-139"><a href="#cb15-139" aria-hidden="true" tabindex="-1"></a><span class="fu">### Matematycznie</span></span>
+<span id="cb15-140"><a href="#cb15-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-141"><a href="#cb15-141" aria-hidden="true" tabindex="-1"></a>**Gradient Descent (batch):**</span>
+<span id="cb15-142"><a href="#cb15-142" aria-hidden="true" tabindex="-1"></a>$$\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{N} \sum_{i=1}^{N} \nabla L_i(\theta_t)$$</span>
+<span id="cb15-143"><a href="#cb15-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-144"><a href="#cb15-144" aria-hidden="true" tabindex="-1"></a>**Stochastic Gradient Descent:**</span>
+<span id="cb15-145"><a href="#cb15-145" aria-hidden="true" tabindex="-1"></a>$$\theta_{t+1} = \theta_t - \eta \cdot \nabla L_i(\theta_t)$$</span>
+<span id="cb15-146"><a href="#cb15-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-147"><a href="#cb15-147" aria-hidden="true" tabindex="-1"></a>gdzie $\eta$ to learning rate, a $i$ to losowo wybrana obserwacja.</span>
+<span id="cb15-148"><a href="#cb15-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-149"><a href="#cb15-149" aria-hidden="true" tabindex="-1"></a>**Mini-batch SGD** — kompromis: obliczamy gradient na małej próbce (np. 32–256 obserwacji):</span>
+<span id="cb15-150"><a href="#cb15-150" aria-hidden="true" tabindex="-1"></a>$$\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{|B|} \sum_{i \in B} \nabla L_i(\theta_t)$$</span>
+<span id="cb15-151"><a href="#cb15-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-154"><a href="#cb15-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-155"><a href="#cb15-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sgd-convergence</span></span>
+<span id="cb15-156"><a href="#cb15-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "SGD vs Batch GD — zbieżność i wynik dopasowania"</span></span>
+<span id="cb15-157"><a href="#cb15-157" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb15-158"><a href="#cb15-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-159"><a href="#cb15-159" aria-hidden="true" tabindex="-1"></a><span class="co"># Wizualizacja: SGD vs Batch GD na prostym problemie regresji</span></span>
+<span id="cb15-160"><a href="#cb15-160" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb15-161"><a href="#cb15-161" aria-hidden="true" tabindex="-1"></a>X_reg <span class="op">=</span> np.random.uniform(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>)</span>
+<span id="cb15-162"><a href="#cb15-162" aria-hidden="true" tabindex="-1"></a>y_reg <span class="op">=</span> <span class="fl">2.5</span> <span class="op">*</span> X_reg <span class="op">+</span> <span class="dv">3</span> <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb15-163"><a href="#cb15-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-164"><a href="#cb15-164" aria-hidden="true" tabindex="-1"></a><span class="co"># Batch GD</span></span>
+<span id="cb15-165"><a href="#cb15-165" aria-hidden="true" tabindex="-1"></a>theta_batch <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.0</span>]  <span class="co"># [slope, intercept]</span></span>
+<span id="cb15-166"><a href="#cb15-166" aria-hidden="true" tabindex="-1"></a>lr <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb15-167"><a href="#cb15-167" aria-hidden="true" tabindex="-1"></a>batch_path <span class="op">=</span> [<span class="bu">tuple</span>(theta_batch)]</span>
+<span id="cb15-168"><a href="#cb15-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-169"><a href="#cb15-169" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">50</span>):</span>
+<span id="cb15-170"><a href="#cb15-170" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> theta_batch[<span class="dv">0</span>] <span class="op">*</span> X_reg <span class="op">+</span> theta_batch[<span class="dv">1</span>]</span>
+<span id="cb15-171"><a href="#cb15-171" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> pred <span class="op">-</span> y_reg</span>
+<span id="cb15-172"><a href="#cb15-172" aria-hidden="true" tabindex="-1"></a>    theta_batch[<span class="dv">0</span>] <span class="op">-=</span> lr <span class="op">*</span> (<span class="dv">2</span><span class="op">/</span><span class="bu">len</span>(X_reg)) <span class="op">*</span> np.dot(error, X_reg)</span>
+<span id="cb15-173"><a href="#cb15-173" aria-hidden="true" tabindex="-1"></a>    theta_batch[<span class="dv">1</span>] <span class="op">-=</span> lr <span class="op">*</span> (<span class="dv">2</span><span class="op">/</span><span class="bu">len</span>(X_reg)) <span class="op">*</span> np.<span class="bu">sum</span>(error)</span>
+<span id="cb15-174"><a href="#cb15-174" aria-hidden="true" tabindex="-1"></a>    batch_path.append(<span class="bu">tuple</span>(theta_batch))</span>
+<span id="cb15-175"><a href="#cb15-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-176"><a href="#cb15-176" aria-hidden="true" tabindex="-1"></a><span class="co"># SGD</span></span>
+<span id="cb15-177"><a href="#cb15-177" aria-hidden="true" tabindex="-1"></a>theta_sgd <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">0.0</span>]</span>
+<span id="cb15-178"><a href="#cb15-178" aria-hidden="true" tabindex="-1"></a>sgd_path <span class="op">=</span> [<span class="bu">tuple</span>(theta_sgd)]</span>
+<span id="cb15-179"><a href="#cb15-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-180"><a href="#cb15-180" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">50</span>):</span>
+<span id="cb15-181"><a href="#cb15-181" aria-hidden="true" tabindex="-1"></a>    i <span class="op">=</span> np.random.randint(<span class="bu">len</span>(X_reg))</span>
+<span id="cb15-182"><a href="#cb15-182" aria-hidden="true" tabindex="-1"></a>    pred_i <span class="op">=</span> theta_sgd[<span class="dv">0</span>] <span class="op">*</span> X_reg[i] <span class="op">+</span> theta_sgd[<span class="dv">1</span>]</span>
+<span id="cb15-183"><a href="#cb15-183" aria-hidden="true" tabindex="-1"></a>    error_i <span class="op">=</span> pred_i <span class="op">-</span> y_reg[i]</span>
+<span id="cb15-184"><a href="#cb15-184" aria-hidden="true" tabindex="-1"></a>    theta_sgd[<span class="dv">0</span>] <span class="op">-=</span> lr <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> error_i <span class="op">*</span> X_reg[i]</span>
+<span id="cb15-185"><a href="#cb15-185" aria-hidden="true" tabindex="-1"></a>    theta_sgd[<span class="dv">1</span>] <span class="op">-=</span> lr <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> error_i</span>
+<span id="cb15-186"><a href="#cb15-186" aria-hidden="true" tabindex="-1"></a>    sgd_path.append(<span class="bu">tuple</span>(theta_sgd))</span>
+<span id="cb15-187"><a href="#cb15-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-188"><a href="#cb15-188" aria-hidden="true" tabindex="-1"></a>fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb15-189"><a href="#cb15-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-190"><a href="#cb15-190" aria-hidden="true" tabindex="-1"></a>batch_slopes <span class="op">=</span> [p[<span class="dv">0</span>] <span class="cf">for</span> p <span class="kw">in</span> batch_path]</span>
+<span id="cb15-191"><a href="#cb15-191" aria-hidden="true" tabindex="-1"></a>sgd_slopes <span class="op">=</span> [p[<span class="dv">0</span>] <span class="cf">for</span> p <span class="kw">in</span> sgd_path]</span>
+<span id="cb15-192"><a href="#cb15-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-193"><a href="#cb15-193" aria-hidden="true" tabindex="-1"></a>ax1.plot(batch_slopes, label<span class="op">=</span><span class="st">'Batch GD'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-194"><a href="#cb15-194" aria-hidden="true" tabindex="-1"></a>ax1.plot(sgd_slopes, label<span class="op">=</span><span class="st">'SGD'</span>, linewidth<span class="op">=</span><span class="dv">1</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb15-195"><a href="#cb15-195" aria-hidden="true" tabindex="-1"></a>ax1.axhline(y<span class="op">=</span><span class="fl">2.5</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, label<span class="op">=</span><span class="st">'Prawdziwa wartość'</span>)</span>
+<span id="cb15-196"><a href="#cb15-196" aria-hidden="true" tabindex="-1"></a>ax1.set_xlabel(<span class="st">'Iteracja'</span>)</span>
+<span id="cb15-197"><a href="#cb15-197" aria-hidden="true" tabindex="-1"></a>ax1.set_ylabel(<span class="st">'Estymacja slope'</span>)</span>
+<span id="cb15-198"><a href="#cb15-198" aria-hidden="true" tabindex="-1"></a>ax1.set_title(<span class="st">'Zbieżność parametru'</span>)</span>
+<span id="cb15-199"><a href="#cb15-199" aria-hidden="true" tabindex="-1"></a>ax1.legend()</span>
+<span id="cb15-200"><a href="#cb15-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-201"><a href="#cb15-201" aria-hidden="true" tabindex="-1"></a>ax2.scatter(X_reg, y_reg, alpha<span class="op">=</span><span class="fl">0.5</span>, s<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb15-202"><a href="#cb15-202" aria-hidden="true" tabindex="-1"></a>ax2.plot([<span class="dv">0</span>, <span class="dv">10</span>], [theta_batch[<span class="dv">1</span>], theta_batch[<span class="dv">0</span>]<span class="op">*</span><span class="dv">10</span> <span class="op">+</span> theta_batch[<span class="dv">1</span>]], label<span class="op">=</span><span class="st">'Batch GD'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-203"><a href="#cb15-203" aria-hidden="true" tabindex="-1"></a>ax2.plot([<span class="dv">0</span>, <span class="dv">10</span>], [theta_sgd[<span class="dv">1</span>], theta_sgd[<span class="dv">0</span>]<span class="op">*</span><span class="dv">10</span> <span class="op">+</span> theta_sgd[<span class="dv">1</span>]], label<span class="op">=</span><span class="st">'SGD'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-204"><a href="#cb15-204" aria-hidden="true" tabindex="-1"></a>ax2.set_title(<span class="st">'Wynik dopasowania'</span>)</span>
+<span id="cb15-205"><a href="#cb15-205" aria-hidden="true" tabindex="-1"></a>ax2.legend()</span>
+<span id="cb15-206"><a href="#cb15-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-207"><a href="#cb15-207" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-208"><a href="#cb15-208" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb15-209"><a href="#cb15-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-210"><a href="#cb15-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-211"><a href="#cb15-211" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb15-212"><a href="#cb15-212" aria-hidden="true" tabindex="-1"></a>SGD jest „zaszumiony" — ale właśnie to jest jego siła w uczeniu online: każda nowa obserwacja natychmiast wpływa na model.</span>
+<span id="cb15-213"><a href="#cb15-213" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-214"><a href="#cb15-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-215"><a href="#cb15-215" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb15-216"><a href="#cb15-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-217"><a href="#cb15-217" aria-hidden="true" tabindex="-1"></a><span class="fu">## Concept drift — gdy świat się zmienia</span></span>
+<span id="cb15-218"><a href="#cb15-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-219"><a href="#cb15-219" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb15-220"><a href="#cb15-220" aria-hidden="true" tabindex="-1"></a><span class="fu">## Kluczowe wyzwanie</span></span>
+<span id="cb15-221"><a href="#cb15-221" aria-hidden="true" tabindex="-1"></a>**Rozkład danych zmienia się w czasie** (concept drift). Model wytrenowany na danych z zeszłego roku może być bezużyteczny dzisiaj.</span>
+<span id="cb15-222"><a href="#cb15-222" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-223"><a href="#cb15-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-224"><a href="#cb15-224" aria-hidden="true" tabindex="-1"></a><span class="fu">### Typy driftu</span></span>
+<span id="cb15-225"><a href="#cb15-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-226"><a href="#cb15-226" aria-hidden="true" tabindex="-1"></a>:::: {.columns}</span>
+<span id="cb15-227"><a href="#cb15-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-228"><a href="#cb15-228" aria-hidden="true" tabindex="-1"></a>::: {.column width="33%"}</span>
+<span id="cb15-229"><a href="#cb15-229" aria-hidden="true" tabindex="-1"></a>::: {.callout-important appearance="simple"}</span>
+<span id="cb15-230"><a href="#cb15-230" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa bolt &gt;}} Nagły (sudden)</span></span>
+<span id="cb15-231"><a href="#cb15-231" aria-hidden="true" tabindex="-1"></a>Np. pandemia zmienia wzorce zakupowe z dnia na dzień.</span>
+<span id="cb15-232"><a href="#cb15-232" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-233"><a href="#cb15-233" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-234"><a href="#cb15-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-235"><a href="#cb15-235" aria-hidden="true" tabindex="-1"></a>::: {.column width="33%"}</span>
+<span id="cb15-236"><a href="#cb15-236" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb15-237"><a href="#cb15-237" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa arrow-trend-up &gt;}} Stopniowy (gradual)</span></span>
+<span id="cb15-238"><a href="#cb15-238" aria-hidden="true" tabindex="-1"></a>Np. preferencje klientów zmieniają się powoli przez miesiące.</span>
+<span id="cb15-239"><a href="#cb15-239" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-240"><a href="#cb15-240" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-241"><a href="#cb15-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-242"><a href="#cb15-242" aria-hidden="true" tabindex="-1"></a>::: {.column width="33%"}</span>
+<span id="cb15-243"><a href="#cb15-243" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb15-244"><a href="#cb15-244" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa rotate &gt;}} Cykliczny (recurring)</span></span>
+<span id="cb15-245"><a href="#cb15-245" aria-hidden="true" tabindex="-1"></a>Np. sezonowość sprzedaży.</span>
+<span id="cb15-246"><a href="#cb15-246" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-247"><a href="#cb15-247" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-248"><a href="#cb15-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-249"><a href="#cb15-249" aria-hidden="true" tabindex="-1"></a>::::</span>
+<span id="cb15-250"><a href="#cb15-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-253"><a href="#cb15-253" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-254"><a href="#cb15-254" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja concept drift: nagła zmiana wzorca</span></span>
+<span id="cb15-255"><a href="#cb15-255" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb15-256"><a href="#cb15-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-257"><a href="#cb15-257" aria-hidden="true" tabindex="-1"></a><span class="co"># Faza 1: normalne transakcje (kwota &lt; 1000 = OK)</span></span>
+<span id="cb15-258"><a href="#cb15-258" aria-hidden="true" tabindex="-1"></a>X_faza1 <span class="op">=</span> np.random.uniform(<span class="dv">10</span>, <span class="dv">2000</span>, <span class="dv">500</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb15-259"><a href="#cb15-259" aria-hidden="true" tabindex="-1"></a>y_faza1 <span class="op">=</span> (X_faza1.ravel() <span class="op">&gt;</span> <span class="dv">1000</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb15-260"><a href="#cb15-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-261"><a href="#cb15-261" aria-hidden="true" tabindex="-1"></a><span class="co"># Faza 2: po zmianie — próg podejrzaności spada do 500</span></span>
+<span id="cb15-262"><a href="#cb15-262" aria-hidden="true" tabindex="-1"></a>X_faza2 <span class="op">=</span> np.random.uniform(<span class="dv">10</span>, <span class="dv">2000</span>, <span class="dv">500</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb15-263"><a href="#cb15-263" aria-hidden="true" tabindex="-1"></a>y_faza2 <span class="op">=</span> (X_faza2.ravel() <span class="op">&gt;</span> <span class="dv">500</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb15-264"><a href="#cb15-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-265"><a href="#cb15-265" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb15-266"><a href="#cb15-266" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb15-267"><a href="#cb15-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-268"><a href="#cb15-268" aria-hidden="true" tabindex="-1"></a><span class="co"># Model batch — trenowany na fazie 1</span></span>
+<span id="cb15-269"><a href="#cb15-269" aria-hidden="true" tabindex="-1"></a>model_batch <span class="op">=</span> LogisticRegression()</span>
+<span id="cb15-270"><a href="#cb15-270" aria-hidden="true" tabindex="-1"></a>model_batch.fit(scaler.fit_transform(X_faza1), y_faza1)</span>
+<span id="cb15-271"><a href="#cb15-271" aria-hidden="true" tabindex="-1"></a>acc_batch_f2 <span class="op">=</span> accuracy_score(y_faza2, model_batch.predict(scaler.transform(X_faza2)))</span>
+<span id="cb15-272"><a href="#cb15-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-273"><a href="#cb15-273" aria-hidden="true" tabindex="-1"></a><span class="co"># Model online — adaptuje się</span></span>
+<span id="cb15-274"><a href="#cb15-274" aria-hidden="true" tabindex="-1"></a>model_sgd <span class="op">=</span> SGDClassifier(loss<span class="op">=</span><span class="st">'log_loss'</span>)</span>
+<span id="cb15-275"><a href="#cb15-275" aria-hidden="true" tabindex="-1"></a>model_sgd.fit(scaler.transform(X_faza1), y_faza1)</span>
+<span id="cb15-276"><a href="#cb15-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-277"><a href="#cb15-277" aria-hidden="true" tabindex="-1"></a><span class="co"># Trenowanie online na fazie 2</span></span>
+<span id="cb15-278"><a href="#cb15-278" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="bu">len</span>(X_faza2), <span class="dv">10</span>):</span>
+<span id="cb15-279"><a href="#cb15-279" aria-hidden="true" tabindex="-1"></a>    X_b <span class="op">=</span> scaler.transform(X_faza2[i:i<span class="op">+</span><span class="dv">10</span>])</span>
+<span id="cb15-280"><a href="#cb15-280" aria-hidden="true" tabindex="-1"></a>    y_b <span class="op">=</span> y_faza2[i:i<span class="op">+</span><span class="dv">10</span>]</span>
+<span id="cb15-281"><a href="#cb15-281" aria-hidden="true" tabindex="-1"></a>    model_sgd.partial_fit(X_b, y_b)</span>
+<span id="cb15-282"><a href="#cb15-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-283"><a href="#cb15-283" aria-hidden="true" tabindex="-1"></a>acc_online_f2 <span class="op">=</span> accuracy_score(y_faza2, model_sgd.predict(scaler.transform(X_faza2)))</span>
+<span id="cb15-284"><a href="#cb15-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-285"><a href="#cb15-285" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Po concept drift:"</span>)</span>
+<span id="cb15-286"><a href="#cb15-286" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  Batch model accuracy:  </span><span class="sc">{</span>acc_batch_f2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb15-287"><a href="#cb15-287" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"  Online model accuracy: </span><span class="sc">{</span>acc_online_f2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb15-288"><a href="#cb15-288" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-289"><a href="#cb15-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-292"><a href="#cb15-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-293"><a href="#cb15-293" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-concept-drift</span></span>
+<span id="cb15-294"><a href="#cb15-294" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Concept drift: model batch vs online — dokładność w czasie"</span></span>
+<span id="cb15-295"><a href="#cb15-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-296"><a href="#cb15-296" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja rolling accuracy</span></span>
+<span id="cb15-297"><a href="#cb15-297" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> deque</span>
+<span id="cb15-298"><a href="#cb15-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-299"><a href="#cb15-299" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb15-300"><a href="#cb15-300" aria-hidden="true" tabindex="-1"></a>X_all <span class="op">=</span> np.vstack([X_faza1, X_faza2])</span>
+<span id="cb15-301"><a href="#cb15-301" aria-hidden="true" tabindex="-1"></a>y_all <span class="op">=</span> np.concatenate([y_faza1, y_faza2])</span>
+<span id="cb15-302"><a href="#cb15-302" aria-hidden="true" tabindex="-1"></a>X_all_s <span class="op">=</span> scaler.fit_transform(X_all)</span>
+<span id="cb15-303"><a href="#cb15-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-304"><a href="#cb15-304" aria-hidden="true" tabindex="-1"></a>online <span class="op">=</span> SGDClassifier(loss<span class="op">=</span><span class="st">'log_loss'</span>)</span>
+<span id="cb15-305"><a href="#cb15-305" aria-hidden="true" tabindex="-1"></a>batch <span class="op">=</span> LogisticRegression()</span>
+<span id="cb15-306"><a href="#cb15-306" aria-hidden="true" tabindex="-1"></a>batch.fit(X_all_s[:<span class="dv">500</span>], y_all[:<span class="dv">500</span>])</span>
+<span id="cb15-307"><a href="#cb15-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-308"><a href="#cb15-308" aria-hidden="true" tabindex="-1"></a>window <span class="op">=</span> deque(maxlen<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb15-309"><a href="#cb15-309" aria-hidden="true" tabindex="-1"></a>online_acc, batch_acc <span class="op">=</span> [], []</span>
+<span id="cb15-310"><a href="#cb15-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-311"><a href="#cb15-311" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(X_all)):</span>
+<span id="cb15-312"><a href="#cb15-312" aria-hidden="true" tabindex="-1"></a>    x_i <span class="op">=</span> X_all_s[i:i<span class="op">+</span><span class="dv">1</span>]</span>
+<span id="cb15-313"><a href="#cb15-313" aria-hidden="true" tabindex="-1"></a>    y_i <span class="op">=</span> y_all[i:i<span class="op">+</span><span class="dv">1</span>]</span>
+<span id="cb15-314"><a href="#cb15-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-315"><a href="#cb15-315" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb15-316"><a href="#cb15-316" aria-hidden="true" tabindex="-1"></a>        online.partial_fit(x_i, y_i, classes<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb15-317"><a href="#cb15-317" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb15-318"><a href="#cb15-318" aria-hidden="true" tabindex="-1"></a>        pred_o <span class="op">=</span> online.predict(x_i)[<span class="dv">0</span>]</span>
+<span id="cb15-319"><a href="#cb15-319" aria-hidden="true" tabindex="-1"></a>        pred_b <span class="op">=</span> batch.predict(x_i)[<span class="dv">0</span>]</span>
+<span id="cb15-320"><a href="#cb15-320" aria-hidden="true" tabindex="-1"></a>        window.append((pred_o <span class="op">==</span> y_i[<span class="dv">0</span>], pred_b <span class="op">==</span> y_i[<span class="dv">0</span>]))</span>
+<span id="cb15-321"><a href="#cb15-321" aria-hidden="true" tabindex="-1"></a>        online.partial_fit(x_i, y_i)</span>
+<span id="cb15-322"><a href="#cb15-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-323"><a href="#cb15-323" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(window) <span class="op">&gt;</span> <span class="dv">10</span>:</span>
+<span id="cb15-324"><a href="#cb15-324" aria-hidden="true" tabindex="-1"></a>        online_acc.append(np.mean([w[<span class="dv">0</span>] <span class="cf">for</span> w <span class="kw">in</span> window]))</span>
+<span id="cb15-325"><a href="#cb15-325" aria-hidden="true" tabindex="-1"></a>        batch_acc.append(np.mean([w[<span class="dv">1</span>] <span class="cf">for</span> w <span class="kw">in</span> window]))</span>
+<span id="cb15-326"><a href="#cb15-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-327"><a href="#cb15-327" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb15-328"><a href="#cb15-328" aria-hidden="true" tabindex="-1"></a>ax.plot(online_acc, label<span class="op">=</span><span class="st">'Online (SGD)'</span>, color<span class="op">=</span><span class="st">'#4CAF50'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-329"><a href="#cb15-329" aria-hidden="true" tabindex="-1"></a>ax.plot(batch_acc, label<span class="op">=</span><span class="st">'Batch (Logistic Regression)'</span>, color<span class="op">=</span><span class="st">'#F44336'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-330"><a href="#cb15-330" aria-hidden="true" tabindex="-1"></a>ax.axvline(x<span class="op">=</span><span class="dv">490</span>, color<span class="op">=</span><span class="st">'gray'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">'Concept drift'</span>)</span>
+<span id="cb15-331"><a href="#cb15-331" aria-hidden="true" tabindex="-1"></a>ax.fill_betweenx([<span class="dv">0</span>, <span class="dv">1</span>], <span class="dv">0</span>, <span class="dv">490</span>, alpha<span class="op">=</span><span class="fl">0.05</span>, color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb15-332"><a href="#cb15-332" aria-hidden="true" tabindex="-1"></a>ax.fill_betweenx([<span class="dv">0</span>, <span class="dv">1</span>], <span class="dv">490</span>, <span class="bu">len</span>(online_acc), alpha<span class="op">=</span><span class="fl">0.05</span>, color<span class="op">=</span><span class="st">'red'</span>)</span>
+<span id="cb15-333"><a href="#cb15-333" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="dv">250</span>, <span class="fl">0.55</span>, <span class="st">'Faza 1</span><span class="ch">\n</span><span class="st">(stary wzorzec)'</span>, ha<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-334"><a href="#cb15-334" aria-hidden="true" tabindex="-1"></a>ax.text(<span class="dv">700</span>, <span class="fl">0.55</span>, <span class="st">'Faza 2</span><span class="ch">\n</span><span class="st">(nowy wzorzec)'</span>, ha<span class="op">=</span><span class="st">'center'</span>, fontsize<span class="op">=</span><span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb15-335"><a href="#cb15-335" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Obserwacja'</span>)</span>
+<span id="cb15-336"><a href="#cb15-336" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Krocząca dokładność (50 obs.)'</span>)</span>
+<span id="cb15-337"><a href="#cb15-337" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Concept drift: model batch zamiera, online adaptuje się'</span>)</span>
+<span id="cb15-338"><a href="#cb15-338" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="fl">0.5</span>, <span class="fl">1.05</span>)</span>
+<span id="cb15-339"><a href="#cb15-339" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb15-340"><a href="#cb15-340" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-341"><a href="#cb15-341" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb15-342"><a href="#cb15-342" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-343"><a href="#cb15-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-344"><a href="#cb15-344" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb15-345"><a href="#cb15-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-346"><a href="#cb15-346" aria-hidden="true" tabindex="-1"></a><span class="fu">## Detekcja anomalii</span></span>
+<span id="cb15-347"><a href="#cb15-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-348"><a href="#cb15-348" aria-hidden="true" tabindex="-1"></a>::: {.callout-important appearance="simple"}</span>
+<span id="cb15-349"><a href="#cb15-349" aria-hidden="true" tabindex="-1"></a>Detekcja anomalii to jedno z **najważniejszych zastosowań** analizy danych w czasie rzeczywistym. Anomalia (wartość odstająca, outlier) to obserwacja znacznie oddalona od reszty danych.</span>
+<span id="cb15-350"><a href="#cb15-350" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-351"><a href="#cb15-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-352"><a href="#cb15-352" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb15-353"><a href="#cb15-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-354"><a href="#cb15-354" aria-hidden="true" tabindex="-1"></a><span class="fu">### Metoda IQR</span></span>
+<span id="cb15-355"><a href="#cb15-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-356"><a href="#cb15-356" aria-hidden="true" tabindex="-1"></a>Dla pojedynczej zmiennej możemy użyć rozstępu międzykwartylowego:</span>
+<span id="cb15-357"><a href="#cb15-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-358"><a href="#cb15-358" aria-hidden="true" tabindex="-1"></a>$$x_{\text{out}} &lt; Q_1 - 1.5 \times IQR \quad \text{lub} \quad x_{\text{out}} &gt; Q_3 + 1.5 \times IQR$$</span>
+<span id="cb15-359"><a href="#cb15-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-362"><a href="#cb15-362" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-363"><a href="#cb15-363" aria-hidden="true" tabindex="-1"></a>wynagrodzenia <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">90</span>, <span class="dv">150</span>]</span>
+<span id="cb15-364"><a href="#cb15-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-365"><a href="#cb15-365" aria-hidden="true" tabindex="-1"></a>Q1 <span class="op">=</span> np.percentile(wynagrodzenia, <span class="dv">25</span>)</span>
+<span id="cb15-366"><a href="#cb15-366" aria-hidden="true" tabindex="-1"></a>Q3 <span class="op">=</span> np.percentile(wynagrodzenia, <span class="dv">75</span>)</span>
+<span id="cb15-367"><a href="#cb15-367" aria-hidden="true" tabindex="-1"></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
+<span id="cb15-368"><a href="#cb15-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-369"><a href="#cb15-369" aria-hidden="true" tabindex="-1"></a>granica_dolna <span class="op">=</span> Q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb15-370"><a href="#cb15-370" aria-hidden="true" tabindex="-1"></a>granica_gorna <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb15-371"><a href="#cb15-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-372"><a href="#cb15-372" aria-hidden="true" tabindex="-1"></a>outliers <span class="op">=</span> [x <span class="cf">for</span> x <span class="kw">in</span> wynagrodzenia <span class="cf">if</span> x <span class="op">&lt;</span> granica_dolna <span class="kw">or</span> x <span class="op">&gt;</span> granica_gorna]</span>
+<span id="cb15-373"><a href="#cb15-373" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Q1=</span><span class="sc">{</span>Q1<span class="sc">}</span><span class="ss">, Q3=</span><span class="sc">{</span>Q3<span class="sc">}</span><span class="ss">, IQR=</span><span class="sc">{</span>IQR<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-374"><a href="#cb15-374" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Granice: [</span><span class="sc">{</span>granica_dolna<span class="sc">:.1f}</span><span class="ss">, </span><span class="sc">{</span>granica_gorna<span class="sc">:.1f}</span><span class="ss">]"</span>)</span>
+<span id="cb15-375"><a href="#cb15-375" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Anomalie: </span><span class="sc">{</span>outliers<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-376"><a href="#cb15-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-377"><a href="#cb15-377" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.5</span>))</span>
+<span id="cb15-378"><a href="#cb15-378" aria-hidden="true" tabindex="-1"></a>bp <span class="op">=</span> ax.boxplot(wynagrodzenia, vert<span class="op">=</span><span class="va">False</span>, patch_artist<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb15-379"><a href="#cb15-379" aria-hidden="true" tabindex="-1"></a>                boxprops<span class="op">=</span><span class="bu">dict</span>(facecolor<span class="op">=</span><span class="st">'#E3F2FD'</span>, edgecolor<span class="op">=</span><span class="st">'#2196F3'</span>),</span>
+<span id="cb15-380"><a href="#cb15-380" aria-hidden="true" tabindex="-1"></a>                medianprops<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">'#F44336'</span>, linewidth<span class="op">=</span><span class="dv">2</span>),</span>
+<span id="cb15-381"><a href="#cb15-381" aria-hidden="true" tabindex="-1"></a>                flierprops<span class="op">=</span><span class="bu">dict</span>(marker<span class="op">=</span><span class="st">'o'</span>, markerfacecolor<span class="op">=</span><span class="st">'#F44336'</span>, markersize<span class="op">=</span><span class="dv">10</span>))</span>
+<span id="cb15-382"><a href="#cb15-382" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Wynagrodzenie (tys. PLN)'</span>)</span>
+<span id="cb15-383"><a href="#cb15-383" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Wykres pudełkowy — detekcja anomalii metodą IQR'</span>)</span>
+<span id="cb15-384"><a href="#cb15-384" aria-hidden="true" tabindex="-1"></a>ax.axvspan(granica_dolna, granica_gorna, alpha<span class="op">=</span><span class="fl">0.1</span>, color<span class="op">=</span><span class="st">'green'</span>, label<span class="op">=</span><span class="st">'Zakres normalny'</span>)</span>
+<span id="cb15-385"><a href="#cb15-385" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-386"><a href="#cb15-386" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb15-387"><a href="#cb15-387" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-388"><a href="#cb15-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-389"><a href="#cb15-389" aria-hidden="true" tabindex="-1"></a><span class="fu">### Isolation Forest</span></span>
+<span id="cb15-390"><a href="#cb15-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-391"><a href="#cb15-391" aria-hidden="true" tabindex="-1"></a>Algorytm bazujący na drzewach decyzyjnych (Liu et al., 2008). Kluczowa intuicja: **anomalie są łatwiejsze do odizolowania** — losowe podziały szybciej oddzielają je od reszty danych.</span>
+<span id="cb15-392"><a href="#cb15-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-395"><a href="#cb15-395" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-396"><a href="#cb15-396" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
+<span id="cb15-397"><a href="#cb15-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-398"><a href="#cb15-398" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: transakcje bankowe (kwota, częstotliwość tygodniowa)</span></span>
+<span id="cb15-399"><a href="#cb15-399" aria-hidden="true" tabindex="-1"></a>dane <span class="op">=</span> np.array([</span>
+<span id="cb15-400"><a href="#cb15-400" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">100</span>, <span class="dv">5</span>], [<span class="dv">120</span>, <span class="dv">6</span>], [<span class="dv">130</span>, <span class="dv">5</span>], [<span class="dv">110</span>, <span class="dv">4</span>], [<span class="dv">125</span>, <span class="dv">5</span>],</span>
+<span id="cb15-401"><a href="#cb15-401" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">115</span>, <span class="dv">5</span>], [<span class="dv">140</span>, <span class="dv">7</span>], [<span class="dv">135</span>, <span class="dv">6</span>], [<span class="dv">145</span>, <span class="dv">5</span>], [<span class="dv">105</span>, <span class="dv">4</span>],</span>
+<span id="cb15-402"><a href="#cb15-402" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">5000</span>, <span class="dv">1</span>],  <span class="co"># anomalia: duża kwota, rzadko</span></span>
+<span id="cb15-403"><a href="#cb15-403" aria-hidden="true" tabindex="-1"></a>    [<span class="dv">50</span>, <span class="dv">30</span>],   <span class="co"># anomalia: mała kwota, bardzo często</span></span>
+<span id="cb15-404"><a href="#cb15-404" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb15-405"><a href="#cb15-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-406"><a href="#cb15-406" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> IsolationForest(contamination<span class="op">=</span><span class="fl">0.15</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-407"><a href="#cb15-407" aria-hidden="true" tabindex="-1"></a>predykcje <span class="op">=</span> clf.fit_predict(dane)</span>
+<span id="cb15-408"><a href="#cb15-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-409"><a href="#cb15-409" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(dane, columns<span class="op">=</span>[<span class="st">"Kwota"</span>, <span class="st">"Transakcje/tydzień"</span>])</span>
+<span id="cb15-410"><a href="#cb15-410" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Status"</span>] <span class="op">=</span> [<span class="st">"Anomalia"</span> <span class="cf">if</span> p <span class="op">==</span> <span class="op">-</span><span class="dv">1</span> <span class="cf">else</span> <span class="st">"OK"</span> <span class="cf">for</span> p <span class="kw">in</span> predykcje]</span>
+<span id="cb15-411"><a href="#cb15-411" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb15-412"><a href="#cb15-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-413"><a href="#cb15-413" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#F44336'</span> <span class="cf">if</span> s <span class="op">==</span> <span class="st">'Anomalia'</span> <span class="cf">else</span> <span class="st">'#2196F3'</span> <span class="cf">for</span> s <span class="kw">in</span> df[<span class="st">'Status'</span>]]</span>
+<span id="cb15-414"><a href="#cb15-414" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb15-415"><a href="#cb15-415" aria-hidden="true" tabindex="-1"></a>ax.scatter(df[<span class="st">'Kwota'</span>], df[<span class="st">'Transakcje/tydzień'</span>], c<span class="op">=</span>colors, s<span class="op">=</span><span class="dv">80</span>, edgecolors<span class="op">=</span><span class="st">'white'</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb15-416"><a href="#cb15-416" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> df[df[<span class="st">'Status'</span>] <span class="op">==</span> <span class="st">'Anomalia'</span>].iterrows():</span>
+<span id="cb15-417"><a href="#cb15-417" aria-hidden="true" tabindex="-1"></a>    ax.annotate(<span class="st">'ANOMALIA'</span>, (row[<span class="st">'Kwota'</span>], row[<span class="st">'Transakcje/tydzień'</span>]),</span>
+<span id="cb15-418"><a href="#cb15-418" aria-hidden="true" tabindex="-1"></a>                textcoords<span class="op">=</span><span class="st">"offset points"</span>, xytext<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>), fontsize<span class="op">=</span><span class="dv">9</span>, color<span class="op">=</span><span class="st">'#F44336'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb15-419"><a href="#cb15-419" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Kwota transakcji'</span>)</span>
+<span id="cb15-420"><a href="#cb15-420" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Transakcje / tydzień'</span>)</span>
+<span id="cb15-421"><a href="#cb15-421" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Isolation Forest — detekcja anomalii'</span>)</span>
+<span id="cb15-422"><a href="#cb15-422" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb15-423"><a href="#cb15-423" aria-hidden="true" tabindex="-1"></a>ax.legend(handles<span class="op">=</span>[mpatches.Patch(color<span class="op">=</span><span class="st">'#2196F3'</span>, label<span class="op">=</span><span class="st">'OK'</span>),</span>
+<span id="cb15-424"><a href="#cb15-424" aria-hidden="true" tabindex="-1"></a>                    mpatches.Patch(color<span class="op">=</span><span class="st">'#F44336'</span>, label<span class="op">=</span><span class="st">'Anomalia'</span>)])</span>
+<span id="cb15-425"><a href="#cb15-425" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb15-426"><a href="#cb15-426" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb15-427"><a href="#cb15-427" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-428"><a href="#cb15-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-429"><a href="#cb15-429" aria-hidden="true" tabindex="-1"></a><span class="fu">### W strumieniu</span></span>
+<span id="cb15-430"><a href="#cb15-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-431"><a href="#cb15-431" aria-hidden="true" tabindex="-1"></a>W kontekście real-time nie możemy przeanalizować całego zbioru danych — musimy wykrywać anomalie **na bieżąco**, w oknie czasowym. Na laboratoriach zbudujemy taki system z Kafką i Sparkiem.</span>
+<span id="cb15-432"><a href="#cb15-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-433"><a href="#cb15-433" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-434"><a href="#cb15-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-435"><a href="#cb15-435" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb15-436"><a href="#cb15-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-437"><a href="#cb15-437" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wyjaśnialność algorytmów</span></span>
+<span id="cb15-438"><a href="#cb15-438" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-439"><a href="#cb15-439" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb15-440"><a href="#cb15-440" aria-hidden="true" tabindex="-1"></a><span class="fu">## Regulacje wymagają transparentności</span></span>
+<span id="cb15-441"><a href="#cb15-441" aria-hidden="true" tabindex="-1"></a>W branżach regulowanych (bankowość, ubezpieczenia, medycyna) nie wystarczy powiedzieć „model odrzucił wniosek kredytowy". Trzeba wyjaśnić **dlaczego**. Regulacje takie jak **AI Act** i **RODO** wymagają transparentności decyzji algorytmicznych.</span>
+<span id="cb15-442"><a href="#cb15-442" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-443"><a href="#cb15-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-444"><a href="#cb15-444" aria-hidden="true" tabindex="-1"></a><span class="fu">### LIME (Local Interpretable Model-Agnostic Explanations)</span></span>
+<span id="cb15-445"><a href="#cb15-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-446"><a href="#cb15-446" aria-hidden="true" tabindex="-1"></a>LIME wyjaśnia pojedyncze predykcje dowolnego modelu. Działa tak: wprowadza drobne zmiany w danych wejściowych i obserwuje, jak zmienia się wynik. Na tej podstawie buduje prosty, interpretowalny model lokalny (np. regresję liniową), który przybliża zachowanie oryginalnego modelu w otoczeniu danej obserwacji.</span>
+<span id="cb15-447"><a href="#cb15-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-450"><a href="#cb15-450" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb15-451"><a href="#cb15-451" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb15-452"><a href="#cb15-452" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb15-453"><a href="#cb15-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-454"><a href="#cb15-454" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> load_iris()</span>
+<span id="cb15-455"><a href="#cb15-455" aria-hidden="true" tabindex="-1"></a>X_iris, y_iris <span class="op">=</span> iris.data, iris.target</span>
+<span id="cb15-456"><a href="#cb15-456" aria-hidden="true" tabindex="-1"></a>X_tr, X_te, y_tr, y_te <span class="op">=</span> train_test_split(X_iris, y_iris, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-457"><a href="#cb15-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-458"><a href="#cb15-458" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-459"><a href="#cb15-459" aria-hidden="true" tabindex="-1"></a>rf.fit(X_tr, y_tr)</span>
+<span id="cb15-460"><a href="#cb15-460" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-461"><a href="#cb15-461" aria-hidden="true" tabindex="-1"></a><span class="co"># Feature importance — prostsza alternatywa dla LIME</span></span>
+<span id="cb15-462"><a href="#cb15-462" aria-hidden="true" tabindex="-1"></a>importances <span class="op">=</span> pd.Series(rf.feature_importances_, index<span class="op">=</span>iris.feature_names)</span>
+<span id="cb15-463"><a href="#cb15-463" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ważność cech (Random Forest):"</span>)</span>
+<span id="cb15-464"><a href="#cb15-464" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(importances.sort_values(ascending<span class="op">=</span><span class="va">False</span>).<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb15-465"><a href="#cb15-465" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Na lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia."</span>)</span>
+<span id="cb15-466"><a href="#cb15-466" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb15-467"><a href="#cb15-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-468"><a href="#cb15-468" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb15-469"><a href="#cb15-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-470"><a href="#cb15-470" aria-hidden="true" tabindex="-1"></a><span class="fu">## Podsumowanie</span></span>
+<span id="cb15-471"><a href="#cb15-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-472"><a href="#cb15-472" aria-hidden="true" tabindex="-1"></a>Uczenie wsadowe i przyrostowe to dwa komplementarne podejścia. W praktyce często łączy się je: model bazowy trenowany w trybie batch jest stopniowo aktualizowany w trybie online. SGD umożliwia uczenie na strumieniu danych, ale wymaga uwagi na concept drift i stabilność.</span>
+<span id="cb15-473"><a href="#cb15-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-474"><a href="#cb15-474" aria-hidden="true" tabindex="-1"></a>Detekcja anomalii i wyjaśnialność modeli to kluczowe zastosowania ML w real-time analytics — na laboratoriach przełożymy je na praktyczne systemy z Kafką i Sparkiem.</span>
+<span id="cb15-475"><a href="#cb15-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-476"><a href="#cb15-476" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb15-477"><a href="#cb15-477" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa forward &gt;}} Na następnym wykładzie</span></span>
+<span id="cb15-478"><a href="#cb15-478" aria-hidden="true" tabindex="-1"></a>Apache Kafka — architektura, producenci, konsumenci, tematy, partycje.</span>
+<span id="cb15-479"><a href="#cb15-479" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb15-480"><a href="#cb15-480" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-481"><a href="#cb15-481" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb15-482"><a href="#cb15-482" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa brain &gt;}} Do przemyślenia</span></span>
+<span id="cb15-483"><a href="#cb15-483" aria-hidden="true" tabindex="-1"></a>Twój bank trenuje model fraud detection raz w miesiącu (batch). Jakie ryzyko biznesowe niesie takie podejście? Co by się zmieniło, gdyby model uczył się online?</span>
+<span id="cb15-484"><a href="#cb15-484" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -1212,4 +1940,5 @@ Na lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.</code></pr
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

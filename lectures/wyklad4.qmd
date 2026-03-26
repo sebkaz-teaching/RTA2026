@@ -1,14 +1,29 @@
 ---
 title: "Wykład 4 — Apache Kafka"
+subtitle: "Analiza danych w czasie rzeczywistym"
+description: "Architektura Apache Kafka — brokerzy, tematy, partycje, producenci, konsumenci, grupy konsumentów i integracja z ML."
 format:
   html:
     code-fold: true
+    code-tools: true
+    code-summary: "Pokaż kod"
+    toc: true
+    toc-depth: 3
+    toc-title: "Spis treści"
+    number-sections: true
+    smooth-scroll: true
+    theme:
+      light: flatly
+    highlight-style: github
+    fig-align: center
+    fig-cap-location: bottom
 jupyter: python3
 ---
 
-*Czas trwania: 1,5h*
-
+::: {.callout-note appearance="minimal"}
+## {{< fa clock >}} Czas trwania: 1,5h
 **Cel wykładu:** Poznanie architektury Apache Kafka — brokerów, tematów, partycji, producentów, konsumentów i grup konsumentów. Zrozumienie, dlaczego Kafka jest fundamentem nowoczesnych systemów real-time.
+:::
 
 ---
 
@@ -18,9 +33,12 @@ Zanim przejdziemy do Kafki, krótki kontekst. Tradycyjna aplikacja to **monolit*
 
 **Mikroserwisy** to podejście, w którym aplikację dzielimy na małe, niezależne usługi — każda odpowiedzialna za jedno zadanie. Usługa „płatności" nie zna szczegółów usługi „rekomendacji". Komunikują się przez **API** lub **kolejki wiadomości**.
 
-Problem: gdy masz 20 mikroserwisów, które muszą wymieniać dane, tworzysz siatkę połączeń punkt-punkt. Każdy nowy serwis wymaga integracji z wieloma innymi. To nie skaluje się.
+::: {.callout-caution}
+## Problem N×N
+Gdy masz 20 mikroserwisów, które muszą wymieniać dane, tworzysz siatkę połączeń punkt-punkt. Każdy nowy serwis wymaga integracji z wieloma innymi. To nie skaluje się.
 
-Rozwiązanie: **centralny broker wiadomości** — jedno miejsce, przez które przepływają wszystkie dane. I tu wchodzi Apache Kafka.
+**Rozwiązanie:** centralny broker wiadomości — jedno miejsce, przez które przepływają wszystkie dane. I tu wchodzi **Apache Kafka**.
+:::
 
 ---
 
@@ -28,20 +46,40 @@ Rozwiązanie: **centralny broker wiadomości** — jedno miejsce, przez które p
 
 Kafka to **rozproszona platforma strumieniowa** stworzona w LinkedIn (2011), obecnie rozwijana jako projekt Apache. Nie jest „kolejnym systemem kolejkowym" — to coś więcej.
 
-Kluczowe cechy:
+:::: {.columns}
 
-- **Rozproszona** — działa na wielu serwerach (brokerach) jako klaster.
-- **Trwała** — wiadomości zapisywane na dysku, nie znikają po odczytaniu (w przeciwieństwie do klasycznych kolejek).
-- **Szybka** — obsługuje miliony wiadomości na sekundę.
-- **Skalowalna** — dodajesz brokerów i partycji w miarę wzrostu danych.
+::: {.column width="50%"}
+::: {.callout-tip appearance="simple"}
+## {{< fa server >}} Rozproszona
+Działa na wielu serwerach (brokerach) jako klaster.
+:::
+::: {.callout-tip appearance="simple"}
+## {{< fa hard-drive >}} Trwała
+Wiadomości zapisywane na dysku, nie znikają po odczytaniu.
+:::
+:::
 
-### Kafka to nie kolejka
+::: {.column width="50%"}
+::: {.callout-tip appearance="simple"}
+## {{< fa gauge-high >}} Szybka
+Obsługuje miliony wiadomości na sekundę.
+:::
+::: {.callout-tip appearance="simple"}
+## {{< fa arrows-left-right >}} Skalowalna
+Dodajesz brokerów i partycji w miarę wzrostu danych.
+:::
+:::
 
-W klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest usuwana po przetworzeniu. Kafka tego nie robi — wiadomości są **przechowywane na dysku** przez konfigurowalny czas (domyślnie 7 dni). Dzięki temu:
+::::
+
+::: {.callout-important}
+## Kafka to nie kolejka!
+W klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest **usuwana** po przetworzeniu. Kafka tego nie robi — wiadomości są **przechowywane na dysku** przez konfigurowalny czas (domyślnie 7 dni). Dzięki temu:
 
 - wielu konsumentów może odczytać te same dane,
-- konsument może wrócić do wcześniejszych wiadomości (replay),
+- konsument może wrócić do wcześniejszych wiadomości (**replay**),
 - awaria konsumenta nie powoduje utraty danych.
+:::
 
 ---
 
@@ -70,11 +108,15 @@ flowchart LR
     style CZ fill:#9C27B0,color:#fff
 ```
 
-### Tematy (Topics)
+### Tematy i partycje
+
+::: {.panel-tabset}
+
+#### {{< fa folder >}} Tematy (Topics)
 
 **Temat** to logiczny kanał danych — jak folder, do którego trafiają wiadomości określonego typu. Np. `transakcje`, `zamowienia`, `logi-serwera`, `odczyty-sensorow`.
 
-### Partycje (Partitions)
+#### {{< fa layer-group >}} Partycje (Partitions)
 
 Każdy temat jest podzielony na jedną lub więcej **partycji**. Partycja to uporządkowana, niezmienna sekwencja wiadomości — każda wiadomość otrzymuje unikalny numer (**offset**).
 
@@ -82,6 +124,14 @@ Partycje służą dwóm celom:
 
 - **Skalowalność** — dane jednego tematu mogą być rozproszone na wielu brokerach.
 - **Równoległość** — wielu konsumentów może czytać różne partycje jednocześnie.
+
+#### {{< fa server >}} Brokerzy (Brokers)
+
+**Broker** to pojedynczy serwer Kafki. Klaster Kafki składa się z wielu brokerów. Każdy broker przechowuje część partycji.
+
+Aby zapewnić niezawodność, Kafka **replikuje** partycje na wielu brokerach. Współczynnik replikacji (np. 3) oznacza, że każda partycja ma 3 kopie na różnych serwerach. Jeśli jeden broker padnie — dane nie giną.
+
+:::
 
 ```{mermaid}
 %%| fig-cap: "Temat z partycjami rozproszonymi na brokerach"
@@ -104,12 +154,6 @@ flowchart LR
     style B3 fill:#FFF3E0,stroke:#FF9800
 ```
 
-### Brokerzy (Brokers)
-
-**Broker** to pojedynczy serwer Kafki. Klaster Kafki składa się z wielu brokerów. Każdy broker przechowuje część partycji.
-
-Aby zapewnić niezawodność, Kafka **replikuje** partycje na wielu brokerach. Współczynnik replikacji (np. 3) oznacza, że każda partycja ma 3 kopie na różnych serwerach. Jeśli jeden broker padnie — dane nie giną.
-
 ---
 
 ## Producenci (Producers)
@@ -118,6 +162,10 @@ Producent to aplikacja, która wysyła wiadomości do Kafki. Producent wskazuje 
 
 - domyślnie: **round-robin** (kolejno do każdej partycji),
 - z kluczem: Kafka oblicza hash klucza i na tej podstawie wybiera partycję — wiadomości z tym samym kluczem zawsze trafiają do tej samej partycji.
+
+::: {.panel-tabset}
+
+#### Bez klucza
 
 ```python
 from kafka import KafkaProducer
@@ -143,7 +191,7 @@ producer.flush()
 print(f"Wysłano: {transakcja}")
 ```
 
-### Producent z kluczem
+#### Z kluczem
 
 Jeśli chcemy, żeby wszystkie transakcje tego samego klienta trafiały do jednej partycji (np. w celu analizy sesji):
 
@@ -155,6 +203,13 @@ producer.send(
     value=transakcja
 )
 ```
+
+::: {.callout-tip appearance="simple"}
+## Kiedy używać klucza?
+Używaj klucza, gdy potrzebujesz **gwarancji kolejności** dla danej encji (np. wszystkie transakcje klienta K-1001 w kolejności) lub gdy dalsze przetwarzanie wymaga zgrupowania po kluczu.
+:::
+
+:::
 
 ---
 
@@ -181,13 +236,16 @@ for message in consumer:
 
 ### Grupy konsumentów (Consumer Groups)
 
-Gdy jeden konsument nie nadąża z przetwarzaniem — dodajesz kolejnych. Konsumenci w **tej samej grupie** dzielą między siebie partycje:
+Gdy jeden konsument nie nadąża z przetwarzaniem — dodajesz kolejnych. Konsumenci w **tej samej grupie** dzielą między siebie partycje.
 
+::: {.callout-note}
+## Zasady grup konsumentów
 - Kafka automatycznie przypisuje partycje do konsumentów w grupie.
 - Każdą partycję czyta **dokładnie jeden** konsument z grupy.
 - Jeśli konsument padnie — jego partycje przejmuje inny.
-
-Ideał: **liczba konsumentów w grupie = liczba partycji**. Jeśli konsumentów jest więcej niż partycji — nadmiarowi będą bezczynni.
+- **Ideał:** liczba konsumentów w grupie = liczba partycji.
+- Jeśli konsumentów jest więcej niż partycji — nadmiarowi będą bezczynni.
+:::
 
 ```
   Temat: transakcje (3 partycje)
@@ -198,7 +256,10 @@ Ideał: **liczba konsumentów w grupie = liczba partycji**. Jeśli konsumentów 
   Partycja 2 ──→ Konsument C
 ```
 
+::: {.callout-tip appearance="simple"}
+## Wiele grup = niezależny odczyt
 Różne grupy konsumentów mogą czytać **te same dane** niezależnie. Np. grupa `fraud-detection` analizuje transakcje pod kątem oszustw, a grupa `reporting` buduje raporty — obie czytają temat `transakcje`, ale mają osobne offsety.
+:::
 
 ---
 
@@ -229,7 +290,8 @@ def predict_price(area: float, bedrooms: int, age: int):
 # Zapytanie: http://localhost:8000/predict/?area=75&bedrooms=3&age=10
 ```
 
-### Request i Response — jak działa API?
+::: {.callout-tip collapse="true"}
+## {{< fa arrows-left-right >}} Request i Response — jak działa API?
 
 **Zapytanie (Request):**
 
@@ -246,6 +308,7 @@ def predict_price(area: float, bedrooms: int, age: int):
 ```json
 {"estimated_price": 787500.0}
 ```
+:::
 
 ---
 
@@ -288,7 +351,9 @@ flowchart LR
     style DB fill:#9C27B0,color:#fff
 ```
 
+::: {.callout-note appearance="simple"}
 Producenci (aplikacje, sensory, systemy) wysyłają zdarzenia do Kafki. Konsumenci (Spark, FastAPI, systemy raportowe) odczytują je i przetwarzają — każdy na swój sposób, niezależnie od pozostałych.
+:::
 
 ---
 
@@ -296,6 +361,12 @@ Producenci (aplikacje, sensory, systemy) wysyłają zdarzenia do Kafki. Konsumen
 
 Kafka to centralny element architektury strumieniowej. Jej siła tkwi w trwałości danych (wiadomości nie znikają), skalowalności (partycje, replikacja) i elastyczności (wielu niezależnych konsumentów). Na laboratoriach sami uruchomicie klaster Kafki w Dockerze i napiszecie producentów i konsumentów w Pythonie.
 
-**Na następnym wykładzie:** Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę, integracja z Kafką.
+::: {.callout-note appearance="simple"}
+## {{< fa forward >}} Na następnym wykładzie
+Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę, integracja z Kafką.
+:::
 
-**Do przemyślenia:** Projektujesz system monitorowania cen konkurencji dla sieci sklepów. Jakie tematy Kafki byś utworzył? Ile partycji? Jakie grupy konsumentów?
+::: {.callout-tip appearance="simple"}
+## {{< fa brain >}} Do przemyślenia
+Projektujesz system monitorowania cen konkurencji dla sieci sklepów. Jakie tematy Kafki byś utworzył? Ile partycji? Jakie grupy konsumentów?
+:::

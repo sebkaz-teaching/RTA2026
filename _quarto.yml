@@ -18,9 +18,9 @@ website:
         - href: lectures/wyklad4.qmd
         - href: lectures/wyklad5.qmd
         - href: labs/pl_lab0_prework.ipynb
-      # - section : "Laboratoria"
-      #   contents:
-      #   - href: labs/lab1.ipynb
+      - section : "Laboratoria dzienne"
+        contents:
+        - href: labs/lab1.ipynb
       #   - href: labs/lab2.ipynb
       #   - href: labs/lab3.ipynb
       #   - href: labs/lab4.ipynb
@@ -30,7 +30,9 @@ website:
       #   - href: labs/lab8.ipynb
       #   - href: labs/lab9.ipynb
       #   - href: labs/lab10.ipynb
-      
+      - section : "Laboratoria zaoczne"
+        contents:
+        - href: labs/zaoczne_cw1.ipynb
 
   navbar:
     left: 

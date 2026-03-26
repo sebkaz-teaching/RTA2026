@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Architektura Apache Kafka — brokerzy, tematy, partycje, producenci, konsumenci, grupy konsumentów i integracja z ML.">
 
 <title>Wykład 4 — Apache Kafka – Analiza danych w czasie rzeczywistym</title>
 <style>
@@ -72,10 +73,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1dce9f32eecb350a510e49baa42f6985.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,6 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
@@ -220,6 +222,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria dzienne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria zaoczne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/zaoczne_cw1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -227,17 +257,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title"><strong>Sections</strong></h2>
+    <h2 id="toc-title">Spis treści</h2>
    
+  <ul>
+  <li><a href="#od-monolitu-do-mikroserwisów-kontekst" id="toc-od-monolitu-do-mikroserwisów-kontekst" class="nav-link active" data-scroll-target="#od-monolitu-do-mikroserwisów-kontekst"><span class="header-section-number">1</span> Od monolitu do mikroserwisów — kontekst</a></li>
+  <li><a href="#co-to-jest-apache-kafka" id="toc-co-to-jest-apache-kafka" class="nav-link" data-scroll-target="#co-to-jest-apache-kafka"><span class="header-section-number">2</span> Co to jest Apache Kafka?</a></li>
+  <li><a href="#architektura-kafki" id="toc-architektura-kafki" class="nav-link" data-scroll-target="#architektura-kafki"><span class="header-section-number">3</span> Architektura Kafki</a>
   <ul class="collapse">
-  <li><a href="#od-monolitu-do-mikroserwisów-kontekst" id="toc-od-monolitu-do-mikroserwisów-kontekst" class="nav-link active" data-scroll-target="#od-monolitu-do-mikroserwisów-kontekst">Od monolitu do mikroserwisów — kontekst</a></li>
-  <li><a href="#co-to-jest-apache-kafka" id="toc-co-to-jest-apache-kafka" class="nav-link" data-scroll-target="#co-to-jest-apache-kafka">Co to jest Apache Kafka?</a></li>
-  <li><a href="#architektura-kafki" id="toc-architektura-kafki" class="nav-link" data-scroll-target="#architektura-kafki">Architektura Kafki</a></li>
-  <li><a href="#producenci-producers" id="toc-producenci-producers" class="nav-link" data-scroll-target="#producenci-producers">Producenci (Producers)</a></li>
-  <li><a href="#konsumenci-consumers" id="toc-konsumenci-consumers" class="nav-link" data-scroll-target="#konsumenci-consumers">Konsumenci (Consumers)</a></li>
-  <li><a href="#mikroserwis-z-modelem-ml-fastapi" id="toc-mikroserwis-z-modelem-ml-fastapi" class="nav-link" data-scroll-target="#mikroserwis-z-modelem-ml-fastapi">Mikroserwis z modelem ML — FastAPI</a></li>
-  <li><a href="#kafka-ml-kompletny-obraz" id="toc-kafka-ml-kompletny-obraz" class="nav-link" data-scroll-target="#kafka-ml-kompletny-obraz">Kafka + ML — kompletny obraz</a></li>
-  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie">Podsumowanie</a></li>
+  <li><a href="#wzorzec-publishsubscribe" id="toc-wzorzec-publishsubscribe" class="nav-link" data-scroll-target="#wzorzec-publishsubscribe"><span class="header-section-number">3.1</span> Wzorzec Publish/Subscribe</a></li>
+  <li><a href="#tematy-i-partycje" id="toc-tematy-i-partycje" class="nav-link" data-scroll-target="#tematy-i-partycje"><span class="header-section-number">3.2</span> Tematy i partycje</a></li>
+  </ul></li>
+  <li><a href="#producenci-producers" id="toc-producenci-producers" class="nav-link" data-scroll-target="#producenci-producers"><span class="header-section-number">4</span> Producenci (Producers)</a></li>
+  <li><a href="#konsumenci-consumers" id="toc-konsumenci-consumers" class="nav-link" data-scroll-target="#konsumenci-consumers"><span class="header-section-number">5</span> Konsumenci (Consumers)</a>
+  <ul class="collapse">
+  <li><a href="#grupy-konsumentów-consumer-groups" id="toc-grupy-konsumentów-consumer-groups" class="nav-link" data-scroll-target="#grupy-konsumentów-consumer-groups"><span class="header-section-number">5.1</span> Grupy konsumentów (Consumer Groups)</a></li>
+  </ul></li>
+  <li><a href="#mikroserwis-z-modelem-ml-fastapi" id="toc-mikroserwis-z-modelem-ml-fastapi" class="nav-link" data-scroll-target="#mikroserwis-z-modelem-ml-fastapi"><span class="header-section-number">6</span> Mikroserwis z modelem ML — FastAPI</a></li>
+  <li><a href="#kafka-ml-kompletny-obraz" id="toc-kafka-ml-kompletny-obraz" class="nav-link" data-scroll-target="#kafka-ml-kompletny-obraz"><span class="header-section-number">7</span> Kafka + ML — kompletny obraz</a></li>
+  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie"><span class="header-section-number">8</span> Podsumowanie</a></li>
   </ul>
 </nav>
     </div>
@@ -246,9 +283,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad4.html">Wykład 4 — Apache Kafka</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Wykład 4 — Apache Kafka</h1>
+<div class="quarto-title-block"><div><h1 class="title">Wykład 4 — Apache Kafka</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Analiza danych w czasie rzeczywistym</p>
 </div>
 
+<div>
+  <div class="description">
+    Architektura Apache Kafka — brokerzy, tematy, partycje, producenci, konsumenci, grupy konsumentów i integracja z ML.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -263,44 +306,126 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><em>Czas trwania: 1,5h</em></p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa clock &gt;}} Czas trwania: 1,5h
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p><strong>Cel wykładu:</strong> Poznanie architektury Apache Kafka — brokerów, tematów, partycji, producentów, konsumentów i grup konsumentów. Zrozumienie, dlaczego Kafka jest fundamentem nowoczesnych systemów real-time.</p>
+</div>
+</div>
 <hr>
-<section id="od-monolitu-do-mikroserwisów-kontekst" class="level2">
-<h2 class="anchored" data-anchor-id="od-monolitu-do-mikroserwisów-kontekst">Od monolitu do mikroserwisów — kontekst</h2>
+<section id="od-monolitu-do-mikroserwisów-kontekst" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="od-monolitu-do-mikroserwisów-kontekst"><span class="header-section-number">1</span> Od monolitu do mikroserwisów — kontekst</h2>
 <p>Zanim przejdziemy do Kafki, krótki kontekst. Tradycyjna aplikacja to <strong>monolit</strong> — jeden duży program, który robi wszystko: obsługuje użytkowników, przetwarza dane, generuje raporty. Łatwy na start, ale trudny do skalowania i modyfikowania.</p>
 <p><strong>Mikroserwisy</strong> to podejście, w którym aplikację dzielimy na małe, niezależne usługi — każda odpowiedzialna za jedno zadanie. Usługa „płatności” nie zna szczegółów usługi „rekomendacji”. Komunikują się przez <strong>API</strong> lub <strong>kolejki wiadomości</strong>.</p>
-<p>Problem: gdy masz 20 mikroserwisów, które muszą wymieniać dane, tworzysz siatkę połączeń punkt-punkt. Każdy nowy serwis wymaga integracji z wieloma innymi. To nie skaluje się.</p>
-<p>Rozwiązanie: <strong>centralny broker wiadomości</strong> — jedno miejsce, przez które przepływają wszystkie dane. I tu wchodzi Apache Kafka.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Problem N×N
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Gdy masz 20 mikroserwisów, które muszą wymieniać dane, tworzysz siatkę połączeń punkt-punkt. Każdy nowy serwis wymaga integracji z wieloma innymi. To nie skaluje się.</p>
+<p><strong>Rozwiązanie:</strong> centralny broker wiadomości — jedno miejsce, przez które przepływają wszystkie dane. I tu wchodzi <strong>Apache Kafka</strong>.</p>
+</div>
+</div>
 <hr>
 </section>
-<section id="co-to-jest-apache-kafka" class="level2">
-<h2 class="anchored" data-anchor-id="co-to-jest-apache-kafka">Co to jest Apache Kafka?</h2>
+<section id="co-to-jest-apache-kafka" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="co-to-jest-apache-kafka"><span class="header-section-number">2</span> Co to jest Apache Kafka?</h2>
 <p>Kafka to <strong>rozproszona platforma strumieniowa</strong> stworzona w LinkedIn (2011), obecnie rozwijana jako projekt Apache. Nie jest „kolejnym systemem kolejkowym” — to coś więcej.</p>
-<p>Kluczowe cechy:</p>
-<ul>
-<li><strong>Rozproszona</strong> — działa na wielu serwerach (brokerach) jako klaster.</li>
-<li><strong>Trwała</strong> — wiadomości zapisywane na dysku, nie znikają po odczytaniu (w przeciwieństwie do klasycznych kolejek).</li>
-<li><strong>Szybka</strong> — obsługuje miliony wiadomości na sekundę.</li>
-<li><strong>Skalowalna</strong> — dodajesz brokerów i partycji w miarę wzrostu danych.</li>
-</ul>
-<section id="kafka-to-nie-kolejka" class="level3">
-<h3 class="anchored" data-anchor-id="kafka-to-nie-kolejka">Kafka to nie kolejka</h3>
-<p>W klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest usuwana po przetworzeniu. Kafka tego nie robi — wiadomości są <strong>przechowywane na dysku</strong> przez konfigurowalny czas (domyślnie 7 dni). Dzięki temu:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa server &gt;}} Rozproszona
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Działa na wielu serwerach (brokerach) jako klaster.</p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa hard-drive &gt;}} Trwała
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Wiadomości zapisywane na dysku, nie znikają po odczytaniu.</p>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa gauge-high &gt;}} Szybka
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Obsługuje miliony wiadomości na sekundę.</p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa arrows-left-right &gt;}} Skalowalna
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Dodajesz brokerów i partycji w miarę wzrostu danych.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Kafka to nie kolejka!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>W klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest <strong>usuwana</strong> po przetworzeniu. Kafka tego nie robi — wiadomości są <strong>przechowywane na dysku</strong> przez konfigurowalny czas (domyślnie 7 dni). Dzięki temu:</p>
 <ul>
 <li>wielu konsumentów może odczytać te same dane,</li>
-<li>konsument może wrócić do wcześniejszych wiadomości (replay),</li>
+<li>konsument może wrócić do wcześniejszych wiadomości (<strong>replay</strong>),</li>
 <li>awaria konsumenta nie powoduje utraty danych.</li>
 </ul>
+</div>
+</div>
 <hr>
 </section>
-</section>
-<section id="architektura-kafki" class="level2">
-<h2 class="anchored" data-anchor-id="architektura-kafki">Architektura Kafki</h2>
-<section id="wzorzec-publishsubscribe" class="level3">
-<h3 class="anchored" data-anchor-id="wzorzec-publishsubscribe">Wzorzec Publish/Subscribe</h3>
+<section id="architektura-kafki" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="architektura-kafki"><span class="header-section-number">3</span> Architektura Kafki</h2>
+<section id="wzorzec-publishsubscribe" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="wzorzec-publishsubscribe"><span class="header-section-number">3.1</span> Wzorzec Publish/Subscribe</h3>
 <p>Kafka implementuje wzorzec <strong>pub/sub</strong> (publikuj/subskrybuj). Nadawca (producent) nie wysyła wiadomości bezpośrednio do odbiorcy — publikuje ją do <strong>tematu</strong>. Odbiorcy (konsumenci) subskrybują tematy, które ich interesują.</p>
-<div class="cell" data-layout-align="default">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -327,19 +452,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="tematy-topics" class="level3">
-<h3 class="anchored" data-anchor-id="tematy-topics">Tematy (Topics)</h3>
+<section id="tematy-i-partycje" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="tematy-i-partycje"><span class="header-section-number">3.2</span> Tematy i partycje</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">{{&lt; fa folder &gt;}} Tematy (Topics)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">{{&lt; fa layer-group &gt;}} Partycje (Partitions)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">{{&lt; fa server &gt;}} Brokerzy (Brokers)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p><strong>Temat</strong> to logiczny kanał danych — jak folder, do którego trafiają wiadomości określonego typu. Np. <code>transakcje</code>, <code>zamowienia</code>, <code>logi-serwera</code>, <code>odczyty-sensorow</code>.</p>
-</section>
-<section id="partycje-partitions" class="level3">
-<h3 class="anchored" data-anchor-id="partycje-partitions">Partycje (Partitions)</h3>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p>Każdy temat jest podzielony na jedną lub więcej <strong>partycji</strong>. Partycja to uporządkowana, niezmienna sekwencja wiadomości — każda wiadomość otrzymuje unikalny numer (<strong>offset</strong>).</p>
 <p>Partycje służą dwóm celom:</p>
 <ul>
 <li><strong>Skalowalność</strong> — dane jednego tematu mogą być rozproszone na wielu brokerach.</li>
 <li><strong>Równoległość</strong> — wielu konsumentów może czytać różne partycje jednocześnie.</li>
 </ul>
-<div class="cell" data-layout-align="default">
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p><strong>Broker</strong> to pojedynczy serwer Kafki. Klaster Kafki składa się z wielu brokerów. Każdy broker przechowuje część partycji.</p>
+<p>Aby zapewnić niezawodność, Kafka <strong>replikuje</strong> partycje na wielu brokerach. Współczynnik replikacji (np. 3) oznacza, że każda partycja ma 3 kopie na różnych serwerach. Jeśli jeden broker padnie — dane nie giną.</p>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -367,21 +502,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section>
-<section id="brokerzy-brokers" class="level3">
-<h3 class="anchored" data-anchor-id="brokerzy-brokers">Brokerzy (Brokers)</h3>
-<p><strong>Broker</strong> to pojedynczy serwer Kafki. Klaster Kafki składa się z wielu brokerów. Każdy broker przechowuje część partycji.</p>
-<p>Aby zapewnić niezawodność, Kafka <strong>replikuje</strong> partycje na wielu brokerach. Współczynnik replikacji (np. 3) oznacza, że każda partycja ma 3 kopie na różnych serwerach. Jeśli jeden broker padnie — dane nie giną.</p>
 <hr>
 </section>
 </section>
-<section id="producenci-producers" class="level2">
-<h2 class="anchored" data-anchor-id="producenci-producers">Producenci (Producers)</h2>
+<section id="producenci-producers" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="producenci-producers"><span class="header-section-number">4</span> Producenci (Producers)</h2>
 <p>Producent to aplikacja, która wysyła wiadomości do Kafki. Producent wskazuje temat, a Kafka przypisuje wiadomość do partycji:</p>
 <ul>
 <li>domyślnie: <strong>round-robin</strong> (kolejno do każdej partycji),</li>
 <li>z kluczem: Kafka oblicza hash klucza i na tej podstawie wybiera partycję — wiadomości z tym samym kluczem zawsze trafiają do tej samej partycji.</li>
 </ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Bez klucza</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Z kluczem</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaProducer</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
@@ -403,8 +537,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>producer.send(<span class="st">'transakcje'</span>, value<span class="op">=</span>transakcja)</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>producer.flush()</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Wysłano: </span><span class="sc">{</span>transakcja<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="producent-z-kluczem" class="level3">
-<h3 class="anchored" data-anchor-id="producent-z-kluczem">Producent z kluczem</h3>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>Jeśli chcemy, żeby wszystkie transakcje tego samego klienta trafiały do jednej partycji (np. w celu analizy sesji):</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Klucz = ID klienta → ten sam klient zawsze w tej samej partycji</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>producer.send(</span>
@@ -412,11 +546,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    key<span class="op">=</span><span class="st">b'K-1001'</span>,       <span class="co"># klucz partycjonowania</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span>transakcja</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Kiedy używać klucza?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Używaj klucza, gdy potrzebujesz <strong>gwarancji kolejności</strong> dla danej encji (np. wszystkie transakcje klienta K-1001 w kolejności) lub gdy dalsze przetwarzanie wymaga zgrupowania po kluczu.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
 <hr>
 </section>
-</section>
-<section id="konsumenci-consumers" class="level2">
-<h2 class="anchored" data-anchor-id="konsumenci-consumers">Konsumenci (Consumers)</h2>
+<section id="konsumenci-consumers" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="konsumenci-consumers"><span class="header-section-number">5</span> Konsumenci (Consumers)</h2>
 <p>Konsument to aplikacja, która odczytuje wiadomości z tematu. Konsument śledzi swój <strong>offset</strong> — wie, którą wiadomość ostatnio przetworzył. Po awarii wznawia od tego miejsca.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaConsumer</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
@@ -432,27 +581,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    tx <span class="op">=</span> message.value</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> tx[<span class="st">'kwota'</span>] <span class="op">&gt;</span> <span class="dv">1000</span>:</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Duża transakcja: </span><span class="sc">{</span>tx[<span class="st">'id'</span>]<span class="sc">}</span><span class="ss"> = </span><span class="sc">{</span>tx[<span class="st">'kwota'</span>]<span class="sc">}</span><span class="ss"> PLN (</span><span class="sc">{</span>tx[<span class="st">'sklep'</span>]<span class="sc">}</span><span class="ss">)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="grupy-konsumentów-consumer-groups" class="level3">
-<h3 class="anchored" data-anchor-id="grupy-konsumentów-consumer-groups">Grupy konsumentów (Consumer Groups)</h3>
-<p>Gdy jeden konsument nie nadąża z przetwarzaniem — dodajesz kolejnych. Konsumenci w <strong>tej samej grupie</strong> dzielą między siebie partycje:</p>
+<section id="grupy-konsumentów-consumer-groups" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="grupy-konsumentów-consumer-groups"><span class="header-section-number">5.1</span> Grupy konsumentów (Consumer Groups)</h3>
+<p>Gdy jeden konsument nie nadąża z przetwarzaniem — dodajesz kolejnych. Konsumenci w <strong>tej samej grupie</strong> dzielą między siebie partycje.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Zasady grup konsumentów
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
 <li>Kafka automatycznie przypisuje partycje do konsumentów w grupie.</li>
 <li>Każdą partycję czyta <strong>dokładnie jeden</strong> konsument z grupy.</li>
 <li>Jeśli konsument padnie — jego partycje przejmuje inny.</li>
+<li><strong>Ideał:</strong> liczba konsumentów w grupie = liczba partycji.</li>
+<li>Jeśli konsumentów jest więcej niż partycji — nadmiarowi będą bezczynni.</li>
 </ul>
-<p>Ideał: <strong>liczba konsumentów w grupie = liczba partycji</strong>. Jeśli konsumentów jest więcej niż partycji — nadmiarowi będą bezczynni.</p>
+</div>
+</div>
 <pre><code>  Temat: transakcje (3 partycje)
   Grupa konsumentów: "fraud-detection"
 
   Partycja 0 ──→ Konsument A
   Partycja 1 ──→ Konsument B
   Partycja 2 ──→ Konsument C</code></pre>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Wiele grup = niezależny odczyt
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Różne grupy konsumentów mogą czytać <strong>te same dane</strong> niezależnie. Np. grupa <code>fraud-detection</code> analizuje transakcje pod kątem oszustw, a grupa <code>reporting</code> buduje raporty — obie czytają temat <code>transakcje</code>, ale mają osobne offsety.</p>
+</div>
+</div>
 <hr>
 </section>
 </section>
-<section id="mikroserwis-z-modelem-ml-fastapi" class="level2">
-<h2 class="anchored" data-anchor-id="mikroserwis-z-modelem-ml-fastapi">Mikroserwis z modelem ML — FastAPI</h2>
+<section id="mikroserwis-z-modelem-ml-fastapi" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="mikroserwis-z-modelem-ml-fastapi"><span class="header-section-number">6</span> Mikroserwis z modelem ML — FastAPI</h2>
 <p>W praktyce konsument Kafki często przekazuje dane do modelu ML serwowanego przez API. FastAPI to lekki framework Pythonowy idealny do tego celu.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -474,8 +648,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Uruchomienie: uvicorn main:app --reload</span></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Zapytanie: http://localhost:8000/predict/?area=75&amp;bedrooms=3&amp;age=10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="request-i-response-jak-działa-api" class="level3">
-<h3 class="anchored" data-anchor-id="request-i-response-jak-działa-api">Request i Response — jak działa API?</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa arrows-left-right &gt;}} Request i Response — jak działa API?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <p><strong>Zapytanie (Request):</strong></p>
 <ul>
 <li>URL: <code>http://localhost:8000/predict/?area=75&amp;bedrooms=3&amp;age=10</code></li>
@@ -489,13 +673,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Ciało: wynik w formacie JSON</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"estimated_price"</span><span class="fu">:</span> <span class="fl">787500.0</span><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 <hr>
 </section>
-</section>
-<section id="kafka-ml-kompletny-obraz" class="level2">
-<h2 class="anchored" data-anchor-id="kafka-ml-kompletny-obraz">Kafka + ML — kompletny obraz</h2>
+<section id="kafka-ml-kompletny-obraz" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="kafka-ml-kompletny-obraz"><span class="header-section-number">7</span> Kafka + ML — kompletny obraz</h2>
 <p>Łącząc elementy z ostatnich wykładów, oto schemat typowego systemu real-time analytics:</p>
-<div class="cell" data-layout-align="default">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -537,15 +723,50 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
 <p>Producenci (aplikacje, sensory, systemy) wysyłają zdarzenia do Kafki. Konsumenci (Spark, FastAPI, systemy raportowe) odczytują je i przetwarzają — każdy na swój sposób, niezależnie od pozostałych.</p>
+</div>
+</div>
+</div>
 <hr>
 </section>
-<section id="podsumowanie" class="level2">
-<h2 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h2>
+<section id="podsumowanie" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="podsumowanie"><span class="header-section-number">8</span> Podsumowanie</h2>
 <p>Kafka to centralny element architektury strumieniowej. Jej siła tkwi w trwałości danych (wiadomości nie znikają), skalowalności (partycje, replikacja) i elastyczności (wielu niezależnych konsumentów). Na laboratoriach sami uruchomicie klaster Kafki w Dockerze i napiszecie producentów i konsumentów w Pythonie.</p>
-<p><strong>Na następnym wykładzie:</strong> Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę, integracja z Kafką.</p>
-<p><strong>Do przemyślenia:</strong> Projektujesz system monitorowania cen konkurencji dla sieci sklepów. Jakie tematy Kafki byś utworzył? Ile partycji? Jakie grupy konsumentów?</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa forward &gt;}} Na następnym wykładzie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę, integracja z Kafką.</p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa brain &gt;}} Do przemyślenia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Projektujesz system monitorowania cen konkurencji dla sieci sklepów. Jakie tematy Kafki byś utworzył? Ile partycji? Jakie grupy konsumentów?</p>
+</div>
+</div>
 
+
+<!-- -->
 
 </section>
 
@@ -620,6 +841,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -954,7 +1226,381 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       }
     }
   });
-  </script>
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Wykład 4 — Apache Kafka"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Analiza danych w czasie rzeczywistym"</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Architektura Apache Kafka — brokerzy, tematy, partycje, producenci, konsumenci, grupy konsumentów i integracja z ML."</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-summary: "Pokaż kod"</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Spis treści"</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">    smooth-scroll: true</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">    theme:</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">      light: flatly</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">    highlight-style: github</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-align: center</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-cap-location: bottom</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="minimal"}</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa clock &gt;}} Czas trwania: 1,5h</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>**Cel wykładu:** Poznanie architektury Apache Kafka — brokerów, tematów, partycji, producentów, konsumentów i grup konsumentów. Zrozumienie, dlaczego Kafka jest fundamentem nowoczesnych systemów real-time.</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Od monolitu do mikroserwisów — kontekst</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>Zanim przejdziemy do Kafki, krótki kontekst. Tradycyjna aplikacja to **monolit** — jeden duży program, który robi wszystko: obsługuje użytkowników, przetwarza dane, generuje raporty. Łatwy na start, ale trudny do skalowania i modyfikowania.</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>**Mikroserwisy** to podejście, w którym aplikację dzielimy na małe, niezależne usługi — każda odpowiedzialna za jedno zadanie. Usługa „płatności" nie zna szczegółów usługi „rekomendacji". Komunikują się przez **API** lub **kolejki wiadomości**.</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>::: {.callout-caution}</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Problem N×N</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>Gdy masz 20 mikroserwisów, które muszą wymieniać dane, tworzysz siatkę połączeń punkt-punkt. Każdy nowy serwis wymaga integracji z wieloma innymi. To nie skaluje się.</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>**Rozwiązanie:** centralny broker wiadomości — jedno miejsce, przez które przepływają wszystkie dane. I tu wchodzi **Apache Kafka**.</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Co to jest Apache Kafka?</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>Kafka to **rozproszona platforma strumieniowa** stworzona w LinkedIn (2011), obecnie rozwijana jako projekt Apache. Nie jest „kolejnym systemem kolejkowym" — to coś więcej.</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>:::: {.columns}</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>::: {.column width="50%"}</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa server &gt;}} Rozproszona</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>Działa na wielu serwerach (brokerach) jako klaster.</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa hard-drive &gt;}} Trwała</span></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>Wiadomości zapisywane na dysku, nie znikają po odczytaniu.</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>::: {.column width="50%"}</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa gauge-high &gt;}} Szybka</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>Obsługuje miliony wiadomości na sekundę.</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa arrows-left-right &gt;}} Skalowalna</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>Dodajesz brokerów i partycji w miarę wzrostu danych.</span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>::::</span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Kafka to nie kolejka!</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>W klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest **usuwana** po przetworzeniu. Kafka tego nie robi — wiadomości są **przechowywane na dysku** przez konfigurowalny czas (domyślnie 7 dni). Dzięki temu:</span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>wielu konsumentów może odczytać te same dane,</span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>konsument może wrócić do wcześniejszych wiadomości (**replay**),</span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>awaria konsumenta nie powoduje utraty danych.</span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a><span class="fu">## Architektura Kafki</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a><span class="fu">### Wzorzec Publish/Subscribe</span></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a>Kafka implementuje wzorzec **pub/sub** (publikuj/subskrybuj). Nadawca (producent) nie wysyła wiadomości bezpośrednio do odbiorcy — publikuje ją do **tematu**. Odbiorcy (konsumenci) subskrybują tematy, które ich interesują.</span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>%%| fig-cap: <span class="ot">"</span><span class="st">Wzorzec Publish/Subscribe w Kafce</span><span class="ot">"</span></span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>    PA[<span class="ot">"</span><span class="st">Producent A</span><span class="ot">"</span>] --&gt; T[<span class="ot">"</span><span class="st">Temat:</span><span class="ch">\n</span><span class="st">zamówienia</span><span class="ot">"</span>]</span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>    PB[<span class="ot">"</span><span class="st">Producent B</span><span class="ot">"</span>] --&gt; T</span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>    PC[<span class="ot">"</span><span class="st">Producent C</span><span class="ot">"</span>] --&gt; T</span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a>    T --&gt; CX[<span class="ot">"</span><span class="st">Konsument X</span><span class="ch">\n</span><span class="st">(Grupa 1)</span><span class="ot">"</span>]</span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a>    T --&gt; CY[<span class="ot">"</span><span class="st">Konsument Y</span><span class="ch">\n</span><span class="st">(Grupa 1)</span><span class="ot">"</span>]</span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a>    T --&gt; CZ[<span class="ot">"</span><span class="st">Konsument Z</span><span class="ch">\n</span><span class="st">(Grupa 2)</span><span class="ot">"</span>]</span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>    style T fill:<span class="co">#FF9800,color:#fff</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>    style PA fill:<span class="co">#2196F3,color:#fff</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>    style PB fill:<span class="co">#2196F3,color:#fff</span></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>    style PC fill:<span class="co">#2196F3,color:#fff</span></span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a>    style CX fill:<span class="co">#4CAF50,color:#fff</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>    style CY fill:<span class="co">#4CAF50,color:#fff</span></span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a>    style CZ fill:<span class="co">#9C27B0,color:#fff</span></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tematy i partycje</span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a><span class="fu">#### {{&lt; fa folder &gt;}} Tematy (Topics)</span></span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a>**Temat** to logiczny kanał danych — jak folder, do którego trafiają wiadomości określonego typu. Np. <span class="in">`transakcje`</span>, <span class="in">`zamowienia`</span>, <span class="in">`logi-serwera`</span>, <span class="in">`odczyty-sensorow`</span>.</span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="fu">#### {{&lt; fa layer-group &gt;}} Partycje (Partitions)</span></span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a>Każdy temat jest podzielony na jedną lub więcej **partycji**. Partycja to uporządkowana, niezmienna sekwencja wiadomości — każda wiadomość otrzymuje unikalny numer (**offset**).</span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a>Partycje służą dwóm celom:</span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Skalowalność** — dane jednego tematu mogą być rozproszone na wielu brokerach.</span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Równoległość** — wielu konsumentów może czytać różne partycje jednocześnie.</span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a><span class="fu">#### {{&lt; fa server &gt;}} Brokerzy (Brokers)</span></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a>**Broker** to pojedynczy serwer Kafki. Klaster Kafki składa się z wielu brokerów. Każdy broker przechowuje część partycji.</span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a>Aby zapewnić niezawodność, Kafka **replikuje** partycje na wielu brokerach. Współczynnik replikacji (np. 3) oznacza, że każda partycja ma 3 kopie na różnych serwerach. Jeśli jeden broker padnie — dane nie giną.</span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a>%%| fig-cap: <span class="ot">"</span><span class="st">Temat z partycjami rozproszonymi na brokerach</span><span class="ot">"</span></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a>    subgraph <span class="ot">"</span><span class="st">Temat: transakcje</span><span class="ot">"</span></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a>        direction TB</span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a>        P0[<span class="ot">"</span><span class="st">Partycja 0</span><span class="ch">\n</span><span class="st">offset: 0,1,2,3...</span><span class="ot">"</span>]</span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a>        P1[<span class="ot">"</span><span class="st">Partycja 1</span><span class="ch">\n</span><span class="st">offset: 0,1,2,3...</span><span class="ot">"</span>]</span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a>        P2[<span class="ot">"</span><span class="st">Partycja 2</span><span class="ch">\n</span><span class="st">offset: 0,1,2,3...</span><span class="ot">"</span>]</span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a>    end</span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a>    P0 -.-&gt; B1[<span class="ot">"</span><span class="st">Broker 1</span><span class="ot">"</span>]</span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a>    P1 -.-&gt; B2[<span class="ot">"</span><span class="st">Broker 2</span><span class="ot">"</span>]</span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a>    P2 -.-&gt; B3[<span class="ot">"</span><span class="st">Broker 3</span><span class="ot">"</span>]</span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a>    style P0 fill:<span class="co">#E3F2FD,stroke:#2196F3</span></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a>    style P1 fill:<span class="co">#E3F2FD,stroke:#2196F3</span></span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a>    style P2 fill:<span class="co">#E3F2FD,stroke:#2196F3</span></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a>    style B1 fill:<span class="co">#FFF3E0,stroke:#FF9800</span></span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a>    style B2 fill:<span class="co">#FFF3E0,stroke:#FF9800</span></span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a>    style B3 fill:<span class="co">#FFF3E0,stroke:#FF9800</span></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Producenci (Producers)</span></span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a>Producent to aplikacja, która wysyła wiadomości do Kafki. Producent wskazuje temat, a Kafka przypisuje wiadomość do partycji:</span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>domyślnie: **round-robin** (kolejno do każdej partycji),</span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>z kluczem: Kafka oblicza hash klucza i na tej podstawie wybiera partycję — wiadomości z tym samym kluczem zawsze trafiają do tej samej partycji.</span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Bez klucza</span></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a><span class="in">```python</span></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaProducer</span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>producer <span class="op">=</span> KafkaProducer(</span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>    bootstrap_servers<span class="op">=</span><span class="st">'localhost:9092'</span>,</span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a>    value_serializer<span class="op">=</span><span class="kw">lambda</span> v: json.dumps(v).encode(<span class="st">'utf-8'</span>)</span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a><span class="co"># Wysyłanie transakcji do tematu "transakcje"</span></span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>transakcja <span class="op">=</span> {</span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a>    <span class="st">'id'</span>: <span class="st">'TX0042'</span>,</span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: <span class="fl">1250.00</span>,</span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a>    <span class="st">'klient'</span>: <span class="st">'K-1001'</span>,</span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czas'</span>: datetime.now().isoformat(),</span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sklep'</span>: <span class="st">'Warszawa'</span></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>producer.send(<span class="st">'transakcje'</span>, value<span class="op">=</span>transakcja)</span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a>producer.flush()</span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Wysłano: </span><span class="sc">{</span>transakcja<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Z kluczem</span></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>Jeśli chcemy, żeby wszystkie transakcje tego samego klienta trafiały do jednej partycji (np. w celu analizy sesji):</span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a><span class="in">```python</span></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a><span class="co"># Klucz = ID klienta → ten sam klient zawsze w tej samej partycji</span></span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>producer.send(</span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>    <span class="st">'transakcje'</span>,</span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>    key<span class="op">=</span><span class="st">b'K-1001'</span>,       <span class="co"># klucz partycjonowania</span></span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>    value<span class="op">=</span>transakcja</span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a><span class="fu">## Kiedy używać klucza?</span></span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a>Używaj klucza, gdy potrzebujesz **gwarancji kolejności** dla danej encji (np. wszystkie transakcje klienta K-1001 w kolejności) lub gdy dalsze przetwarzanie wymaga zgrupowania po kluczu.</span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a><span class="fu">## Konsumenci (Consumers)</span></span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>Konsument to aplikacja, która odczytuje wiadomości z tematu. Konsument śledzi swój **offset** — wie, którą wiadomość ostatnio przetworzył. Po awarii wznawia od tego miejsca.</span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a><span class="in">```python</span></span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaConsumer</span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>consumer <span class="op">=</span> KafkaConsumer(</span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>    <span class="st">'transakcje'</span>,</span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a>    bootstrap_servers<span class="op">=</span><span class="st">'localhost:9092'</span>,</span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a>    auto_offset_reset<span class="op">=</span><span class="st">'earliest'</span>,</span>
+<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>))</span>
+<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> message <span class="kw">in</span> consumer:</span>
+<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a>    tx <span class="op">=</span> message.value</span>
+<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> tx[<span class="st">'kwota'</span>] <span class="op">&gt;</span> <span class="dv">1000</span>:</span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Duża transakcja: </span><span class="sc">{</span>tx[<span class="st">'id'</span>]<span class="sc">}</span><span class="ss"> = </span><span class="sc">{</span>tx[<span class="st">'kwota'</span>]<span class="sc">}</span><span class="ss"> PLN (</span><span class="sc">{</span>tx[<span class="st">'sklep'</span>]<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a><span class="fu">### Grupy konsumentów (Consumer Groups)</span></span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a>Gdy jeden konsument nie nadąża z przetwarzaniem — dodajesz kolejnych. Konsumenci w **tej samej grupie** dzielą między siebie partycje.</span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## Zasady grup konsumentów</span></span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Kafka automatycznie przypisuje partycje do konsumentów w grupie.</span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Każdą partycję czyta **dokładnie jeden** konsument z grupy.</span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Jeśli konsument padnie — jego partycje przejmuje inny.</span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Ideał:** liczba konsumentów w grupie = liczba partycji.</span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Jeśli konsumentów jest więcej niż partycji — nadmiarowi będą bezczynni.</span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a><span class="in">  Temat: transakcje (3 partycje)</span></span>
+<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a><span class="in">  Grupa konsumentów: "fraud-detection"</span></span>
+<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a><span class="in">  Partycja 0 ──→ Konsument A</span></span>
+<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a><span class="in">  Partycja 1 ──→ Konsument B</span></span>
+<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a><span class="in">  Partycja 2 ──→ Konsument C</span></span>
+<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-263"><a href="#cb7-263" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb7-264"><a href="#cb7-264" aria-hidden="true" tabindex="-1"></a><span class="fu">## Wiele grup = niezależny odczyt</span></span>
+<span id="cb7-265"><a href="#cb7-265" aria-hidden="true" tabindex="-1"></a>Różne grupy konsumentów mogą czytać **te same dane** niezależnie. Np. grupa <span class="in">`fraud-detection`</span> analizuje transakcje pod kątem oszustw, a grupa <span class="in">`reporting`</span> buduje raporty — obie czytają temat <span class="in">`transakcje`</span>, ale mają osobne offsety.</span>
+<span id="cb7-266"><a href="#cb7-266" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-267"><a href="#cb7-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-268"><a href="#cb7-268" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-269"><a href="#cb7-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-270"><a href="#cb7-270" aria-hidden="true" tabindex="-1"></a><span class="fu">## Mikroserwis z modelem ML — FastAPI</span></span>
+<span id="cb7-271"><a href="#cb7-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-272"><a href="#cb7-272" aria-hidden="true" tabindex="-1"></a>W praktyce konsument Kafki często przekazuje dane do modelu ML serwowanego przez API. FastAPI to lekki framework Pythonowy idealny do tego celu.</span>
+<span id="cb7-273"><a href="#cb7-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-274"><a href="#cb7-274" aria-hidden="true" tabindex="-1"></a><span class="in">```python</span></span>
+<span id="cb7-275"><a href="#cb7-275" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
+<span id="cb7-276"><a href="#cb7-276" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-277"><a href="#cb7-277" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb7-278"><a href="#cb7-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-279"><a href="#cb7-279" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI()</span>
+<span id="cb7-280"><a href="#cb7-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-281"><a href="#cb7-281" aria-hidden="true" tabindex="-1"></a><span class="co"># Wczytanie wytrenowanego modelu</span></span>
+<span id="cb7-282"><a href="#cb7-282" aria-hidden="true" tabindex="-1"></a><span class="co"># with open("model.pkl", "rb") as f:</span></span>
+<span id="cb7-283"><a href="#cb7-283" aria-hidden="true" tabindex="-1"></a><span class="co">#     model = pickle.load(f)</span></span>
+<span id="cb7-284"><a href="#cb7-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-285"><a href="#cb7-285" aria-hidden="true" tabindex="-1"></a><span class="at">@app.get</span>(<span class="st">"/predict/"</span>)</span>
+<span id="cb7-286"><a href="#cb7-286" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_price(area: <span class="bu">float</span>, bedrooms: <span class="bu">int</span>, age: <span class="bu">int</span>):</span>
+<span id="cb7-287"><a href="#cb7-287" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Prognoza ceny nieruchomości."""</span></span>
+<span id="cb7-288"><a href="#cb7-288" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> np.array([[area, bedrooms, age]])</span>
+<span id="cb7-289"><a href="#cb7-289" aria-hidden="true" tabindex="-1"></a>    <span class="co"># price = model.predict(features)[0]</span></span>
+<span id="cb7-290"><a href="#cb7-290" aria-hidden="true" tabindex="-1"></a>    price <span class="op">=</span> area <span class="op">*</span> <span class="dv">8500</span> <span class="op">+</span> bedrooms <span class="op">*</span> <span class="dv">50000</span> <span class="op">-</span> age <span class="op">*</span> <span class="dv">2000</span>  <span class="co"># uproszczony model</span></span>
+<span id="cb7-291"><a href="#cb7-291" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"estimated_price"</span>: <span class="bu">round</span>(price, <span class="dv">2</span>)}</span>
+<span id="cb7-292"><a href="#cb7-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-293"><a href="#cb7-293" aria-hidden="true" tabindex="-1"></a><span class="co"># Uruchomienie: uvicorn main:app --reload</span></span>
+<span id="cb7-294"><a href="#cb7-294" aria-hidden="true" tabindex="-1"></a><span class="co"># Zapytanie: http://localhost:8000/predict/?area=75&amp;bedrooms=3&amp;age=10</span></span>
+<span id="cb7-295"><a href="#cb7-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-296"><a href="#cb7-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-297"><a href="#cb7-297" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb7-298"><a href="#cb7-298" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa arrows-left-right &gt;}} Request i Response — jak działa API?</span></span>
+<span id="cb7-299"><a href="#cb7-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-300"><a href="#cb7-300" aria-hidden="true" tabindex="-1"></a>**Zapytanie (Request):**</span>
+<span id="cb7-301"><a href="#cb7-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-302"><a href="#cb7-302" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>URL: <span class="in">`http://localhost:8000/predict/?area=75&amp;bedrooms=3&amp;age=10`</span></span>
+<span id="cb7-303"><a href="#cb7-303" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Metoda HTTP: GET lub POST</span>
+<span id="cb7-304"><a href="#cb7-304" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Nagłówki: Content-Type, Authorization</span>
+<span id="cb7-305"><a href="#cb7-305" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ciało (body): dane w formacie JSON</span>
+<span id="cb7-306"><a href="#cb7-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-307"><a href="#cb7-307" aria-hidden="true" tabindex="-1"></a>**Odpowiedź (Response):**</span>
+<span id="cb7-308"><a href="#cb7-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-309"><a href="#cb7-309" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Status HTTP: <span class="in">`200 OK`</span>, <span class="in">`400 Bad Request`</span>, <span class="in">`500 Internal Server Error`</span></span>
+<span id="cb7-310"><a href="#cb7-310" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Ciało: wynik w formacie JSON</span>
+<span id="cb7-311"><a href="#cb7-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-312"><a href="#cb7-312" aria-hidden="true" tabindex="-1"></a><span class="in">```json</span></span>
+<span id="cb7-313"><a href="#cb7-313" aria-hidden="true" tabindex="-1"></a>{<span class="st">"estimated_price"</span><span class="op">:</span> <span class="fl">787500.0</span>}</span>
+<span id="cb7-314"><a href="#cb7-314" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-315"><a href="#cb7-315" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-316"><a href="#cb7-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-317"><a href="#cb7-317" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-318"><a href="#cb7-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-319"><a href="#cb7-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Kafka + ML — kompletny obraz</span></span>
+<span id="cb7-320"><a href="#cb7-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-321"><a href="#cb7-321" aria-hidden="true" tabindex="-1"></a>Łącząc elementy z ostatnich wykładów, oto schemat typowego systemu real-time analytics:</span>
+<span id="cb7-322"><a href="#cb7-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-325"><a href="#cb7-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb7-326"><a href="#cb7-326" aria-hidden="true" tabindex="-1"></a>%%| fig-cap: <span class="ot">"</span><span class="st">Typowy system real-time analytics z Kafką</span><span class="ot">"</span></span>
+<span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a>flowchart LR</span>
+<span id="cb7-328"><a href="#cb7-328" aria-hidden="true" tabindex="-1"></a>    subgraph Źródła</span>
+<span id="cb7-329"><a href="#cb7-329" aria-hidden="true" tabindex="-1"></a>        WEB[<span class="ot">"</span><span class="st">Aplikacja webowa</span><span class="ot">"</span>]</span>
+<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a>        IOT[<span class="ot">"</span><span class="st">Sensory IoT</span><span class="ot">"</span>]</span>
+<span id="cb7-331"><a href="#cb7-331" aria-hidden="true" tabindex="-1"></a>        PAY[<span class="ot">"</span><span class="st">System płatności</span><span class="ot">"</span>]</span>
+<span id="cb7-332"><a href="#cb7-332" aria-hidden="true" tabindex="-1"></a>    end</span>
+<span id="cb7-333"><a href="#cb7-333" aria-hidden="true" tabindex="-1"></a>    subgraph Kafka</span>
+<span id="cb7-334"><a href="#cb7-334" aria-hidden="true" tabindex="-1"></a>        T[<span class="ot">"</span><span class="st">Temat:</span><span class="ch">\n</span><span class="st">events</span><span class="ot">"</span>]</span>
+<span id="cb7-335"><a href="#cb7-335" aria-hidden="true" tabindex="-1"></a>    end</span>
+<span id="cb7-336"><a href="#cb7-336" aria-hidden="true" tabindex="-1"></a>    subgraph Przetwarzanie</span>
+<span id="cb7-337"><a href="#cb7-337" aria-hidden="true" tabindex="-1"></a>        SP[<span class="ot">"</span><span class="st">Spark Streaming</span><span class="ot">"</span>]</span>
+<span id="cb7-338"><a href="#cb7-338" aria-hidden="true" tabindex="-1"></a>        API[<span class="ot">"</span><span class="st">FastAPI + ML</span><span class="ot">"</span>]</span>
+<span id="cb7-339"><a href="#cb7-339" aria-hidden="true" tabindex="-1"></a>        DB[<span class="ot">"</span><span class="st">Zapis do bazy</span><span class="ot">"</span>]</span>
+<span id="cb7-340"><a href="#cb7-340" aria-hidden="true" tabindex="-1"></a>    end</span>
+<span id="cb7-341"><a href="#cb7-341" aria-hidden="true" tabindex="-1"></a>    subgraph Wyniki</span>
+<span id="cb7-342"><a href="#cb7-342" aria-hidden="true" tabindex="-1"></a>        DASH[<span class="ot">"</span><span class="st">Dashboard</span><span class="ot">"</span>]</span>
+<span id="cb7-343"><a href="#cb7-343" aria-hidden="true" tabindex="-1"></a>        ALERT[<span class="ot">"</span><span class="st">Alerty</span><span class="ot">"</span>]</span>
+<span id="cb7-344"><a href="#cb7-344" aria-hidden="true" tabindex="-1"></a>        REP[<span class="ot">"</span><span class="st">Raporty</span><span class="ot">"</span>]</span>
+<span id="cb7-345"><a href="#cb7-345" aria-hidden="true" tabindex="-1"></a>    end</span>
+<span id="cb7-346"><a href="#cb7-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-347"><a href="#cb7-347" aria-hidden="true" tabindex="-1"></a>    WEB --&gt; T</span>
+<span id="cb7-348"><a href="#cb7-348" aria-hidden="true" tabindex="-1"></a>    IOT --&gt; T</span>
+<span id="cb7-349"><a href="#cb7-349" aria-hidden="true" tabindex="-1"></a>    PAY --&gt; T</span>
+<span id="cb7-350"><a href="#cb7-350" aria-hidden="true" tabindex="-1"></a>    T --&gt; SP --&gt; DASH</span>
+<span id="cb7-351"><a href="#cb7-351" aria-hidden="true" tabindex="-1"></a>    T --&gt; API --&gt; ALERT</span>
+<span id="cb7-352"><a href="#cb7-352" aria-hidden="true" tabindex="-1"></a>    T --&gt; DB --&gt; REP</span>
+<span id="cb7-353"><a href="#cb7-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-354"><a href="#cb7-354" aria-hidden="true" tabindex="-1"></a>    style T fill:<span class="co">#FF9800,color:#fff</span></span>
+<span id="cb7-355"><a href="#cb7-355" aria-hidden="true" tabindex="-1"></a>    style SP fill:<span class="co">#2196F3,color:#fff</span></span>
+<span id="cb7-356"><a href="#cb7-356" aria-hidden="true" tabindex="-1"></a>    style API fill:<span class="co">#4CAF50,color:#fff</span></span>
+<span id="cb7-357"><a href="#cb7-357" aria-hidden="true" tabindex="-1"></a>    style DB fill:<span class="co">#9C27B0,color:#fff</span></span>
+<span id="cb7-358"><a href="#cb7-358" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-359"><a href="#cb7-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-360"><a href="#cb7-360" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb7-361"><a href="#cb7-361" aria-hidden="true" tabindex="-1"></a>Producenci (aplikacje, sensory, systemy) wysyłają zdarzenia do Kafki. Konsumenci (Spark, FastAPI, systemy raportowe) odczytują je i przetwarzają — każdy na swój sposób, niezależnie od pozostałych.</span>
+<span id="cb7-362"><a href="#cb7-362" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-363"><a href="#cb7-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-364"><a href="#cb7-364" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb7-365"><a href="#cb7-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-366"><a href="#cb7-366" aria-hidden="true" tabindex="-1"></a><span class="fu">## Podsumowanie</span></span>
+<span id="cb7-367"><a href="#cb7-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-368"><a href="#cb7-368" aria-hidden="true" tabindex="-1"></a>Kafka to centralny element architektury strumieniowej. Jej siła tkwi w trwałości danych (wiadomości nie znikają), skalowalności (partycje, replikacja) i elastyczności (wielu niezależnych konsumentów). Na laboratoriach sami uruchomicie klaster Kafki w Dockerze i napiszecie producentów i konsumentów w Pythonie.</span>
+<span id="cb7-369"><a href="#cb7-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-370"><a href="#cb7-370" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb7-371"><a href="#cb7-371" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa forward &gt;}} Na następnym wykładzie</span></span>
+<span id="cb7-372"><a href="#cb7-372" aria-hidden="true" tabindex="-1"></a>Apache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę, integracja z Kafką.</span>
+<span id="cb7-373"><a href="#cb7-373" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-374"><a href="#cb7-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-375"><a href="#cb7-375" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb7-376"><a href="#cb7-376" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa brain &gt;}} Do przemyślenia</span></span>
+<span id="cb7-377"><a href="#cb7-377" aria-hidden="true" tabindex="-1"></a>Projektujesz system monitorowania cen konkurencji dla sieci sklepów. Jakie tematy Kafki byś utworzył? Ile partycji? Jakie grupy konsumentów?</span>
+<span id="cb7-378"><a href="#cb7-378" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -973,4 +1619,5 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

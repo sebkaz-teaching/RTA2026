@@ -1,14 +1,29 @@
 ---
 title: "Wykład 3 — Uczenie maszynowe: batch vs online"
+subtitle: "Analiza danych w czasie rzeczywistym"
+description: "Uczenie wsadowe vs przyrostowe, SGD, concept drift, detekcja anomalii i wyjaśnialność modeli."
 format:
   html:
     code-fold: true
+    code-tools: true
+    code-summary: "Pokaż kod"
+    toc: true
+    toc-depth: 3
+    toc-title: "Spis treści"
+    number-sections: true
+    smooth-scroll: true
+    theme:
+      light: flatly
+    highlight-style: github
+    fig-align: center
+    fig-cap-location: bottom
 jupyter: python3
 ---
 
-*Czas trwania: 1,5h*
-
+::: {.callout-note appearance="minimal"}
+## {{< fa clock >}} Czas trwania: 1,5h
 **Cel wykładu:** Zrozumienie różnic między uczeniem wsadowym (offline) a przyrostowym (online), algorytmu SGD, problemu concept drift, detekcji anomalii oraz wyjaśnialności modeli.
+:::
 
 ---
 
@@ -16,7 +31,9 @@ jupyter: python3
 
 Na poprzednich wykładach mówiliśmy o przetwarzaniu wsadowym i strumieniowym. Ten sam podział dotyczy uczenia maszynowego.
 
-### Uczenie wsadowe (offline/batch learning)
+::: {.panel-tabset}
+
+### {{< fa database >}} Batch (offline)
 
 Model jest trenowany na **całym zbiorze** danych historycznych. Po wytrenowaniu jest wdrażany do produkcji, gdzie dokonuje predykcji na nowych danych. Gdy pojawiają się nowe dane — model jest retrenowany od zera.
 
@@ -46,13 +63,14 @@ model.fit(X_train, y_train)
 print(f"Batch accuracy: {accuracy_score(y_test, model.predict(X_test)):.3f}")
 ```
 
-To podejście jest proste i skuteczne, ale ma ograniczenia:
+::: {.callout-caution appearance="simple"}
+## Ograniczenia batch learning
+- Retrenowanie na dużych zbiorach jest **kosztowne**
+- Model nie uczy się z nowych danych między retrenowaniami
+- Jeśli wzorce się zmienią (np. nowy typ oszustwa), model będzie nieaktualny
+:::
 
-- retrenowanie na dużych zbiorach danych jest kosztowne,
-- model nie uczy się z nowych danych między retrenowaniami,
-- jeśli wzorce się zmienią (np. nowy typ oszustwa), model będzie nieaktualny do następnego retrenowania.
-
-### Uczenie przyrostowe (online learning)
+### {{< fa bolt >}} Online (przyrostowe)
 
 Model uczy się **na bieżąco** — każda nowa obserwacja (lub mały batch) aktualizuje parametry modelu. Nie trzeba retrenować od zera.
 
@@ -83,9 +101,11 @@ print(f"Online accuracy po {len(accuracies)} mini-batchach: {accuracies[-1]:.3f}
 print(f"Progresja accuracy: {[f'{a:.2f}' for a in accuracies[:5]]} ... {[f'{a:.2f}' for a in accuracies[-3:]]}")
 ```
 
+:::
+
 ### Porównanie
 
-| Cecha | Batch (offline) | Online (przyrostowe) |
+| Cecha | {{< fa database >}} Batch (offline) | {{< fa bolt >}} Online (przyrostowe) |
 |-------|-----------------|---------------------|
 | Dane treningowe | Cały zbiór naraz | Porcjami (mini-batch) |
 | Aktualizacja modelu | Retrenowanie od zera | Inkrementalna |
@@ -94,19 +114,25 @@ print(f"Progresja accuracy: {[f'{a:.2f}' for a in accuracies[:5]]} ... {[f'{a:.2
 | Stabilność | Wysoka | Ryzyko „zapominania" |
 | Typowe algorytmy | RandomForest, XGBoost | SGD, Perceptron, online k-means |
 
+: Batch vs Online learning {.striped .hover}
+
 ---
 
 ## Stochastic Gradient Descent (SGD)
 
 SGD to fundament uczenia online. W klasycznym spadku gradientowym obliczamy gradient na **całym** zbiorze danych. W SGD — na **jednej obserwacji** (lub małym batchu).
 
-### Intuicja
+::: {.callout-tip collapse="true"}
+## {{< fa mountain >}} Intuicja: szukanie drogi w górach
+Wyobraź sobie, że szukasz najniższego punktu w górach we mgle:
 
-Wyobraź sobie, że szukasz najniższego punktu w górach we mgle. Gradient Descent to sytuacja, gdy obliczasz nachylenie terenu na podstawie mapy całych gór. SGD to sytuacja, gdy patrzysz tylko pod nogi i robisz krok w kierunku, który wygląda na najbardziej stromy w dół. Każdy krok jest mniej precyzyjny, ale robisz ich **dużo więcej** i dużo szybciej.
+- **Gradient Descent** — obliczasz nachylenie terenu na podstawie mapy całych gór.
+- **SGD** — patrzysz tylko pod nogi i robisz krok w kierunku, który wygląda na najbardziej stromy w dół.
+
+Każdy krok SGD jest mniej precyzyjny, ale robisz ich **dużo więcej** i dużo szybciej.
+:::
 
 ### Matematycznie
-
-Dla funkcji straty $L(\theta)$ i parametrów modelu $\theta$:
 
 **Gradient Descent (batch):**
 $$\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{N} \sum_{i=1}^{N} \nabla L_i(\theta_t)$$
@@ -120,6 +146,8 @@ gdzie $\eta$ to learning rate, a $i$ to losowo wybrana obserwacja.
 $$\theta_{t+1} = \theta_t - \eta \cdot \frac{1}{|B|} \sum_{i \in B} \nabla L_i(\theta_t)$$
 
 ```{python}
+#| label: fig-sgd-convergence
+#| fig-cap: "SGD vs Batch GD — zbieżność i wynik dopasowania"
 import matplotlib.pyplot as plt
 
 # Wizualizacja: SGD vs Batch GD na prostym problemie regresji
@@ -174,19 +202,45 @@ plt.tight_layout()
 plt.show()
 ```
 
+::: {.callout-note appearance="simple"}
 SGD jest „zaszumiony" — ale właśnie to jest jego siła w uczeniu online: każda nowa obserwacja natychmiast wpływa na model.
+:::
 
 ---
 
 ## Concept drift — gdy świat się zmienia
 
-Kluczowe wyzwanie uczenia online: **rozkład danych zmienia się w czasie** (concept drift). Model wytrenowany na danych z zeszłego roku może być bezużyteczny dzisiaj.
+::: {.callout-warning}
+## Kluczowe wyzwanie
+**Rozkład danych zmienia się w czasie** (concept drift). Model wytrenowany na danych z zeszłego roku może być bezużyteczny dzisiaj.
+:::
 
-Typy driftu:
+### Typy driftu
 
-- **Nagły (sudden)** — np. pandemia zmienia wzorce zakupowe z dnia na dzień.
-- **Stopniowy (gradual)** — np. preferencje klientów zmieniają się powoli przez miesiące.
-- **Cykliczny (recurring)** — np. sezonowość sprzedaży.
+:::: {.columns}
+
+::: {.column width="33%"}
+::: {.callout-important appearance="simple"}
+## {{< fa bolt >}} Nagły (sudden)
+Np. pandemia zmienia wzorce zakupowe z dnia na dzień.
+:::
+:::
+
+::: {.column width="33%"}
+::: {.callout-note appearance="simple"}
+## {{< fa arrow-trend-up >}} Stopniowy (gradual)
+Np. preferencje klientów zmieniają się powoli przez miesiące.
+:::
+:::
+
+::: {.column width="33%"}
+::: {.callout-tip appearance="simple"}
+## {{< fa rotate >}} Cykliczny (recurring)
+Np. sezonowość sprzedaży.
+:::
+:::
+
+::::
 
 ```{python}
 # Symulacja concept drift: nagła zmiana wzorca
@@ -281,9 +335,13 @@ plt.show()
 
 ## Detekcja anomalii
 
-Detekcja anomalii to jedno z najważniejszych zastosowań analizy danych w czasie rzeczywistym. Anomalia (wartość odstająca, outlier) to obserwacja znacznie oddalona od reszty danych.
+::: {.callout-important appearance="simple"}
+Detekcja anomalii to jedno z **najważniejszych zastosowań** analizy danych w czasie rzeczywistym. Anomalia (wartość odstająca, outlier) to obserwacja znacznie oddalona od reszty danych.
+:::
 
-### Metoda klasyczna — IQR
+::: {.panel-tabset}
+
+### Metoda IQR
 
 Dla pojedynczej zmiennej możemy użyć rozstępu międzykwartylowego:
 
@@ -316,7 +374,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-### Isolation Forest — detekcja wielowymiarowa
+### Isolation Forest
 
 Algorytm bazujący na drzewach decyzyjnych (Liu et al., 2008). Kluczowa intuicja: **anomalie są łatwiejsze do odizolowania** — losowe podziały szybciej oddzielają je od reszty danych.
 
@@ -354,15 +412,20 @@ plt.tight_layout()
 plt.show()
 ```
 
-### Detekcja anomalii w strumieniu
+### W strumieniu
 
-W kontekście real-time nie możemy przeanalizować całego zbioru danych — musimy wykrywać anomalie na bieżąco, w oknie czasowym. Na laboratoriach zbudujemy taki system z Kafką i Sparkiem.
+W kontekście real-time nie możemy przeanalizować całego zbioru danych — musimy wykrywać anomalie **na bieżąco**, w oknie czasowym. Na laboratoriach zbudujemy taki system z Kafką i Sparkiem.
+
+:::
 
 ---
 
 ## Wyjaśnialność algorytmów
 
-W branżach regulowanych (bankowość, ubezpieczenia, medycyna) nie wystarczy powiedzieć „model odrzucił wniosek kredytowy". Trzeba wyjaśnić **dlaczego**. Regulacje takie jak AI Act i RODO wymagają transparentności decyzji algorytmicznych.
+::: {.callout-important}
+## Regulacje wymagają transparentności
+W branżach regulowanych (bankowość, ubezpieczenia, medycyna) nie wystarczy powiedzieć „model odrzucił wniosek kredytowy". Trzeba wyjaśnić **dlaczego**. Regulacje takie jak **AI Act** i **RODO** wymagają transparentności decyzji algorytmicznych.
+:::
 
 ### LIME (Local Interpretable Model-Agnostic Explanations)
 
@@ -394,6 +457,12 @@ Uczenie wsadowe i przyrostowe to dwa komplementarne podejścia. W praktyce częs
 
 Detekcja anomalii i wyjaśnialność modeli to kluczowe zastosowania ML w real-time analytics — na laboratoriach przełożymy je na praktyczne systemy z Kafką i Sparkiem.
 
-**Na następnym wykładzie:** Apache Kafka — architektura, producenci, konsumenci, tematy, partycje.
+::: {.callout-note appearance="simple"}
+## {{< fa forward >}} Na następnym wykładzie
+Apache Kafka — architektura, producenci, konsumenci, tematy, partycje.
+:::
 
-**Do przemyślenia:** Twój bank trenuje model fraud detection raz w miesiącu (batch). Jakie ryzyko biznesowe niesie takie podejście? Co by się zmieniło, gdyby model uczył się online?
+::: {.callout-tip appearance="simple"}
+## {{< fa brain >}} Do przemyślenia
+Twój bank trenuje model fraud detection raz w miesiącu (batch). Jakie ryzyko biznesowe niesie takie podejście? Co by się zmieniło, gdyby model uczył się online?
+:::

@@ -1,14 +1,29 @@
 ---
 title: "Wykład 5 — Apache Spark i Structured Streaming"
+subtitle: "Analiza danych w czasie rzeczywistym"
+description: "Apache Spark jako silnik rozproszonego przetwarzania, Structured Streaming, integracja Spark–Kafka, kompletny pipeline real-time analytics."
 format:
   html:
     code-fold: true
+    code-tools: true
+    code-summary: "Pokaż kod"
+    toc: true
+    toc-depth: 3
+    toc-title: "Spis treści"
+    number-sections: true
+    smooth-scroll: true
+    theme:
+      light: flatly
+    highlight-style: github
+    fig-align: center
+    fig-cap-location: bottom
 jupyter: python3
 ---
 
-*Czas trwania: 1,5h*
-
+::: {.callout-note appearance="minimal"}
+## {{< fa clock >}} Czas trwania: 1,5h
 **Cel wykładu:** Poznanie Apache Spark jako silnika do rozproszonego przetwarzania danych. Wprowadzenie do Structured Streaming i integracji Spark–Kafka. Przegląd kompletnego pipeline'u real-time analytics.
+:::
 
 ---
 
@@ -18,12 +33,31 @@ Na poprzednich wykładach poznaliśmy Kafkę — system, który **transportuje**
 
 Spark to silnik do **rozproszonego przetwarzania danych**, który obsługuje zarówno tryb wsadowy (batch), jak i strumieniowy (streaming). Powstał na UC Berkeley w 2009 roku jako odpowiedź na ograniczenia Hadoop MapReduce — głównie na jego powolność wynikającą z ciągłego zapisu na dysk.
 
-Kluczowe cechy Sparka:
+:::: {.columns}
 
-- **Przetwarzanie w pamięci** — dane trzymane w RAM, nie na dysku. Nawet 100x szybciej niż MapReduce.
-- **Jeden silnik, wiele trybów** — batch, streaming, SQL, ML, grafy — wszystko w jednym frameworku.
-- **API w Pythonie (PySpark)**, Scali, Javie i R.
-- **Lazy evaluation** — Spark buduje plan wykonania i optymalizuje go zanim cokolwiek obliczy.
+::: {.column width="50%"}
+::: {.callout-tip appearance="simple"}
+## {{< fa memory >}} Przetwarzanie w pamięci
+Dane trzymane w RAM, nie na dysku. Nawet **100x szybciej** niż MapReduce.
+:::
+::: {.callout-tip appearance="simple"}
+## {{< fa cubes >}} Jeden silnik, wiele trybów
+Batch, streaming, SQL, ML, grafy — wszystko w jednym frameworku.
+:::
+:::
+
+::: {.column width="50%"}
+::: {.callout-tip appearance="simple"}
+## {{< fa python >}} API w wielu językach
+PySpark, Scala, Java, R.
+:::
+::: {.callout-tip appearance="simple"}
+## {{< fa wand-magic-sparkles >}} Lazy evaluation
+Spark buduje plan wykonania i optymalizuje go **zanim** cokolwiek obliczy.
+:::
+:::
+
+::::
 
 ```{mermaid}
 %%| fig-cap: "Ekosystem Apache Spark"
@@ -64,7 +98,9 @@ spark = SparkSession.builder \
     .getOrCreate()
 ```
 
+::: {.callout-note appearance="simple"}
 `local[*]` oznacza: uruchom Sparka lokalnie, używając wszystkich dostępnych rdzeni procesora. W produkcji zamiast tego podaje się adres klastra.
+:::
 
 ### DataFrame API
 
@@ -95,9 +131,13 @@ df.show()
 
 Spark rozróżnia dwa typy operacji:
 
-**Transformacje** — definiują *co* chcesz zrobić, ale nie wykonują obliczeń. Są **leniwe** (lazy). Przykłady: `filter`, `groupBy`, `select`, `join`.
+::: {.panel-tabset}
 
-**Akcje** — wyzwalają faktyczne obliczenia. Przykłady: `show`, `count`, `collect`, `write`.
+#### {{< fa wand-magic-sparkles >}} Transformacje (lazy)
+
+Definiują *co* chcesz zrobić, ale **nie wykonują** obliczeń. Są **leniwe** (lazy).
+
+Przykłady: `filter`, `groupBy`, `select`, `join`.
 
 ```python
 # Transformacje (lazy — nic się jeszcze nie liczy)
@@ -109,22 +149,32 @@ wynik = df \
         count("kwota").alias("liczba"),
         avg("kwota").alias("srednia")
     )
+```
 
+#### {{< fa play >}} Akcje (eager)
+
+**Wyzwalają** faktyczne obliczenia.
+
+Przykłady: `show`, `count`, `collect`, `write`.
+
+```python
 # Akcja (tu Spark faktycznie wykonuje obliczenia)
 wynik.show()
 
 spark.stop()
 ```
 
-### Spark SQL
+:::
 
+::: {.callout-tip collapse="true"}
+## {{< fa database >}} Spark SQL — alternatywa
 Możesz też używać zwykłego SQL-a:
 
 ```python
 df.createOrReplaceTempView("sprzedaz")
 
 spark.sql("""
-    SELECT miasto, 
+    SELECT miasto,
            SUM(kwota) as suma,
            COUNT(*) as liczba
     FROM sprzedaz
@@ -133,14 +183,16 @@ spark.sql("""
     ORDER BY suma DESC
 """).show()
 ```
+:::
 
 ---
 
 ## Structured Streaming — strumienie jako tabele
 
-Structured Streaming to moduł Sparka, który traktuje **strumień danych jak tabelę, do której ciągle dopisywane są nowe wiersze**. Dzięki temu piszesz kod strumieniowy prawie identycznie jak batch — używasz tego samego DataFrame API.
-
-### Koncepcja
+::: {.callout-important}
+## Kluczowa koncepcja
+Structured Streaming traktuje **strumień danych jak tabelę, do której ciągle dopisywane są nowe wiersze**. Dzięki temu piszesz kod strumieniowy prawie identycznie jak batch — używasz tego samego DataFrame API.
+:::
 
 ```{mermaid}
 %%| fig-cap: "Structured Streaming: strumień jako nieograniczona tabela"
@@ -161,9 +213,30 @@ flowchart TB
 
 ### Tryby wyjścia (Output Modes)
 
-- **Append** — do wyniku dopisywane są tylko nowe wiersze. Domyślny tryb.
-- **Complete** — cała tabela wynikowa jest nadpisywana (np. po agregacji).
-- **Update** — zapisywane są tylko zmienione wiersze.
+:::: {.columns}
+
+::: {.column width="33%"}
+::: {.callout-note appearance="simple"}
+## {{< fa plus >}} Append
+Do wyniku dopisywane są tylko **nowe** wiersze. Domyślny tryb.
+:::
+:::
+
+::: {.column width="33%"}
+::: {.callout-warning appearance="simple"}
+## {{< fa arrows-rotate >}} Complete
+Cała tabela wynikowa jest **nadpisywana** (np. po agregacji).
+:::
+:::
+
+::: {.column width="33%"}
+::: {.callout-tip appearance="simple"}
+## {{< fa pen >}} Update
+Zapisywane są tylko **zmienione** wiersze.
+:::
+:::
+
+::::
 
 ### Przykład: streaming z plików CSV
 
@@ -211,7 +284,12 @@ query = result.writeStream \
 
 ## Integracja Spark + Kafka
 
-To jest serce naszego kursu: **Kafka transportuje dane, Spark je przetwarza**.
+::: {.callout-important appearance="simple"}
+## Serce kursu
+**Kafka transportuje dane, Spark je przetwarza.** To fundamentalna para w architekturze real-time analytics.
+:::
+
+::: {.panel-tabset}
 
 ### Czytanie z Kafki
 
@@ -249,7 +327,8 @@ parsed_df = kafka_df \
 ### Przetwarzanie i zapis
 
 ```python
-# Agregacja: średnia kwota i liczba transakcji w oknach 5-minutowych per sklep
+# Agregacja: średnia kwota i liczba transakcji
+# w oknach 5-minutowych per sklep
 wynik = parsed_df \
     .withWatermark("czas", "2 minutes") \
     .groupBy(
@@ -272,7 +351,11 @@ query = wynik.writeStream \
 # query.awaitTermination()
 ```
 
+::: {.callout-note appearance="simple"}
 Zwróć uwagę na `.withWatermark("czas", "2 minutes")` — to mechanizm watermarkingu, o którym mówiliśmy na Wykładzie 2. Spark toleruje opóźnienie zdarzeń do 2 minut i automatycznie odrzuca te, które przyszły później.
+:::
+
+:::
 
 ---
 
@@ -317,24 +400,27 @@ flowchart LR
 ```
 
 | Komponent | Rola | Wykład |
-|-----------|------|--------|
+|-----------|------|:------:|
 | Typy danych, OLTP/OLAP, Data Lake | Kontekst i historia | W1 |
 | Lambda/Kappa, okna czasowe | Architektura | W2 |
 | ML batch vs online, SGD, anomalie | Modele i algorytmy | W3 |
 | Apache Kafka | Transport danych | W4 |
 | Apache Spark + Structured Streaming | Przetwarzanie | W5 |
 
+: Mapa kursu {.striped .hover}
+
 ---
 
 ## Złożoność algorytmów — uwaga praktyczna
 
-Projektując pipeline real-time, warto rozważyć **wymiar obliczeniowy** problemu:
-
+::: {.callout-caution}
+## Projektując pipeline real-time, rozważ wymiar obliczeniowy
 - **Duże dane, proste obliczenia** — np. filtrowanie logów, agregacje. Spark radzi sobie świetnie.
 - **Małe dane, ciężkie obliczenia** — np. trenowanie modelu deep learning. Lepiej offline na GPU.
 - **Duże dane, ciężkie obliczenia** — np. analiza wideo w czasie rzeczywistym. Wymaga specjalistycznej architektury (GPU cluster, edge computing).
 
 Dla systemów real-time kluczowe jest, żeby czas przetwarzania jednego zdarzenia był **krótszy** niż interwał między zdarzeniami. Inaczej kolejka rośnie bez końca.
+:::
 
 ---
 
@@ -342,11 +428,15 @@ Dla systemów real-time kluczowe jest, żeby czas przetwarzania jednego zdarzeni
 
 Na laboratoriach zbudujecie kompletny system krok po kroku:
 
-1. **Lab 1–2:** Środowisko (Git, Docker, Python), analiza eksploracyjna danych.
-2. **Lab 3–4:** Model ML (scikit-learn), przygotowanie do wdrożenia.
-3. **Lab 5–6:** Kafka w Dockerze — producent i konsument w Pythonie.
-4. **Lab 7–8:** PySpark + Structured Streaming + Kafka.
-5. **Lab 9–10:** Kompletny pipeline + projekt grupowy.
+| Lab | Temat |
+|:---:|-------|
+| 1–2 | Środowisko (Git, Docker, Python), analiza eksploracyjna danych |
+| 3–4 | Model ML (scikit-learn), przygotowanie do wdrożenia |
+| 5–6 | Kafka w Dockerze — producent i konsument w Pythonie |
+| 7–8 | PySpark + Structured Streaming + Kafka |
+| 9–10 | Kompletny pipeline + projekt grupowy |
+
+: Plan laboratoriów {.striped .hover}
 
 ---
 
@@ -354,6 +444,12 @@ Na laboratoriach zbudujecie kompletny system krok po kroku:
 
 Apache Spark to silnik, który zamienia surowe strumienie danych w wartość biznesową. W połączeniu z Kafką tworzy potężną platformę real-time analytics. Structured Streaming upraszcza programowanie strumieniowe — piszesz kod jak dla batch, a Spark zajmuje się resztą.
 
-To był ostatni wykład. Na laboratoriach przełożycie tę wiedzę na praktykę — od pierwszego `docker compose up` po kompletny system przetwarzania danych w czasie rzeczywistym.
+::: {.callout-important appearance="simple"}
+## {{< fa flag-checkered >}} To był ostatni wykład
+Na laboratoriach przełożycie tę wiedzę na praktykę — od pierwszego `docker compose up` po kompletny system przetwarzania danych w czasie rzeczywistym.
+:::
 
-**Przed Lab 1:** Upewnij się, że masz zainstalowanego Dockera i Gita (patrz strona [Narzędzia](info.qmd)). Sklonuj repozytorium kursu i uruchom `docker compose up` — jeśli działa, jesteś gotowy.
+::: {.callout-tip appearance="simple"}
+## {{< fa laptop-code >}} Przed Lab 1
+Upewnij się, że masz zainstalowanego Dockera i Gita (patrz strona [Narzędzia](info.qmd)). Sklonuj repozytorium kursu i uruchom `docker compose up` — jeśli działa, jesteś gotowy.
+:::

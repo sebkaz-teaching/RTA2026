@@ -1,14 +1,29 @@
 ---
 title: "Wykład 1 — Od plików płaskich do Data Lake"
+subtitle: "Analiza danych w czasie rzeczywistym"
+description: "Ewolucja modeli przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe."
 format:
   html:
     code-fold: true
+    code-tools: true
+    code-summary: "Pokaż kod"
+    toc: true
+    toc-depth: 3
+    toc-title: "Spis treści"
+    number-sections: true
+    smooth-scroll: true
+    theme:
+      light: flatly
+    highlight-style: github
+    fig-align: center
+    fig-cap-location: bottom
 jupyter: python3
 ---
 
-*Czas trwania: 1,5h*
-
+::: {.callout-note appearance="minimal"}
+## {{< fa clock >}} Czas trwania: 1,5h
 **Cel wykładu:** Zrozumienie, jak ewoluowały modele przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe. Wprowadzenie pojęcia analizy danych w czasie rzeczywistym.
+:::
 
 ---
 
@@ -18,19 +33,24 @@ Wyobraź sobie, że prowadzisz sklep internetowy. Na koniec miesiąca generujesz
 
 A teraz wyobraź sobie, że widzisz to **w ciągu minuty** od momentu, gdy współczynnik konwersji spada. Reagujesz natychmiast — wyłączasz kampanię, zmieniasz kreację, ratujesz budżet.
 
+::: {.callout-important}
+## Kluczowa różnica
 To jest różnica między przetwarzaniem **wsadowym** (batch) a **analizą w czasie rzeczywistym** (real-time analytics).
 
 Analiza danych w czasie rzeczywistym to proces przetwarzania danych natychmiast (lub niemal natychmiast) po ich wygenerowaniu — bez czekania na zgromadzenie ich w pliku czy hurtowni.
+:::
 
 ### Gdzie to ma znaczenie?
 
 | Branża | Przykład | Czas reakcji |
-|--------|----------|-------------|
-| Bankowość | Blokowanie podejrzanej transakcji kartą | Milisekundy |
-| E-commerce | Personalizacja oferty w trakcie sesji | Sekundy |
-| Logistyka | Przekierowanie przesyłki po wykryciu opóźnienia | Minuty |
-| Telekomunikacja | Wykrycie awarii sieci przed zgłoszeniem klienta | Sekundy |
-| Ochrona zdrowia | Alert z monitora pacjenta na OIOM | Milisekundy |
+|--------|----------|:------------:|
+| {{< fa building-columns >}} Bankowość | Blokowanie podejrzanej transakcji kartą | Milisekundy |
+| {{< fa cart-shopping >}} E-commerce | Personalizacja oferty w trakcie sesji | Sekundy |
+| {{< fa truck >}} Logistyka | Przekierowanie przesyłki po wykryciu opóźnienia | Minuty |
+| {{< fa tower-cell >}} Telekomunikacja | Wykrycie awarii sieci przed zgłoszeniem klienta | Sekundy |
+| {{< fa heart-pulse >}} Ochrona zdrowia | Alert z monitora pacjenta na OIOM | Milisekundy |
+
+: Przykłady zastosowań real-time analytics {.striped .hover}
 
 Nie zawsze potrzebujesz reakcji w milisekundach. Kluczowe pytanie brzmi: **jaki czas reakcji wymaga Twój problem biznesowy?**
 
@@ -83,7 +103,10 @@ To podejście działa dobrze dla niewielkich danych. Problem pojawia się, gdy d
 
 W latach 70. Edgar Codd zaproponował model relacyjny, który stał się fundamentem systemów transakcyjnych. **OLTP** (On-Line Transaction Processing) to model zoptymalizowany pod szybki zapis i odczyt pojedynczych rekordów.
 
-Cechy OLTP: operacje CRUD, gwarancje ACID, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.
+::: {.callout-tip}
+## Cechy OLTP
+Operacje **CRUD**, gwarancje **ACID**, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.
+:::
 
 ```{python}
 import sqlite3
@@ -110,7 +133,10 @@ OLTP świetnie obsługuje bieżące operacje. Ale pytanie *„Jaka była łączn
 
 Potrzeba analityki doprowadziła do powstania **OLAP** (On-Line Analytical Processing) i **hurtowni danych**. Dane z wielu systemów OLTP ładowane są w procesie **ETL** (Extract–Transform–Load), gdzie można je analizować bez wpływu na systemy produkcyjne.
 
-Cechy OLAP: agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.
+::: {.callout-tip}
+## Cechy OLAP
+Agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.
+:::
 
 ```{python}
 np.random.seed(42)
@@ -132,13 +158,29 @@ Hurtownia wymaga, by dane miały strukturę **przed** załadowaniem (schema-on-w
 
 **Data Lake** to podejście odwrotne — przechowujemy surowe dane w dowolnym formacie (schema-on-read) i nadajemy im strukturę dopiero podczas analizy.
 
-| Cecha | Hurtownia danych | Data Lake |
-|-------|-------------------|-----------|
-| Struktura danych | Ustrukturyzowane | Dowolne (surowe) |
-| Schemat | Przed załadowaniem | Przy odczycie |
-| Użytkownicy | Analitycy biznesowi | Data scientists, inżynierowie |
-| Koszt przechowywania | Wysoki | Niski |
-| Technologie | SQL Server, Oracle, Teradata | Hadoop HDFS, S3, Azure Data Lake |
+::: {.panel-tabset}
+
+#### Hurtownia danych
+
+| Cecha | Wartość |
+|-------|---------|
+| Struktura danych | Ustrukturyzowane |
+| Schemat | Przed załadowaniem (schema-on-write) |
+| Użytkownicy | Analitycy biznesowi |
+| Koszt przechowywania | Wysoki |
+| Technologie | SQL Server, Oracle, Teradata |
+
+#### Data Lake
+
+| Cecha | Wartość |
+|-------|---------|
+| Struktura danych | Dowolne (surowe) |
+| Schemat | Przy odczycie (schema-on-read) |
+| Użytkownicy | Data scientists, inżynierowie |
+| Koszt przechowywania | Niski |
+| Technologie | Hadoop HDFS, S3, Azure Data Lake |
+
+:::
 
 ---
 
@@ -146,7 +188,10 @@ Hurtownia wymaga, by dane miały strukturę **przed** załadowaniem (schema-on-w
 
 Wszystkie powyższe modele zakładają, że dane są **w spoczynku** — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane **zawsze powstają jako strumień zdarzeń** — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.
 
+::: {.callout-warning}
+## Zmiana perspektywy
 Przetwarzanie wsadowe to tylko **uproszczenie** — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.
+:::
 
 ```{python}
 import time
@@ -173,20 +218,26 @@ print(f"\nSuma przetworzona na bieżąco: {suma:.2f} PLN")
 
 Systemy obsługujące strumienie danych to m.in. systemy transakcyjne, hurtownie danych, systemy IoT, systemy analityki webowej, platformy reklamowe, media społecznościowe, systemy logowania.
 
-> Firma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.
+> **Firma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.**
 
 ---
 
 ## Trzy tryby przetwarzania — porównanie
 
-| Cecha | Batch | Near Real-Time | Real-Time |
+::: {.panel-tabset}
+
+#### Tabela porównawcza
+
+| Cecha | {{< fa clock >}} Batch | {{< fa gauge >}} Near Real-Time | {{< fa bolt >}} Real-Time |
 |-------|-------|----------------|-----------|
 | Opóźnienie | Minuty–godziny–dni | Sekundy–minuty | Milisekundy–sekundy |
 | Przykład | Raport miesięczny | Dashboard sprzedaży (30s) | Blokowanie karty |
 | Koszt | Niski | Średni | Wysoki |
 | Technologie | Pandas, Spark (batch), SQL | Kafka + Spark Streaming | Apache Flink, custom |
 
-Nie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.
+: {.striped .hover}
+
+#### Wykres
 
 ```{python}
 #| label: fig-processing-modes
@@ -220,13 +271,26 @@ plt.tight_layout()
 plt.show()
 ```
 
+:::
+
+::: {.callout-tip appearance="simple"}
+## Złota zasada
+Nie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.
+:::
+
 ---
 
 ## Typy danych — krótki przegląd
 
-**Ustrukturyzowane** — tabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.
+::: {.panel-tabset}
 
-**Półustrukturyzowane** — JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.
+#### Ustrukturyzowane
+
+Tabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.
+
+#### Półustrukturyzowane
+
+JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.
 
 ```{python}
 import json
@@ -243,21 +307,39 @@ zamowienie = {
 print(json.dumps(zamowienie, indent=2, ensure_ascii=False))
 ```
 
-**Nieustrukturyzowane** — tekst (e-maile, opinie), obrazy, dźwięk, wideo. Wymagają NLP, computer vision, deep learning.
+#### Nieustrukturyzowane
 
-**Strumieniowe** — zdarzenia generowane w sposób ciągły. To z nimi będziemy pracować przez resztę kursu.
+Tekst (e-maile, opinie), obrazy, dźwięk, wideo. Wymagają NLP, computer vision, deep learning.
+
+#### Strumieniowe
+
+Zdarzenia generowane w sposób ciągły. To z nimi będziemy pracować przez resztę kursu.
+
+:::
 
 ---
 
-## Big Data — pięć wymiarów (5V)
+## Big Data — pięć wymiarów (5V) {.unnumbered}
 
-- **Volume** — rozmiar (terabajty, petabajty),
-- **Velocity** — tempo napływu danych,
-- **Variety** — różnorodność formatów i źródeł,
-- **Veracity** — wiarygodność i jakość danych,
-- **Value** — wartość biznesowa ukryta w danych.
+:::: {.columns}
 
+::: {.column width="50%"}
+- **Volume** — rozmiar (terabajty, petabajty)
+- **Velocity** — tempo napływu danych
+- **Variety** — różnorodność formatów i źródeł
+:::
+
+::: {.column width="50%"}
+- **Veracity** — wiarygodność i jakość danych
+- **Value** — wartość biznesowa ukryta w danych
+:::
+
+::::
+
+::: {.callout-caution}
+## Hurtownia ≠ Big Data
 Hurtownia danych **nie** jest systemem Big Data. Hurtownia przechowuje dane ustrukturyzowane i służy do raportowania (100% accuracy). System Big Data obsługuje dane o dowolnej strukturze i toleruje pewien poziom niedokładności.
+:::
 
 ---
 
@@ -265,6 +347,12 @@ Hurtownia danych **nie** jest systemem Big Data. Hurtownia przechowuje dane ustr
 
 Na tym wykładzie prześledziliśmy ewolucję od plików płaskich, przez OLTP, OLAP i Data Lake, aż po przetwarzanie strumieniowe. Każdy model odpowiada na inne potrzeby biznesowe — i żaden nie zastępuje poprzedniego. W praktyce firmy używają ich równolegle.
 
-**Na następnym wykładzie:** architektury łączące batch i streaming — Lambda i Kappa — oraz kluczowe pojęcia: czas zdarzenia, czas przetwarzania, okna czasowe.
+::: {.callout-note appearance="simple"}
+## {{< fa forward >}} Na następnym wykładzie
+Architektury łączące batch i streaming — **Lambda i Kappa** — oraz kluczowe pojęcia: czas zdarzenia, czas przetwarzania, okna czasowe.
+:::
 
-**Do przemyślenia:** W jakim trybie Twoja firma (lub firma, w której chciałbyś pracować) przetwarza dane? Czy istnieją procesy, które skorzystałyby na przejściu do trybu strumieniowego?
+::: {.callout-tip appearance="simple"}
+## {{< fa brain >}} Do przemyślenia
+W jakim trybie Twoja firma (lub firma, w której chciałbyś pracować) przetwarza dane? Czy istnieją procesy, które skorzystałyby na przejściu do trybu strumieniowego?
+:::

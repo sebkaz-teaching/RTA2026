@@ -1,14 +1,29 @@
 ---
 title: "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+subtitle: "Analiza danych w czasie rzeczywistym"
+description: "Przetwarzanie wsadowe vs strumieniowe, architektury Lambda i Kappa, czas zdarzenia, watermarking i okna czasowe."
 format:
   html:
     code-fold: true
+    code-tools: true
+    code-summary: "Pokaż kod"
+    toc: true
+    toc-depth: 3
+    toc-title: "Spis treści"
+    number-sections: true
+    smooth-scroll: true
+    theme:
+      light: flatly
+    highlight-style: github
+    fig-align: center
+    fig-cap-location: bottom
 jupyter: python3
 ---
 
-*Czas trwania: 1,5h*
-
+::: {.callout-note appearance="minimal"}
+## {{< fa clock >}} Czas trwania: 1,5h
 **Cel wykładu:** Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.
+:::
 
 ---
 
@@ -18,7 +33,9 @@ Na poprzednim wykładzie ustaliliśmy, że dane **zawsze** powstają jako strumi
 
 Porównajmy oba podejścia na tym samym problemie biznesowym: **monitorowanie transakcji w sklepie internetowym**.
 
-### Podejście wsadowe (batch)
+::: {.panel-tabset}
+
+### {{< fa database >}} Podejście wsadowe (batch)
 
 ```{python}
 import pandas as pd
@@ -47,7 +64,7 @@ print("Raport dzienny (generowany następnego ranka):")
 print(raport.head())
 ```
 
-### Podejście strumieniowe (stream)
+### {{< fa bolt >}} Podejście strumieniowe (stream)
 
 ```{python}
 import time
@@ -74,7 +91,12 @@ for i in range(10):
     time.sleep(0.2)
 ```
 
-Różnica jest fundamentalna: w trybie batch dowiadujemy się o problemie **następnego dnia**. W trybie stream — **natychmiast**.
+:::
+
+::: {.callout-important}
+## Fundamentalna różnica
+W trybie batch dowiadujemy się o problemie **następnego dnia**. W trybie stream — **natychmiast**.
+:::
 
 ---
 
@@ -84,11 +106,36 @@ W praktyce firmy potrzebują **obu** podejść jednocześnie. Architektura Lambd
 
 ### Trzy warstwy Lambdy
 
-**Warstwa wsadowa (Batch Layer)** — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem. Typowe narzędzia: Spark (batch), Hadoop.
+:::: {.columns}
 
-**Warstwa szybka (Speed Layer)** — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast. Typowe narzędzia: Spark Streaming, Kafka Streams.
+::: {.column width="33%"}
+::: {.callout-note appearance="simple"}
+## {{< fa database >}} Warstwa wsadowa
+**Batch Layer** — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem.
 
-**Warstwa serwująca (Serving Layer)** — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym. Typowe narzędzia: bazy danych, API, dashboardy.
+*Narzędzia:* Spark (batch), Hadoop
+:::
+:::
+
+::: {.column width="33%"}
+::: {.callout-warning appearance="simple"}
+## {{< fa bolt >}} Warstwa szybka
+**Speed Layer** — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast.
+
+*Narzędzia:* Spark Streaming, Kafka Streams
+:::
+:::
+
+::: {.column width="33%"}
+::: {.callout-tip appearance="simple"}
+## {{< fa server >}} Warstwa serwująca
+**Serving Layer** — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym.
+
+*Narzędzia:* bazy danych, API, dashboardy
+:::
+:::
+
+::::
 
 ```{mermaid}
 %%| fig-cap: "Architektura Lambda"
@@ -103,16 +150,22 @@ flowchart TD
     style SERVE fill:#4CAF50,color:#fff
 ```
 
-**Przykład biznesowy:** Bank analizujący transakcje kartowe.
+::: {.callout-tip collapse="true"}
+## {{< fa building-columns >}} Przykład biznesowy: Bank analizujący transakcje kartowe
 
-- Warstwa wsadowa: co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.
-- Warstwa szybka: w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.
-- Warstwa serwująca: dashboard dla analityków + API dla aplikacji mobilnej.
+- **Warstwa wsadowa:** co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.
+- **Warstwa szybka:** w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.
+- **Warstwa serwująca:** dashboard dla analityków + API dla aplikacji mobilnej.
+:::
 
 ### Zalety i wady Lambdy
 
-Zaleta: kompletność — batch layer koryguje błędy speed layer. 
-Wada: **utrzymujesz dwie oddzielne ścieżki przetwarzania** — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.
+**Zaleta:** kompletność — batch layer koryguje błędy speed layer.
+
+::: {.callout-caution}
+## Główna wada Lambdy
+Utrzymujesz **dwie oddzielne ścieżki przetwarzania** — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.
+:::
 
 ---
 
@@ -135,13 +188,15 @@ flowchart TD
 
 ### Lambda vs Kappa — kiedy co stosować?
 
-| Cecha | Lambda | Kappa |
+| Cecha | {{< fa layer-group >}} Lambda | {{< fa arrows-turn-right >}} Kappa |
 |-------|--------|-------|
 | Złożoność | Wysoka (dwie ścieżki) | Niska (jedna ścieżka) |
 | Dokładność | Batch koryguje stream | Zależna od jakości streamingu |
 | Historyczne przeliczanie | Naturalne (batch) | Replay strumienia |
 | Kiedy stosować | Gdy batch i stream mają różną logikę | Gdy jedna logika wystarcza |
-| Przykład | Bank (nocny retrenowanie + real-time scoring) | E-commerce (personalizacja) |
+| Przykład | Bank (nocne retrenowanie + RT scoring) | E-commerce (personalizacja) |
+
+: Lambda vs Kappa {.striped .hover}
 
 ---
 
@@ -151,9 +206,27 @@ W przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczn
 
 ### Dwa rodzaje czasu
 
-**Czas zdarzenia (event time)** — moment, w którym zdarzenie faktycznie nastąpiło. Np. klient kliknął „Kup" o 14:23:45.
+:::: {.columns}
 
-**Czas przetwarzania (processing time)** — moment, w którym system odebrał i przetworzył zdarzenie. Np. system Kafki odebrał zdarzenie o 14:23:47.
+::: {.column width="50%"}
+::: {.callout-note appearance="simple"}
+## {{< fa calendar-day >}} Czas zdarzenia (event time)
+Moment, w którym zdarzenie **faktycznie nastąpiło**.
+
+*Np. klient kliknął „Kup" o 14:23:45.*
+:::
+:::
+
+::: {.column width="50%"}
+::: {.callout-warning appearance="simple"}
+## {{< fa server >}} Czas przetwarzania (processing time)
+Moment, w którym system **odebrał i przetworzył** zdarzenie.
+
+*Np. system Kafki odebrał zdarzenie o 14:23:47.*
+:::
+:::
+
+::::
 
 W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje **opóźnienie** (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.
 
@@ -211,9 +284,10 @@ plt.tight_layout()
 plt.show()
 ```
 
-### Dlaczego to ważne?
-
+::: {.callout-tip collapse="true"}
+## {{< fa car >}} Analogia: GPS w tunelu
 Wyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą **przeszłości**, a nie teraźniejszości.
+:::
 
 Opóźnione zdarzenia możemy obsłużyć na dwa sposoby:
 
@@ -226,11 +300,13 @@ Opóźnione zdarzenia możemy obsłużyć na dwa sposoby:
 
 W przetwarzaniu strumieniowym nie możemy analizować „wszystkich danych" — strumień jest nieskończony. Zamiast tego grupujemy zdarzenia w **okna czasowe** o skończonej długości.
 
-### Okno rozłączne (Tumbling Window)
+::: {.panel-tabset}
 
-Stała długość, brak nakładania. Każde zdarzenie należy do dokładnie jednego okna.
+### Rozłączne (Tumbling)
 
-Przykład: suma transakcji co 5 minut.
+Stała długość, brak nakładania. Każde zdarzenie należy do **dokładnie jednego** okna.
+
+*Przykład:* suma transakcji co 5 minut.
 
 ```{python}
 # Symulacja okna rozłącznego (tumbling) 5-minutowego
@@ -249,30 +325,34 @@ print("Okno rozłączne (5 min):")
 print(wynik)
 ```
 
-### Okno przesuwne (Sliding Window)
+### Przesuwne (Sliding)
 
 Stała długość, ale okno przesuwa się o zadany interwał — zdarzenia mogą należeć do **wielu okien**.
 
-Przykład: średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.
+*Przykład:* średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.
 
-### Okno skokowe (Hopping Window)
+### Skokowe (Hopping)
 
 Podobne do sliding, ale z możliwością nakładania się okien o określony krok. Stosowane do wygładzania danych.
 
-### Okno sesyjne (Session Window)
+### Sesyjne (Session)
 
-Dynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (gap).
+Dynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (**gap**).
 
-Przykład: sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.
+*Przykład:* sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.
+
+:::
 
 ### Porównanie okien
 
 | Typ okna | Długość | Nakładanie | Zastosowanie |
-|----------|---------|------------|-------------|
-| Rozłączne (Tumbling) | Stała | Nie | Raporty okresowe |
-| Przesuwne (Sliding) | Stała | Tak | Wykrywanie trendów |
+|----------|---------|:----------:|-------------|
+| Rozłączne (Tumbling) | Stała | {{< fa xmark >}} | Raporty okresowe |
+| Przesuwne (Sliding) | Stała | {{< fa check >}} | Wykrywanie trendów |
 | Skokowe (Hopping) | Stała | Częściowe | Wygładzanie danych |
-| Sesyjne (Session) | Dynamiczna | Nie | Analiza sesji użytkowników |
+| Sesyjne (Session) | Dynamiczna | {{< fa xmark >}} | Analiza sesji użytkowników |
+
+: Typy okien czasowych {.striped .hover}
 
 ```{python}
 #| label: fig-window-types
@@ -351,6 +431,12 @@ for start_min in range(0, 15, 1):
 
 Na tym wykładzie poznaliśmy dwie kluczowe architektury (Lambda i Kappa) oraz fundamentalne pojęcia przetwarzania strumieniowego: czas zdarzenia, czas przetwarzania, watermarking i okna czasowe. To pojęcia, które będą towarzyszyć nam na laboratoriach podczas pracy z Apache Kafka i Spark Structured Streaming.
 
-**Na następnym wykładzie:** uczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.
+::: {.callout-note appearance="simple"}
+## {{< fa forward >}} Na następnym wykładzie
+Uczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.
+:::
 
-**Do przemyślenia:** Twój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?
+::: {.callout-tip appearance="simple"}
+## {{< fa brain >}} Do przemyślenia
+Twój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?
+:::

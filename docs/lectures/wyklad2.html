@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Przetwarzanie wsadowe vs strumieniowe, architektury Lambda i Kappa, czas zdarzenia, watermarking i okna czasowe.">
 
 <title>Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa – Analiza danych w czasie rzeczywistym</title>
 <style>
@@ -72,10 +73,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1dce9f32eecb350a510e49baa42f6985.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -103,6 +104,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
 <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
@@ -220,6 +222,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria dzienne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Laboratoria zaoczne</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/zaoczne_cw1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -227,15 +257,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title"><strong>Sections</strong></h2>
+    <h2 id="toc-title">Spis treści</h2>
    
+  <ul>
+  <li><a href="#batch-vs-stream-dwa-podejścia-do-tych-samych-danych" id="toc-batch-vs-stream-dwa-podejścia-do-tych-samych-danych" class="nav-link active" data-scroll-target="#batch-vs-stream-dwa-podejścia-do-tych-samych-danych"><span class="header-section-number">1</span> Batch vs Stream — dwa podejścia do tych samych danych</a></li>
+  <li><a href="#architektura-lambda" id="toc-architektura-lambda" class="nav-link" data-scroll-target="#architektura-lambda"><span class="header-section-number">2</span> Architektura Lambda</a>
   <ul class="collapse">
-  <li><a href="#batch-vs-stream-dwa-podejścia-do-tych-samych-danych" id="toc-batch-vs-stream-dwa-podejścia-do-tych-samych-danych" class="nav-link active" data-scroll-target="#batch-vs-stream-dwa-podejścia-do-tych-samych-danych">Batch vs Stream — dwa podejścia do tych samych danych</a></li>
-  <li><a href="#architektura-lambda" id="toc-architektura-lambda" class="nav-link" data-scroll-target="#architektura-lambda">Architektura Lambda</a></li>
-  <li><a href="#architektura-kappa" id="toc-architektura-kappa" class="nav-link" data-scroll-target="#architektura-kappa">Architektura Kappa</a></li>
-  <li><a href="#czas-w-przetwarzaniu-strumieniowym" id="toc-czas-w-przetwarzaniu-strumieniowym" class="nav-link" data-scroll-target="#czas-w-przetwarzaniu-strumieniowym">Czas w przetwarzaniu strumieniowym</a></li>
-  <li><a href="#okna-czasowe" id="toc-okna-czasowe" class="nav-link" data-scroll-target="#okna-czasowe">Okna czasowe</a></li>
-  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie">Podsumowanie</a></li>
+  <li><a href="#trzy-warstwy-lambdy" id="toc-trzy-warstwy-lambdy" class="nav-link" data-scroll-target="#trzy-warstwy-lambdy"><span class="header-section-number">2.1</span> Trzy warstwy Lambdy</a></li>
+  <li><a href="#zalety-i-wady-lambdy" id="toc-zalety-i-wady-lambdy" class="nav-link" data-scroll-target="#zalety-i-wady-lambdy"><span class="header-section-number">2.2</span> Zalety i wady Lambdy</a></li>
+  </ul></li>
+  <li><a href="#architektura-kappa" id="toc-architektura-kappa" class="nav-link" data-scroll-target="#architektura-kappa"><span class="header-section-number">3</span> Architektura Kappa</a>
+  <ul class="collapse">
+  <li><a href="#lambda-vs-kappa-kiedy-co-stosować" id="toc-lambda-vs-kappa-kiedy-co-stosować" class="nav-link" data-scroll-target="#lambda-vs-kappa-kiedy-co-stosować"><span class="header-section-number">3.1</span> Lambda vs Kappa — kiedy co stosować?</a></li>
+  </ul></li>
+  <li><a href="#czas-w-przetwarzaniu-strumieniowym" id="toc-czas-w-przetwarzaniu-strumieniowym" class="nav-link" data-scroll-target="#czas-w-przetwarzaniu-strumieniowym"><span class="header-section-number">4</span> Czas w przetwarzaniu strumieniowym</a>
+  <ul class="collapse">
+  <li><a href="#dwa-rodzaje-czasu" id="toc-dwa-rodzaje-czasu" class="nav-link" data-scroll-target="#dwa-rodzaje-czasu"><span class="header-section-number">4.1</span> Dwa rodzaje czasu</a></li>
+  </ul></li>
+  <li><a href="#okna-czasowe" id="toc-okna-czasowe" class="nav-link" data-scroll-target="#okna-czasowe"><span class="header-section-number">5</span> Okna czasowe</a>
+  <ul class="collapse">
+  <li><a href="#porównanie-okien" id="toc-porównanie-okien" class="nav-link" data-scroll-target="#porównanie-okien"><span class="header-section-number">5.1</span> Porównanie okien</a></li>
+  </ul></li>
+  <li><a href="#podsumowanie" id="toc-podsumowanie" class="nav-link" data-scroll-target="#podsumowanie"><span class="header-section-number">6</span> Podsumowanie</a></li>
   </ul>
 </nav>
     </div>
@@ -244,9 +287,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lectures/wyklad1.html">Wykłady</a></li><li class="breadcrumb-item"><a href="../lectures/wyklad2.html">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</h1>
+<div class="quarto-title-block"><div><h1 class="title">Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<p class="subtitle lead">Analiza danych w czasie rzeczywistym</p>
 </div>
 
+<div>
+  <div class="description">
+    Przetwarzanie wsadowe vs strumieniowe, architektury Lambda i Kappa, czas zdarzenia, watermarking i okna czasowe.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -261,18 +310,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><em>Czas trwania: 1,5h</em></p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa clock &gt;}} Czas trwania: 1,5h
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p><strong>Cel wykładu:</strong> Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.</p>
+</div>
+</div>
 <hr>
-<section id="batch-vs-stream-dwa-podejścia-do-tych-samych-danych" class="level2">
-<h2 class="anchored" data-anchor-id="batch-vs-stream-dwa-podejścia-do-tych-samych-danych">Batch vs Stream — dwa podejścia do tych samych danych</h2>
+<section id="batch-vs-stream-dwa-podejścia-do-tych-samych-danych" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="batch-vs-stream-dwa-podejścia-do-tych-samych-danych"><span class="header-section-number">1</span> Batch vs Stream — dwa podejścia do tych samych danych</h2>
 <p>Na poprzednim wykładzie ustaliliśmy, że dane <strong>zawsze</strong> powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.</p>
 <p>Porównajmy oba podejścia na tym samym problemie biznesowym: <strong>monitorowanie transakcji w sklepie internetowym</strong>.</p>
-<section id="podejście-wsadowe-batch" class="level3">
-<h3 class="anchored" data-anchor-id="podejście-wsadowe-batch">Podejście wsadowe (batch)</h3>
-<div id="a7454e58" class="cell" data-execution_count="1">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">{{&lt; fa database &gt;}} Podejście wsadowe (batch)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">{{&lt; fa bolt &gt;}} Podejście strumieniowe (stream)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="7d093cbe" class="cell" data-execution_count="1">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span>
@@ -309,12 +371,11 @@ czas
 13        20  36552.13  1827.61</code></pre>
 </div>
 </div>
-</section>
-<section id="podejście-strumieniowe-stream" class="level3">
-<h3 class="anchored" data-anchor-id="podejście-strumieniowe-stream">Podejście strumieniowe (stream)</h3>
-<div id="026ebc1f" class="cell" data-execution_count="2">
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div id="5393ade0" class="cell" data-execution_count="2">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: każda transakcja analizowana w momencie pojawienia się</span></span>
@@ -339,31 +400,90 @@ czas
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[00:08:42] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
-[00:08:42] Klient 7938:   236.83 PLN | Suma okna:   1526.58
-[00:08:42] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
-[00:08:42] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
-[00:08:42] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
-[00:08:43] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
-[00:08:43] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
-[00:08:43] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
-[00:08:43] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
-[00:08:43] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
+<pre><code>[11:17:55] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
+[11:17:55] Klient 7938:   236.83 PLN | Suma okna:   1526.58
+[11:17:55] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
+[11:17:55] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
+[11:17:55] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
+[11:17:56] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
+[11:17:56] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
+[11:17:56] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
+[11:17:56] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
+[11:17:56] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
 </div>
 </div>
-<p>Różnica jest fundamentalna: w trybie batch dowiadujemy się o problemie <strong>następnego dnia</strong>. W trybie stream — <strong>natychmiast</strong>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Fundamentalna różnica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>W trybie batch dowiadujemy się o problemie <strong>następnego dnia</strong>. W trybie stream — <strong>natychmiast</strong>.</p>
+</div>
+</div>
 <hr>
 </section>
-</section>
-<section id="architektura-lambda" class="level2">
-<h2 class="anchored" data-anchor-id="architektura-lambda">Architektura Lambda</h2>
+<section id="architektura-lambda" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="architektura-lambda"><span class="header-section-number">2</span> Architektura Lambda</h2>
 <p>W praktyce firmy potrzebują <strong>obu</strong> podejść jednocześnie. Architektura Lambda, zaproponowana przez Nathana Marza, łączy przetwarzanie wsadowe i strumieniowe w jednym systemie.</p>
-<section id="trzy-warstwy-lambdy" class="level3">
-<h3 class="anchored" data-anchor-id="trzy-warstwy-lambdy">Trzy warstwy Lambdy</h3>
-<p><strong>Warstwa wsadowa (Batch Layer)</strong> — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem. Typowe narzędzia: Spark (batch), Hadoop.</p>
-<p><strong>Warstwa szybka (Speed Layer)</strong> — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast. Typowe narzędzia: Spark Streaming, Kafka Streams.</p>
-<p><strong>Warstwa serwująca (Serving Layer)</strong> — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym. Typowe narzędzia: bazy danych, API, dashboardy.</p>
-<div class="cell" data-layout-align="default">
+<section id="trzy-warstwy-lambdy" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="trzy-warstwy-lambdy"><span class="header-section-number">2.1</span> Trzy warstwy Lambdy</h3>
+<div class="columns">
+<div class="column" style="width:33%;">
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa database &gt;}} Warstwa wsadowa
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Batch Layer</strong> — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem.</p>
+<p><em>Narzędzia:</em> Spark (batch), Hadoop</p>
+</div>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>{{&lt; fa bolt &gt;}} Warstwa szybka
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Speed Layer</strong> — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast.</p>
+<p><em>Narzędzia:</em> Spark Streaming, Kafka Streams</p>
+</div>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa server &gt;}} Warstwa serwująca
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Serving Layer</strong> — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym.</p>
+<p><em>Narzędzia:</em> bazy danych, API, dashboardy</p>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -383,24 +503,51 @@ czas
 </div>
 </div>
 </div>
-<p><strong>Przykład biznesowy:</strong> Bank analizujący transakcje kartowe.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa building-columns &gt;}} Przykład biznesowy: Bank analizujący transakcje kartowe
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <ul>
-<li>Warstwa wsadowa: co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.</li>
-<li>Warstwa szybka: w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.</li>
-<li>Warstwa serwująca: dashboard dla analityków + API dla aplikacji mobilnej.</li>
+<li><strong>Warstwa wsadowa:</strong> co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.</li>
+<li><strong>Warstwa szybka:</strong> w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.</li>
+<li><strong>Warstwa serwująca:</strong> dashboard dla analityków + API dla aplikacji mobilnej.</li>
 </ul>
+</div>
+</div>
+</div>
 </section>
-<section id="zalety-i-wady-lambdy" class="level3">
-<h3 class="anchored" data-anchor-id="zalety-i-wady-lambdy">Zalety i wady Lambdy</h3>
-<p>Zaleta: kompletność — batch layer koryguje błędy speed layer. Wada: <strong>utrzymujesz dwie oddzielne ścieżki przetwarzania</strong> — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.</p>
+<section id="zalety-i-wady-lambdy" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="zalety-i-wady-lambdy"><span class="header-section-number">2.2</span> Zalety i wady Lambdy</h3>
+<p><strong>Zaleta:</strong> kompletność — batch layer koryguje błędy speed layer.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Caution</span>Główna wada Lambdy
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Utrzymujesz <strong>dwie oddzielne ścieżki przetwarzania</strong> — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.</p>
+</div>
+</div>
 <hr>
 </section>
 </section>
-<section id="architektura-kappa" class="level2">
-<h2 class="anchored" data-anchor-id="architektura-kappa">Architektura Kappa</h2>
+<section id="architektura-kappa" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="architektura-kappa"><span class="header-section-number">3</span> Architektura Kappa</h2>
 <p>Jay Kreps (twórca Apache Kafka) zaproponował uproszczenie: <strong>a co, gdyby potrzebna była tylko warstwa strumieniowa?</strong></p>
 <p>Architektura Kappa to Lambda bez warstwy wsadowej. Cały przepływ danych opiera się na strumieniu zdarzeń. Jeśli trzeba przeliczyć dane historyczne — odtwarzamy strumień od początku (replay).</p>
-<div class="cell" data-layout-align="default">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
@@ -418,9 +565,10 @@ czas
 </div>
 </div>
 </div>
-<section id="lambda-vs-kappa-kiedy-co-stosować" class="level3">
-<h3 class="anchored" data-anchor-id="lambda-vs-kappa-kiedy-co-stosować">Lambda vs Kappa — kiedy co stosować?</h3>
-<table class="caption-top table">
+<section id="lambda-vs-kappa-kiedy-co-stosować" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="lambda-vs-kappa-kiedy-co-stosować"><span class="header-section-number">3.1</span> Lambda vs Kappa — kiedy co stosować?</h3>
+<table class="table-striped table-hover caption-top table">
+<caption>Lambda vs Kappa</caption>
 <colgroup>
 <col style="width: 31%">
 <col style="width: 36%">
@@ -429,8 +577,8 @@ czas
 <thead>
 <tr class="header">
 <th>Cecha</th>
-<th>Lambda</th>
-<th>Kappa</th>
+<th>{{&lt; fa layer-group &gt;}} Lambda</th>
+<th>{{&lt; fa arrows-turn-right &gt;}} Kappa</th>
 </tr>
 </thead>
 <tbody>
@@ -456,7 +604,7 @@ czas
 </tr>
 <tr class="odd">
 <td>Przykład</td>
-<td>Bank (nocny retrenowanie + real-time scoring)</td>
+<td>Bank (nocne retrenowanie + RT scoring)</td>
 <td>E-commerce (personalizacja)</td>
 </tr>
 </tbody>
@@ -464,17 +612,48 @@ czas
 <hr>
 </section>
 </section>
-<section id="czas-w-przetwarzaniu-strumieniowym" class="level2">
-<h2 class="anchored" data-anchor-id="czas-w-przetwarzaniu-strumieniowym">Czas w przetwarzaniu strumieniowym</h2>
+<section id="czas-w-przetwarzaniu-strumieniowym" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="czas-w-przetwarzaniu-strumieniowym"><span class="header-section-number">4</span> Czas w przetwarzaniu strumieniowym</h2>
 <p>W przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczne, kiedy chcemy. W przetwarzaniu strumieniowym czas staje się <strong>kluczowym wymiarem analizy</strong>.</p>
-<section id="dwa-rodzaje-czasu" class="level3">
-<h3 class="anchored" data-anchor-id="dwa-rodzaje-czasu">Dwa rodzaje czasu</h3>
-<p><strong>Czas zdarzenia (event time)</strong> — moment, w którym zdarzenie faktycznie nastąpiło. Np. klient kliknął „Kup” o 14:23:45.</p>
-<p><strong>Czas przetwarzania (processing time)</strong> — moment, w którym system odebrał i przetworzył zdarzenie. Np. system Kafki odebrał zdarzenie o 14:23:47.</p>
+<section id="dwa-rodzaje-czasu" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="dwa-rodzaje-czasu"><span class="header-section-number">4.1</span> Dwa rodzaje czasu</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa calendar-day &gt;}} Czas zdarzenia (event time)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Moment, w którym zdarzenie <strong>faktycznie nastąpiło</strong>.</p>
+<p><em>Np. klient kliknął „Kup” o 14:23:45.</em></p>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>{{&lt; fa server &gt;}} Czas przetwarzania (processing time)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Moment, w którym system <strong>odebrał i przetworzył</strong> zdarzenie.</p>
+<p><em>Np. system Kafki odebrał zdarzenie o 14:23:47.</em></p>
+</div>
+</div>
+</div>
+</div>
 <p>W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje <strong>opóźnienie</strong> (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.</p>
-<div id="c22b714c" class="cell" data-execution_count="3">
+<div id="efb74b21" class="cell" data-execution_count="3">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: zdarzenia docierają z losowym opóźnieniem</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -494,19 +673,19 @@ czas
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>event_time processing_time opóźnienie
-  14:23:00    14:23:04.466       4.7s
-  14:23:02    14:23:05.304       3.0s
-  14:23:04    14:23:07.367       3.7s
-  14:23:06     14:23:06.91       0.9s
-  14:23:08    14:23:09.171       1.7s
-  14:23:10     14:23:10.12       0.1s
-  14:23:12     14:23:12.75       0.8s
-  14:23:14    14:23:15.127       1.3s</code></pre>
+  14:23:00    14:23:04.463       4.6s
+  14:23:02    14:23:04.266       2.7s
+  14:23:04    14:23:08.434       4.3s
+  14:23:06    14:23:07.108       1.1s
+  14:23:08    14:23:12.434       4.3s
+  14:23:10    14:23:12.211       2.1s
+  14:23:12    14:23:13.186       1.9s
+  14:23:14    14:23:17.396       4.0s</code></pre>
 </div>
 </div>
 <div id="cell-fig-event-vs-processing" class="cell" data-execution_count="4">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -551,10 +730,22 @@ Figure&nbsp;1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach
 </div>
 </div>
 </div>
-</section>
-<section id="dlaczego-to-ważne" class="level3">
-<h3 class="anchored" data-anchor-id="dlaczego-to-ważne">Dlaczego to ważne?</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa car &gt;}} Analogia: GPS w tunelu
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <p>Wyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą <strong>przeszłości</strong>, a nie teraźniejszości.</p>
+</div>
+</div>
+</div>
 <p>Opóźnione zdarzenia możemy obsłużyć na dwa sposoby:</p>
 <ul>
 <li><strong>Ignorowanie</strong> — odrzucamy zdarzenia, które przyszły zbyt późno (ryzyko utraty danych).</li>
@@ -563,16 +754,18 @@ Figure&nbsp;1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach
 <hr>
 </section>
 </section>
-<section id="okna-czasowe" class="level2">
-<h2 class="anchored" data-anchor-id="okna-czasowe">Okna czasowe</h2>
+<section id="okna-czasowe" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="okna-czasowe"><span class="header-section-number">5</span> Okna czasowe</h2>
 <p>W przetwarzaniu strumieniowym nie możemy analizować „wszystkich danych” — strumień jest nieskończony. Zamiast tego grupujemy zdarzenia w <strong>okna czasowe</strong> o skończonej długości.</p>
-<section id="okno-rozłączne-tumbling-window" class="level3">
-<h3 class="anchored" data-anchor-id="okno-rozłączne-tumbling-window">Okno rozłączne (Tumbling Window)</h3>
-<p>Stała długość, brak nakładania. Każde zdarzenie należy do dokładnie jednego okna.</p>
-<p>Przykład: suma transakcji co 5 minut.</p>
-<div id="c22d83c4" class="cell" data-execution_count="5">
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Rozłączne (Tumbling)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Przesuwne (Sliding)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Skokowe (Hopping)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false" href="">Sesyjne (Session)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Stała długość, brak nakładania. Każde zdarzenie należy do <strong>dokładnie jednego</strong> okna.</p>
+<p><em>Przykład:</em> suma transakcji co 5 minut.</p>
+<div id="597ace31" class="cell" data-execution_count="5">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja okna rozłącznego (tumbling) 5-minutowego</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -597,29 +790,35 @@ okno
 2026-03-12 14:10:00  2061.89      10</code></pre>
 </div>
 </div>
-</section>
-<section id="okno-przesuwne-sliding-window" class="level3">
-<h3 class="anchored" data-anchor-id="okno-przesuwne-sliding-window">Okno przesuwne (Sliding Window)</h3>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>Stała długość, ale okno przesuwa się o zadany interwał — zdarzenia mogą należeć do <strong>wielu okien</strong>.</p>
-<p>Przykład: średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.</p>
-</section>
-<section id="okno-skokowe-hopping-window" class="level3">
-<h3 class="anchored" data-anchor-id="okno-skokowe-hopping-window">Okno skokowe (Hopping Window)</h3>
+<p><em>Przykład:</em> średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.</p>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <p>Podobne do sliding, ale z możliwością nakładania się okien o określony krok. Stosowane do wygładzania danych.</p>
-</section>
-<section id="okno-sesyjne-session-window" class="level3">
-<h3 class="anchored" data-anchor-id="okno-sesyjne-session-window">Okno sesyjne (Session Window)</h3>
-<p>Dynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (gap).</p>
-<p>Przykład: sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.</p>
-</section>
-<section id="porównanie-okien" class="level3">
-<h3 class="anchored" data-anchor-id="porównanie-okien">Porównanie okien</h3>
-<table class="caption-top table">
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<p>Dynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (<strong>gap</strong>).</p>
+<p><em>Przykład:</em> sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.</p>
+</div>
+</div>
+</div>
+<section id="porównanie-okien" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="porównanie-okien"><span class="header-section-number">5.1</span> Porównanie okien</h3>
+<table class="table-striped table-hover caption-top table">
+<caption>Typy okien czasowych</caption>
+<colgroup>
+<col style="width: 22%">
+<col style="width: 20%">
+<col style="width: 27%">
+<col style="width: 29%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Typ okna</th>
 <th>Długość</th>
-<th>Nakładanie</th>
+<th style="text-align: center;">Nakładanie</th>
 <th>Zastosowanie</th>
 </tr>
 </thead>
@@ -627,32 +826,32 @@ okno
 <tr class="odd">
 <td>Rozłączne (Tumbling)</td>
 <td>Stała</td>
-<td>Nie</td>
+<td style="text-align: center;">{{&lt; fa xmark &gt;}}</td>
 <td>Raporty okresowe</td>
 </tr>
 <tr class="even">
 <td>Przesuwne (Sliding)</td>
 <td>Stała</td>
-<td>Tak</td>
+<td style="text-align: center;">{{&lt; fa check &gt;}}</td>
 <td>Wykrywanie trendów</td>
 </tr>
 <tr class="odd">
 <td>Skokowe (Hopping)</td>
 <td>Stała</td>
-<td>Częściowe</td>
+<td style="text-align: center;">Częściowe</td>
 <td>Wygładzanie danych</td>
 </tr>
 <tr class="even">
 <td>Sesyjne (Session)</td>
 <td>Dynamiczna</td>
-<td>Nie</td>
+<td style="text-align: center;">{{&lt; fa xmark &gt;}}</td>
 <td>Analiza sesji użytkowników</td>
 </tr>
 </tbody>
 </table>
 <div id="cell-fig-window-types" class="cell" data-execution_count="6">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -717,9 +916,9 @@ Figure&nbsp;2: Typy okien czasowych — wizualizacja
 </div>
 </div>
 </div>
-<div id="a1944aaa" class="cell" data-execution_count="7">
+<div id="afff7534" class="cell" data-execution_count="7">
 <details class="code-fold">
-<summary>Code</summary>
+<summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Porównanie: tumbling vs sliding window na tych samych danych</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Tumbling (5 min) ==="</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tumbling <span class="op">=</span> zdarzenia.groupby(zdarzenia[<span class="st">'czas'</span>].dt.floor(<span class="st">'5min'</span>))[<span class="st">'kwota'</span>].<span class="bu">sum</span>().<span class="bu">round</span>(<span class="dv">2</span>)</span>
@@ -763,12 +962,38 @@ Name: kwota, dtype: float64
 <hr>
 </section>
 </section>
-<section id="podsumowanie" class="level2">
-<h2 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h2>
+<section id="podsumowanie" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="podsumowanie"><span class="header-section-number">6</span> Podsumowanie</h2>
 <p>Na tym wykładzie poznaliśmy dwie kluczowe architektury (Lambda i Kappa) oraz fundamentalne pojęcia przetwarzania strumieniowego: czas zdarzenia, czas przetwarzania, watermarking i okna czasowe. To pojęcia, które będą towarzyszyć nam na laboratoriach podczas pracy z Apache Kafka i Spark Structured Streaming.</p>
-<p><strong>Na następnym wykładzie:</strong> uczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.</p>
-<p><strong>Do przemyślenia:</strong> Twój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>{{&lt; fa forward &gt;}} Na następnym wykładzie
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Uczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.</p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>{{&lt; fa brain &gt;}} Do przemyślenia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Twój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?</p>
+</div>
+</div>
 
+
+<!-- -->
 
 </section>
 
@@ -843,6 +1068,57 @@ Name: kwota, dtype: float64
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
       clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -1177,7 +1453,451 @@ Name: kwota, dtype: float64
       }
     }
   });
-  </script>
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Analiza danych w czasie rzeczywistym"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Przetwarzanie wsadowe vs strumieniowe, architektury Lambda i Kappa, czas zdarzenia, watermarking i okna czasowe."</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">    code-summary: "Pokaż kod"</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-title: "Spis treści"</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">    smooth-scroll: true</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">    theme:</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">      light: flatly</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">    highlight-style: github</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-align: center</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-cap-location: bottom</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="an">jupyter:</span><span class="co"> python3</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="minimal"}</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa clock &gt;}} Czas trwania: 1,5h</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>**Cel wykładu:** Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Batch vs Stream — dwa podejścia do tych samych danych</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>Na poprzednim wykładzie ustaliliśmy, że dane **zawsze** powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>Porównajmy oba podejścia na tym samym problemie biznesowym: **monitorowanie transakcji w sklepie internetowym**.</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="fu">### {{&lt; fa database &gt;}} Podejście wsadowe (batch)</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime, timedelta</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Dane zebrane z całego dnia — analizowane następnego ranka</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>transakcje <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czas'</span>: [datetime(<span class="dv">2026</span>, <span class="dv">3</span>, <span class="dv">12</span>, h, m)</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>             <span class="cf">for</span> h <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">9</span>, <span class="dv">18</span>)</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>             <span class="cf">for</span> m <span class="kw">in</span> np.random.choice(<span class="bu">range</span>(<span class="dv">60</span>), <span class="dv">20</span>)],</span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">20</span>, <span class="dv">3000</span>, <span class="dv">180</span>).<span class="bu">round</span>(<span class="dv">2</span>),</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>    <span class="st">'klient_id'</span>: np.random.randint(<span class="dv">1000</span>, <span class="dv">9999</span>, <span class="dv">180</span>)</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Raport dzienny — widzimy go NASTĘPNEGO DNIA</span></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>raport <span class="op">=</span> transakcje.groupby(transakcje[<span class="st">'czas'</span>].dt.hour).agg(</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>    liczba<span class="op">=</span>(<span class="st">'kwota'</span>, <span class="st">'count'</span>),</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>    suma<span class="op">=</span>(<span class="st">'kwota'</span>, <span class="st">'sum'</span>),</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>    srednia<span class="op">=</span>(<span class="st">'kwota'</span>, <span class="st">'mean'</span>)</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Raport dzienny (generowany następnego ranka):"</span>)</span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raport.head())</span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a><span class="fu">### {{&lt; fa bolt &gt;}} Podejście strumieniowe (stream)</span></span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: każda transakcja analizowana w momencie pojawienia się</span></span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>okno_5min <span class="op">=</span> []</span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>alert_prog <span class="op">=</span> <span class="dv">5000</span>  <span class="co"># alert jeśli suma w oknie 5min &gt; 5000 PLN</span></span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>    tx <span class="op">=</span> {</span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>        <span class="st">'czas'</span>: datetime.now().strftime(<span class="st">'%H:%M:%S'</span>),</span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>        <span class="st">'kwota'</span>: <span class="bu">round</span>(np.random.uniform(<span class="dv">20</span>, <span class="dv">3000</span>), <span class="dv">2</span>),</span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>        <span class="st">'klient'</span>: np.random.randint(<span class="dv">1000</span>, <span class="dv">9999</span>)</span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>    okno_5min.append(tx[<span class="st">'kwota'</span>])</span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a>    suma_okno <span class="op">=</span> <span class="bu">sum</span>(okno_5min)</span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a>    status <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> suma_okno <span class="op">&gt;</span> alert_prog:</span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a>        status <span class="op">=</span> <span class="st">" &lt;&lt; ALERT: wysoka aktywność!"</span></span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a>        okno_5min <span class="op">=</span> []  <span class="co"># reset okna</span></span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"[</span><span class="sc">{</span>tx[<span class="st">'czas'</span>]<span class="sc">}</span><span class="ss">] Klient </span><span class="sc">{</span>tx[<span class="st">'klient'</span>]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>tx[<span class="st">'kwota'</span>]<span class="sc">:&gt;8.2f}</span><span class="ss"> PLN | Suma okna: </span><span class="sc">{</span>suma_okno<span class="sc">:&gt;9.2f}{</span>status<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="fl">0.2</span>)</span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fundamentalna różnica</span></span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a>W trybie batch dowiadujemy się o problemie **następnego dnia**. W trybie stream — **natychmiast**.</span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a><span class="fu">## Architektura Lambda</span></span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a>W praktyce firmy potrzebują **obu** podejść jednocześnie. Architektura Lambda, zaproponowana przez Nathana Marza, łączy przetwarzanie wsadowe i strumieniowe w jednym systemie.</span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a><span class="fu">### Trzy warstwy Lambdy</span></span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-113"><a href="#cb13-113" aria-hidden="true" tabindex="-1"></a>:::: {.columns}</span>
+<span id="cb13-114"><a href="#cb13-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-115"><a href="#cb13-115" aria-hidden="true" tabindex="-1"></a>::: {.column width="33%"}</span>
+<span id="cb13-116"><a href="#cb13-116" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb13-117"><a href="#cb13-117" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa database &gt;}} Warstwa wsadowa</span></span>
+<span id="cb13-118"><a href="#cb13-118" aria-hidden="true" tabindex="-1"></a>**Batch Layer** — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem.</span>
+<span id="cb13-119"><a href="#cb13-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-120"><a href="#cb13-120" aria-hidden="true" tabindex="-1"></a>*Narzędzia:* Spark (batch), Hadoop</span>
+<span id="cb13-121"><a href="#cb13-121" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-122"><a href="#cb13-122" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-123"><a href="#cb13-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-124"><a href="#cb13-124" aria-hidden="true" tabindex="-1"></a>::: {.column width="33%"}</span>
+<span id="cb13-125"><a href="#cb13-125" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning appearance="simple"}</span>
+<span id="cb13-126"><a href="#cb13-126" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa bolt &gt;}} Warstwa szybka</span></span>
+<span id="cb13-127"><a href="#cb13-127" aria-hidden="true" tabindex="-1"></a>**Speed Layer** — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast.</span>
+<span id="cb13-128"><a href="#cb13-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-129"><a href="#cb13-129" aria-hidden="true" tabindex="-1"></a>*Narzędzia:* Spark Streaming, Kafka Streams</span>
+<span id="cb13-130"><a href="#cb13-130" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-131"><a href="#cb13-131" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-132"><a href="#cb13-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-133"><a href="#cb13-133" aria-hidden="true" tabindex="-1"></a>::: {.column width="33%"}</span>
+<span id="cb13-134"><a href="#cb13-134" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb13-135"><a href="#cb13-135" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa server &gt;}} Warstwa serwująca</span></span>
+<span id="cb13-136"><a href="#cb13-136" aria-hidden="true" tabindex="-1"></a>**Serving Layer** — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym.</span>
+<span id="cb13-137"><a href="#cb13-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-138"><a href="#cb13-138" aria-hidden="true" tabindex="-1"></a>*Narzędzia:* bazy danych, API, dashboardy</span>
+<span id="cb13-139"><a href="#cb13-139" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-140"><a href="#cb13-140" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-141"><a href="#cb13-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-142"><a href="#cb13-142" aria-hidden="true" tabindex="-1"></a>::::</span>
+<span id="cb13-143"><a href="#cb13-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-146"><a href="#cb13-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb13-147"><a href="#cb13-147" aria-hidden="true" tabindex="-1"></a>%%| fig-cap: <span class="ot">"</span><span class="st">Architektura Lambda</span><span class="ot">"</span></span>
+<span id="cb13-148"><a href="#cb13-148" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb13-149"><a href="#cb13-149" aria-hidden="true" tabindex="-1"></a>    SRC[<span class="ot">"</span><span class="st">Źródło danych</span><span class="ch">\n</span><span class="st">(strumień zdarzeń)</span><span class="ot">"</span>] --&gt; BATCH[<span class="ot">"</span><span class="st">Warstwa wsadowa</span><span class="ch">\n</span><span class="st">(Batch Layer)</span><span class="ch">\n</span><span class="st">Kompletne dane</span><span class="ch">\n</span><span class="st">Duże opóźnienie</span><span class="ot">"</span>]</span>
+<span id="cb13-150"><a href="#cb13-150" aria-hidden="true" tabindex="-1"></a>    SRC --&gt; SPEED[<span class="ot">"</span><span class="st">Warstwa szybka</span><span class="ch">\n</span><span class="st">(Speed Layer)</span><span class="ch">\n</span><span class="st">Najnowsze dane</span><span class="ch">\n</span><span class="st">Niska latencja</span><span class="ot">"</span>]</span>
+<span id="cb13-151"><a href="#cb13-151" aria-hidden="true" tabindex="-1"></a>    BATCH --&gt; SERVE[<span class="ot">"</span><span class="st">Warstwa serwująca</span><span class="ch">\n</span><span class="st">(Serving Layer)</span><span class="ch">\n</span><span class="st">Dashboard / API</span><span class="ot">"</span>]</span>
+<span id="cb13-152"><a href="#cb13-152" aria-hidden="true" tabindex="-1"></a>    SPEED --&gt; SERVE</span>
+<span id="cb13-153"><a href="#cb13-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-154"><a href="#cb13-154" aria-hidden="true" tabindex="-1"></a>    style BATCH fill:<span class="co">#2196F3,color:#fff</span></span>
+<span id="cb13-155"><a href="#cb13-155" aria-hidden="true" tabindex="-1"></a>    style SPEED fill:<span class="co">#F44336,color:#fff</span></span>
+<span id="cb13-156"><a href="#cb13-156" aria-hidden="true" tabindex="-1"></a>    style SERVE fill:<span class="co">#4CAF50,color:#fff</span></span>
+<span id="cb13-157"><a href="#cb13-157" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-158"><a href="#cb13-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-159"><a href="#cb13-159" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb13-160"><a href="#cb13-160" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa building-columns &gt;}} Przykład biznesowy: Bank analizujący transakcje kartowe</span></span>
+<span id="cb13-161"><a href="#cb13-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-162"><a href="#cb13-162" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Warstwa wsadowa:** co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.</span>
+<span id="cb13-163"><a href="#cb13-163" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Warstwa szybka:** w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.</span>
+<span id="cb13-164"><a href="#cb13-164" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Warstwa serwująca:** dashboard dla analityków + API dla aplikacji mobilnej.</span>
+<span id="cb13-165"><a href="#cb13-165" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-166"><a href="#cb13-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-167"><a href="#cb13-167" aria-hidden="true" tabindex="-1"></a><span class="fu">### Zalety i wady Lambdy</span></span>
+<span id="cb13-168"><a href="#cb13-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-169"><a href="#cb13-169" aria-hidden="true" tabindex="-1"></a>**Zaleta:** kompletność — batch layer koryguje błędy speed layer.</span>
+<span id="cb13-170"><a href="#cb13-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-171"><a href="#cb13-171" aria-hidden="true" tabindex="-1"></a>::: {.callout-caution}</span>
+<span id="cb13-172"><a href="#cb13-172" aria-hidden="true" tabindex="-1"></a><span class="fu">## Główna wada Lambdy</span></span>
+<span id="cb13-173"><a href="#cb13-173" aria-hidden="true" tabindex="-1"></a>Utrzymujesz **dwie oddzielne ścieżki przetwarzania** — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.</span>
+<span id="cb13-174"><a href="#cb13-174" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-175"><a href="#cb13-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-176"><a href="#cb13-176" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-177"><a href="#cb13-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-178"><a href="#cb13-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Architektura Kappa</span></span>
+<span id="cb13-179"><a href="#cb13-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-180"><a href="#cb13-180" aria-hidden="true" tabindex="-1"></a>Jay Kreps (twórca Apache Kafka) zaproponował uproszczenie: **a co, gdyby potrzebna była tylko warstwa strumieniowa?**</span>
+<span id="cb13-181"><a href="#cb13-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-182"><a href="#cb13-182" aria-hidden="true" tabindex="-1"></a>Architektura Kappa to Lambda bez warstwy wsadowej. Cały przepływ danych opiera się na strumieniu zdarzeń. Jeśli trzeba przeliczyć dane historyczne — odtwarzamy strumień od początku (replay).</span>
+<span id="cb13-183"><a href="#cb13-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-186"><a href="#cb13-186" aria-hidden="true" tabindex="-1"></a><span class="in">```{mermaid}</span></span>
+<span id="cb13-187"><a href="#cb13-187" aria-hidden="true" tabindex="-1"></a>%%| fig-cap: <span class="ot">"</span><span class="st">Architektura Kappa — uproszczenie Lambdy</span><span class="ot">"</span></span>
+<span id="cb13-188"><a href="#cb13-188" aria-hidden="true" tabindex="-1"></a>flowchart TD</span>
+<span id="cb13-189"><a href="#cb13-189" aria-hidden="true" tabindex="-1"></a>    SRC[<span class="ot">"</span><span class="st">Źródło danych</span><span class="ch">\n</span><span class="st">(strumień zdarzeń)</span><span class="ot">"</span>] --&gt; STREAM[<span class="ot">"</span><span class="st">Warstwa strumieniowa</span><span class="ch">\n</span><span class="st">(Stream Layer)</span><span class="ch">\n</span><span class="st">Jeden kod, jeden pipeline</span><span class="ot">"</span>]</span>
+<span id="cb13-190"><a href="#cb13-190" aria-hidden="true" tabindex="-1"></a>    STREAM --&gt; SERVE[<span class="ot">"</span><span class="st">Warstwa serwująca</span><span class="ch">\n</span><span class="st">Dashboard / API</span><span class="ot">"</span>]</span>
+<span id="cb13-191"><a href="#cb13-191" aria-hidden="true" tabindex="-1"></a>    STREAM -.-&gt;|replay| SRC</span>
+<span id="cb13-192"><a href="#cb13-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-193"><a href="#cb13-193" aria-hidden="true" tabindex="-1"></a>    style STREAM fill:<span class="co">#FF9800,color:#fff</span></span>
+<span id="cb13-194"><a href="#cb13-194" aria-hidden="true" tabindex="-1"></a>    style SERVE fill:<span class="co">#4CAF50,color:#fff</span></span>
+<span id="cb13-195"><a href="#cb13-195" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-196"><a href="#cb13-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-197"><a href="#cb13-197" aria-hidden="true" tabindex="-1"></a><span class="fu">### Lambda vs Kappa — kiedy co stosować?</span></span>
+<span id="cb13-198"><a href="#cb13-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-199"><a href="#cb13-199" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Cecha <span class="pp">|</span> {{&lt; fa layer-group &gt;}} Lambda <span class="pp">|</span> {{&lt; fa arrows-turn-right &gt;}} Kappa <span class="pp">|</span></span>
+<span id="cb13-200"><a href="#cb13-200" aria-hidden="true" tabindex="-1"></a><span class="pp">|-------|--------|-------|</span></span>
+<span id="cb13-201"><a href="#cb13-201" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Złożoność <span class="pp">|</span> Wysoka (dwie ścieżki) <span class="pp">|</span> Niska (jedna ścieżka) <span class="pp">|</span></span>
+<span id="cb13-202"><a href="#cb13-202" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Dokładność <span class="pp">|</span> Batch koryguje stream <span class="pp">|</span> Zależna od jakości streamingu <span class="pp">|</span></span>
+<span id="cb13-203"><a href="#cb13-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Historyczne przeliczanie <span class="pp">|</span> Naturalne (batch) <span class="pp">|</span> Replay strumienia <span class="pp">|</span></span>
+<span id="cb13-204"><a href="#cb13-204" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Kiedy stosować <span class="pp">|</span> Gdy batch i stream mają różną logikę <span class="pp">|</span> Gdy jedna logika wystarcza <span class="pp">|</span></span>
+<span id="cb13-205"><a href="#cb13-205" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Przykład <span class="pp">|</span> Bank (nocne retrenowanie + RT scoring) <span class="pp">|</span> E-commerce (personalizacja) <span class="pp">|</span></span>
+<span id="cb13-206"><a href="#cb13-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-207"><a href="#cb13-207" aria-hidden="true" tabindex="-1"></a>: Lambda vs Kappa {.striped .hover}</span>
+<span id="cb13-208"><a href="#cb13-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-209"><a href="#cb13-209" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-210"><a href="#cb13-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-211"><a href="#cb13-211" aria-hidden="true" tabindex="-1"></a><span class="fu">## Czas w przetwarzaniu strumieniowym</span></span>
+<span id="cb13-212"><a href="#cb13-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-213"><a href="#cb13-213" aria-hidden="true" tabindex="-1"></a>W przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczne, kiedy chcemy. W przetwarzaniu strumieniowym czas staje się **kluczowym wymiarem analizy**.</span>
+<span id="cb13-214"><a href="#cb13-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-215"><a href="#cb13-215" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dwa rodzaje czasu</span></span>
+<span id="cb13-216"><a href="#cb13-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-217"><a href="#cb13-217" aria-hidden="true" tabindex="-1"></a>:::: {.columns}</span>
+<span id="cb13-218"><a href="#cb13-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a>::: {.column width="50%"}</span>
+<span id="cb13-220"><a href="#cb13-220" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb13-221"><a href="#cb13-221" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa calendar-day &gt;}} Czas zdarzenia (event time)</span></span>
+<span id="cb13-222"><a href="#cb13-222" aria-hidden="true" tabindex="-1"></a>Moment, w którym zdarzenie **faktycznie nastąpiło**.</span>
+<span id="cb13-223"><a href="#cb13-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a>*Np. klient kliknął „Kup" o 14:23:45.*</span>
+<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a>::: {.column width="50%"}</span>
+<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning appearance="simple"}</span>
+<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa server &gt;}} Czas przetwarzania (processing time)</span></span>
+<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a>Moment, w którym system **odebrał i przetworzył** zdarzenie.</span>
+<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-233"><a href="#cb13-233" aria-hidden="true" tabindex="-1"></a>*Np. system Kafki odebrał zdarzenie o 14:23:47.*</span>
+<span id="cb13-234"><a href="#cb13-234" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-235"><a href="#cb13-235" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-236"><a href="#cb13-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-237"><a href="#cb13-237" aria-hidden="true" tabindex="-1"></a>::::</span>
+<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a>W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje **opóźnienie** (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.</span>
+<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: zdarzenia docierają z losowym opóźnieniem</span></span>
+<span id="cb13-245"><a href="#cb13-245" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb13-246"><a href="#cb13-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> []</span>
+<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">8</span>):</span>
+<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a>    event_time <span class="op">=</span> datetime(<span class="dv">2026</span>, <span class="dv">3</span>, <span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">23</span>, i <span class="op">*</span> <span class="dv">2</span>)  <span class="co"># co 2 sekundy</span></span>
+<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a>    delay <span class="op">=</span> random.uniform(<span class="fl">0.1</span>, <span class="fl">5.0</span>)  <span class="co"># opóźnienie 0.1–5s</span></span>
+<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a>    processing_time <span class="op">=</span> event_time <span class="op">+</span> timedelta(seconds<span class="op">=</span>delay)</span>
+<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a>    zdarzenia.append({</span>
+<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a>        <span class="st">'event_time'</span>: event_time.strftime(<span class="st">'%H:%M:%S'</span>),</span>
+<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a>        <span class="st">'processing_time'</span>: processing_time.strftime(<span class="st">'%H:%M:%S.'</span>) <span class="op">+</span> <span class="ss">f'</span><span class="sc">{</span><span class="bu">int</span>(delay<span class="op">*</span><span class="dv">100</span>)<span class="sc">:02d}</span><span class="ss">'</span>,</span>
+<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a>        <span class="st">'opóźnienie'</span>: <span class="ss">f'</span><span class="sc">{</span>delay<span class="sc">:.1f}</span><span class="ss">s'</span></span>
+<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(zdarzenia)</span>
+<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-event-vs-processing</span></span>
+<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach strumieniowych"</span></span>
+<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a>evt <span class="op">=</span> np.sort(np.random.uniform(<span class="dv">0</span>, <span class="dv">60</span>, n))</span>
+<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a>delays <span class="op">=</span> np.random.exponential(<span class="dv">3</span>, n)</span>
+<span id="cb13-274"><a href="#cb13-274" aria-hidden="true" tabindex="-1"></a>proc <span class="op">=</span> evt <span class="op">+</span> delays</span>
+<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a>watermark <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-277"><a href="#cb13-277" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
+<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="dv">0</span>, <span class="dv">70</span>], [<span class="dv">0</span>, <span class="dv">70</span>], <span class="st">'k--'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="st">'Idealne (opóźnienie=0)'</span>)</span>
+<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a>ax.plot([<span class="dv">0</span>, <span class="dv">70</span>], [watermark, <span class="dv">70</span><span class="op">+</span>watermark], <span class="st">'b--'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, label<span class="op">=</span><span class="ss">f'Watermark (</span><span class="sc">{</span>watermark<span class="sc">}</span><span class="ss">s)'</span>)</span>
+<span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a>    in_wm <span class="op">=</span> proc[i] <span class="op">&lt;=</span> evt[i] <span class="op">+</span> watermark <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb13-283"><a href="#cb13-283" aria-hidden="true" tabindex="-1"></a>    color <span class="op">=</span> <span class="st">'#4CAF50'</span> <span class="cf">if</span> in_wm <span class="cf">else</span> <span class="st">'#F44336'</span></span>
+<span id="cb13-284"><a href="#cb13-284" aria-hidden="true" tabindex="-1"></a>    ax.scatter(evt[i], proc[i], c<span class="op">=</span>color, s<span class="op">=</span><span class="dv">50</span>, zorder<span class="op">=</span><span class="dv">5</span>, edgecolors<span class="op">=</span><span class="st">'white'</span>)</span>
+<span id="cb13-285"><a href="#cb13-285" aria-hidden="true" tabindex="-1"></a>    ax.plot([evt[i], evt[i]], [evt[i], proc[i]], color<span class="op">=</span>color, alpha<span class="op">=</span><span class="fl">0.2</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a>gp <span class="op">=</span> mpatches.Patch(color<span class="op">=</span><span class="st">'#4CAF50'</span>, label<span class="op">=</span><span class="st">'W oknie watermarku'</span>)</span>
+<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a>rp <span class="op">=</span> mpatches.Patch(color<span class="op">=</span><span class="st">'#F44336'</span>, label<span class="op">=</span><span class="st">'Za późno (odrzucone)'</span>)</span>
+<span id="cb13-289"><a href="#cb13-289" aria-hidden="true" tabindex="-1"></a>ax.legend(handles<span class="op">=</span>[gp, rp, ax.lines[<span class="dv">0</span>], ax.lines[<span class="dv">1</span>]], loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb13-290"><a href="#cb13-290" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Event time (sekundy)'</span>)</span>
+<span id="cb13-291"><a href="#cb13-291" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Processing time (sekundy)'</span>)</span>
+<span id="cb13-292"><a href="#cb13-292" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Opóźnienia i watermarking'</span>)</span>
+<span id="cb13-293"><a href="#cb13-293" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">70</span>)</span>
+<span id="cb13-294"><a href="#cb13-294" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="dv">2</span>, <span class="dv">75</span>)</span>
+<span id="cb13-295"><a href="#cb13-295" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-296"><a href="#cb13-296" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb13-297"><a href="#cb13-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-298"><a href="#cb13-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-299"><a href="#cb13-299" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb13-300"><a href="#cb13-300" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa car &gt;}} Analogia: GPS w tunelu</span></span>
+<span id="cb13-301"><a href="#cb13-301" aria-hidden="true" tabindex="-1"></a>Wyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą **przeszłości**, a nie teraźniejszości.</span>
+<span id="cb13-302"><a href="#cb13-302" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-303"><a href="#cb13-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-304"><a href="#cb13-304" aria-hidden="true" tabindex="-1"></a>Opóźnione zdarzenia możemy obsłużyć na dwa sposoby:</span>
+<span id="cb13-305"><a href="#cb13-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-306"><a href="#cb13-306" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Ignorowanie** — odrzucamy zdarzenia, które przyszły zbyt późno (ryzyko utraty danych).</span>
+<span id="cb13-307"><a href="#cb13-307" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Watermarking** — definiujemy „znacznik wodny" — maksymalne dopuszczalne opóźnienie. Zdarzenia, które mieszczą się w oknie watermarku, są uwzględniane. Reszta odrzucana.</span>
+<span id="cb13-308"><a href="#cb13-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-309"><a href="#cb13-309" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-310"><a href="#cb13-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-311"><a href="#cb13-311" aria-hidden="true" tabindex="-1"></a><span class="fu">## Okna czasowe</span></span>
+<span id="cb13-312"><a href="#cb13-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-313"><a href="#cb13-313" aria-hidden="true" tabindex="-1"></a>W przetwarzaniu strumieniowym nie możemy analizować „wszystkich danych" — strumień jest nieskończony. Zamiast tego grupujemy zdarzenia w **okna czasowe** o skończonej długości.</span>
+<span id="cb13-314"><a href="#cb13-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-315"><a href="#cb13-315" aria-hidden="true" tabindex="-1"></a>::: {.panel-tabset}</span>
+<span id="cb13-316"><a href="#cb13-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-317"><a href="#cb13-317" aria-hidden="true" tabindex="-1"></a><span class="fu">### Rozłączne (Tumbling)</span></span>
+<span id="cb13-318"><a href="#cb13-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-319"><a href="#cb13-319" aria-hidden="true" tabindex="-1"></a>Stała długość, brak nakładania. Każde zdarzenie należy do **dokładnie jednego** okna.</span>
+<span id="cb13-320"><a href="#cb13-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-321"><a href="#cb13-321" aria-hidden="true" tabindex="-1"></a>*Przykład:* suma transakcji co 5 minut.</span>
+<span id="cb13-322"><a href="#cb13-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-325"><a href="#cb13-325" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb13-326"><a href="#cb13-326" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja okna rozłącznego (tumbling) 5-minutowego</span></span>
+<span id="cb13-327"><a href="#cb13-327" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb13-328"><a href="#cb13-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-329"><a href="#cb13-329" aria-hidden="true" tabindex="-1"></a>zdarzenia <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb13-330"><a href="#cb13-330" aria-hidden="true" tabindex="-1"></a>    <span class="st">'czas'</span>: pd.date_range(<span class="st">'2026-03-12 14:00'</span>, periods<span class="op">=</span><span class="dv">30</span>, freq<span class="op">=</span><span class="st">'30s'</span>),</span>
+<span id="cb13-331"><a href="#cb13-331" aria-hidden="true" tabindex="-1"></a>    <span class="st">'kwota'</span>: np.random.uniform(<span class="dv">10</span>, <span class="dv">500</span>, <span class="dv">30</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb13-332"><a href="#cb13-332" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb13-333"><a href="#cb13-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-334"><a href="#cb13-334" aria-hidden="true" tabindex="-1"></a><span class="co"># Tumbling window: grupowanie co 5 minut</span></span>
+<span id="cb13-335"><a href="#cb13-335" aria-hidden="true" tabindex="-1"></a>zdarzenia[<span class="st">'okno'</span>] <span class="op">=</span> zdarzenia[<span class="st">'czas'</span>].dt.floor(<span class="st">'5min'</span>)</span>
+<span id="cb13-336"><a href="#cb13-336" aria-hidden="true" tabindex="-1"></a>wynik <span class="op">=</span> zdarzenia.groupby(<span class="st">'okno'</span>)[<span class="st">'kwota'</span>].agg([<span class="st">'sum'</span>, <span class="st">'count'</span>]).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb13-337"><a href="#cb13-337" aria-hidden="true" tabindex="-1"></a>wynik.columns <span class="op">=</span> [<span class="st">'suma'</span>, <span class="st">'liczba'</span>]</span>
+<span id="cb13-338"><a href="#cb13-338" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Okno rozłączne (5 min):"</span>)</span>
+<span id="cb13-339"><a href="#cb13-339" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(wynik)</span>
+<span id="cb13-340"><a href="#cb13-340" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-341"><a href="#cb13-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-342"><a href="#cb13-342" aria-hidden="true" tabindex="-1"></a><span class="fu">### Przesuwne (Sliding)</span></span>
+<span id="cb13-343"><a href="#cb13-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-344"><a href="#cb13-344" aria-hidden="true" tabindex="-1"></a>Stała długość, ale okno przesuwa się o zadany interwał — zdarzenia mogą należeć do **wielu okien**.</span>
+<span id="cb13-345"><a href="#cb13-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-346"><a href="#cb13-346" aria-hidden="true" tabindex="-1"></a>*Przykład:* średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.</span>
+<span id="cb13-347"><a href="#cb13-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-348"><a href="#cb13-348" aria-hidden="true" tabindex="-1"></a><span class="fu">### Skokowe (Hopping)</span></span>
+<span id="cb13-349"><a href="#cb13-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-350"><a href="#cb13-350" aria-hidden="true" tabindex="-1"></a>Podobne do sliding, ale z możliwością nakładania się okien o określony krok. Stosowane do wygładzania danych.</span>
+<span id="cb13-351"><a href="#cb13-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-352"><a href="#cb13-352" aria-hidden="true" tabindex="-1"></a><span class="fu">### Sesyjne (Session)</span></span>
+<span id="cb13-353"><a href="#cb13-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-354"><a href="#cb13-354" aria-hidden="true" tabindex="-1"></a>Dynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (**gap**).</span>
+<span id="cb13-355"><a href="#cb13-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-356"><a href="#cb13-356" aria-hidden="true" tabindex="-1"></a>*Przykład:* sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.</span>
+<span id="cb13-357"><a href="#cb13-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-358"><a href="#cb13-358" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-359"><a href="#cb13-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-360"><a href="#cb13-360" aria-hidden="true" tabindex="-1"></a><span class="fu">### Porównanie okien</span></span>
+<span id="cb13-361"><a href="#cb13-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-362"><a href="#cb13-362" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Typ okna <span class="pp">|</span> Długość <span class="pp">|</span> Nakładanie <span class="pp">|</span> Zastosowanie <span class="pp">|</span></span>
+<span id="cb13-363"><a href="#cb13-363" aria-hidden="true" tabindex="-1"></a><span class="pp">|----------|---------|:----------:|-------------|</span></span>
+<span id="cb13-364"><a href="#cb13-364" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Rozłączne (Tumbling) <span class="pp">|</span> Stała <span class="pp">|</span> {{&lt; fa xmark &gt;}} <span class="pp">|</span> Raporty okresowe <span class="pp">|</span></span>
+<span id="cb13-365"><a href="#cb13-365" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Przesuwne (Sliding) <span class="pp">|</span> Stała <span class="pp">|</span> {{&lt; fa check &gt;}} <span class="pp">|</span> Wykrywanie trendów <span class="pp">|</span></span>
+<span id="cb13-366"><a href="#cb13-366" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Skokowe (Hopping) <span class="pp">|</span> Stała <span class="pp">|</span> Częściowe <span class="pp">|</span> Wygładzanie danych <span class="pp">|</span></span>
+<span id="cb13-367"><a href="#cb13-367" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Sesyjne (Session) <span class="pp">|</span> Dynamiczna <span class="pp">|</span> {{&lt; fa xmark &gt;}} <span class="pp">|</span> Analiza sesji użytkowników <span class="pp">|</span></span>
+<span id="cb13-368"><a href="#cb13-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-369"><a href="#cb13-369" aria-hidden="true" tabindex="-1"></a>: Typy okien czasowych {.striped .hover}</span>
+<span id="cb13-370"><a href="#cb13-370" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-373"><a href="#cb13-373" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb13-374"><a href="#cb13-374" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-window-types</span></span>
+<span id="cb13-375"><a href="#cb13-375" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Typy okien czasowych — wizualizacja"</span></span>
+<span id="cb13-376"><a href="#cb13-376" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb13-377"><a href="#cb13-377" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.patches <span class="im">as</span> mpatches</span>
+<span id="cb13-378"><a href="#cb13-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-379"><a href="#cb13-379" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-380"><a href="#cb13-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-381"><a href="#cb13-381" aria-hidden="true" tabindex="-1"></a>events_x <span class="op">=</span> [<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">3</span>, <span class="fl">4.5</span>, <span class="fl">5.5</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">14</span>]</span>
+<span id="cb13-382"><a href="#cb13-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-383"><a href="#cb13-383" aria-hidden="true" tabindex="-1"></a><span class="co"># Tumbling</span></span>
+<span id="cb13-384"><a href="#cb13-384" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">0</span>]</span>
+<span id="cb13-385"><a href="#cb13-385" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Okno rozłączne (Tumbling)'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb13-386"><a href="#cb13-386" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> start <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dv">5</span>):</span>
+<span id="cb13-387"><a href="#cb13-387" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> mpatches.FancyBboxPatch((start, <span class="fl">0.2</span>), <span class="fl">4.9</span>, <span class="fl">0.6</span>, boxstyle<span class="op">=</span><span class="st">"round,pad=0.1"</span>,</span>
+<span id="cb13-388"><a href="#cb13-388" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span><span class="st">'#2196F3'</span>, alpha<span class="op">=</span><span class="fl">0.3</span>, edgecolor<span class="op">=</span><span class="st">'#2196F3'</span>)</span>
+<span id="cb13-389"><a href="#cb13-389" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb13-390"><a href="#cb13-390" aria-hidden="true" tabindex="-1"></a>ax.scatter(events_x, [<span class="fl">0.5</span>]<span class="op">*</span><span class="bu">len</span>(events_x), c<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">30</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb13-391"><a href="#cb13-391" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb13-392"><a href="#cb13-392" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb13-393"><a href="#cb13-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-394"><a href="#cb13-394" aria-hidden="true" tabindex="-1"></a><span class="co"># Sliding</span></span>
+<span id="cb13-395"><a href="#cb13-395" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">1</span>]</span>
+<span id="cb13-396"><a href="#cb13-396" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Okno przesuwne (Sliding: 5 min, krok 2 min)'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb13-397"><a href="#cb13-397" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#F44336'</span>, <span class="st">'#FF9800'</span>, <span class="st">'#4CAF50'</span>, <span class="st">'#2196F3'</span>, <span class="st">'#9C27B0'</span>, <span class="st">'#795548'</span>, <span class="st">'#607D8B'</span>]</span>
+<span id="cb13-398"><a href="#cb13-398" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, start <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">12</span>, <span class="dv">2</span>)):</span>
+<span id="cb13-399"><a href="#cb13-399" aria-hidden="true" tabindex="-1"></a>    y_offset <span class="op">=</span> <span class="fl">0.15</span> <span class="op">+</span> (i <span class="op">%</span> <span class="dv">3</span>) <span class="op">*</span> <span class="fl">0.25</span></span>
+<span id="cb13-400"><a href="#cb13-400" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> mpatches.FancyBboxPatch((start, y_offset), <span class="fl">4.9</span>, <span class="fl">0.2</span>, boxstyle<span class="op">=</span><span class="st">"round,pad=0.05"</span>,</span>
+<span id="cb13-401"><a href="#cb13-401" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span>colors[i <span class="op">%</span> <span class="bu">len</span>(colors)], alpha<span class="op">=</span><span class="fl">0.3</span>, edgecolor<span class="op">=</span>colors[i <span class="op">%</span> <span class="bu">len</span>(colors)])</span>
+<span id="cb13-402"><a href="#cb13-402" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb13-403"><a href="#cb13-403" aria-hidden="true" tabindex="-1"></a>ax.scatter(events_x, [<span class="fl">0.5</span>]<span class="op">*</span><span class="bu">len</span>(events_x), c<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">30</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb13-404"><a href="#cb13-404" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb13-405"><a href="#cb13-405" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb13-406"><a href="#cb13-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-407"><a href="#cb13-407" aria-hidden="true" tabindex="-1"></a><span class="co"># Session</span></span>
+<span id="cb13-408"><a href="#cb13-408" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> axes[<span class="dv">2</span>]</span>
+<span id="cb13-409"><a href="#cb13-409" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Okno sesyjne (Session: gap=2 min)'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb13-410"><a href="#cb13-410" aria-hidden="true" tabindex="-1"></a>session_events <span class="op">=</span> [[<span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">3</span>], [<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>], [<span class="dv">14</span>]]</span>
+<span id="cb13-411"><a href="#cb13-411" aria-hidden="true" tabindex="-1"></a>sess_colors <span class="op">=</span> [<span class="st">'#4CAF50'</span>, <span class="st">'#FF9800'</span>, <span class="st">'#9C27B0'</span>]</span>
+<span id="cb13-412"><a href="#cb13-412" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j, (sess, col) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(session_events, sess_colors)):</span>
+<span id="cb13-413"><a href="#cb13-413" aria-hidden="true" tabindex="-1"></a>    start <span class="op">=</span> <span class="bu">min</span>(sess) <span class="op">-</span> <span class="fl">0.3</span></span>
+<span id="cb13-414"><a href="#cb13-414" aria-hidden="true" tabindex="-1"></a>    end <span class="op">=</span> <span class="bu">max</span>(sess) <span class="op">+</span> <span class="fl">0.3</span></span>
+<span id="cb13-415"><a href="#cb13-415" aria-hidden="true" tabindex="-1"></a>    rect <span class="op">=</span> mpatches.FancyBboxPatch((start, <span class="fl">0.2</span>), end<span class="op">-</span>start, <span class="fl">0.6</span>, boxstyle<span class="op">=</span><span class="st">"round,pad=0.1"</span>,</span>
+<span id="cb13-416"><a href="#cb13-416" aria-hidden="true" tabindex="-1"></a>        facecolor<span class="op">=</span>col, alpha<span class="op">=</span><span class="fl">0.3</span>, edgecolor<span class="op">=</span>col)</span>
+<span id="cb13-417"><a href="#cb13-417" aria-hidden="true" tabindex="-1"></a>    ax.add_patch(rect)</span>
+<span id="cb13-418"><a href="#cb13-418" aria-hidden="true" tabindex="-1"></a>ax.scatter(events_x, [<span class="fl">0.5</span>]<span class="op">*</span><span class="bu">len</span>(events_x), c<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">30</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb13-419"><a href="#cb13-419" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb13-420"><a href="#cb13-420" aria-hidden="true" tabindex="-1"></a>ax.set_yticks([])</span>
+<span id="cb13-421"><a href="#cb13-421" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Czas (minuty)'</span>)</span>
+<span id="cb13-422"><a href="#cb13-422" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">0.5</span>, <span class="dv">16</span>)</span>
+<span id="cb13-423"><a href="#cb13-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-424"><a href="#cb13-424" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb13-425"><a href="#cb13-425" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb13-426"><a href="#cb13-426" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a><span class="co"># Porównanie: tumbling vs sliding window na tych samych danych</span></span>
+<span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Tumbling (5 min) ==="</span>)</span>
+<span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a>tumbling <span class="op">=</span> zdarzenia.groupby(zdarzenia[<span class="st">'czas'</span>].dt.floor(<span class="st">'5min'</span>))[<span class="st">'kwota'</span>].<span class="bu">sum</span>().<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb13-434"><a href="#cb13-434" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tumbling)</span>
+<span id="cb13-435"><a href="#cb13-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-436"><a href="#cb13-436" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Sliding (okno 5 min, krok 1 min) ==="</span>)</span>
+<span id="cb13-437"><a href="#cb13-437" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> start_min <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="dv">1</span>):</span>
+<span id="cb13-438"><a href="#cb13-438" aria-hidden="true" tabindex="-1"></a>    start <span class="op">=</span> pd.Timestamp(<span class="st">'2026-03-12 14:00'</span>) <span class="op">+</span> pd.Timedelta(minutes<span class="op">=</span>start_min)</span>
+<span id="cb13-439"><a href="#cb13-439" aria-hidden="true" tabindex="-1"></a>    end <span class="op">=</span> start <span class="op">+</span> pd.Timedelta(minutes<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb13-440"><a href="#cb13-440" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> (zdarzenia[<span class="st">'czas'</span>] <span class="op">&gt;=</span> start) <span class="op">&amp;</span> (zdarzenia[<span class="st">'czas'</span>] <span class="op">&lt;</span> end)</span>
+<span id="cb13-441"><a href="#cb13-441" aria-hidden="true" tabindex="-1"></a>    suma <span class="op">=</span> zdarzenia.loc[mask, <span class="st">'kwota'</span>].<span class="bu">sum</span>()</span>
+<span id="cb13-442"><a href="#cb13-442" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> suma <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb13-443"><a href="#cb13-443" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"  [</span><span class="sc">{</span>start<span class="sc">.</span>strftime(<span class="st">'%H:%M'</span>)<span class="sc">}</span><span class="ss">–</span><span class="sc">{</span>end<span class="sc">.</span>strftime(<span class="st">'%H:%M'</span>)<span class="sc">}</span><span class="ss">) suma = </span><span class="sc">{</span>suma<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb13-444"><a href="#cb13-444" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-445"><a href="#cb13-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-446"><a href="#cb13-446" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb13-447"><a href="#cb13-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-448"><a href="#cb13-448" aria-hidden="true" tabindex="-1"></a><span class="fu">## Podsumowanie</span></span>
+<span id="cb13-449"><a href="#cb13-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-450"><a href="#cb13-450" aria-hidden="true" tabindex="-1"></a>Na tym wykładzie poznaliśmy dwie kluczowe architektury (Lambda i Kappa) oraz fundamentalne pojęcia przetwarzania strumieniowego: czas zdarzenia, czas przetwarzania, watermarking i okna czasowe. To pojęcia, które będą towarzyszyć nam na laboratoriach podczas pracy z Apache Kafka i Spark Structured Streaming.</span>
+<span id="cb13-451"><a href="#cb13-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-452"><a href="#cb13-452" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="simple"}</span>
+<span id="cb13-453"><a href="#cb13-453" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa forward &gt;}} Na następnym wykładzie</span></span>
+<span id="cb13-454"><a href="#cb13-454" aria-hidden="true" tabindex="-1"></a>Uczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.</span>
+<span id="cb13-455"><a href="#cb13-455" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb13-456"><a href="#cb13-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-457"><a href="#cb13-457" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip appearance="simple"}</span>
+<span id="cb13-458"><a href="#cb13-458" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa brain &gt;}} Do przemyślenia</span></span>
+<span id="cb13-459"><a href="#cb13-459" aria-hidden="true" tabindex="-1"></a>Twój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?</span>
+<span id="cb13-460"><a href="#cb13-460" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
@@ -1196,4 +1916,5 @@ Name: kwota, dtype: float64
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
