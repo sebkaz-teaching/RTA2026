@@ -310,20 +310,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="przygotowanie">Przygotowanie</h2>
 <p>Upewnij się, że środowisko działa:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> jupyterlab-project</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up <span class="at">-d</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Otwórz JupyterLab: <code>http://localhost:8888</code></p>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Otwórz JupyterLab: <code>http://localhost:8999</code></p>
 <p>Cały kod poniżej uruchamiamy <strong>w JupyterLab</strong> w środowisku Docker.</p>
 <hr>
 </section>
 <section id="część-1-utwórz-temat-kafka" class="level2">
 <h2 class="anchored" data-anchor-id="część-1-utwórz-temat-kafka">Część 1: Utwórz temat Kafka</h2>
 <p>W <strong>terminalu JupyterLab</strong> (File &gt; New &gt; Terminal):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-topics.sh</span> <span class="at">--create</span> <span class="dt">\</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka-topics.sh</span> <span class="at">--create</span> <span class="dt">\</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--topic</span> transactions <span class="dt">\</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bootstrap-server</span> broker:9092 <span class="dt">\</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--partitions</span> 3 <span class="at">--replication-factor</span> 1</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-topics.sh</span> <span class="at">--list</span> <span class="at">--bootstrap-server</span> broker:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bootstrap-server</span> broker:9092</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka-topics.sh</span> <span class="at">--list</span> <span class="at">--bootstrap-server</span> broker:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="cell-2" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wklej wynik komendy --list:</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ WYNIK</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -336,7 +335,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="zadanie-2.1-napisz-producenta-transakcji">Zadanie 2.1 — Napisz producenta transakcji</h3>
 <p>Utwórz plik <code>producer.py</code>, który wysyła symulowane transakcje e-commerce do tematu <code>transactions</code>.</p>
 <p>Każda transakcja to JSON z polami: - <code>tx_id</code> (np. “TX0001”) - <code>user_id</code> (losowy z “u01” do “u20”) - <code>amount</code> (losowy float 5.0–5000.0) - <code>store</code> (losowy z: “Warszawa”, “Kraków”, “Gdańsk”, “Wrocław”) - <code>category</code> (losowy z: “elektronika”, “odzież”, “żywność”, “książki”) - <code>timestamp</code> (aktualny czas ISO)</p>
-<p>Wysyłaj jedną transakcję na sekundę, 50 łącznie.</p>
+<p>Wysyłaj jedną transakcję na sekundę.</p>
 <div id="cell-4" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> producer.py</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaProducer</span>
@@ -367,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Przetwarzanie bezstanowe = każde zdarzenie przetwarzane niezależnie, bez pamięci o poprzednich.</p>
 <section id="zadanie-3.1-filtruj-duże-transakcje" class="level3">
 <h3 class="anchored" data-anchor-id="zadanie-3.1-filtruj-duże-transakcje">Zadanie 3.1 — Filtruj duże transakcje</h3>
-<p>Napisz konsumenta, który czyta z <code>transactions</code> i wyświetla tylko transakcje z <code>amount &gt; 1000</code>.</p>
+<p>Napisz konsumenta, który czyta z <code>transactions</code> i wyświetla tylko transakcje z <code>amount &gt; 3000</code>.</p>
 <div id="cell-6" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> consumer_filter.py</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaConsumer</span>
@@ -376,21 +375,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>consumer <span class="op">=</span> KafkaConsumer(</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'transactions'</span>,</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    bootstrap_servers<span class="op">=</span><span class="st">'broker:9092'</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    auto_offset_reset<span class="op">=</span><span class="st">'earliest'</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    group_id<span class="op">=</span><span class="st">'filter-group'</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>))</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nasłuchuję na duże transakcje (amount &gt; 3000)..."</span>)</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Nasłuchuję na duże transakcje (amount &gt; 1000)..."</span>)</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Dla każdej wiadomości: sprawdź czy amount &gt; 1000, jeśli tak — wypisz </span><span class="al">ALERT</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Format: </span><span class="al">ALERT</span><span class="co">: TX0042 | 2345.67 PLN | Warszawa | elektronika</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> message <span class="kw">in</span> consumer:</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(message)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Dla każdej wiadomości: sprawdź czy amount &gt; 3000, jeśli tak — wypisz </span><span class="al">ALERT</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Format: </span><span class="al">ALERT</span><span class="co">: TX0042 | 2345.67 PLN | Warszawa | elektronika</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="zadanie-3.2-transformacja-i-wzbogacenie" class="level3">
 <h3 class="anchored" data-anchor-id="zadanie-3.2-transformacja-i-wzbogacenie">Zadanie 3.2 — Transformacja i wzbogacenie</h3>
-<p>Napisz konsumenta, który dodaje pole <code>risk_level</code>: - <code>amount &gt; 3000</code> → “HIGH” - <code>amount &gt; 1000</code> → “MEDIUM” - pozostałe → “LOW”</p>
+<p>Napisz konsumenta, który do słownika eventu dodaje pole <code>risk_level</code>: - <code>amount &gt; 3000</code> → “HIGH” - <code>amount &gt; 1000</code> → “MEDIUM” - pozostałe → “LOW”</p>
 <div id="cell-8" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> consumer_enrich.py</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaConsumer</span>
@@ -401,7 +401,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Dodaj pole risk_level na podstawie amount</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Wypisz wzbogaconą transakcję</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<hr>
 </section>
 </section>
 <section id="część-4-konsument-stanowy-agregacja" class="level2">
@@ -409,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Przetwarzanie stanowe = utrzymujemy stan (liczniki, sumy) pomiędzy zdarzeniami.</p>
 <section id="zadanie-4.1-zliczanie-transakcji-per-sklep" class="level3">
 <h3 class="anchored" data-anchor-id="zadanie-4.1-zliczanie-transakcji-per-sklep">Zadanie 4.1 — Zliczanie transakcji per sklep</h3>
-<p>Napisz konsumenta, który prowadzi bieżące zliczanie transakcji per sklep i wypisuje podsumowanie co 10 wiadomości.</p>
+<p>Napisz konsumenta, który prowadzi bieżące zliczanie transakcji per sklep i wypisuje podsumowanie co 10 wiadomości. Obiekt <code>Counter()</code> przeczytaj <a href="https://www.guru99.com/pl/python-counter-collections-example.html">Counter</a>.</p>
 <div id="cell-10" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> consumer_count.py</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaConsumer</span>
@@ -419,21 +418,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>consumer <span class="op">=</span> KafkaConsumer(</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'transactions'</span>,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    bootstrap_servers<span class="op">=</span><span class="st">'broker:9092'</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    auto_offset_reset<span class="op">=</span><span class="st">'earliest'</span>,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    group_id<span class="op">=</span><span class="st">'count-group'</span>,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>))</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>store_counts <span class="op">=</span> Counter()</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>total_amount <span class="op">=</span> {}</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>msg_count <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Dla każdej wiadomości:</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   1. Zwiększ store_counts[store]</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   2. Dodaj amount do total_amount[store]</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   3. Co 10 wiadomości wypisz tabelę:</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#      Sklep | Liczba | Suma | Średnia</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>store_counts <span class="op">=</span> Counter()</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>total_amount <span class="op">=</span> {}</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>msg_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Dla każdej wiadomości:</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   1. Zwiększ store_counts[store]</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   2. Dodaj amount do total_amount[store]</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   3. Co 10 wiadomości wypisz tabelę:</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#      Sklep | Liczba | Suma | Średnia</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="zadanie-4.2-statystyki-per-kategoria" class="level3">
@@ -448,7 +445,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<hr>
 </section>
 </section>
 <section id="część-5-wielu-konsumentów" class="level2">
@@ -459,13 +455,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="zadanie-5.2-pytania" class="level3">
 <h3 class="anchored" data-anchor-id="zadanie-5.2-pytania">Zadanie 5.2 — Pytania</h3>
+<ol type="1">
+<li>Co się stanie, jeśli uruchomisz consumer_filter.py po zakończeniu producenta?</li>
+<li>Co się stanie, jeśli dwóch konsumentów ma TĘ SAMĄ group_id?</li>
+<li>Jaka jest różnica między przetwarzaniem bezstanowym a stanowym?</li>
+</ol>
 <div id="cell-14" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Odpowiedz na pytania:</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Co się stanie, jeśli uruchomisz consumer_filter.py PO zakończeniu producenta?</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Co się stanie, jeśli dwóch konsumentów ma TĘ SAMĄ group_id?</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Jaka jest różnica między przetwarzaniem bezstanowym a stanowym?</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># TWOJE ODPOWIEDZI</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWOJE ODPOWIEDZI</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>

@@ -303,22 +303,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Proste reguły decyzyjne na strumieniu.</li>
 </ul>
 <p><strong>Case biznesowy:</strong> Budujesz system monitoringu transakcji e-commerce. Ten case będzie rozwijany na kolejnych zajęciach.</p>
-<hr>
 </section>
 <section id="przygotowanie" class="level2">
 <h2 class="anchored" data-anchor-id="przygotowanie">Przygotowanie</h2>
 <p>Upewnij się, że środowisko działa:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> jupyterlab-project <span class="kw">&amp;&amp;</span> <span class="ex">docker</span> compose up <span class="at">-d</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Otwórz JupyterLab: <code>http://localhost:8888</code></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> jupyterlab-project </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose up</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Otwórz JupyterLab: <code>http://localhost:8999</code></p>
 <p>W <strong>terminalu JupyterLab</strong> utwórz temat:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka/bin/kafka-topics.sh</span> <span class="at">--create</span> <span class="at">--topic</span> transactions <span class="dt">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bootstrap-server</span> broker:9092 <span class="at">--partitions</span> 3 <span class="at">--replication-factor</span> 1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kafka-topics.sh</span> <span class="at">--create</span> <span class="at">--topic</span> transactions <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--bootstrap-server</span> broker:9092</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="część-1-producent-20-min" class="level2">
 <h2 class="anchored" data-anchor-id="część-1-producent-20-min">Część 1: Producent (20 min)</h2>
 <p>Poniżej gotowy producent — przeanalizuj kod, uruchom w terminalu (<code>python producer.py</code>).</p>
-<div id="c681e169" class="cell" data-execution_count="1">
+<div id="c681e169" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> producer.py</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaProducer</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json, random, time</span>
@@ -342,7 +341,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'timestamp'</span>: datetime.now().isoformat(),</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1000</span>):</span>
 <span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    tx <span class="op">=</span> generate_transaction()</span>
 <span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    producer.send(<span class="st">'transactions'</span>, value<span class="op">=</span>tx)</span>
 <span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"[</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">] </span><span class="sc">{</span>tx[<span class="st">'tx_id'</span>]<span class="sc">}</span><span class="ss"> | </span><span class="sc">{</span>tx[<span class="st">'amount'</span>]<span class="sc">:.2f}</span><span class="ss"> PLN | </span><span class="sc">{</span>tx[<span class="st">'store'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
@@ -377,18 +376,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>consumer <span class="op">=</span> KafkaConsumer(</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'transactions'</span>,</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    bootstrap_servers<span class="op">=</span><span class="st">'broker:9092'</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    auto_offset_reset<span class="op">=</span><span class="st">'earliest'</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    group_id<span class="op">=</span><span class="st">'filter-group'</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>))</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Dla każdej wiadomości: sprawdź amount &gt; 1000, jeśli tak — wypisz </span><span class="al">ALERT</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> message <span class="kw">in</span> consumer:</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(message)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Dla każdej wiadomości: sprawdź amount &gt; 1000, jeśli tak — wypisz </span><span class="al">ALERT</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="zadanie-2.2-dodaj-poziom-ryzyka" class="level3">
 <h3 class="anchored" data-anchor-id="zadanie-2.2-dodaj-poziom-ryzyka">Zadanie 2.2 — Dodaj poziom ryzyka</h3>
-<p>Napisz konsumenta (INNY <code>group_id</code>!), który dodaje pole <code>risk_level</code>: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - reszta → “LOW”</p>
+<p>Napisz konsumenta, który dodaje pole <code>risk_level</code>: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - reszta → “LOW”</p>
 <div id="91ffb70c" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD — consumer_enrich.py</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
