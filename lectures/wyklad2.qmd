@@ -21,7 +21,7 @@ jupyter: python3
 ---
 
 ::: {.callout-note appearance="minimal"}
-## {{< fa clock >}} Czas trwania: 1,5h
+##  Czas trwania: 1,5h
 **Cel wykładu:** Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.
 :::
 

@@ -21,7 +21,7 @@ jupyter: python3
 ---
 
 ::: {.callout-note appearance="minimal"}
-## {{< fa clock >}} Czas trwania: 1,5h
+## Czas trwania: 1,5h
 **Cel wykładu:** Zrozumienie, jak ewoluowały modele przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe. Wprowadzenie pojęcia analizy danych w czasie rzeczywistym.
 :::
 

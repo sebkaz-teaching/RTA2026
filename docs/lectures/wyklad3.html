@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,6 +10,9 @@
 
 <title>Wykład 3 — Uczenie maszynowe: batch vs online – Analiza danych w czasie rzeczywistym</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -68,15 +71,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1dce9f32eecb350a510e49baa42f6985.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-32453a28a3092dd2068a885cb311269d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,7 +111,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -263,6 +267,12 @@ window.Quarto = {
  <span class="menu-text">Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/pl_lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2: Apache Spark — analiza danych transakcyjnych</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -347,7 +357,7 @@ window.Quarto = {
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa clock &gt;}} Czas trwania: 1,5h
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-clock" aria-label="clock"></i> Czas trwania: 1,5h
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -359,11 +369,11 @@ window.Quarto = {
 <h2 data-number="1" class="anchored" data-anchor-id="dwa-tryby-uczenia-maszynowego"><span class="header-section-number">1</span> Dwa tryby uczenia maszynowego</h2>
 <p>Na poprzednich wykładach mówiliśmy o przetwarzaniu wsadowym i strumieniowym. Ten sam podział dotyczy uczenia maszynowego.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">{{&lt; fa database &gt;}} Batch (offline)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">{{&lt; fa bolt &gt;}} Online (przyrostowe)</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href=""><i class="fa-solid fa-database" aria-label="database"></i> Batch (offline)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><i class="fa-solid fa-bolt" aria-label="bolt"></i> Online (przyrostowe)</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Model jest trenowany na <strong>całym zbiorze</strong> danych historycznych. Po wytrenowaniu jest wdrażany do produkcji, gdzie dokonuje predykcji na nowych danych. Gdy pojawiają się nowe dane — model jest retrenowany od zera.</p>
-<div id="e5943521" class="cell" data-execution_count="1">
+<div id="872d2e78" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -414,7 +424,7 @@ window.Quarto = {
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p>Model uczy się <strong>na bieżąco</strong> — każda nowa obserwacja (lub mały batch) aktualizuje parametry modelu. Nie trzeba retrenować od zera.</p>
-<div id="510252f8" class="cell" data-execution_count="2">
+<div id="00cedc0e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> SGDClassifier</span>
@@ -462,8 +472,8 @@ Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92'
 <thead>
 <tr class="header">
 <th>Cecha</th>
-<th>{{&lt; fa database &gt;}} Batch (offline)</th>
-<th>{{&lt; fa bolt &gt;}} Online (przyrostowe)</th>
+<th><i class="fa-solid fa-database" aria-label="database"></i> Batch (offline)</th>
+<th><i class="fa-solid fa-bolt" aria-label="bolt"></i> Online (przyrostowe)</th>
 </tr>
 </thead>
 <tbody>
@@ -511,7 +521,7 @@ Progresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92'
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa mountain &gt;}} Intuicja: szukanie drogi w górach
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-mountain" aria-label="mountain"></i> Intuicja: szukanie drogi w górach
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -639,7 +649,7 @@ Figure&nbsp;1: SGD vs Batch GD — zbieżność i wynik dopasowania
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>{{&lt; fa bolt &gt;}} Nagły (sudden)
+<span class="screen-reader-only">Important</span><i class="fa-solid fa-bolt" aria-label="bolt"></i> Nagły (sudden)
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -653,7 +663,7 @@ Figure&nbsp;1: SGD vs Batch GD — zbieżność i wynik dopasowania
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa arrow-trend-up &gt;}} Stopniowy (gradual)
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-arrow-trend-up" aria-label="arrow-trend-up"></i> Stopniowy (gradual)
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -667,7 +677,7 @@ Figure&nbsp;1: SGD vs Batch GD — zbieżność i wynik dopasowania
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa rotate &gt;}} Cykliczny (recurring)
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-rotate" aria-label="rotate"></i> Cykliczny (recurring)
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -676,7 +686,7 @@ Figure&nbsp;1: SGD vs Batch GD — zbieżność i wynik dopasowania
 </div>
 </div>
 </div>
-<div id="c1212441" class="cell" data-execution_count="4">
+<div id="1c8da5e8" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja concept drift: nagła zmiana wzorca</span></span>
@@ -804,7 +814,7 @@ Figure&nbsp;2: Concept drift: model batch vs online — dokładność w czasie
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Dla pojedynczej zmiennej możemy użyć rozstępu międzykwartylowego:</p>
 <p><span class="math display">\[x_{\text{out}} &lt; Q_1 - 1.5 \times IQR \quad \text{lub} \quad x_{\text{out}} &gt; Q_3 + 1.5 \times IQR\]</span></p>
-<div id="7b32cf54" class="cell" data-execution_count="6">
+<div id="3b9b7afc" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wynagrodzenia <span class="op">=</span> [<span class="dv">40</span>, <span class="dv">42</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">70</span>, <span class="dv">90</span>, <span class="dv">150</span>]</span>
@@ -848,7 +858,7 @@ Anomalie: [150]</code></pre>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>Algorytm bazujący na drzewach decyzyjnych (Liu et al., 2008). Kluczowa intuicja: <strong>anomalie są łatwiejsze do odizolowania</strong> — losowe podziały szybciej oddzielają je od reszty danych.</p>
-<div id="3ad33e2b" class="cell" data-execution_count="7">
+<div id="98c2f7e1" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> IsolationForest</span>
@@ -932,7 +942,7 @@ Anomalie: [150]</code></pre>
 <section id="lime-local-interpretable-model-agnostic-explanations" class="level3" data-number="5.1">
 <h3 data-number="5.1" class="anchored" data-anchor-id="lime-local-interpretable-model-agnostic-explanations"><span class="header-section-number">5.1</span> LIME (Local Interpretable Model-Agnostic Explanations)</h3>
 <p>LIME wyjaśnia pojedyncze predykcje dowolnego modelu. Działa tak: wprowadza drobne zmiany w danych wejściowych i obserwuje, jak zmienia się wynik. Na tej podstawie buduje prosty, interpretowalny model lokalny (np. regresję liniową), który przybliża zachowanie oryginalnego modelu w otoczeniu danej obserwacji.</p>
-<div id="55c24a63" class="cell" data-execution_count="8">
+<div id="f53d68ae" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
@@ -975,7 +985,7 @@ Na lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.</code></pr
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa forward &gt;}} Na następnym wykładzie
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-forward" aria-label="forward"></i> Na następnym wykładzie
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -988,7 +998,7 @@ Na lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.</code></pr
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa brain &gt;}} Do przemyślenia
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-brain" aria-label="brain"></i> Do przemyślenia
 </div>
 </div>
 <div class="callout-body-container callout-body">

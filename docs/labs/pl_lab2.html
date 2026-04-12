@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lab 2: Kafka + Spark Structured Streaming – Analiza danych w czasie rzeczywistym</title>
+<title>Lab 2: Apache Spark — analiza danych transakcyjnych – Analiza danych w czasie rzeczywistym</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -67,15 +70,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8843a38191b55497cd032d3fc2c3d839.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-32453a28a3092dd2068a885cb311269d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -152,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lab 2: Kafka + Spark Structured Streaming</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/pl_lab1.html">Laboratoria dzienne</a></li><li class="breadcrumb-item"><a href="../labs/pl_lab2.html">Lab 2: Apache Spark — analiza danych transakcyjnych</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -232,6 +234,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/pl_lab2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Lab 2: Apache Spark — analiza danych transakcyjnych</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -261,10 +269,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title"><strong>Sections</strong></h2>
    
   <ul class="collapse">
-  <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
-  <li><a href="#część-1-podstawy-sparka-tryb-batch" id="toc-część-1-podstawy-sparka-tryb-batch" class="nav-link" data-scroll-target="#część-1-podstawy-sparka-tryb-batch">Część 1: Podstawy Sparka (tryb batch)</a></li>
-  <li><a href="#część-2-streaming-ze-źródła-rate" id="toc-część-2-streaming-ze-źródła-rate" class="nav-link" data-scroll-target="#część-2-streaming-ze-źródła-rate">Część 2: Streaming ze źródła <code>rate</code></a></li>
-  <li><a href="#część-3-odczyt-z-kafki" id="toc-część-3-odczyt-z-kafki" class="nav-link" data-scroll-target="#część-3-odczyt-z-kafki">Część 3: Odczyt z Kafki</a></li>
+  <li><a href="#dlaczego-spark" id="toc-dlaczego-spark" class="nav-link active" data-scroll-target="#dlaczego-spark">Dlaczego Spark?</a></li>
+  <li><a href="#plan" id="toc-plan" class="nav-link" data-scroll-target="#plan">Plan</a></li>
+  <li><a href="#część-1-wczytaj-dane" id="toc-część-1-wczytaj-dane" class="nav-link" data-scroll-target="#część-1-wczytaj-dane">Część 1: Wczytaj dane</a></li>
+  <li><a href="#część-2-podstawowe-agregacje" id="toc-część-2-podstawowe-agregacje" class="nav-link" data-scroll-target="#część-2-podstawowe-agregacje">Część 2: Podstawowe agregacje</a></li>
+  <li><a href="#część-3-okna-tumbling" id="toc-część-3-okna-tumbling" class="nav-link" data-scroll-target="#część-3-okna-tumbling">Część 3: Okna tumbling</a></li>
+  <li><a href="#część-4-okna-sliding" id="toc-część-4-okna-sliding" class="nav-link" data-scroll-target="#część-4-okna-sliding">Część 4: Okna sliding</a></li>
+  <li><a href="#część-5-pytania-kontrolne" id="toc-część-5-pytania-kontrolne" class="nav-link" data-scroll-target="#część-5-pytania-kontrolne">Część 5: Pytania kontrolne</a></li>
+  <li><a href="#zapowiedź-lab-3" id="toc-zapowiedź-lab-3" class="nav-link" data-scroll-target="#zapowiedź-lab-3">Zapowiedź Lab 3</a></li>
   <li><a href="#praca-domowa" id="toc-praca-domowa" class="nav-link" data-scroll-target="#praca-domowa">Praca domowa</a></li>
   </ul>
 </nav>
@@ -272,9 +284,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/pl_lab1.html">Laboratoria dzienne</a></li><li class="breadcrumb-item"><a href="../labs/pl_lab2.html">Lab 2: Apache Spark — analiza danych transakcyjnych</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Lab 2: Kafka + Spark Structured Streaming</h1>
+<h1 class="title">Lab 2: Apache Spark — analiza danych transakcyjnych</h1>
 </div>
 
 
@@ -291,168 +303,243 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="cel" class="level2">
-<h2 class="anchored" data-anchor-id="cel">Cel</h2>
-<p>Przetwarzamy ten sam strumień transakcji z Lab 1, ale teraz w Apache Spark:</p>
+<section id="dlaczego-spark" class="level2">
+<h2 class="anchored" data-anchor-id="dlaczego-spark">Dlaczego Spark?</h2>
+<p>W Lab 1 napisałeś konsumenta, który zlicza transakcje per sklep. Działa — ale wyobraź sobie, że:</p>
 <ul>
-<li>Połączenie Sparka z Kafką,</li>
-<li>Okna tumbling i sliding,</li>
-<li>Transformacje bezstanowe i stanowe na skalę.</li>
+<li>Chcesz wiedzieć ile transakcji było <strong>w każdej godzinie z osobna</strong> (nie łącznie od początku)</li>
+<li>Masz nie 50, ale <strong>10 milionów</strong> transakcji dziennie</li>
+<li>Konsument padł — <strong>tracisz stan</strong> (liczniki), musisz zaczynać od zera</li>
 </ul>
-<p><strong>Case biznesowy (ciąg dalszy):</strong> System monitoringu musi generować raporty okienkowe — np. łączny przychód per sklep co 5 minut.</p>
+<p>Do takich zadań używamy <strong>Apache Spark</strong> — silnika obliczeniowego, który: - przetwarza dane równolegle (na wielu rdzeniach/maszynach) - ma wbudowane okna czasowe (<code>window</code>) - działa zarówno na plikach (batch) jak i na żywym strumieniu (streaming)</p>
 <hr>
 </section>
-<section id="część-1-podstawy-sparka-tryb-batch" class="level2">
-<h2 class="anchored" data-anchor-id="część-1-podstawy-sparka-tryb-batch">Część 1: Podstawy Sparka (tryb batch)</h2>
-<section id="zadanie-1.1-utwórz-sparksession" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.1-utwórz-sparksession">Zadanie 1.1 — Utwórz SparkSession</h3>
-<div id="cell-2" class="cell">
+<section id="plan" class="level2">
+<h2 class="anchored" data-anchor-id="plan">Plan</h2>
+<ol type="1">
+<li>Wczytaj 10 000 transakcji z pliku</li>
+<li>Podstawowe agregacje — znajomy <code>groupBy</code></li>
+<li><strong>Okna tumbling</strong> — zliczanie per godzina / per 30 minut</li>
+<li><strong>Okna sliding</strong> — nakładające się przedziały</li>
+<li>Zapowiedź: te same zapytania na żywym strumieniu z Kafki</li>
+</ol>
+</section>
+<section id="część-1-wczytaj-dane" class="level2">
+<h2 class="anchored" data-anchor-id="część-1-wczytaj-dane">Część 1: Wczytaj dane</h2>
+<section id="sparksession-brama-do-sparka" class="level3">
+<h3 class="anchored" data-anchor-id="sparksession-brama-do-sparka">SparkSession — brama do Sparka</h3>
+<p>Zanim cokolwiek zrobimy, tworzymy <code>SparkSession</code>. To jest odpowiednik połączenia z bazą danych — jeden obiekt na całą sesję.</p>
+<div id="create-session" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (SparkSession.builder</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"Lab2"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"WARN"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spark: </span><span class="sc">{</span>spark<span class="sc">.</span>version<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>spark <span class="op">=</span> (</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    SparkSession.builder</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    .appName(<span class="st">"Lab2-Transactions"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    .getOrCreate()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>spark.sparkContext.setLogLevel(<span class="st">"WARN"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Spark </span><span class="sc">{</span>spark<span class="sc">.</span>version<span class="sc">}</span><span class="ss"> — gotowy"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="zadanie-1.2-utwórz-dataframe-z-przykładowych-danych" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.2-utwórz-dataframe-z-przykładowych-danych">Zadanie 1.2 — Utwórz DataFrame z przykładowych danych</h3>
-<p>Utwórz Spark DataFrame o tej samej strukturze co transakcje z Kafki. Użyj <code>StructType</code>.</p>
-<div id="cell-4" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StructField, StringType, DoubleType</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> to_timestamp</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX001"</span>, <span class="st">"u05"</span>, <span class="fl">150.0</span>, <span class="st">"Warszawa"</span>, <span class="st">"elektronika"</span>, <span class="st">"2026-04-01 10:00:00"</span>),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX002"</span>, <span class="st">"u12"</span>, <span class="fl">4500.0</span>, <span class="st">"Kraków"</span>, <span class="st">"odzież"</span>, <span class="st">"2026-04-01 10:01:00"</span>),</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX003"</span>, <span class="st">"u05"</span>, <span class="fl">89.0</span>, <span class="st">"Warszawa"</span>, <span class="st">"żywność"</span>, <span class="st">"2026-04-01 10:02:30"</span>),</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX004"</span>, <span class="st">"u08"</span>, <span class="fl">7800.0</span>, <span class="st">"Gdańsk"</span>, <span class="st">"elektronika"</span>, <span class="st">"2026-04-01 10:03:00"</span>),</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX005"</span>, <span class="st">"u12"</span>, <span class="fl">55.0</span>, <span class="st">"Kraków"</span>, <span class="st">"książki"</span>, <span class="st">"2026-04-01 10:05:00"</span>),</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"TX006"</span>, <span class="st">"u03"</span>, <span class="fl">1200.0</span>, <span class="st">"Wrocław"</span>, <span class="st">"elektronika"</span>, <span class="st">"2026-04-01 10:06:30"</span>),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Zdefiniuj schemat</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Utwórz DataFrame</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Skonwertuj kolumnę timestamp</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Pokaż df.show() i df.printSchema()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="wczytaj-plik-json" class="level3">
+<h3 class="anchored" data-anchor-id="wczytaj-plik-json">Wczytaj plik JSON</h3>
+<p>Dane są w pliku <code>data/transactions_10k.jsonl</code> — 10 000 transakcji e-commerce z godzin 08:00–11:00. Każda linia to jeden rekord JSON, ten sam format co zdarzenia z Kafki w Lab 1.</p>
+<div id="load-data" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.read.json(<span class="st">"data/transactions_10k.jsonl"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Liczba rekordów: </span><span class="sc">{</span>df<span class="sc">.</span>count()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df.printSchema()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="show-data" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.show(<span class="dv">10</span>, truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="zadanie-1.3-tumbling-window-na-danych-batch" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-1.3-tumbling-window-na-danych-batch">Zadanie 1.3 — Tumbling window na danych batch</h3>
-<p>Pogrupuj transakcje w okna 3-minutowe. Policz transakcje i zsumuj kwoty per okno.</p>
-<div id="cell-6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyspark.sql.functions <span class="im">as</span> F</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Użyj F.window("kolumna_czasu", "3 minutes")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
-</section>
-</section>
-<section id="część-2-streaming-ze-źródła-rate" class="level2">
-<h2 class="anchored" data-anchor-id="część-2-streaming-ze-źródła-rate">Część 2: Streaming ze źródła <code>rate</code></h2>
-<section id="zadanie-2.1-pierwszy-strumień" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.1-pierwszy-strumień">Zadanie 2.1 — Pierwszy strumień</h3>
-<div id="cell-8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>batch_counter <span class="op">=</span> {<span class="st">"count"</span>: <span class="dv">0</span>}</span>
+<section id="konwersja-kolumny-timestamp" class="level3">
+<h3 class="anchored" data-anchor-id="konwersja-kolumny-timestamp">Konwersja kolumny <code>timestamp</code></h3>
+<p>Spark wczytał <code>timestamp</code> jako <strong>string</strong> (tekst). Żeby móc robić okna czasowe, musimy zamienić go na typ <code>TimestampType</code>.</p>
+<p>To jak zmiana formatu komórki w Excelu z “tekst” na “data”.</p>
+<div id="fix-timestamp" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> to_timestamp, col</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_batch(df, batch_id, max_batches<span class="op">=</span><span class="dv">5</span>):</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    batch_counter[<span class="st">"count"</span>] <span class="op">+=</span> <span class="dv">1</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"--- Batch </span><span class="sc">{</span>batch_id<span class="sc">}</span><span class="ss"> ---"</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    df.show(truncate<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> batch_counter[<span class="st">"count"</span>] <span class="op">&gt;=</span> max_batches:</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">"Stop"</span>)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>rate_df <span class="op">=</span> (spark.readStream.<span class="bu">format</span>(<span class="st">"rate"</span>).option(<span class="st">"rowsPerSecond"</span>, <span class="dv">2</span>).load())</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>rate_df.printSchema()</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> (rate_df.writeStream.<span class="bu">format</span>(<span class="st">"console"</span>).outputMode(<span class="st">"append"</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    .foreachBatch(process_batch).start())</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    query.awaitTermination()</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span>:</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    query.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-2.2-wzbogać-i-filtruj-strumień" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.2-wzbogać-i-filtruj-strumień">Zadanie 2.2 — Wzbogać i filtruj strumień</h3>
-<p>Dodaj kolumny: <code>user_id</code>, <code>amount</code>, <code>store</code>. Filtruj <code>amount &gt; 2000</code> (tryb append).</p>
-<div id="cell-10" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> expr</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>batch_counter[<span class="st">"count"</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="zadanie-2.3-tumbling-window-watermark-na-strumieniu" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-2.3-tumbling-window-watermark-na-strumieniu">Zadanie 2.3 — Tumbling window + watermark na strumieniu</h3>
-<p>Okna 10-sekundowe, watermark 5 sekund. Zlicz i zsumuj per okno per store.</p>
-<div id="cell-12" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>batch_counter[<span class="st">"count"</span>] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.withColumn(<span class="st">"timestamp"</span>, to_timestamp(col(<span class="st">"timestamp"</span>), <span class="st">"yyyy-MM-dd HH:mm:ss"</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df.printSchema()  <span class="co"># timestamp powinien być teraz 'timestamp (nullable = true)'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
 </section>
-<section id="część-3-odczyt-z-kafki" class="level2">
-<h2 class="anchored" data-anchor-id="część-3-odczyt-z-kafki">Część 3: Odczyt z Kafki</h2>
-<section id="zadanie-3.1-połącz-sparka-z-kafką" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.1-połącz-sparka-z-kafką">Zadanie 3.1 — Połącz Sparka z Kafką</h3>
-<p>Uruchom producenta z Lab 1 w terminalu.</p>
-<div id="cell-14" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>kafka_df <span class="op">=</span> (spark.readStream</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">format</span>(<span class="st">"kafka"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"kafka.bootstrap.servers"</span>, <span class="st">"broker:9092"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"subscribe"</span>, <span class="st">"transactions"</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    .option(<span class="st">"startingOffsets"</span>, <span class="st">"earliest"</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    .load())</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>kafka_df.printSchema()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="część-2-podstawowe-agregacje" class="level2">
+<h2 class="anchored" data-anchor-id="część-2-podstawowe-agregacje">Część 2: Podstawowe agregacje</h2>
+<p>Zanim przejdziemy do okien, przypomnij sobie <code>groupBy</code> — działa dokładnie jak w SQL (<code>GROUP BY</code>) i Pandas.</p>
+<section id="zadanie-2.1-liczba-transakcji-i-suma-przychodów-per-sklep" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.1-liczba-transakcji-i-suma-przychodów-per-sklep">Zadanie 2.1 — Liczba transakcji i suma przychodów per sklep</h3>
+<div id="agg-by-store" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> count, <span class="bu">sum</span> <span class="im">as</span> _sum, avg, <span class="bu">round</span> <span class="im">as</span> _round</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>store_summary <span class="op">=</span> (</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    df.groupBy(<span class="st">"store"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        count(<span class="st">"tx_id"</span>).alias(<span class="st">"liczba_tx"</span>),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        _round(_sum(<span class="st">"amount"</span>), <span class="dv">2</span>).alias(<span class="st">"suma_PLN"</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        _round(avg(<span class="st">"amount"</span>), <span class="dv">2</span>).alias(<span class="st">"srednia_PLN"</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    .orderBy(<span class="st">"store"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>store_summary.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="zadanie-3.2-parsuj-json-z-kafki" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.2-parsuj-json-z-kafki">Zadanie 3.2 — Parsuj JSON z Kafki</h3>
-<div id="cell-16" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> col, from_json</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.types <span class="im">import</span> StructType, StructField, StringType, DoubleType</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>tx_schema <span class="op">=</span> StructType([</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"tx_id"</span>, StringType()),</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"user_id"</span>, StringType()),</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"amount"</span>, DoubleType()),</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"store"</span>, StringType()),</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"category"</span>, StringType()),</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    StructField(<span class="st">"timestamp"</span>, StringType()),</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. col("value").cast("string")</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. from_json(..., tx_schema)</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Wyciągnij pola</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Skonwertuj timestamp</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="zadanie-2.2---statystyki-per-kategoria" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.2---statystyki-per-kategoria">Zadanie 2.2 - Statystyki per kategoria</h3>
+<p>Policz sumę, minimum i maksimum kwoty dla każdej kategorii.</p>
+<div id="agg-by-category" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> <span class="bu">min</span> <span class="im">as</span> _min, <span class="bu">max</span> <span class="im">as</span> _max</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># df.groupBy("category").agg(...).orderBy("category").show()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="zadanie-3.3-agregacja-okienkowa-na-strumieniu-z-kafki" class="level3">
-<h3 class="anchored" data-anchor-id="zadanie-3.3-agregacja-okienkowa-na-strumieniu-z-kafki">Zadanie 3.3 — Agregacja okienkowa na strumieniu z Kafki</h3>
-<p>Okna 1-minutowe per sklep. Watermark 30 sekund. Policz transakcje, sumę, średnią.</p>
-<div id="cell-18" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<hr>
 </section>
+<section id="część-3-okna-tumbling" class="level2">
+<h2 class="anchored" data-anchor-id="część-3-okna-tumbling">Część 3: Okna tumbling</h2>
+<section id="co-to-jest-okno" class="level3">
+<h3 class="anchored" data-anchor-id="co-to-jest-okno">Co to jest okno?</h3>
+<p>Dotychczasowe <code>groupBy("store")</code> liczyło <strong>wszystkie rekordy razem</strong> — bez znaczenia kiedy transakcja była.</p>
+<p>Okno (<code>window</code>) dzieli oś czasu na <strong>przedziały</strong> i grupuje dane osobno w każdym.</p>
+<p><strong>Okno tumbling</strong> (przeskakujące) — przedziały bez nakładania się:</p>
+<p>Każda transakcja trafia dokładnie do <strong>jednego</strong> okna.</p>
+</section>
+<section id="zadanie-3.1-liczba-transakcji-per-godzina-tumbling-1h" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.1-liczba-transakcji-per-godzina-tumbling-1h">Zadanie 3.1 — Liczba transakcji per godzina (tumbling 1h)</h3>
+<div id="tumbling-1h" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> window</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>hourly <span class="op">=</span> (</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    df.groupBy(window(<span class="st">"timestamp"</span>, <span class="st">"1 hour"</span>))    <span class="co"># okno 1-godzinne</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        count(<span class="st">"tx_id"</span>).alias(<span class="st">"liczba_tx"</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        _round(_sum(<span class="st">"amount"</span>), <span class="dv">2</span>).alias(<span class="st">"suma_PLN"</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    .orderBy(<span class="st">"window"</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>hourly.show(truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Kolumna <code>window</code> to struct z polami <code>start</code> i <code>end</code>. Możemy je wyciągnąć żeby ładniej wyświetlić:</p>
+<div id="window-display" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    hourly</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        col(<span class="st">"window.start"</span>).alias(<span class="st">"od"</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        col(<span class="st">"window.end"</span>).alias(<span class="st">"do"</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"liczba_tx"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"suma_PLN"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    .show(truncate<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-3.2-okna-30-minutowe-per-sklep" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.2-okna-30-minutowe-per-sklep">Zadanie 3.2 Okna 30-minutowe per sklep</h3>
+<p>Policz transakcje i sumę per sklep w każdym 30-minutowym oknie. Posortuj po oknie, a w ramach okna po sklepie.</p>
+<div id="tumbling-30min" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># df.groupBy(window("timestamp", "30 minutes"), "store").agg(...).orderBy(...).show()</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-3.3-w-której-godzinie-sklep-kraków-miał-najwyższy-przychód" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.3-w-której-godzinie-sklep-kraków-miał-najwyższy-przychód">Zadanie 3.3 — W której godzinie sklep “Kraków” miał najwyższy przychód?</h3>
+<p>Filtruj najpierw po sklepie, potem zrób okno godzinne, posortuj malejąco po sumie.</p>
+<div id="top-hour-krakow" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> desc</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="część-4-okna-sliding" class="level2">
+<h2 class="anchored" data-anchor-id="część-4-okna-sliding">Część 4: Okna sliding</h2>
+<p><strong>Okno sliding</strong> (przesuwne) — przedziały nakładają się:</p>
+<p>Dwa parametry: <code>windowDuration</code> (szerokość okna) i <code>slideDuration</code> (co ile przesuwa się).</p>
+<p>Uwaga: jedna transakcja może trafić do <strong>wielu</strong> okien — to normalne.</p>
+<section id="zadanie-4.1-okno-1h-krok-30-minut" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4.1-okno-1h-krok-30-minut">Zadanie 4.1 — Okno 1h, krok 30 minut</h3>
+<div id="sliding-window" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sliding <span class="op">=</span> (</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    df.groupBy(window(<span class="st">"timestamp"</span>, <span class="st">"1 hour"</span>, <span class="st">"30 minutes"</span>))  <span class="co"># szerokość 1h, krok 30min</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>        count(<span class="st">"tx_id"</span>).alias(<span class="st">"liczba_tx"</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        _round(_sum(<span class="st">"amount"</span>), <span class="dv">2</span>).alias(<span class="st">"suma_PLN"</span>),</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    .select(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        col(<span class="st">"window.start"</span>).alias(<span class="st">"od"</span>),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        col(<span class="st">"window.end"</span>).alias(<span class="st">"do"</span>),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"liczba_tx"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"suma_PLN"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    .orderBy(<span class="st">"od"</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>sliding.show(truncate<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-4.2-porównaj-tumbling-vs-sliding" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-4.2-porównaj-tumbling-vs-sliding">Zadanie 4.2 — Porównaj tumbling vs sliding</h3>
+<p>Policz łączną liczbę wierszy wynikowych w obu podejściach. Dlaczego sliding daje więcej wierszy?</p>
+<div id="compare-windows" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tumbling_rows <span class="op">=</span> (</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    df.groupBy(window(<span class="st">"timestamp"</span>, <span class="st">"1 hour"</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .agg(count(<span class="st">"tx_id"</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    .count()</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>sliding_rows <span class="op">=</span> (</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    df.groupBy(window(<span class="st">"timestamp"</span>, <span class="st">"1 hour"</span>, <span class="st">"30 minutes"</span>))</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    .agg(count(<span class="st">"tx_id"</span>))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    .count()</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Tumbling (1h):          </span><span class="sc">{</span>tumbling_rows<span class="sc">}</span><span class="ss"> okien"</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Sliding  (1h / 30min):  </span><span class="sc">{</span>sliding_rows<span class="sc">}</span><span class="ss"> okien"</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Odpowiedz w komentarzu: dlaczego sliding ma więcej wierszy?</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWOJA ODPOWIEDŹ:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="część-5-pytania-kontrolne" class="level2">
+<h2 class="anchored" data-anchor-id="część-5-pytania-kontrolne">Część 5: Pytania kontrolne</h2>
+<div id="questions" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Odpowiedz na pytania w komentarzach:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ile transakcji jest w oknie 09:00–10:00?</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#    Sprawdź w wyniku zadania 3.1.</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">#    ODPOWIEDŹ:</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Jaka jest różnica między groupBy("store") a groupBy(window(...), "store")?</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    ODPOWIEDŹ:</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. W oknie sliding 1h/30min — ile okien zawiera transakcje z godziny 09:30?</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    Wskazówka: narysuj oś czasu.</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    ODPOWIEDŹ:</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zapowiedź-lab-3" class="level2">
+<h2 class="anchored" data-anchor-id="zapowiedź-lab-3">Zapowiedź Lab 3</h2>
+<p>Właśnie robiłeś okna na <strong>pliku</strong> (dane historyczne, batch).</p>
+<p>Na następnych zajęciach ten sam kod zadziała na <strong>żywym strumieniu z Kafki</strong> — zmiana to dosłownie jedna linia:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Batch (dziś):</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.read.json(<span class="st">"data/transactions_10k.jsonl"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Streaming (Lab 3):</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> spark.readStream.<span class="bu">format</span>(<span class="st">"kafka"</span>).option(...).load()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Agregacje z <code>window()</code> pozostają <strong>bez zmian</strong>.</p>
 </section>
 <section id="praca-domowa" class="level2">
 <h2 class="anchored" data-anchor-id="praca-domowa">Praca domowa</h2>
 <ol type="1">
-<li>Dodaj sliding window: 5 minut, krok 1 minuta, per kategoria.</li>
-<li>Zapisz alerty (amount &gt; 3000) do nowego tematu Kafka <code>alerts</code>.</li>
-<li>Wypchnij kod do repozytorium Git.</li>
+<li>Znajdź godzinę, w której sklep <strong>Gdańsk</strong> miał <strong>najniższą</strong> średnią kwotę transakcji.</li>
+<li>Policz ile transakcji per kategoria było w oknie <strong>09:00–09:30</strong>.</li>
+<li>Zrób okno 15-minutowe i sprawdź w której ćwierćgodzinie był szczyt transakcji (łącznie dla wszystkich sklepów).</li>
 </ol>
-<p><strong>Następne zajęcia:</strong> Reguły decyzyjne na danych strumieniowych.</p>
-<div id="cell-20" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>spark.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Następne zajęcia:</strong> Ten sam <code>window()</code> na strumieniu z Kafki — watermark i obsługa spóźnionych zdarzeń.</p>
+<div id="cleanup" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>spark.stop()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 

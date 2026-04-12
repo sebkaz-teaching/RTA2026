@@ -21,7 +21,7 @@ website:
       - section : "Laboratoria dzienne"
         contents:
         - href: labs/pl_lab1.ipynb
-      #   - href: labs/lab2.ipynb
+        - href: labs/pl_lab2.ipynb
       #   - href: labs/lab3.ipynb
       #   - href: labs/lab4.ipynb
       #   - href: labs/lab5.ipynb
@@ -46,10 +46,14 @@ website:
             text: Książki
           
   page-footer: "Copyright 2026, Sebastian Zając"
+
+filters:
+  - fontawesome
 format:
   html:
     page-layout: article
-    theme: minty
+    theme: flatly        # Zmienione z minty na flatly, żeby pasowało do wykładu
+    highlight-style: github # Dodane, żeby kod wyglądał tak samo
     css: style.css
     toc: true
     toc-depth: 2

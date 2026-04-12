@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,6 +10,9 @@
 
 <title>Wykład 5 — Apache Spark i Structured Streaming – Analiza danych w czasie rzeczywistym</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -68,15 +71,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1dce9f32eecb350a510e49baa42f6985.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-32453a28a3092dd2068a885cb311269d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -237,6 +241,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/pl_lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2: Apache Spark — analiza danych transakcyjnych</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -320,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa clock &gt;}} Czas trwania: 1,5h
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-clock" aria-label="clock"></i> Czas trwania: 1,5h
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -340,7 +350,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa memory &gt;}} Przetwarzanie w pamięci
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-memory" aria-label="memory"></i> Przetwarzanie w pamięci
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -353,7 +363,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa cubes &gt;}} Jeden silnik, wiele trybów
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-cubes" aria-label="cubes"></i> Jeden silnik, wiele trybów
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -367,7 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa python &gt;}} API w wielu językach
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-python" aria-label="python"></i> API w wielu językach
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -380,7 +390,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa wand-magic-sparkles &gt;}} Lazy evaluation
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-wand-magic-sparkles" aria-label="wand-magic-sparkles"></i> Lazy evaluation
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -468,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="2.3" class="anchored" data-anchor-id="transformacje-i-akcje"><span class="header-section-number">2.3</span> Transformacje i akcje</h3>
 <p>Spark rozróżnia dwa typy operacji:</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">{{&lt; fa wand-magic-sparkles &gt;}} Transformacje (lazy)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">{{&lt; fa play &gt;}} Akcje (eager)</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href=""><i class="fa-solid fa-wand-magic-sparkles" aria-label="wand-magic-sparkles"></i> Transformacje (lazy)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><i class="fa-solid fa-play" aria-label="play"></i> Akcje (eager)</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Definiują <em>co</em> chcesz zrobić, ale <strong>nie wykonują</strong> obliczeń. Są <strong>leniwe</strong> (lazy).</p>
@@ -499,7 +509,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa database &gt;}} Spark SQL — alternatywa
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-database" aria-label="database"></i> Spark SQL — alternatywa
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -572,7 +582,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa plus &gt;}} Append
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-plus" aria-label="plus"></i> Append
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -586,7 +596,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>{{&lt; fa arrows-rotate &gt;}} Complete
+<span class="screen-reader-only">Warning</span><i class="fa-solid fa-arrows-rotate" aria-label="arrows-rotate"></i> Complete
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -600,7 +610,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa pen &gt;}} Update
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-pen" aria-label="pen"></i> Update
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -889,7 +899,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>{{&lt; fa flag-checkered &gt;}} To był ostatni wykład
+<span class="screen-reader-only">Important</span><i class="fa-solid fa-flag-checkered" aria-label="flag-checkered"></i> To był ostatni wykład
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -902,7 +912,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa laptop-code &gt;}} Przed Lab 1
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-laptop-code" aria-label="laptop-code"></i> Przed Lab 1
 </div>
 </div>
 <div class="callout-body-container callout-body">

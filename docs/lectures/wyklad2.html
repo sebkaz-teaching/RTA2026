@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,6 +10,9 @@
 
 <title>Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa – Analiza danych w czasie rzeczywistym</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -68,15 +71,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-8b4baf804e461d9b72633f0de59a0cac.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-a06763021a52c43c40a351ac8b799b8f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-1dce9f32eecb350a510e49baa42f6985.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-32453a28a3092dd2068a885cb311269d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -237,6 +241,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../labs/pl_lab2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Lab 2: Apache Spark — analiza danych transakcyjnych</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -322,7 +332,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa clock &gt;}} Czas trwania: 1,5h
+<span class="screen-reader-only">Note</span>Czas trwania: 1,5h
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -335,10 +345,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Na poprzednim wykładzie ustaliliśmy, że dane <strong>zawsze</strong> powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.</p>
 <p>Porównajmy oba podejścia na tym samym problemie biznesowym: <strong>monitorowanie transakcji w sklepie internetowym</strong>.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">{{&lt; fa database &gt;}} Podejście wsadowe (batch)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">{{&lt; fa bolt &gt;}} Podejście strumieniowe (stream)</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href=""><i class="fa-solid fa-database" aria-label="database"></i> Podejście wsadowe (batch)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href=""><i class="fa-solid fa-bolt" aria-label="bolt"></i> Podejście strumieniowe (stream)</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div id="63b1aa4f" class="cell" data-execution_count="1">
+<div id="d2a495ba" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -379,7 +389,7 @@ czas
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div id="37a6b131" class="cell" data-execution_count="2">
+<div id="6199e3ef" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -406,16 +416,16 @@ czas
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[21:27:34] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
-[21:27:34] Klient 7938:   236.83 PLN | Suma okna:   1526.58
-[21:27:35] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
-[21:27:35] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
-[21:27:35] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
-[21:27:35] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
-[21:27:35] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
-[21:27:36] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
-[21:27:36] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
-[21:27:36] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
+<pre><code>[01:08:54] Klient 2191:  1289.75 PLN | Suma okna:   1289.75
+[01:08:54] Klient 7938:   236.83 PLN | Suma okna:   1526.58
+[01:08:54] Klient 2540:  2124.60 PLN | Suma okna:   3651.18
+[01:08:54] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!
+[01:08:55] Klient 2365:  2960.19 PLN | Suma okna:   2960.19
+[01:08:55] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!
+[01:08:55] Klient 2324:  2724.93 PLN | Suma okna:   2724.93
+[01:08:55] Klient 4141:  2265.07 PLN | Suma okna:   4990.00
+[01:08:55] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!
+[01:08:56] Klient 6301:  2335.90 PLN | Suma okna:   2335.90</code></pre>
 </div>
 </div>
 </div>
@@ -449,7 +459,7 @@ czas
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa database &gt;}} Warstwa wsadowa
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-database" aria-label="database"></i> Warstwa wsadowa
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -464,7 +474,7 @@ czas
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>{{&lt; fa bolt &gt;}} Warstwa szybka
+<span class="screen-reader-only">Warning</span><i class="fa-solid fa-bolt" aria-label="bolt"></i> Warstwa szybka
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -479,7 +489,7 @@ czas
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa server &gt;}} Warstwa serwująca
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-server" aria-label="server"></i> Warstwa serwująca
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -515,7 +525,7 @@ czas
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa building-columns &gt;}} Przykład biznesowy: Bank analizujący transakcje kartowe
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-building-columns" aria-label="building-columns"></i> Przykład biznesowy: Bank analizujący transakcje kartowe
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -583,8 +593,8 @@ czas
 <thead>
 <tr class="header">
 <th>Cecha</th>
-<th>{{&lt; fa layer-group &gt;}} Lambda</th>
-<th>{{&lt; fa arrows-turn-right &gt;}} Kappa</th>
+<th><i class="fa-solid fa-layer-group" aria-label="layer-group"></i> Lambda</th>
+<th><i class="fa-solid fa-arrows-turn-right" aria-label="arrows-turn-right"></i> Kappa</th>
 </tr>
 </thead>
 <tbody>
@@ -631,7 +641,7 @@ czas
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa calendar-day &gt;}} Czas zdarzenia (event time)
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-calendar-day" aria-label="calendar-day"></i> Czas zdarzenia (event time)
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -646,7 +656,7 @@ czas
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>{{&lt; fa server &gt;}} Czas przetwarzania (processing time)
+<span class="screen-reader-only">Warning</span><i class="fa-solid fa-server" aria-label="server"></i> Czas przetwarzania (processing time)
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -657,7 +667,7 @@ czas
 </div>
 </div>
 <p>W idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje <strong>opóźnienie</strong> (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.</p>
-<div id="a67f0775" class="cell" data-execution_count="3">
+<div id="305b1588" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja: zdarzenia docierają z losowym opóźnieniem</span></span>
@@ -679,14 +689,14 @@ czas
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>event_time processing_time opóźnienie
-  14:23:00    14:23:03.390       3.9s
-  14:23:02    14:23:03.137       1.4s
-  14:23:04    14:23:08.496       5.0s
-  14:23:06    14:23:10.461       4.6s
-  14:23:08    14:23:10.276       2.8s
-  14:23:10    14:23:13.360       3.6s
-  14:23:12     14:23:12.91       0.9s
-  14:23:14    14:23:18.460       4.6s</code></pre>
+  14:23:00    14:23:01.138       1.4s
+  14:23:02    14:23:05.325       3.3s
+  14:23:04    14:23:06.244       2.4s
+  14:23:06    14:23:10.457       4.6s
+  14:23:08    14:23:10.245       2.5s
+  14:23:10    14:23:11.118       1.2s
+  14:23:12    14:23:15.368       3.7s
+  14:23:14    14:23:17.370       3.7s</code></pre>
 </div>
 </div>
 <div id="cell-fig-event-vs-processing" class="cell" data-execution_count="4">
@@ -742,7 +752,7 @@ Figure&nbsp;1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa car &gt;}} Analogia: GPS w tunelu
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-car" aria-label="car"></i> Analogia: GPS w tunelu
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -769,7 +779,7 @@ Figure&nbsp;1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>Stała długość, brak nakładania. Każde zdarzenie należy do <strong>dokładnie jednego</strong> okna.</p>
 <p><em>Przykład:</em> suma transakcji co 5 minut.</p>
-<div id="78ab9485" class="cell" data-execution_count="5">
+<div id="a1936926" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Symulacja okna rozłącznego (tumbling) 5-minutowego</span></span>
@@ -832,13 +842,13 @@ okno
 <tr class="odd">
 <td>Rozłączne (Tumbling)</td>
 <td>Stała</td>
-<td style="text-align: center;">{{&lt; fa xmark &gt;}}</td>
+<td style="text-align: center;"><p><i class="fa-solid fa-xmark" aria-label="xmark"></i></p></td>
 <td>Raporty okresowe</td>
 </tr>
 <tr class="even">
 <td>Przesuwne (Sliding)</td>
 <td>Stała</td>
-<td style="text-align: center;">{{&lt; fa check &gt;}}</td>
+<td style="text-align: center;"><p><i class="fa-solid fa-check" aria-label="check"></i></p></td>
 <td>Wykrywanie trendów</td>
 </tr>
 <tr class="odd">
@@ -850,7 +860,7 @@ okno
 <tr class="even">
 <td>Sesyjne (Session)</td>
 <td>Dynamiczna</td>
-<td style="text-align: center;">{{&lt; fa xmark &gt;}}</td>
+<td style="text-align: center;"><p><i class="fa-solid fa-xmark" aria-label="xmark"></i></p></td>
 <td>Analiza sesji użytkowników</td>
 </tr>
 </tbody>
@@ -922,7 +932,7 @@ Figure&nbsp;2: Typy okien czasowych — wizualizacja
 </div>
 </div>
 </div>
-<div id="ec61eb1b" class="cell" data-execution_count="7">
+<div id="bde3f907" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Porównanie: tumbling vs sliding window na tych samych danych</span></span>
@@ -977,7 +987,7 @@ Name: kwota, dtype: float64
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>{{&lt; fa forward &gt;}} Na następnym wykładzie
+<span class="screen-reader-only">Note</span><i class="fa-solid fa-forward" aria-label="forward"></i> Na następnym wykładzie
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -990,7 +1000,7 @@ Name: kwota, dtype: float64
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>{{&lt; fa brain &gt;}} Do przemyślenia
+<span class="screen-reader-only">Tip</span><i class="fa-solid fa-brain" aria-label="brain"></i> Do przemyślenia
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1483,7 +1493,7 @@ Name: kwota, dtype: float64
 <span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>::: {.callout-note appearance="minimal"}</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## {{&lt; fa clock &gt;}} Czas trwania: 1,5h</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="fu">##  Czas trwania: 1,5h</span></span>
 <span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>**Cel wykładu:** Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.</span>
 <span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
