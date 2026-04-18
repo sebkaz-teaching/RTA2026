@@ -439,7 +439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pliki-płaskie-punkt-wyjścia" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="pliki-płaskie-punkt-wyjścia"><span class="header-section-number">2.1</span> Pliki płaskie — punkt wyjścia</h3>
 <p>Zanim pojawiły się bazy danych, informacje przechowywano w plikach tekstowych — CSV, TSV, plikach o stałej szerokości kolumn. Każdy program czytał plik od początku do końca, przetwarzał dane i zapisywał wynik do nowego pliku.</p>
-<div id="25dc6564" class="cell" data-execution_count="1">
+<div id="d8883417" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -483,7 +483,7 @@ Warszawa  88847.85  2468.00      36</code></pre>
 <p>Operacje <strong>CRUD</strong>, gwarancje <strong>ACID</strong>, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.</p>
 </div>
 </div>
-<div id="c54b23c7" class="cell" data-execution_count="2">
+<div id="0047420a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sqlite3</span>
@@ -525,7 +525,7 @@ Warszawa  88847.85  2468.00      36</code></pre>
 <p>Agregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.</p>
 </div>
 </div>
-<div id="d76fc7af" class="cell" data-execution_count="3">
+<div id="cd848779" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
@@ -642,7 +642,7 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 <p>Przetwarzanie wsadowe to tylko <strong>uproszczenie</strong> — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.</p>
 </div>
 </div>
-<div id="d96e0823" class="cell" data-execution_count="4">
+<div id="fc00a959" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -667,11 +667,11 @@ Pomorskie     685.6   654.7   646.8   774.6</code></pre>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Suma przetworzona na bieżąco: </span><span class="sc">{</span>suma<span class="sc">:.2f}</span><span class="ss"> PLN"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[13:23:41] TX0001:  1001.75 PLN (Kraków)
-[13:23:41] TX0002:    77.42 PLN (Warszawa)
-[13:23:42] TX0003:   731.16 PLN (Gdańsk)
-[13:23:42] TX0004:   562.40 PLN (Kraków)
-[13:23:42] TX0005:    36.06 PLN (Warszawa)
+<pre><code>[13:30:25] TX0001:  1001.75 PLN (Kraków)
+[13:30:26] TX0002:    77.42 PLN (Warszawa)
+[13:30:26] TX0003:   731.16 PLN (Gdańsk)
+[13:30:26] TX0004:   562.40 PLN (Kraków)
+[13:30:26] TX0005:    36.06 PLN (Warszawa)
 
 Suma przetworzona na bieżąco: 2408.79 PLN</code></pre>
 </div>
@@ -804,7 +804,7 @@ Figure&nbsp;1: Porównanie trybów przetwarzania: opóźnienie vs koszt
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <p>JSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.</p>
-<div id="4d89e4b1" class="cell" data-execution_count="6">
+<div id="29de6534" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Pokaż kod</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
