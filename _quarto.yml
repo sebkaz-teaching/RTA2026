@@ -33,6 +33,8 @@ website:
       - section : "Laboratoria zaoczne"
         contents:
         - href: labs/zaoczne_cw1.ipynb
+        - href: labs/zaoczne_cw2.ipynb
+
 
   navbar:
     left: 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Lab 9: Kompletny system w Docker Compose – Analiza danych w czasie rzeczywistym</title>
+<title>Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji – Analiza danych w czasie rzeczywistym</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Lab 9: Kompletny system w Docker Compose</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/zaoczne_cw1.html">Laboratoria zaoczne</a></li><li class="breadcrumb-item"><a href="../labs/zaoczne_cw2.html">Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -259,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../labs/zaoczne_cw2.html" class="sidebar-item-text sidebar-link">
+  <a href="../labs/zaoczne_cw2.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji</span></a>
   </div>
 </li>
@@ -276,15 +276,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul class="collapse">
   <li><a href="#cel" id="toc-cel" class="nav-link active" data-scroll-target="#cel">Cel</a></li>
+  <li><a href="#część-1-trening-modelu-25-min" id="toc-część-1-trening-modelu-25-min" class="nav-link" data-scroll-target="#część-1-trening-modelu-25-min">Część 1: Trening modelu (25 min)</a></li>
+  <li><a href="#część-2-fastapi-25-min" id="toc-część-2-fastapi-25-min" class="nav-link" data-scroll-target="#część-2-fastapi-25-min">Część 2: FastAPI (25 min)</a></li>
+  <li><a href="#część-3-kafka-ml-25-min" id="toc-część-3-kafka-ml-25-min" class="nav-link" data-scroll-target="#część-3-kafka-ml-25-min">Część 3: Kafka + ML (25 min)</a></li>
+  <li><a href="#praca-domowa" id="toc-praca-domowa" class="nav-link" data-scroll-target="#praca-domowa">Praca domowa</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../labs/zaoczne_cw1.html">Laboratoria zaoczne</a></li><li class="breadcrumb-item"><a href="../labs/zaoczne_cw2.html">Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Lab 9: Kompletny system w Docker Compose</h1>
+<h1 class="title">Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji</h1>
 </div>
 
 
@@ -301,20 +305,151 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p><em>Studia zaoczne | 1,5h</em></p>
 <section id="cel" class="level2">
 <h2 class="anchored" data-anchor-id="cel">Cel</h2>
 <ul>
-<li>Konteneryzacja wszystkich komponentów,</li>
-<li>Uruchomienie całości przez <code>docker compose up</code>,</li>
-<li>Monitoring systemu.</li>
+<li>Wytrenowanie modelu detekcji fraudów,</li>
+<li>Serwowanie modelu przez FastAPI,</li>
+<li>Podłączenie do Kafki — scoring w czasie rzeczywistym.</li>
 </ul>
-<p><strong>Case (finał):</strong> Pakujemy system detekcji fraudów do produkcji.</p>
 <hr>
-<p>Szczegółowe zadania — patrz angielska wersja <code>en_lab9.ipynb</code> (identyczna struktura, tłumaczenie nazw zmiennych na polskie).</p>
-<div id="cell-2" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Lab 9 — TWÓJ KOD</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Szczegółowe instrukcje w pełnej wersji notatnika</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="część-1-trening-modelu-25-min" class="level2">
+<h2 class="anchored" data-anchor-id="część-1-trening-modelu-25-min">Część 1: Trening modelu (25 min)</h2>
+<section id="zadanie-1.1-przygotuj-dane-i-wytrenuj-model" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.1-przygotuj-dane-i-wytrenuj-model">Zadanie 1.1 — Przygotuj dane i wytrenuj model</h3>
+<div id="e7744ac1" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalne transakcje</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>normal <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'amount'</span>: np.random.lognormal(<span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">2000</span>).clip(<span class="dv">5</span>, <span class="dv">5000</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'hour'</span>: np.random.normal(<span class="dv">14</span>, <span class="dv">4</span>, <span class="dv">2000</span>).clip(<span class="dv">0</span>, <span class="dv">23</span>).astype(<span class="bu">int</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_electronics'</span>: np.random.binomial(<span class="dv">1</span>, <span class="fl">0.3</span>, <span class="dv">2000</span>),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tx_per_day'</span>: np.random.poisson(<span class="dv">3</span>, <span class="dv">2000</span>),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'fraud'</span>: <span class="dv">0</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Fraudy</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>fraud <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'amount'</span>: np.random.uniform(<span class="dv">2000</span>, <span class="dv">9000</span>, <span class="dv">100</span>),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'hour'</span>: np.random.choice([<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">22</span>,<span class="dv">23</span>], <span class="dv">100</span>),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_electronics'</span>: np.random.binomial(<span class="dv">1</span>, <span class="fl">0.7</span>, <span class="dv">100</span>),</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tx_per_day'</span>: np.random.poisson(<span class="dv">8</span>, <span class="dv">100</span>),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'fraud'</span>: <span class="dv">1</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([normal, fraud], ignore_index<span class="op">=</span><span class="va">True</span>).sample(frac<span class="op">=</span><span class="dv">1</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Dataset: </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">}</span><span class="ss"> wierszy, fraud rate: </span><span class="sc">{</span>df[<span class="st">'fraud'</span>]<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</section>
+<section id="zadanie-1.2-podziel-dane-wytrenuj-oceń" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-1.2-podziel-dane-wytrenuj-oceń">Zadanie 1.2 — Podziel dane, wytrenuj, oceń</h3>
+<div id="ff079d6e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">'amount'</span>, <span class="st">'hour'</span>, <span class="st">'is_electronics'</span>, <span class="st">'tx_per_day'</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[features]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">'fraud'</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. train_test_split (80/20, stratify=y)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. RandomForestClassifier(100)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. classification_report</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. pickle.dump do 'fraud_model.pkl'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="część-2-fastapi-25-min" class="level2">
+<h2 class="anchored" data-anchor-id="część-2-fastapi-25-min">Część 2: FastAPI (25 min)</h2>
+<section id="zadanie-2.1-utwórz-api-serwujące-model" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.1-utwórz-api-serwujące-model">Zadanie 2.1 — Utwórz API serwujące model</h3>
+<div id="4b66668f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> fraud_api.py</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastapi <span class="im">import</span> FastAPI</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle, numpy <span class="im">as</span> np</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> FastAPI(title<span class="op">=</span><span class="st">"Fraud Detection API"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> pickle.load(<span class="bu">open</span>(<span class="st">'fraud_model.pkl'</span>, <span class="st">'rb'</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Transaction(BaseModel):</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    amount: <span class="bu">float</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    hour: <span class="bu">int</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    is_electronics: <span class="bu">int</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    tx_per_day: <span class="bu">int</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Endpoint POST /score</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Przyjmij Transaction, zwróć: {"is_fraud": bool, "fraud_probability": float}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Uruchom w terminalu:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uvicorn</span> fraud_api:app <span class="at">--host</span> 0.0.0.0 <span class="at">--port</span> 8001</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="zadanie-2.2-przetestuj-api" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-2.2-przetestuj-api">Zadanie 2.2 — Przetestuj API</h3>
+<div id="3a2cad97" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Test normalna</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> requests.post(<span class="st">"http://localhost:8001/score"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    json<span class="op">=</span>{<span class="st">"amount"</span>: <span class="dv">150</span>, <span class="st">"hour"</span>: <span class="dv">14</span>, <span class="st">"is_electronics"</span>: <span class="dv">0</span>, <span class="st">"tx_per_day"</span>: <span class="dv">3</span>})</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Normalna:"</span>, r.json())</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD — przetestuj podejrzaną transakcję (amount=5500, hour=3, is_electronics=1, tx_per_day=12)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="część-3-kafka-ml-25-min" class="level2">
+<h2 class="anchored" data-anchor-id="część-3-kafka-ml-25-min">Część 3: Kafka + ML (25 min)</h2>
+<section id="zadanie-3.1-konsument-z-scoringiem-ml" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.1-konsument-z-scoringiem-ml">Zadanie 3.1 — Konsument z scoringiem ML</h3>
+<p>Napisz konsumenta, który czyta z <code>transactions</code>, odpytuje API i wysyła alerty.</p>
+<div id="d01b372d" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span><span class="bu">file</span> ml_consumer.py</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> kafka <span class="im">import</span> KafkaConsumer, KafkaProducer</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json, requests</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>consumer <span class="op">=</span> KafkaConsumer(<span class="st">'transactions'</span>, bootstrap_servers<span class="op">=</span><span class="st">'broker:9092'</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    auto_offset_reset<span class="op">=</span><span class="st">'earliest'</span>, group_id<span class="op">=</span><span class="st">'ml-scoring'</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    value_deserializer<span class="op">=</span><span class="kw">lambda</span> x: json.loads(x.decode(<span class="st">'utf-8'</span>)))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>alert_producer <span class="op">=</span> KafkaProducer(bootstrap_servers<span class="op">=</span><span class="st">'broker:9092'</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    value_serializer<span class="op">=</span><span class="kw">lambda</span> v: json.dumps(v).encode(<span class="st">'utf-8'</span>))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>API_URL <span class="op">=</span> <span class="st">"http://localhost:8001/score"</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># TWÓJ KOD</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Dla każdej transakcji:</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Wyciągnij cechy (amount, hour z timestamp, is_electronics, tx_per_day=5)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. requests.post(API_URL, json=features)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Jeśli is_fraud: wyślij do tematu 'alerts', wypisz </span><span class="al">ALERT</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="zadanie-3.2-uruchom-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="zadanie-3.2-uruchom-pipeline">Zadanie 3.2 — Uruchom pipeline</h3>
+<p>W 3 terminalach: 1. <code>python producer.py</code> (z Ćw. 1) 2. <code>uvicorn fraud_api:app --host 0.0.0.0 --port 8001</code> 3. <code>python ml_consumer.py</code></p>
+<p>Obserwuj alerty.</p>
+<hr>
+</section>
+</section>
+<section id="praca-domowa" class="level2">
+<h2 class="anchored" data-anchor-id="praca-domowa">Praca domowa</h2>
+<ol type="1">
+<li>Porównaj wyniki scoringu regułowego (Ćw. 1) vs ML — który lepiej wykrywa?</li>
+<li>Dodaj endpoint <code>GET /health</code> do API.</li>
+<li>Wypchnij do Git.</li>
+</ol>
+<p><strong>Następne zajęcia:</strong> Apache Spark — przetwarzanie na dużą skalę.</p>
 
 
 </section>
