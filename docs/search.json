@@ -148,7 +148,7 @@
     "href": "lectures/wyklad1.html#dane-zawsze-powstają-jako-strumień",
     "title": "Wykład 1 — Od plików płaskich do Data Lake",
     "section": "3 Dane zawsze powstają jako strumień",
-    "text": "3 Dane zawsze powstają jako strumień\nWszystkie powyższe modele zakładają, że dane są w spoczynku — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane zawsze powstają jako strumień zdarzeń — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.\n\n\n\n\n\n\nWarningZmiana perspektywy\n\n\n\nPrzetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.\n\n\n\n\nPokaż kod\nimport time\nfrom datetime import datetime\n\ndef generuj_transakcje(n=5):\n    sklepy = ['Warszawa', 'Kraków', 'Gdańsk']\n    for i in range(n):\n        yield {\n            'id': f'TX{i+1:04d}',\n            'czas': datetime.now().strftime('%H:%M:%S'),\n            'kwota': round(np.random.uniform(10, 2000), 2),\n            'sklep': np.random.choice(sklepy)\n        }\n        time.sleep(0.3)\n\nsuma = 0\nfor tx in generuj_transakcje():\n    suma += tx['kwota']\n    alert = \" &lt;&lt; DUŻA TRANSAKCJA\" if tx['kwota'] &gt; 1500 else \"\"\n    print(f\"[{tx['czas']}] {tx['id']}: {tx['kwota']:&gt;8.2f} PLN ({tx['sklep']}){alert}\")\nprint(f\"\\nSuma przetworzona na bieżąco: {suma:.2f} PLN\")\n\n\n[15:23:58] TX0001:  1001.75 PLN (Kraków)\n[15:23:59] TX0002:    77.42 PLN (Warszawa)\n[15:23:59] TX0003:   731.16 PLN (Gdańsk)\n[15:23:59] TX0004:   562.40 PLN (Kraków)\n[15:23:59] TX0005:    36.06 PLN (Warszawa)\n\nSuma przetworzona na bieżąco: 2408.79 PLN\n\n\nSystemy obsługujące strumienie danych to m.in. systemy transakcyjne, hurtownie danych, systemy IoT, systemy analityki webowej, platformy reklamowe, media społecznościowe, systemy logowania.\n\nFirma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.",
+    "text": "3 Dane zawsze powstają jako strumień\nWszystkie powyższe modele zakładają, że dane są w spoczynku — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane zawsze powstają jako strumień zdarzeń — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.\n\n\n\n\n\n\nWarningZmiana perspektywy\n\n\n\nPrzetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.\n\n\n\n\nPokaż kod\nimport time\nfrom datetime import datetime\n\ndef generuj_transakcje(n=5):\n    sklepy = ['Warszawa', 'Kraków', 'Gdańsk']\n    for i in range(n):\n        yield {\n            'id': f'TX{i+1:04d}',\n            'czas': datetime.now().strftime('%H:%M:%S'),\n            'kwota': round(np.random.uniform(10, 2000), 2),\n            'sklep': np.random.choice(sklepy)\n        }\n        time.sleep(0.3)\n\nsuma = 0\nfor tx in generuj_transakcje():\n    suma += tx['kwota']\n    alert = \" &lt;&lt; DUŻA TRANSAKCJA\" if tx['kwota'] &gt; 1500 else \"\"\n    print(f\"[{tx['czas']}] {tx['id']}: {tx['kwota']:&gt;8.2f} PLN ({tx['sklep']}){alert}\")\nprint(f\"\\nSuma przetworzona na bieżąco: {suma:.2f} PLN\")\n\n\n[01:13:26] TX0001:  1001.75 PLN (Kraków)\n[01:13:26] TX0002:    77.42 PLN (Warszawa)\n[01:13:27] TX0003:   731.16 PLN (Gdańsk)\n[01:13:27] TX0004:   562.40 PLN (Kraków)\n[01:13:27] TX0005:    36.06 PLN (Warszawa)\n\nSuma przetworzona na bieżąco: 2408.79 PLN\n\n\nSystemy obsługujące strumienie danych to m.in. systemy transakcyjne, hurtownie danych, systemy IoT, systemy analityki webowej, platformy reklamowe, media społecznościowe, systemy logowania.\n\nFirma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.",
     "crumbs": [
       "222890-S",
       "Wykłady",
@@ -220,7 +220,7 @@
     "href": "lectures/wyklad2.html#batch-vs-stream-dwa-podejścia-do-tych-samych-danych",
     "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
     "section": "1 Batch vs Stream — dwa podejścia do tych samych danych",
-    "text": "1 Batch vs Stream — dwa podejścia do tych samych danych\nNa poprzednim wykładzie ustaliliśmy, że dane zawsze powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.\nPorównajmy oba podejścia na tym samym problemie biznesowym: monitorowanie transakcji w sklepie internetowym.\n\n Podejście wsadowe (batch) Podejście strumieniowe (stream)\n\n\n\n\nPokaż kod\nimport pandas as pd\nimport numpy as np\nfrom datetime import datetime, timedelta\n\nnp.random.seed(42)\n\n# Dane zebrane z całego dnia — analizowane następnego ranka\ntransakcje = pd.DataFrame({\n    'czas': [datetime(2026, 3, 12, h, m)\n             for h in range(9, 18)\n             for m in np.random.choice(range(60), 20)],\n    'kwota': np.random.uniform(20, 3000, 180).round(2),\n    'klient_id': np.random.randint(1000, 9999, 180)\n})\n\n# Raport dzienny — widzimy go NASTĘPNEGO DNIA\nraport = transakcje.groupby(transakcje['czas'].dt.hour).agg(\n    liczba=('kwota', 'count'),\n    suma=('kwota', 'sum'),\n    srednia=('kwota', 'mean')\n).round(2)\n\nprint(\"Raport dzienny (generowany następnego ranka):\")\nprint(raport.head())\n\n\nRaport dzienny (generowany następnego ranka):\n      liczba      suma  srednia\nczas                           \n9         20  30174.87  1508.74\n10        20  23969.05  1198.45\n11        20  27346.70  1367.34\n12        20  33457.91  1672.90\n13        20  36552.13  1827.61\n\n\n\n\n\n\nPokaż kod\nimport time\n\n# Symulacja: każda transakcja analizowana w momencie pojawienia się\nokno_5min = []\nalert_prog = 5000  # alert jeśli suma w oknie 5min &gt; 5000 PLN\n\nfor i in range(10):\n    tx = {\n        'czas': datetime.now().strftime('%H:%M:%S'),\n        'kwota': round(np.random.uniform(20, 3000), 2),\n        'klient': np.random.randint(1000, 9999)\n    }\n    okno_5min.append(tx['kwota'])\n    suma_okno = sum(okno_5min)\n\n    status = \"\"\n    if suma_okno &gt; alert_prog:\n        status = \" &lt;&lt; ALERT: wysoka aktywność!\"\n        okno_5min = []  # reset okna\n\n    print(f\"[{tx['czas']}] Klient {tx['klient']}: {tx['kwota']:&gt;8.2f} PLN | Suma okna: {suma_okno:&gt;9.2f}{status}\")\n    time.sleep(0.2)\n\n\n[15:23:50] Klient 2191:  1289.75 PLN | Suma okna:   1289.75\n[15:23:51] Klient 7938:   236.83 PLN | Suma okna:   1526.58\n[15:23:51] Klient 2540:  2124.60 PLN | Suma okna:   3651.18\n[15:23:51] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!\n[15:23:51] Klient 2365:  2960.19 PLN | Suma okna:   2960.19\n[15:23:52] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!\n[15:23:52] Klient 2324:  2724.93 PLN | Suma okna:   2724.93\n[15:23:52] Klient 4141:  2265.07 PLN | Suma okna:   4990.00\n[15:23:52] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!\n[15:23:52] Klient 6301:  2335.90 PLN | Suma okna:   2335.90\n\n\n\n\n\n\n\n\n\n\n\nImportantFundamentalna różnica\n\n\n\nW trybie batch dowiadujemy się o problemie następnego dnia. W trybie stream — natychmiast.",
+    "text": "1 Batch vs Stream — dwa podejścia do tych samych danych\nNa poprzednim wykładzie ustaliliśmy, że dane zawsze powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.\nPorównajmy oba podejścia na tym samym problemie biznesowym: monitorowanie transakcji w sklepie internetowym.\n\n Podejście wsadowe (batch) Podejście strumieniowe (stream)\n\n\n\n\nPokaż kod\nimport pandas as pd\nimport numpy as np\nfrom datetime import datetime, timedelta\n\nnp.random.seed(42)\n\n# Dane zebrane z całego dnia — analizowane następnego ranka\ntransakcje = pd.DataFrame({\n    'czas': [datetime(2026, 3, 12, h, m)\n             for h in range(9, 18)\n             for m in np.random.choice(range(60), 20)],\n    'kwota': np.random.uniform(20, 3000, 180).round(2),\n    'klient_id': np.random.randint(1000, 9999, 180)\n})\n\n# Raport dzienny — widzimy go NASTĘPNEGO DNIA\nraport = transakcje.groupby(transakcje['czas'].dt.hour).agg(\n    liczba=('kwota', 'count'),\n    suma=('kwota', 'sum'),\n    srednia=('kwota', 'mean')\n).round(2)\n\nprint(\"Raport dzienny (generowany następnego ranka):\")\nprint(raport.head())\n\n\nRaport dzienny (generowany następnego ranka):\n      liczba      suma  srednia\nczas                           \n9         20  30174.87  1508.74\n10        20  23969.05  1198.45\n11        20  27346.70  1367.34\n12        20  33457.91  1672.90\n13        20  36552.13  1827.61\n\n\n\n\n\n\nPokaż kod\nimport time\n\n# Symulacja: każda transakcja analizowana w momencie pojawienia się\nokno_5min = []\nalert_prog = 5000  # alert jeśli suma w oknie 5min &gt; 5000 PLN\n\nfor i in range(10):\n    tx = {\n        'czas': datetime.now().strftime('%H:%M:%S'),\n        'kwota': round(np.random.uniform(20, 3000), 2),\n        'klient': np.random.randint(1000, 9999)\n    }\n    okno_5min.append(tx['kwota'])\n    suma_okno = sum(okno_5min)\n\n    status = \"\"\n    if suma_okno &gt; alert_prog:\n        status = \" &lt;&lt; ALERT: wysoka aktywność!\"\n        okno_5min = []  # reset okna\n\n    print(f\"[{tx['czas']}] Klient {tx['klient']}: {tx['kwota']:&gt;8.2f} PLN | Suma okna: {suma_okno:&gt;9.2f}{status}\")\n    time.sleep(0.2)\n\n\n[01:13:18] Klient 2191:  1289.75 PLN | Suma okna:   1289.75\n[01:13:18] Klient 7938:   236.83 PLN | Suma okna:   1526.58\n[01:13:19] Klient 2540:  2124.60 PLN | Suma okna:   3651.18\n[01:13:19] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!\n[01:13:19] Klient 2365:  2960.19 PLN | Suma okna:   2960.19\n[01:13:19] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!\n[01:13:19] Klient 2324:  2724.93 PLN | Suma okna:   2724.93\n[01:13:20] Klient 4141:  2265.07 PLN | Suma okna:   4990.00\n[01:13:20] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!\n[01:13:20] Klient 6301:  2335.90 PLN | Suma okna:   2335.90\n\n\n\n\n\n\n\n\n\n\n\nImportantFundamentalna różnica\n\n\n\nW trybie batch dowiadujemy się o problemie następnego dnia. W trybie stream — natychmiast.",
     "crumbs": [
       "222890-S",
       "Wykłady",
@@ -256,7 +256,7 @@
     "href": "lectures/wyklad2.html#czas-w-przetwarzaniu-strumieniowym",
     "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
     "section": "4 Czas w przetwarzaniu strumieniowym",
-    "text": "4 Czas w przetwarzaniu strumieniowym\nW przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczne, kiedy chcemy. W przetwarzaniu strumieniowym czas staje się kluczowym wymiarem analizy.\n\n4.1 Dwa rodzaje czasu\n\n\n\n\n\n\n\n\nNote Czas zdarzenia (event time)\n\n\n\nMoment, w którym zdarzenie faktycznie nastąpiło.\nNp. klient kliknął „Kup” o 14:23:45.\n\n\n\n\n\n\n\n\n\nWarning Czas przetwarzania (processing time)\n\n\n\nMoment, w którym system odebrał i przetworzył zdarzenie.\nNp. system Kafki odebrał zdarzenie o 14:23:47.\n\n\n\n\nW idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje opóźnienie (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.\n\n\nPokaż kod\n# Symulacja: zdarzenia docierają z losowym opóźnieniem\nimport random\n\nzdarzenia = []\nfor i in range(8):\n    event_time = datetime(2026, 3, 12, 14, 23, i * 2)  # co 2 sekundy\n    delay = random.uniform(0.1, 5.0)  # opóźnienie 0.1–5s\n    processing_time = event_time + timedelta(seconds=delay)\n    zdarzenia.append({\n        'event_time': event_time.strftime('%H:%M:%S'),\n        'processing_time': processing_time.strftime('%H:%M:%S.') + f'{int(delay*100):02d}',\n        'opóźnienie': f'{delay:.1f}s'\n    })\n\ndf = pd.DataFrame(zdarzenia)\nprint(df.to_string(index=False))\n\n\nevent_time processing_time opóźnienie\n  14:23:00    14:23:03.345       3.5s\n  14:23:02    14:23:06.491       4.9s\n  14:23:04    14:23:07.349       3.5s\n  14:23:06    14:23:09.364       3.6s\n  14:23:08    14:23:11.342       3.4s\n  14:23:10    14:23:11.143       1.4s\n  14:23:12    14:23:13.198       2.0s\n  14:23:14    14:23:18.421       4.2s\n\n\n\n\nPokaż kod\nimport matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\n\nnp.random.seed(42)\nn = 20\nevt = np.sort(np.random.uniform(0, 60, n))\ndelays = np.random.exponential(3, n)\nproc = evt + delays\nwatermark = 5\n\nfig, ax = plt.subplots(figsize=(9, 6))\nax.plot([0, 70], [0, 70], 'k--', alpha=0.3, label='Idealne (opóźnienie=0)')\nax.plot([0, 70], [watermark, 70+watermark], 'b--', alpha=0.3, label=f'Watermark ({watermark}s)')\n\nfor i in range(n):\n    in_wm = proc[i] &lt;= evt[i] + watermark + 1\n    color = '#4CAF50' if in_wm else '#F44336'\n    ax.scatter(evt[i], proc[i], c=color, s=50, zorder=5, edgecolors='white')\n    ax.plot([evt[i], evt[i]], [evt[i], proc[i]], color=color, alpha=0.2, linewidth=1)\n\ngp = mpatches.Patch(color='#4CAF50', label='W oknie watermarku')\nrp = mpatches.Patch(color='#F44336', label='Za późno (odrzucone)')\nax.legend(handles=[gp, rp, ax.lines[0], ax.lines[1]], loc='upper left')\nax.set_xlabel('Event time (sekundy)')\nax.set_ylabel('Processing time (sekundy)')\nax.set_title('Opóźnienia i watermarking')\nax.set_xlim(-2, 70)\nax.set_ylim(-2, 75)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach strumieniowych\n\n\n\n\n\n\n\n\n\n\n\nTip Analogia: GPS w tunelu\n\n\n\n\n\nWyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą przeszłości, a nie teraźniejszości.\n\n\n\nOpóźnione zdarzenia możemy obsłużyć na dwa sposoby:\n\nIgnorowanie — odrzucamy zdarzenia, które przyszły zbyt późno (ryzyko utraty danych).\nWatermarking — definiujemy „znacznik wodny” — maksymalne dopuszczalne opóźnienie. Zdarzenia, które mieszczą się w oknie watermarku, są uwzględniane. Reszta odrzucana.",
+    "text": "4 Czas w przetwarzaniu strumieniowym\nW przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczne, kiedy chcemy. W przetwarzaniu strumieniowym czas staje się kluczowym wymiarem analizy.\n\n4.1 Dwa rodzaje czasu\n\n\n\n\n\n\n\n\nNote Czas zdarzenia (event time)\n\n\n\nMoment, w którym zdarzenie faktycznie nastąpiło.\nNp. klient kliknął „Kup” o 14:23:45.\n\n\n\n\n\n\n\n\n\nWarning Czas przetwarzania (processing time)\n\n\n\nMoment, w którym system odebrał i przetworzył zdarzenie.\nNp. system Kafki odebrał zdarzenie o 14:23:47.\n\n\n\n\nW idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje opóźnienie (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.\n\n\nPokaż kod\n# Symulacja: zdarzenia docierają z losowym opóźnieniem\nimport random\n\nzdarzenia = []\nfor i in range(8):\n    event_time = datetime(2026, 3, 12, 14, 23, i * 2)  # co 2 sekundy\n    delay = random.uniform(0.1, 5.0)  # opóźnienie 0.1–5s\n    processing_time = event_time + timedelta(seconds=delay)\n    zdarzenia.append({\n        'event_time': event_time.strftime('%H:%M:%S'),\n        'processing_time': processing_time.strftime('%H:%M:%S.') + f'{int(delay*100):02d}',\n        'opóźnienie': f'{delay:.1f}s'\n    })\n\ndf = pd.DataFrame(zdarzenia)\nprint(df.to_string(index=False))\n\n\nevent_time processing_time opóźnienie\n  14:23:00    14:23:01.170       1.7s\n  14:23:02    14:23:04.286       2.9s\n  14:23:04     14:23:04.82       0.8s\n  14:23:06    14:23:09.347       3.5s\n  14:23:08    14:23:12.473       4.7s\n  14:23:10     14:23:10.74       0.7s\n  14:23:12    14:23:13.146       1.5s\n  14:23:14     14:23:14.37       0.4s\n\n\n\n\nPokaż kod\nimport matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\n\nnp.random.seed(42)\nn = 20\nevt = np.sort(np.random.uniform(0, 60, n))\ndelays = np.random.exponential(3, n)\nproc = evt + delays\nwatermark = 5\n\nfig, ax = plt.subplots(figsize=(9, 6))\nax.plot([0, 70], [0, 70], 'k--', alpha=0.3, label='Idealne (opóźnienie=0)')\nax.plot([0, 70], [watermark, 70+watermark], 'b--', alpha=0.3, label=f'Watermark ({watermark}s)')\n\nfor i in range(n):\n    in_wm = proc[i] &lt;= evt[i] + watermark + 1\n    color = '#4CAF50' if in_wm else '#F44336'\n    ax.scatter(evt[i], proc[i], c=color, s=50, zorder=5, edgecolors='white')\n    ax.plot([evt[i], evt[i]], [evt[i], proc[i]], color=color, alpha=0.2, linewidth=1)\n\ngp = mpatches.Patch(color='#4CAF50', label='W oknie watermarku')\nrp = mpatches.Patch(color='#F44336', label='Za późno (odrzucone)')\nax.legend(handles=[gp, rp, ax.lines[0], ax.lines[1]], loc='upper left')\nax.set_xlabel('Event time (sekundy)')\nax.set_ylabel('Processing time (sekundy)')\nax.set_title('Opóźnienia i watermarking')\nax.set_xlim(-2, 70)\nax.set_ylim(-2, 75)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach strumieniowych\n\n\n\n\n\n\n\n\n\n\n\nTip Analogia: GPS w tunelu\n\n\n\n\n\nWyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą przeszłości, a nie teraźniejszości.\n\n\n\nOpóźnione zdarzenia możemy obsłużyć na dwa sposoby:\n\nIgnorowanie — odrzucamy zdarzenia, które przyszły zbyt późno (ryzyko utraty danych).\nWatermarking — definiujemy „znacznik wodny” — maksymalne dopuszczalne opóźnienie. Zdarzenia, które mieszczą się w oknie watermarku, są uwzględniane. Reszta odrzucana.",
     "crumbs": [
       "222890-S",
       "Wykłady",
@@ -374,158 +374,316 @@
     "text": "Literatura\n\nZając S. (red.), Modelowanie dla biznesu. Analityka w czasie rzeczywistym — narzędzia informatyczne i biznesowe, SGH, Warszawa 2022.\nFrątczak E. (red.), Modelowanie dla biznesu: Regresja logistyczna, Regresja Poissona, Survival Data Mining, CRM, Credit Scoring, SGH, Warszawa 2019.\nBellemare A., Mikrousługi oparte na zdarzeniach. Wykorzystanie danych w organizacji na dużą skalę, O’Reilly 2021.\nShapira G., Palino T., Sivaram R., Petty K., Kafka: The Definitive Guide. Real-time data and stream processing at scale, O’Reilly 2022.\nLakshmanan V., Robinson S., Munn M., Wzorce projektowe uczenia maszynowego, O’Reilly 2021.\nGift N., Deza A., Practical MLOps: Operationalizing Machine Learning Models, O’Reilly 2022.\nAkidau T., Chernyak S., Lax R., Streaming Systems: The What, Where, When, and How of Large-Scale Data Processing, O’Reilly 2018.\nGéron A., Uczenie maszynowe z użyciem Scikit-Learn i TensorFlow. Wydanie II, Helion.\nHastie T., Tibshirani R., Friedman J., The Elements of Statistical Learning, Springer 2017.\nKoul A., Ganju S., Kasam M., Practical Deep Learning for Cloud, Mobile & Edge, O’Reilly 2019."
   },
   {
-    "objectID": "labs/pl_lab9.html",
-    "href": "labs/pl_lab9.html",
-    "title": "Lab 9: Kompletny system w Docker Compose",
+    "objectID": "labs/zaoczne_cw2.html",
+    "href": "labs/zaoczne_cw2.html",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
     "section": "",
-    "text": "Konteneryzacja wszystkich komponentów,\nUruchomienie całości przez docker compose up,\nMonitoring systemu.\n\nCase (finał): Pakujemy system detekcji fraudów do produkcji.\n\nSzczegółowe zadania — patrz angielska wersja en_lab9.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 9 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab9.html#cel",
-    "href": "labs/pl_lab9.html#cel",
-    "title": "Lab 9: Kompletny system w Docker Compose",
-    "section": "",
-    "text": "Konteneryzacja wszystkich komponentów,\nUruchomienie całości przez docker compose up,\nMonitoring systemu.\n\nCase (finał): Pakujemy system detekcji fraudów do produkcji.\n\nSzczegółowe zadania — patrz angielska wersja en_lab9.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 9 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab0_prework.html",
-    "href": "labs/pl_lab0_prework.html",
-    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
-    "section": "",
-    "text": "Te zadania należy wykonać przed pierwszymi zajęciami laboratoryjnymi.",
+    "text": "Studia zaoczne | 1,5h",
     "crumbs": [
       "222890-S",
-      "Wykłady",
-      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
     ]
   },
   {
-    "objectID": "labs/pl_lab0_prework.html#gdzie-co-uruchamiam",
-    "href": "labs/pl_lab0_prework.html#gdzie-co-uruchamiam",
-    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
-    "section": "Gdzie co uruchamiam?",
-    "text": "Gdzie co uruchamiam?\nNa kursie będziesz pracować w trzech różnych miejscach:\n\n\n\n\n\n\n\n\nGdzie\nCo\nJak otworzyć\n\n\n\n\nTerminal systemowy\nKomendy Git, Docker, uruchamianie plików .py\nmacOS: Terminal. Windows: PowerShell. Linux: dowolny terminal.\n\n\nJupyterLab\nNotatniki (.ipynb), eksploracja danych\nPrzeglądarka: localhost:8888 po uruchomieniu środowiska\n\n\nEdytor tekstu / IDE\nPliki .py (serwery API, producenci, konsumenci)\nVS Code lub dowolny edytor\n\n\n\nGdy zadanie mówi „w terminalu” — chodzi o terminal systemowy (nie terminal JupyterLab). Gdy mówi „w JupyterLab” — otwórz nowy notatnik lub użyj terminala JupyterLab. Gdy mówi „utwórz plik” — napisz go w edytorze lub użyj %%file nazwa.py w JupyterLab.",
+    "objectID": "labs/zaoczne_cw2.html#cel",
+    "href": "labs/zaoczne_cw2.html#cel",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Cel",
+    "text": "Cel\n\nWytrenowanie modelu detekcji fraudów,\nSerwowanie modelu przez FastAPI,\nPodłączenie do Kafki — scoring w czasie rzeczywistym.",
     "crumbs": [
       "222890-S",
-      "Wykłady",
-      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
     ]
   },
   {
-    "objectID": "labs/pl_lab0_prework.html#część-1-python",
-    "href": "labs/pl_lab0_prework.html#część-1-python",
-    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
-    "section": "Część 1: Python",
-    "text": "Część 1: Python\n\nZadanie 1.1 — Sprawdź wersję Pythona\nW terminalu systemowym:\npython3 --version\npip --version\nPotrzebujesz Python 3.10+.\n\n\nZadanie 1.2 — Utwórz środowisko wirtualne\npython3 -m venv rta_env\nsource rta_env/bin/activate   # Linux/macOS\npip install --upgrade pip\npip install jupyterlab pandas numpy matplotlib scikit-learn requests\n\n\nZadanie 1.3 — Uruchom JupyterLab\njupyter lab\nOtworzy się w przeglądarce pod localhost:8888. Utwórz nowy notatnik i uruchom:\n\nimport pandas as pd\nimport numpy as np\nimport sklearn\n\nprint(f\"pandas:  {pd.__version__}\")\nprint(f\"numpy:   {np.__version__}\")\nprint(f\"sklearn: {sklearn.__version__}\")\nprint(\"\\nWszystko działa!\")",
+    "objectID": "labs/zaoczne_cw2.html#część-1-trening-modelu-25-min",
+    "href": "labs/zaoczne_cw2.html#część-1-trening-modelu-25-min",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Część 1: Trening modelu (25 min)",
+    "text": "Część 1: Trening modelu (25 min)\n\nZadanie 1.1 — Przygotuj dane i wytrenuj model\n\nimport pandas as pd\nimport numpy as np\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import classification_report\nimport pickle\n\nnp.random.seed(42)\n\n# === PARAMETRY — zmień tutaj ===\nN_NORMAL = 2000      # liczba normalnych transakcji\nN_FRAUD  = 100       # liczba fraudów\n# ===============================\n\n# Normalne transakcje\nnormal = pd.DataFrame({\n    'amount': np.random.lognormal(5, 1, N_NORMAL).clip(5, 5000),\n    'is_electronics': np.random.binomial(1, 0.3, N_NORMAL),\n    'tx_per_minute': np.random.poisson(3, N_NORMAL),\n    'fraud': 0\n})\n\n\n# Fraudy\nfraud = pd.DataFrame({\n    'amount': np.random.uniform(2000, 9000, N_FRAUD),\n    'is_electronics': np.random.binomial(1, 0.7, N_FRAUD),\n    'tx_per_minute': np.random.poisson(8, N_FRAUD),\n    'fraud': 1\n})\n\ndf = pd.concat([normal, fraud], ignore_index=True).sample(frac=1, random_state=42)\nprint(f\"Dataset: {len(df)} wierszy, fraud rate: {df['fraud'].mean():.1%}\")\n\n\n\nZadanie 1.2 — Podziel dane, wytrenuj, oceń\n\nfeatures = ['amount', 'is_electronics', 'tx_per_minute']\nX = df[features]\ny = df['fraud']\n\n# TWÓJ KOD\n# 1. train_test_split (80/20, stratify=y)\n# 2. RandomForestClassifier(100)\n# 3. classification_report\n# 4. pickle.dump do 'fraud_model.pkl'",
     "crumbs": [
       "222890-S",
-      "Wykłady",
-      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
     ]
   },
   {
-    "objectID": "labs/pl_lab0_prework.html#część-2-git",
-    "href": "labs/pl_lab0_prework.html#część-2-git",
-    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
-    "section": "Część 2: Git",
-    "text": "Część 2: Git\n\nZadanie 2.1 — Konfiguracja\ngit --version\ngit config --global user.name \"Twoje Imię\"\ngit config --global user.email \"twoj@email.com\"\n\n\nZadanie 2.2 — Utwórz konto na GitHub\nJeśli nie masz: github.com\n\n\nZadanie 2.3 — Utwórz repozytorium kursu\n\nNa GitHubie kliknij „New repository”\nNazwa: RTA_&lt;twoje_inicjaly&gt;\nZaznacz „Add a README file”\nSklonuj:\n\ngit clone https://github.com/&lt;login&gt;/RTA_&lt;inicjaly&gt;.git\ncd RTA_&lt;inicjaly&gt;\necho \"# Analiza danych w czasie rzeczywistym\" &gt; README.md\ngit add . && git commit -m \"Pierwszy commit\" && git push origin main",
+    "objectID": "labs/zaoczne_cw2.html#część-2-fastapi-25-min",
+    "href": "labs/zaoczne_cw2.html#część-2-fastapi-25-min",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Część 2: FastAPI (25 min)",
+    "text": "Część 2: FastAPI (25 min)\n\nZadanie 2.1 — Utwórz API serwujące model\n\n%%file fraud_api.py\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\nimport pickle, numpy as np\n\napp = FastAPI(title=\"Fraud Detection API\")\nmodel = pickle.load(open('fraud_model.pkl', 'rb'))\n\nclass Transaction(BaseModel):\n    amount: float\n    is_electronics: int\n    tx_per_minute: int\n\n# TWÓJ KOD\n# Endpoint POST /score\n# Przyjmij Transaction, zwróć: {\"is_fraud\": bool, \"fraud_probability\": float}\n\nUruchom w terminalu:\nuvicorn fraud_api:app --host 0.0.0.0 --port 8001\n\n\nZadanie 2.2 — Przetestuj API\n\nimport requests\n\n# Test normalna\nr = requests.post(\"http://localhost:8001/score\",\n    json={\"amount\": 150, \"is_electronics\": 0, \"tx_per_minute\": 3})\nprint(\"Normalna:\", r.json())\n\n# TWÓJ KOD — przetestuj podejrzaną transakcję (amount=5500, is_electronics=1, tx_per_minute=12)",
     "crumbs": [
       "222890-S",
-      "Wykłady",
-      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
     ]
   },
   {
-    "objectID": "labs/pl_lab0_prework.html#część-3-docker",
-    "href": "labs/pl_lab0_prework.html#część-3-docker",
-    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
-    "section": "Część 3: Docker",
-    "text": "Część 3: Docker\n\nZadanie 3.1 — Instalacja\nPobierz Docker Desktop: docker.com\n\n\nZadanie 3.2 — Weryfikacja\ndocker --version\ndocker compose version\ndocker run hello-world",
+    "objectID": "labs/zaoczne_cw2.html#część-3-kafka-ml-25-min",
+    "href": "labs/zaoczne_cw2.html#część-3-kafka-ml-25-min",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Część 3: Kafka + ML (25 min)",
+    "text": "Część 3: Kafka + ML (25 min)\n\nZadanie 3.1 — Konsument z scoringiem ML\nNapisz konsumenta, który czyta z transactions, odpytuje API i wysyła alerty.\n\n%%file ml_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nfrom datetime import datetime\nimport json, requests\n\nconsumer = KafkaConsumer('transactions', bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest', group_id='ml-scoring',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8')))\n\nalert_producer = KafkaProducer(bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8'))\n\nAPI_URL = \"http://localhost:8001/score\"\n\n# TWÓJ KOD\n# Dla każdej transakcji:\n# 1. Wyciągnij cechy (amount, hour z timestamp, is_electronics, tx_per_minute=5 -lub policz)\n# 2. requests.post(API_URL, json=features)\n# 3. Jeśli is_fraud: wyślij do tematu 'alerts', wypisz ALERT\n\n\n\nZadanie 3.2 — Uruchom pipeline\nW 3 terminalach:\n\npython producer.py (z Ćw. 1)\nuvicorn fraud_api:app --host 0.0.0.0 --port 8001\npython ml_consumer.py\n\nObserwuj alerty.",
     "crumbs": [
       "222890-S",
-      "Wykłady",
-      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
     ]
   },
   {
-    "objectID": "labs/pl_lab0_prework.html#część-4-środowisko-kursu",
-    "href": "labs/pl_lab0_prework.html#część-4-środowisko-kursu",
-    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
-    "section": "Część 4: Środowisko kursu",
-    "text": "Część 4: Środowisko kursu\n\nZadanie 4.1 — Sklonuj infrastrukturę\ngit clone -b 2026Redis https://github.com/sebkaz/jupyterlab-project.git\ncd jupyterlab-project\n\n\nZadanie 4.2 — Uruchom środowisko\ndocker compose up -d\ndocker compose ps\nPoczekaj 1–2 minuty. Otwórz przeglądarkę: http://localhost:8999\nHasło: root\n\n\nZadanie 4.3 — Sprawdź Kafkę\nW terminalu JupyterLab (File &gt; New &gt; Terminal):\nkafka/bin/kafka-topics.sh --list --bootstrap-server broker:9092\n\n\nZadanie 4.4 — Zatrzymaj środowisko\ndocker compose down",
-    "crumbs": [
-      "222890-S",
-      "Wykłady",
-      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
-    ]
-  },
-  {
-    "objectID": "labs/pl_lab0_prework.html#checklist",
-    "href": "labs/pl_lab0_prework.html#checklist",
-    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
-    "section": "Checklist",
-    "text": "Checklist\n\nPython 3.10+ z pandas, numpy, sklearn\nKonto GitHub z repozytorium kursu\nDocker Compose działa, JupyterLab pod localhost:8888\nKafka odpowiada w terminalu JupyterLab\n\nWyślij link do repozytorium przez MS Teams.",
-    "crumbs": [
-      "222890-S",
-      "Wykłady",
-      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
-    ]
-  },
-  {
-    "objectID": "labs/pl_lab8.html",
-    "href": "labs/pl_lab8.html",
-    "title": "Lab 8: Pełny pipeline — Kafka → Spark Streaming → ML → Alerty",
-    "section": "",
-    "text": "Kompletny pipeline end-to-end,\nOdczyt z Kafki w Sparku,\nScoring ML w strumieniu (UDF),\nZapis alertów do Kafki.\n\nCase (cd.): Czas połączyć wszystko.\n\nSzczegółowe zadania — patrz angielska wersja en_lab8.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 8 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab8.html#cel",
-    "href": "labs/pl_lab8.html#cel",
-    "title": "Lab 8: Pełny pipeline — Kafka → Spark Streaming → ML → Alerty",
-    "section": "",
-    "text": "Kompletny pipeline end-to-end,\nOdczyt z Kafki w Sparku,\nScoring ML w strumieniu (UDF),\nZapis alertów do Kafki.\n\nCase (cd.): Czas połączyć wszystko.\n\nSzczegółowe zadania — patrz angielska wersja en_lab8.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 8 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab4.html",
-    "href": "labs/pl_lab4.html",
-    "title": "Lab 4: Trenowanie modelu ML i serwowanie przez FastAPI",
-    "section": "",
-    "text": "Wytrenowanie modelu detekcji fraudów offline,\nSerwowanie modelu przez FastAPI,\nPołączenie API z konsumentem Kafki.\n\nCase biznesowy (ciąg dalszy): Reguły działają, ale chcesz poprawić dokładność modelem ML."
-  },
-  {
-    "objectID": "labs/pl_lab4.html#cel",
-    "href": "labs/pl_lab4.html#cel",
-    "title": "Lab 4: Trenowanie modelu ML i serwowanie przez FastAPI",
-    "section": "",
-    "text": "Wytrenowanie modelu detekcji fraudów offline,\nSerwowanie modelu przez FastAPI,\nPołączenie API z konsumentem Kafki.\n\nCase biznesowy (ciąg dalszy): Reguły działają, ale chcesz poprawić dokładność modelem ML."
-  },
-  {
-    "objectID": "labs/pl_lab4.html#część-1-trenowanie-modelu",
-    "href": "labs/pl_lab4.html#część-1-trenowanie-modelu",
-    "title": "Lab 4: Trenowanie modelu ML i serwowanie przez FastAPI",
-    "section": "Część 1: Trenowanie modelu",
-    "text": "Część 1: Trenowanie modelu\n\nZadanie 1.1 — Przygotuj dane treningowe\n\nimport pandas as pd\nimport numpy as np\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import classification_report\nimport pickle\n\nnp.random.seed(42)\nn_normal, n_fraud = 2000, 100\n\nnormal = pd.DataFrame({\n    'amount': np.random.lognormal(5, 1, n_normal).clip(5, 5000),\n    'hour': np.random.normal(14, 4, n_normal).clip(0, 23).astype(int),\n    'is_electronics': np.random.binomial(1, 0.3, n_normal),\n    'tx_per_day': np.random.poisson(3, n_normal),\n    'fraud': 0\n})\n\nfraud = pd.DataFrame({\n    'amount': np.random.uniform(2000, 9000, n_fraud),\n    'hour': np.random.choice([0,1,2,3,4,5,22,23], n_fraud),\n    'is_electronics': np.random.binomial(1, 0.7, n_fraud),\n    'tx_per_day': np.random.poisson(8, n_fraud),\n    'fraud': 1\n})\n\ndf = pd.concat([normal, fraud], ignore_index=True).sample(frac=1, random_state=42)\nprint(f\"Dane: {len(df)} wierszy, fraud rate: {df['fraud'].mean():.1%}\")\n\n\n\nZadanie 1.2 — Wytrenuj i oceń model\n\nfeatures = ['amount', 'hour', 'is_electronics', 'tx_per_day']\n# TWÓJ KOD\n# 1. Podziel dane (80/20, stratify)\n# 2. Wytrenuj RandomForestClassifier\n# 3. Wyświetl classification_report\n# 4. Zapisz model do 'fraud_model.pkl'"
-  },
-  {
-    "objectID": "labs/pl_lab4.html#część-2-api-z-fastapi",
-    "href": "labs/pl_lab4.html#część-2-api-z-fastapi",
-    "title": "Lab 4: Trenowanie modelu ML i serwowanie przez FastAPI",
-    "section": "Część 2: API z FastAPI",
-    "text": "Część 2: API z FastAPI\n\nZadanie 2.1 — Utwórz API\n\n%%file fraud_api.py\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\nimport pickle, numpy as np\n\napp = FastAPI(title=\"Fraud Detection API\")\nmodel = pickle.load(open('fraud_model.pkl', 'rb'))\n\nclass Transaction(BaseModel):\n    amount: float\n    hour: int\n    is_electronics: int\n    tx_per_day: int\n\n# TWÓJ KOD\n# Endpoint POST /score\n\nUruchom: uvicorn fraud_api:app --host 0.0.0.0 --port 8001\n\n\nZadanie 2.2 — Przetestuj API\n\nimport requests\nnormal_tx = {\"amount\": 150, \"hour\": 14, \"is_electronics\": 0, \"tx_per_day\": 3}\nresponse = requests.post(\"http://localhost:8001/score\", json=normal_tx)\nprint(\"Normalna:\", response.json())\n\n# TWÓJ KOD — przetestuj podejrzaną transakcję"
-  },
-  {
-    "objectID": "labs/pl_lab4.html#część-3-połączenie-api-z-kafką",
-    "href": "labs/pl_lab4.html#część-3-połączenie-api-z-kafką",
-    "title": "Lab 4: Trenowanie modelu ML i serwowanie przez FastAPI",
-    "section": "Część 3: Połączenie API z Kafką",
-    "text": "Część 3: Połączenie API z Kafką\n\nZadanie 3.1 — Konsument scoringowy z API\n\n%%file ml_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nimport json, requests\n\n# TWÓJ KOD\n# Dla każdej transakcji: wyciągnij cechy, wywołaj API, wyślij alert jeśli fraud"
-  },
-  {
-    "objectID": "labs/pl_lab4.html#praca-domowa",
-    "href": "labs/pl_lab4.html#praca-domowa",
-    "title": "Lab 4: Trenowanie modelu ML i serwowanie przez FastAPI",
+    "objectID": "labs/zaoczne_cw2.html#praca-domowa",
+    "href": "labs/zaoczne_cw2.html#praca-domowa",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
     "section": "Praca domowa",
-    "text": "Praca domowa\n\nDodaj endpoint /health z metadanymi modelu.\nUtwórz Dockerfile dla API.\nPorównaj reguły (Lab 3) vs ML — co lepiej wykrywa fraudy?\nWypchnij do Git.\n\nNastępne zajęcia: Uczenie przyrostowe — model, który się aktualizuje."
+    "text": "Praca domowa\n\nPorównaj wyniki scoringu regułowego (Ćw. 1) vs ML — który lepiej wykrywa?\nDodaj endpoint GET /health do API.\nWypchnij do Git.\n\nNastępne zajęcia: Apache Spark — przetwarzanie na dużą skalę.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html",
+    "href": "labs/zaoczne_cw1.html",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "",
+    "text": "Studia zaoczne | 1,5h",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#cel",
+    "href": "labs/zaoczne_cw1.html#cel",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Cel",
+    "text": "Cel\n\nUruchomienie Kafki, utworzenie tematu,\nNapisanie producenta i konsumenta w Pythonie,\nFiltrowanie (stateless) i zliczanie (stateful) zdarzeń,\nProste reguły decyzyjne na strumieniu.\n\nCase biznesowy: Budujesz system monitoringu transakcji e-commerce. Ten case będzie rozwijany na kolejnych zajęciach.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#przygotowanie",
+    "href": "labs/zaoczne_cw1.html#przygotowanie",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Przygotowanie",
+    "text": "Przygotowanie\nUpewnij się, że środowisko działa:\ncd jupyterlab-project \ndocker compose up\nOtwórz JupyterLab: http://localhost:8999\nW terminalu JupyterLab utwórz temat:\nkafka-topics.sh --create --topic transactions \\\n  --bootstrap-server broker:9092",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-1-producent-20-min",
+    "href": "labs/zaoczne_cw1.html#część-1-producent-20-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 1: Producent (20 min)",
+    "text": "Część 1: Producent (20 min)\nPoniżej gotowy producent — przeanalizuj kod, uruchom w terminalu (python producer.py).\n\n%%file producer.py\nfrom kafka import KafkaProducer\nimport json, random, time\nfrom datetime import datetime\n\nproducer = KafkaProducer(\n    bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8')\n)\n\nsklepy = ['Warszawa', 'Kraków', 'Gdańsk', 'Wrocław']\nkategorie = ['elektronika', 'odzież', 'żywność', 'książki']\n\ndef generate_transaction():\n    return {\n        'tx_id': f'TX{random.randint(1000,9999)}',\n        'user_id': f'u{random.randint(1,20):02d}',\n        'amount': round(random.uniform(5.0, 5000.0), 2),\n        'store': random.choice(sklepy),\n        'category': random.choice(kategorie),\n        'timestamp': datetime.now().isoformat(),\n    }\n\nfor i in range(1000):\n    tx = generate_transaction()\n    producer.send('transactions', value=tx)\n    print(f\"[{i+1}] {tx['tx_id']} | {tx['amount']:.2f} PLN | {tx['store']}\")\n    time.sleep(0.5)\n\nproducer.flush()\nproducer.close()\n\nWriting producer.py\n\n\n\nZadanie 1.1 — Zmodyfikuj producenta\nZmień producenta tak, by 5% transakcji było podejrzanych: - kwota &gt; 3000 PLN - kategoria = ‘elektronika’ - godzina nocna (dodaj pole hour z losową wartością 0–5)\n\n# TWÓJ KOD — zmodyfikowany generate_transaction()\n# Podpowiedź: if random.random() &lt; 0.05: ... else: ...",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-2-konsument-bezstanowy-filtrowanie-15-min",
+    "href": "labs/zaoczne_cw1.html#część-2-konsument-bezstanowy-filtrowanie-15-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 2: Konsument bezstanowy — filtrowanie (15 min)",
+    "text": "Część 2: Konsument bezstanowy — filtrowanie (15 min)\n\nZadanie 2.1 — Wyświetl duże transakcje\nNapisz konsumenta, który wypisuje tylko transakcje z amount &gt; 1000.\n\n%%file consumer_filter.py\nfrom kafka import KafkaConsumer\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nfor message in consumer:\n    print(message)\n    \n# TWÓJ KOD\n# Dla każdej wiadomości: sprawdź amount &gt; 1000, jeśli tak — wypisz ALERT\n\n\n\nZadanie 2.2 — Dodaj poziom ryzyka\nNapisz konsumenta, który dodaje pole risk_level: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - reszta → “LOW”\n\n# TWÓJ KOD — consumer_enrich.py",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-3-konsument-stanowy-zliczanie-15-min",
+    "href": "labs/zaoczne_cw1.html#część-3-konsument-stanowy-zliczanie-15-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 3: Konsument stanowy — zliczanie (15 min)",
+    "text": "Część 3: Konsument stanowy — zliczanie (15 min)\n\nZadanie 3.1 — Transakcje per sklep\nNapisz konsumenta, który liczy transakcje i sumy per sklep. Wypisz podsumowanie co 10 wiadomości.\n\n%%file consumer_count.py\nfrom kafka import KafkaConsumer\nfrom collections import Counter, defaultdict\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest',\n    group_id='count-group',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nstore_counts = Counter()\ntotal_amount = defaultdict(float)\nmsg_count = 0\n\n# TWÓJ KOD\n# Dla każdej wiadomości:\n#   1. store_counts[store] += 1\n#   2. total_amount[store] += amount\n#   3. Co 10 wiadomości: print tabela",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-4-reguły-decyzyjne-20-min",
+    "href": "labs/zaoczne_cw1.html#część-4-reguły-decyzyjne-20-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 4: Reguły decyzyjne (20 min)",
+    "text": "Część 4: Reguły decyzyjne (20 min)\n\nZadanie 4.1 — Scoring transakcji\nNapisz funkcję, która przyznaje punkty za podejrzane cechy:\n\n\n\nReguła\nWarunek\nPunkty\n\n\n\n\nR1\namount &gt; 3000\n+3\n\n\nR2\nelektronika i amount &gt; 1500\n+2\n\n\nR3\ngodzina &lt; 6 (noc)\n+2\n\n\n\nJeśli suma &gt;= 3 → PODEJRZANA.\n\ndef score_transaction(tx):\n    score = 0\n    rules = []\n    # TWÓJ KOD — zaimplementuj reguły R1, R2, R3\n    return score, rules\n\n# Test\ntest_tx = {'tx_id': 'TX999', 'amount': 4500.0, 'category': 'elektronika',\n           'timestamp': '2026-04-01T03:15:00'}\nprint(score_transaction(test_tx))  # powinno dać score &gt;= 5\n\n\n\nZadanie 4.2 — Konsument scoringowy\nPołącz scoring z konsumentem Kafki. Podejrzane transakcje wyślij do nowego tematu alerts.\nNajpierw utwórz temat:\nkafka/bin/kafka-topics.sh --create --topic alerts \\\n  --bootstrap-server broker:9092 --partitions 1 --replication-factor 1\n\n%%file scoring_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nimport json\n\nconsumer = KafkaConsumer('transactions', bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest', group_id='scoring-group',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8')))\n\nalert_producer = KafkaProducer(bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8'))\n\n# TWÓJ KOD\n# Dla każdej transakcji: scoruj, jeśli &gt;= 3: wyślij do 'alerts' i wypisz ALERT",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#praca-domowa",
+    "href": "labs/zaoczne_cw1.html#praca-domowa",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nUruchom jednocześnie: producenta + consumer_filter + scoring_consumer.\nW osobnym terminalu sprawdź alerty: uruchom konsumenta tematu alerts.\nWypchnij kod do Git.\n\nNastępne zajęcia: Model ML + FastAPI + serwowanie predykcji.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html",
+    "href": "labs/pl_lab1.html",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "",
+    "text": "Pierwsze praktyczne doświadczenie z Apache Kafka:\n\nWysyłanie zdarzeń transakcyjnych do Kafki (producent),\nFiltrowanie zdarzeń w czasie rzeczywistym (konsument bezstanowy),\nZliczanie i agregacja zdarzeń na bieżąco (konsument stanowy).\n\nCase biznesowy: Pracujesz w firmie e-commerce. Twoim zadaniem jest zbudowanie systemu monitoringu transakcji, który przetwarza zdarzenia zakupowe w czasie rzeczywistym.\nTen case będzie rozwijać się przez kolejnych 9 labów aż do kompletnej platformy.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#cel",
+    "href": "labs/pl_lab1.html#cel",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "",
+    "text": "Pierwsze praktyczne doświadczenie z Apache Kafka:\n\nWysyłanie zdarzeń transakcyjnych do Kafki (producent),\nFiltrowanie zdarzeń w czasie rzeczywistym (konsument bezstanowy),\nZliczanie i agregacja zdarzeń na bieżąco (konsument stanowy).\n\nCase biznesowy: Pracujesz w firmie e-commerce. Twoim zadaniem jest zbudowanie systemu monitoringu transakcji, który przetwarza zdarzenia zakupowe w czasie rzeczywistym.\nTen case będzie rozwijać się przez kolejnych 9 labów aż do kompletnej platformy.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#przygotowanie",
+    "href": "labs/pl_lab1.html#przygotowanie",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Przygotowanie",
+    "text": "Przygotowanie\nUpewnij się, że środowisko działa:\ncd jupyterlab-project\ndocker compose up\nOtwórz JupyterLab: http://localhost:8999\nCały kod poniżej uruchamiamy w JupyterLab w środowisku Docker.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-1-utwórz-temat-kafka",
+    "href": "labs/pl_lab1.html#część-1-utwórz-temat-kafka",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 1: Utwórz temat Kafka",
+    "text": "Część 1: Utwórz temat Kafka\nW terminalu JupyterLab (File &gt; New &gt; Terminal):\nkafka-topics.sh --create \\\n  --topic transactions \\\n  --bootstrap-server broker:9092\n\nkafka-topics.sh --list --bootstrap-server broker:9092\n\n# Wklej wynik komendy --list:\n# TWÓJ WYNIK",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-2-producent-generowanie-transakcji",
+    "href": "labs/pl_lab1.html#część-2-producent-generowanie-transakcji",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 2: Producent — generowanie transakcji",
+    "text": "Część 2: Producent — generowanie transakcji\n\nZadanie 2.1 — Napisz producenta transakcji\nUtwórz plik producer.py, który wysyła symulowane transakcje e-commerce do tematu transactions.\nKażda transakcja to JSON z polami: - tx_id (np. “TX0001”) - user_id (losowy z “u01” do “u20”) - amount (losowy float 5.0–5000.0) - store (losowy z: “Warszawa”, “Kraków”, “Gdańsk”, “Wrocław”) - category (losowy z: “elektronika”, “odzież”, “żywność”, “książki”) - timestamp (aktualny czas ISO)\nWysyłaj jedną transakcję na sekundę.\n\n%%file producer.py\nfrom kafka import KafkaProducer\nimport json, random, time\nfrom datetime import datetime\n\nproducer = KafkaProducer(\n    bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8')\n)\n\ndef generate_transaction():\n    # TWÓJ KOD\n    # Zwróć słownik z polami: tx_id, user_id, amount, store, category, timestamp\n    pass\n\n# TWÓJ KOD\n# Pętla: generuj transakcję, wyślij do tematu 'transactions', wypisz, sleep 1s\n\nUruchom producenta w terminalu JupyterLab:\npython producer.py\nPozostaw działającego i przejdź do następnego zadania.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-3-konsument-bezstanowy-filtrowanie",
+    "href": "labs/pl_lab1.html#część-3-konsument-bezstanowy-filtrowanie",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 3: Konsument bezstanowy — filtrowanie",
+    "text": "Część 3: Konsument bezstanowy — filtrowanie\nPrzetwarzanie bezstanowe = każde zdarzenie przetwarzane niezależnie, bez pamięci o poprzednich.\n\nZadanie 3.1 — Filtruj duże transakcje\nNapisz konsumenta, który czyta z transactions i wyświetla tylko transakcje z amount &gt; 3000.\n\n%%file consumer_filter.py\nfrom kafka import KafkaConsumer\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nprint(\"Nasłuchuję na duże transakcje (amount &gt; 3000)...\")\n\nfor message in consumer:\n    print(message)\n    \n# TWÓJ KOD\n# Dla każdej wiadomości: sprawdź czy amount &gt; 3000, jeśli tak — wypisz ALERT\n# Format: ALERT: TX0042 | 2345.67 PLN | Warszawa | elektronika\n\n\n\nZadanie 3.2 — Transformacja i wzbogacenie\nNapisz konsumenta, który do słownika eventu dodaje pole risk_level: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - pozostałe → “LOW”\n\n%%file consumer_enrich.py\nfrom kafka import KafkaConsumer\nimport json\n\n# TWÓJ KOD\n# Czytaj z 'transactions' (użyj INNEGO group_id!)\n# Dodaj pole risk_level na podstawie amount\n# Wypisz wzbogaconą transakcję",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-4-konsument-stanowy-agregacja",
+    "href": "labs/pl_lab1.html#część-4-konsument-stanowy-agregacja",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 4: Konsument stanowy — agregacja",
+    "text": "Część 4: Konsument stanowy — agregacja\nPrzetwarzanie stanowe = utrzymujemy stan (liczniki, sumy) pomiędzy zdarzeniami.\n\nZadanie 4.1 — Zliczanie transakcji per sklep\nNapisz konsumenta, który prowadzi bieżące zliczanie transakcji per sklep i wypisuje podsumowanie co 10 wiadomości. Obiekt Counter() przeczytaj Counter.\n\n%%file consumer_count.py\nfrom kafka import KafkaConsumer\nfrom collections import Counter\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nstore_counts = Counter()\ntotal_amount = {}\nmsg_count = 0\n\n# TWÓJ KOD\n# Dla każdej wiadomości:\n#   1. Zwiększ store_counts[store]\n#   2. Dodaj amount do total_amount[store]\n#   3. Co 10 wiadomości wypisz tabelę:\n#      Sklep | Liczba | Suma | Średnia\n\n\n\nZadanie 4.2 — Statystyki per kategoria\nNapisz konsumenta, który śledzi per kategoria: - liczbę transakcji - łączny przychód - min i max kwotę\nWypisuj co 10 wiadomości.\n\n%%file consumer_stats.py\nfrom kafka import KafkaConsumer\nfrom collections import defaultdict\nimport json\n\n# TWÓJ KOD",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-5-wielu-konsumentów",
+    "href": "labs/pl_lab1.html#część-5-wielu-konsumentów",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 5: Wielu konsumentów",
+    "text": "Część 5: Wielu konsumentów\n\nZadanie 5.1 — Uruchom wszystko razem\nOtwórz 3 terminale w JupyterLab: 1. python producer.py 2. python consumer_filter.py 3. python consumer_count.py\n\n\nZadanie 5.2 — Pytania\n\nCo się stanie, jeśli uruchomisz consumer_filter.py po zakończeniu producenta?\nCo się stanie, jeśli dwóch konsumentów ma TĘ SAMĄ group_id?\nJaka jest różnica między przetwarzaniem bezstanowym a stanowym?\n\n\n\n# TWOJE ODPOWIEDZI",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#praca-domowa",
+    "href": "labs/pl_lab1.html#praca-domowa",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nNapisz konsumenta wykrywającego anomalie prędkości: alert jeśli ten sam user_id wykona więcej niż 3 transakcje w ciągu 60 sekund.\nWypchnij kod do repozytorium Git.\n\nNastępne zajęcia: Przetwarzamy ten sam strumień Kafki w Apache Spark.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab3.html",
+    "href": "labs/pl_lab3.html",
+    "title": "Lab 3: Spark Structured Streaming — okna na żywym strumieniu",
+    "section": "",
+    "text": "from pyspark.sql import SparkSession\nspark = SparkSession.builder.appName(\"okienka\").getOrCreate()\nspark\nczujnik_temperatury = ((12.5, \"2019-01-02 12:00:00\"),\n(17.6, \"2019-01-02 12:00:20\"),\n(14.6,  \"2019-01-02 12:00:30\"),\n(22.9,  \"2019-01-02 12:01:15\"),\n(17.4,  \"2019-01-02 12:01:30\"),\n(25.8,  \"2019-01-02 12:03:25\"),\n(27.1,  \"2019-01-02 12:02:40\"),\n)\nfrom pyspark.sql.functions import to_timestamp\nfrom pyspark.sql.types import StructType, StructField, StringType, DoubleType\n\nschema = StructType([\n    StructField(\"temperatura\", DoubleType(), True),\n    StructField(\"czas\", StringType(), True),\n])\ndf = (spark.createDataFrame(czujnik_temperatury, schema=schema)\n      .withColumn(\"czas\", to_timestamp(\"czas\")))\n\ndf.printSchema()\ndf.show(3)\ndf.createOrReplaceTempView(\"df\")\nspark.sql(\"select czas, temperatura from df where temperatura &gt; 21\").show(5)\n# Thumbling window\n\nimport pyspark.sql.functions as F\n\ndf2 = df.groupBy(F.window(\"czas\",\"30 seconds\")).count()\ndf2.show(truncate=False)\ndf2.printSchema()\nspark.stop()",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 3: Spark Structured Streaming — okna na żywym strumieniu"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab3.html#symulator",
+    "href": "labs/pl_lab3.html#symulator",
+    "title": "Lab 3: Spark Structured Streaming — okna na żywym strumieniu",
+    "section": "symulator",
+    "text": "symulator\nUstawmy generowane dane tak by działo się coś ciekawego\n\nfrom pyspark.sql import SparkSession\nspark = SparkSession.builder.appName(\"StreamingDemo\").getOrCreate()\nspark.sparkContext.setLogLevel(\"WARN\")\n\ndef process_batch(df, batch_id, tstop=5):\n    print(f\"Batch ID: {batch_id}\")\n    df.show(truncate=False)\n    if batch_id == tstop:\n        df.stop()\n\nfrom pyspark.sql.functions import col, expr\n\ndf = (spark.readStream\n      .format(\"rate\")\n      .option(\"rowsPerSecond\", 1)\n      .load()\n)\n\nstream = (df.withColumn(\"czas\", col(\"timestamp\"))\n        .withColumn(\"temperatura\", expr(\"20 + rand() * 10\"))\n        .select(\"czas\", \"temperatura\")\n       )\n\nquery = (stream.writeStream \n    .format(\"console\") \n    .outputMode(\"append\")\n    .foreachBatch(process_batch)\n    .option(\"truncate\", False) \n    .start()\n)",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 3: Spark Structured Streaming — okna na żywym strumieniu"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab3.html#źródło-plikowe-json",
+    "href": "labs/pl_lab3.html#źródło-plikowe-json",
+    "title": "Lab 3: Spark Structured Streaming — okna na żywym strumieniu",
+    "section": "🔹 Źródło plikowe (JSON)",
+    "text": "🔹 Źródło plikowe (JSON)\n\n✅ Generator danych:\n\n%%file generator.py\n# generator.py\nimport json, os, random, time\nfrom datetime import datetime, timedelta\n\noutput_dir = \"data/stream\"\nos.makedirs(output_dir, exist_ok=True)\n\nsklepy = ['Warszawa', 'Kraków', 'Gdańsk', 'Wrocław']\nkategorie = ['elektronika', 'odzież', 'żywność', 'książki']\n\ndef generate_transaction():\n    return {\n        'tx_id': f'TX{random.randint(1000,9999)}',\n        'user_id': f'u{random.randint(1,20):02d}',\n        'amount': round(random.uniform(5.0, 5000.0), 2),\n        'store': random.choice(sklepy),\n        'category': random.choice(kategorie),\n        'timestamp': datetime.now().isoformat(),\n    }\n\n# Simulate file-based streaming\nwhile True:\n    batch = [generate_transaction() for _ in range(2)]\n    filename = f\"{output_dir}/events_{int(time.time())}.json\"\n    with open(filename, \"w\") as f:\n        for e in batch:\n            f.write(json.dumps(e) + \"\\n\")\n    print(f\"Wrote: {filename}\")\n    time.sleep(5)\n\n\nfrom pyspark.sql.types import StructType, StructField, StringType, DoubleType\nfrom pyspark.sql.functions import from_json, to_timestamp\nfrom pyspark.sql import SparkSession\n\nspark = SparkSession.builder.appName(\"jsonDemo\").getOrCreate()\nspark.sparkContext.setLogLevel(\"WARN\")\n\ntx_schema = StructType([\n    StructField(\"tx_id\",     StringType()),\n    StructField(\"user_id\",   StringType()),\n    StructField(\"amount\",    DoubleType()),\n    StructField(\"store\",     StringType()),\n    StructField(\"category\",  StringType()),\n    StructField(\"timestamp\", StringType()),\n])\n\nbatch_counter = {\"count\": 0}\n\ndef process_batch(df, batch_id, tstop=5):\n    batch_counter[\"count\"] += 1\n    print(f\"Batch ID: {batch_id}\")\n    df.show(truncate=False)\n    if batch_id == tstop:\n        df.stop()\n    \n\n\nstream = (spark.readStream\n          .schema(tx_schema)\n          .json(\"data/stream\"))\n\nquery = (stream.writeStream\n         .format(\"console\")\n         .foreachBatch(process_batch)\n         .start())",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 3: Spark Structured Streaming — okna na żywym strumieniu"
+    ]
   },
   {
     "objectID": "labs/pl_lab2.html",
@@ -648,370 +806,87 @@
     ]
   },
   {
-    "objectID": "labs/pl_lab5.html",
-    "href": "labs/pl_lab5.html",
-    "title": "Lab 5: Uczenie przyrostowe — modele aktualizujące się w czasie rzeczywistym",
+    "objectID": "labs/pl_lab0_prework.html",
+    "href": "labs/pl_lab0_prework.html",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
     "section": "",
-    "text": "Różnica między uczeniem batch a online,\nImplementacja SGD z partial_fit,\nKonsument, który uczy się i scoruje jednocześnie.\n\nCase (cd.): Statyczny model z Lab 4 się starzeje. Nowe wzorce fraudów. Potrzebujesz modelu, który się adaptuje.\n\nSzczegółowe zadania — patrz angielska wersja en_lab5.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 5 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab5.html#cel",
-    "href": "labs/pl_lab5.html#cel",
-    "title": "Lab 5: Uczenie przyrostowe — modele aktualizujące się w czasie rzeczywistym",
-    "section": "",
-    "text": "Różnica między uczeniem batch a online,\nImplementacja SGD z partial_fit,\nKonsument, który uczy się i scoruje jednocześnie.\n\nCase (cd.): Statyczny model z Lab 4 się starzeje. Nowe wzorce fraudów. Potrzebujesz modelu, który się adaptuje.\n\nSzczegółowe zadania — patrz angielska wersja en_lab5.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 5 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab3.html",
-    "href": "labs/pl_lab3.html",
-    "title": "Lab 3: Reguły decyzyjne na danych strumieniowych",
-    "section": "",
-    "text": "Zdefiniowanie reguł biznesowych dla detekcji fraudów,\nZastosowanie reguł na żywym strumieniu Kafki (konsument Python),\nZastosowanie reguł w Spark Structured Streaming,\nZapis alertów do osobnego tematu Kafka.\n\nCase biznesowy (ciąg dalszy): System monitoringu potrzebuje flagować podejrzane transakcje na podstawie reguł biznesowych — zanim będziesz miał wytrenowany model ML."
-  },
-  {
-    "objectID": "labs/pl_lab3.html#cel",
-    "href": "labs/pl_lab3.html#cel",
-    "title": "Lab 3: Reguły decyzyjne na danych strumieniowych",
-    "section": "",
-    "text": "Zdefiniowanie reguł biznesowych dla detekcji fraudów,\nZastosowanie reguł na żywym strumieniu Kafki (konsument Python),\nZastosowanie reguł w Spark Structured Streaming,\nZapis alertów do osobnego tematu Kafka.\n\nCase biznesowy (ciąg dalszy): System monitoringu potrzebuje flagować podejrzane transakcje na podstawie reguł biznesowych — zanim będziesz miał wytrenowany model ML."
-  },
-  {
-    "objectID": "labs/pl_lab3.html#część-1-scoring-regułowy-w-pythonie",
-    "href": "labs/pl_lab3.html#część-1-scoring-regułowy-w-pythonie",
-    "title": "Lab 3: Reguły decyzyjne na danych strumieniowych",
-    "section": "Część 1: Scoring regułowy w Pythonie",
-    "text": "Część 1: Scoring regułowy w Pythonie\n\nZadanie 1.1 — Zdefiniuj reguły\n\n\n\nReguła\nWarunek\nPunkty\n\n\n\n\nR1\namount &gt; 3000\n+3\n\n\nR2\ncategory == “elektronika” i amount &gt; 1500\n+2\n\n\nR3\ngodzina transakcji &lt; 6 (noc)\n+2\n\n\nR4\namount &gt; 2x średnia dla danego sklepu\n+1\n\n\n\nJeśli suma punktów &gt;= 3 → PODEJRZANA.\n\ndef score_transaction(tx, store_averages):\n    \"\"\"Scoring transakcji na podstawie reguł biznesowych.\"\"\"\n    # TWÓJ KOD\n    pass\n\n# Test\ntest_tx = {'tx_id': 'TX999', 'user_id': 'u05', 'amount': 4500.0,\n           'store': 'Warszawa', 'category': 'elektronika', 'timestamp': '2026-04-01T03:15:00'}\navgs = {'Warszawa': 500, 'Kraków': 400, 'Gdańsk': 350, 'Wrocław': 450}\nscore, rules = score_transaction(test_tx, avgs)\nprint(f\"Score: {score}, Reguły: {rules}\")\n\n\n\nZadanie 1.2 — Konsument scoringowy z uczącymi się średnimi\nNapisz konsumenta Kafka, który utrzymuje bieżące średnie per sklep, scoruje każdą transakcję i wysyła podejrzane do tematu alerts.\n\n%%file scoring_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nfrom collections import defaultdict\nimport json\n\n# TWÓJ KOD"
-  },
-  {
-    "objectID": "labs/pl_lab3.html#część-2-reguły-w-spark-streaming",
-    "href": "labs/pl_lab3.html#część-2-reguły-w-spark-streaming",
-    "title": "Lab 3: Reguły decyzyjne na danych strumieniowych",
-    "section": "Część 2: Reguły w Spark Streaming",
-    "text": "Część 2: Reguły w Spark Streaming\n\nZadanie 2.1 — Odczytaj z Kafki i zastosuj reguły w Sparku\n\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import *\nfrom pyspark.sql.types import *\n\nspark = SparkSession.builder.appName(\"Lab3-Rules\").getOrCreate()\nspark.sparkContext.setLogLevel(\"WARN\")\n\n# TWÓJ KOD\n# Dodaj kolumny: rule_r1, rule_r2, rule_r3, total_score, is_suspicious\n# Filtruj podejrzane i wyświetl\n\n\n\nZadanie 2.2 — Zapisz alerty do Kafki ze Sparka\n\n# TWÓJ KOD"
-  },
-  {
-    "objectID": "labs/pl_lab3.html#praca-domowa",
-    "href": "labs/pl_lab3.html#praca-domowa",
-    "title": "Lab 3: Reguły decyzyjne na danych strumieniowych",
-    "section": "Praca domowa",
-    "text": "Praca domowa\n\nDodaj regułę R4 w Sparku (porównanie z okienkową średnią).\nCzytaj z tematu alerts i zapisuj do CSV.\nWypchnij kod do Git.\n\nNastępne zajęcia: FastAPI + model ML.\n\nspark.stop()"
-  },
-  {
-    "objectID": "labs/pl_lab1.html",
-    "href": "labs/pl_lab1.html",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "",
-    "text": "Pierwsze praktyczne doświadczenie z Apache Kafka:\n\nWysyłanie zdarzeń transakcyjnych do Kafki (producent),\nFiltrowanie zdarzeń w czasie rzeczywistym (konsument bezstanowy),\nZliczanie i agregacja zdarzeń na bieżąco (konsument stanowy).\n\nCase biznesowy: Pracujesz w firmie e-commerce. Twoim zadaniem jest zbudowanie systemu monitoringu transakcji, który przetwarza zdarzenia zakupowe w czasie rzeczywistym.\nTen case będzie rozwijać się przez kolejnych 9 labów aż do kompletnej platformy.",
+    "text": "Te zadania należy wykonać przed pierwszymi zajęciami laboratoryjnymi.",
     "crumbs": [
       "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
     ]
   },
   {
-    "objectID": "labs/pl_lab1.html#cel",
-    "href": "labs/pl_lab1.html#cel",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "",
-    "text": "Pierwsze praktyczne doświadczenie z Apache Kafka:\n\nWysyłanie zdarzeń transakcyjnych do Kafki (producent),\nFiltrowanie zdarzeń w czasie rzeczywistym (konsument bezstanowy),\nZliczanie i agregacja zdarzeń na bieżąco (konsument stanowy).\n\nCase biznesowy: Pracujesz w firmie e-commerce. Twoim zadaniem jest zbudowanie systemu monitoringu transakcji, który przetwarza zdarzenia zakupowe w czasie rzeczywistym.\nTen case będzie rozwijać się przez kolejnych 9 labów aż do kompletnej platformy.",
+    "objectID": "labs/pl_lab0_prework.html#gdzie-co-uruchamiam",
+    "href": "labs/pl_lab0_prework.html#gdzie-co-uruchamiam",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Gdzie co uruchamiam?",
+    "text": "Gdzie co uruchamiam?\nNa kursie będziesz pracować w trzech różnych miejscach:\n\n\n\n\n\n\n\n\nGdzie\nCo\nJak otworzyć\n\n\n\n\nTerminal systemowy\nKomendy Git, Docker, uruchamianie plików .py\nmacOS: Terminal. Windows: PowerShell. Linux: dowolny terminal.\n\n\nJupyterLab\nNotatniki (.ipynb), eksploracja danych\nPrzeglądarka: localhost:8888 po uruchomieniu środowiska\n\n\nEdytor tekstu / IDE\nPliki .py (serwery API, producenci, konsumenci)\nVS Code lub dowolny edytor\n\n\n\nGdy zadanie mówi „w terminalu” — chodzi o terminal systemowy (nie terminal JupyterLab). Gdy mówi „w JupyterLab” — otwórz nowy notatnik lub użyj terminala JupyterLab. Gdy mówi „utwórz plik” — napisz go w edytorze lub użyj %%file nazwa.py w JupyterLab.",
     "crumbs": [
       "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
     ]
   },
   {
-    "objectID": "labs/pl_lab1.html#przygotowanie",
-    "href": "labs/pl_lab1.html#przygotowanie",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "Przygotowanie",
-    "text": "Przygotowanie\nUpewnij się, że środowisko działa:\ncd jupyterlab-project\ndocker compose up\nOtwórz JupyterLab: http://localhost:8999\nCały kod poniżej uruchamiamy w JupyterLab w środowisku Docker.",
+    "objectID": "labs/pl_lab0_prework.html#część-1-python",
+    "href": "labs/pl_lab0_prework.html#część-1-python",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 1: Python",
+    "text": "Część 1: Python\n\nZadanie 1.1 — Sprawdź wersję Pythona\nW terminalu systemowym:\npython3 --version\npip --version\nPotrzebujesz Python 3.10+.\n\n\nZadanie 1.2 — Utwórz środowisko wirtualne\npython3 -m venv rta_env\nsource rta_env/bin/activate   # Linux/macOS\npip install --upgrade pip\npip install jupyterlab pandas numpy matplotlib scikit-learn requests\n\n\nZadanie 1.3 — Uruchom JupyterLab\njupyter lab\nOtworzy się w przeglądarce pod localhost:8888. Utwórz nowy notatnik i uruchom:\n\nimport pandas as pd\nimport numpy as np\nimport sklearn\n\nprint(f\"pandas:  {pd.__version__}\")\nprint(f\"numpy:   {np.__version__}\")\nprint(f\"sklearn: {sklearn.__version__}\")\nprint(\"\\nWszystko działa!\")",
     "crumbs": [
       "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
     ]
   },
   {
-    "objectID": "labs/pl_lab1.html#część-1-utwórz-temat-kafka",
-    "href": "labs/pl_lab1.html#część-1-utwórz-temat-kafka",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "Część 1: Utwórz temat Kafka",
-    "text": "Część 1: Utwórz temat Kafka\nW terminalu JupyterLab (File &gt; New &gt; Terminal):\nkafka-topics.sh --create \\\n  --topic transactions \\\n  --bootstrap-server broker:9092\n\nkafka-topics.sh --list --bootstrap-server broker:9092\n\n# Wklej wynik komendy --list:\n# TWÓJ WYNIK",
+    "objectID": "labs/pl_lab0_prework.html#część-2-git",
+    "href": "labs/pl_lab0_prework.html#część-2-git",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 2: Git",
+    "text": "Część 2: Git\n\nZadanie 2.1 — Konfiguracja\ngit --version\ngit config --global user.name \"Twoje Imię\"\ngit config --global user.email \"twoj@email.com\"\n\n\nZadanie 2.2 — Utwórz konto na GitHub\nJeśli nie masz: github.com\n\n\nZadanie 2.3 — Utwórz repozytorium kursu\n\nNa GitHubie kliknij „New repository”\nNazwa: RTA_&lt;twoje_inicjaly&gt;\nZaznacz „Add a README file”\nSklonuj:\n\ngit clone https://github.com/&lt;login&gt;/RTA_&lt;inicjaly&gt;.git\ncd RTA_&lt;inicjaly&gt;\necho \"# Analiza danych w czasie rzeczywistym\" &gt; README.md\ngit add . && git commit -m \"Pierwszy commit\" && git push origin main",
     "crumbs": [
       "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
     ]
   },
   {
-    "objectID": "labs/pl_lab1.html#część-2-producent-generowanie-transakcji",
-    "href": "labs/pl_lab1.html#część-2-producent-generowanie-transakcji",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "Część 2: Producent — generowanie transakcji",
-    "text": "Część 2: Producent — generowanie transakcji\n\nZadanie 2.1 — Napisz producenta transakcji\nUtwórz plik producer.py, który wysyła symulowane transakcje e-commerce do tematu transactions.\nKażda transakcja to JSON z polami: - tx_id (np. “TX0001”) - user_id (losowy z “u01” do “u20”) - amount (losowy float 5.0–5000.0) - store (losowy z: “Warszawa”, “Kraków”, “Gdańsk”, “Wrocław”) - category (losowy z: “elektronika”, “odzież”, “żywność”, “książki”) - timestamp (aktualny czas ISO)\nWysyłaj jedną transakcję na sekundę.\n\n%%file producer.py\nfrom kafka import KafkaProducer\nimport json, random, time\nfrom datetime import datetime\n\nproducer = KafkaProducer(\n    bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8')\n)\n\ndef generate_transaction():\n    # TWÓJ KOD\n    # Zwróć słownik z polami: tx_id, user_id, amount, store, category, timestamp\n    pass\n\n# TWÓJ KOD\n# Pętla: generuj transakcję, wyślij do tematu 'transactions', wypisz, sleep 1s\n\nUruchom producenta w terminalu JupyterLab:\npython producer.py\nPozostaw działającego i przejdź do następnego zadania.",
+    "objectID": "labs/pl_lab0_prework.html#część-3-docker",
+    "href": "labs/pl_lab0_prework.html#część-3-docker",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 3: Docker",
+    "text": "Część 3: Docker\n\nZadanie 3.1 — Instalacja\nPobierz Docker Desktop: docker.com\n\n\nZadanie 3.2 — Weryfikacja\ndocker --version\ndocker compose version\ndocker run hello-world",
     "crumbs": [
       "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
     ]
   },
   {
-    "objectID": "labs/pl_lab1.html#część-3-konsument-bezstanowy-filtrowanie",
-    "href": "labs/pl_lab1.html#część-3-konsument-bezstanowy-filtrowanie",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "Część 3: Konsument bezstanowy — filtrowanie",
-    "text": "Część 3: Konsument bezstanowy — filtrowanie\nPrzetwarzanie bezstanowe = każde zdarzenie przetwarzane niezależnie, bez pamięci o poprzednich.\n\nZadanie 3.1 — Filtruj duże transakcje\nNapisz konsumenta, który czyta z transactions i wyświetla tylko transakcje z amount &gt; 3000.\n\n%%file consumer_filter.py\nfrom kafka import KafkaConsumer\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nprint(\"Nasłuchuję na duże transakcje (amount &gt; 3000)...\")\n\nfor message in consumer:\n    print(message)\n    \n# TWÓJ KOD\n# Dla każdej wiadomości: sprawdź czy amount &gt; 3000, jeśli tak — wypisz ALERT\n# Format: ALERT: TX0042 | 2345.67 PLN | Warszawa | elektronika\n\n\n\nZadanie 3.2 — Transformacja i wzbogacenie\nNapisz konsumenta, który do słownika eventu dodaje pole risk_level: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - pozostałe → “LOW”\n\n%%file consumer_enrich.py\nfrom kafka import KafkaConsumer\nimport json\n\n# TWÓJ KOD\n# Czytaj z 'transactions' (użyj INNEGO group_id!)\n# Dodaj pole risk_level na podstawie amount\n# Wypisz wzbogaconą transakcję",
+    "objectID": "labs/pl_lab0_prework.html#część-4-środowisko-kursu",
+    "href": "labs/pl_lab0_prework.html#część-4-środowisko-kursu",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 4: Środowisko kursu",
+    "text": "Część 4: Środowisko kursu\n\nZadanie 4.1 — Sklonuj infrastrukturę\ngit clone -b 2026Redis https://github.com/sebkaz/jupyterlab-project.git\ncd jupyterlab-project\n\n\nZadanie 4.2 — Uruchom środowisko\ndocker compose up -d\ndocker compose ps\nPoczekaj 1–2 minuty. Otwórz przeglądarkę: http://localhost:8999\nHasło: root\n\n\nZadanie 4.3 — Sprawdź Kafkę\nW terminalu JupyterLab (File &gt; New &gt; Terminal):\nkafka/bin/kafka-topics.sh --list --bootstrap-server broker:9092\n\n\nZadanie 4.4 — Zatrzymaj środowisko\ndocker compose down",
     "crumbs": [
       "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
     ]
   },
   {
-    "objectID": "labs/pl_lab1.html#część-4-konsument-stanowy-agregacja",
-    "href": "labs/pl_lab1.html#część-4-konsument-stanowy-agregacja",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "Część 4: Konsument stanowy — agregacja",
-    "text": "Część 4: Konsument stanowy — agregacja\nPrzetwarzanie stanowe = utrzymujemy stan (liczniki, sumy) pomiędzy zdarzeniami.\n\nZadanie 4.1 — Zliczanie transakcji per sklep\nNapisz konsumenta, który prowadzi bieżące zliczanie transakcji per sklep i wypisuje podsumowanie co 10 wiadomości. Obiekt Counter() przeczytaj Counter.\n\n%%file consumer_count.py\nfrom kafka import KafkaConsumer\nfrom collections import Counter\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nstore_counts = Counter()\ntotal_amount = {}\nmsg_count = 0\n\n# TWÓJ KOD\n# Dla każdej wiadomości:\n#   1. Zwiększ store_counts[store]\n#   2. Dodaj amount do total_amount[store]\n#   3. Co 10 wiadomości wypisz tabelę:\n#      Sklep | Liczba | Suma | Średnia\n\n\n\nZadanie 4.2 — Statystyki per kategoria\nNapisz konsumenta, który śledzi per kategoria: - liczbę transakcji - łączny przychód - min i max kwotę\nWypisuj co 10 wiadomości.\n\n%%file consumer_stats.py\nfrom kafka import KafkaConsumer\nfrom collections import defaultdict\nimport json\n\n# TWÓJ KOD",
+    "objectID": "labs/pl_lab0_prework.html#checklist",
+    "href": "labs/pl_lab0_prework.html#checklist",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Checklist",
+    "text": "Checklist\n\nPython 3.10+ z pandas, numpy, sklearn\nKonto GitHub z repozytorium kursu\nDocker Compose działa, JupyterLab pod localhost:8888\nKafka odpowiada w terminalu JupyterLab\n\nWyślij link do repozytorium przez MS Teams.",
     "crumbs": [
       "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
-    ]
-  },
-  {
-    "objectID": "labs/pl_lab1.html#część-5-wielu-konsumentów",
-    "href": "labs/pl_lab1.html#część-5-wielu-konsumentów",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "Część 5: Wielu konsumentów",
-    "text": "Część 5: Wielu konsumentów\n\nZadanie 5.1 — Uruchom wszystko razem\nOtwórz 3 terminale w JupyterLab: 1. python producer.py 2. python consumer_filter.py 3. python consumer_count.py\n\n\nZadanie 5.2 — Pytania\n\nCo się stanie, jeśli uruchomisz consumer_filter.py po zakończeniu producenta?\nCo się stanie, jeśli dwóch konsumentów ma TĘ SAMĄ group_id?\nJaka jest różnica między przetwarzaniem bezstanowym a stanowym?\n\n\n\n# TWOJE ODPOWIEDZI",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
-    ]
-  },
-  {
-    "objectID": "labs/pl_lab1.html#praca-domowa",
-    "href": "labs/pl_lab1.html#praca-domowa",
-    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
-    "section": "Praca domowa",
-    "text": "Praca domowa\n\nNapisz konsumenta wykrywającego anomalie prędkości: alert jeśli ten sam user_id wykona więcej niż 3 transakcje w ciągu 60 sekund.\nWypchnij kod do repozytorium Git.\n\nNastępne zajęcia: Przetwarzamy ten sam strumień Kafki w Apache Spark.",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria dzienne",
-      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
-    ]
-  },
-  {
-    "objectID": "labs/pl_lab7.html",
-    "href": "labs/pl_lab7.html",
-    "title": "Lab 7: Analiza danych w Apache Spark",
-    "section": "",
-    "text": "Odtworzenie analizy z Lab 6 w Spark SQL/DataFrame,\nPraca z różnymi formatami (CSV, Parquet, JSON),\nSparkowe odpowiedniki operacji pandas.\n\nCase (cd.): Dane rosną. Pandas nie wystarczy. Spark tak.\n\nSzczegółowe zadania — patrz angielska wersja en_lab7.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 7 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab7.html#cel",
-    "href": "labs/pl_lab7.html#cel",
-    "title": "Lab 7: Analiza danych w Apache Spark",
-    "section": "",
-    "text": "Odtworzenie analizy z Lab 6 w Spark SQL/DataFrame,\nPraca z różnymi formatami (CSV, Parquet, JSON),\nSparkowe odpowiedniki operacji pandas.\n\nCase (cd.): Dane rosną. Pandas nie wystarczy. Spark tak.\n\nSzczegółowe zadania — patrz angielska wersja en_lab7.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 7 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab6.html",
-    "href": "labs/pl_lab6.html",
-    "title": "Lab 6: Eksploracyjna analiza danych z pandas",
-    "section": "",
-    "text": "Wczytywanie i eksploracja danych historycznych,\nFeature engineering dla detekcji fraudów,\nWizualizacja wzorców do zastosowania w streamingu.\n\nCase (cd.): Zanim zbudujesz lepszy model, musisz zrozumieć dane.\n\nSzczegółowe zadania — patrz angielska wersja en_lab6.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 6 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab6.html#cel",
-    "href": "labs/pl_lab6.html#cel",
-    "title": "Lab 6: Eksploracyjna analiza danych z pandas",
-    "section": "",
-    "text": "Wczytywanie i eksploracja danych historycznych,\nFeature engineering dla detekcji fraudów,\nWizualizacja wzorców do zastosowania w streamingu.\n\nCase (cd.): Zanim zbudujesz lepszy model, musisz zrozumieć dane.\n\nSzczegółowe zadania — patrz angielska wersja en_lab6.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 6 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika"
-  },
-  {
-    "objectID": "labs/pl_lab10.html",
-    "href": "labs/pl_lab10.html",
-    "title": "Lab 10: Projekt końcowy",
-    "section": "",
-    "text": "Zbudowanie kompletnego systemu real-time w grupach max. 5-osobowych.\n\n\n\nKryterium\nWaga\n\n\n\n\nDziałający pipeline (Kafka + przetwarzanie)\n30%\n\n\nModel ML zintegrowany z systemem\n25%\n\n\nKonteneryzacja (Docker Compose)\n20%\n\n\nDokumentacja i jakość kodu\n15%\n\n\nPrezentacja\n10%\n\n\n\n\nSzczegółowe zadania — patrz angielska wersja en_lab10.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 10 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika\n\n\n# Temat projektu: ...\n# Członkowie zespołu: ..."
-  },
-  {
-    "objectID": "labs/pl_lab10.html#cel",
-    "href": "labs/pl_lab10.html#cel",
-    "title": "Lab 10: Projekt końcowy",
-    "section": "",
-    "text": "Zbudowanie kompletnego systemu real-time w grupach max. 5-osobowych.\n\n\n\nKryterium\nWaga\n\n\n\n\nDziałający pipeline (Kafka + przetwarzanie)\n30%\n\n\nModel ML zintegrowany z systemem\n25%\n\n\nKonteneryzacja (Docker Compose)\n20%\n\n\nDokumentacja i jakość kodu\n15%\n\n\nPrezentacja\n10%\n\n\n\n\nSzczegółowe zadania — patrz angielska wersja en_lab10.ipynb (identyczna struktura, tłumaczenie nazw zmiennych na polskie).\n\n# Lab 10 — TWÓJ KOD\n# Szczegółowe instrukcje w pełnej wersji notatnika\n\n\n# Temat projektu: ...\n# Członkowie zespołu: ..."
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html",
-    "href": "labs/zaoczne_cw1.html",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "",
-    "text": "Studia zaoczne | 1,5h",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html#cel",
-    "href": "labs/zaoczne_cw1.html#cel",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "Cel",
-    "text": "Cel\n\nUruchomienie Kafki, utworzenie tematu,\nNapisanie producenta i konsumenta w Pythonie,\nFiltrowanie (stateless) i zliczanie (stateful) zdarzeń,\nProste reguły decyzyjne na strumieniu.\n\nCase biznesowy: Budujesz system monitoringu transakcji e-commerce. Ten case będzie rozwijany na kolejnych zajęciach.",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html#przygotowanie",
-    "href": "labs/zaoczne_cw1.html#przygotowanie",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "Przygotowanie",
-    "text": "Przygotowanie\nUpewnij się, że środowisko działa:\ncd jupyterlab-project \ndocker compose up\nOtwórz JupyterLab: http://localhost:8999\nW terminalu JupyterLab utwórz temat:\nkafka-topics.sh --create --topic transactions \\\n  --bootstrap-server broker:9092",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html#część-1-producent-20-min",
-    "href": "labs/zaoczne_cw1.html#część-1-producent-20-min",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "Część 1: Producent (20 min)",
-    "text": "Część 1: Producent (20 min)\nPoniżej gotowy producent — przeanalizuj kod, uruchom w terminalu (python producer.py).\n\n%%file producer.py\nfrom kafka import KafkaProducer\nimport json, random, time\nfrom datetime import datetime\n\nproducer = KafkaProducer(\n    bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8')\n)\n\nsklepy = ['Warszawa', 'Kraków', 'Gdańsk', 'Wrocław']\nkategorie = ['elektronika', 'odzież', 'żywność', 'książki']\n\ndef generate_transaction():\n    return {\n        'tx_id': f'TX{random.randint(1000,9999)}',\n        'user_id': f'u{random.randint(1,20):02d}',\n        'amount': round(random.uniform(5.0, 5000.0), 2),\n        'store': random.choice(sklepy),\n        'category': random.choice(kategorie),\n        'timestamp': datetime.now().isoformat(),\n    }\n\nfor i in range(1000):\n    tx = generate_transaction()\n    producer.send('transactions', value=tx)\n    print(f\"[{i+1}] {tx['tx_id']} | {tx['amount']:.2f} PLN | {tx['store']}\")\n    time.sleep(0.5)\n\nproducer.flush()\nproducer.close()\n\nWriting producer.py\n\n\n\nZadanie 1.1 — Zmodyfikuj producenta\nZmień producenta tak, by 5% transakcji było podejrzanych: - kwota &gt; 3000 PLN - kategoria = ‘elektronika’ - godzina nocna (dodaj pole hour z losową wartością 0–5)\n\n# TWÓJ KOD — zmodyfikowany generate_transaction()\n# Podpowiedź: if random.random() &lt; 0.05: ... else: ...",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html#część-2-konsument-bezstanowy-filtrowanie-15-min",
-    "href": "labs/zaoczne_cw1.html#część-2-konsument-bezstanowy-filtrowanie-15-min",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "Część 2: Konsument bezstanowy — filtrowanie (15 min)",
-    "text": "Część 2: Konsument bezstanowy — filtrowanie (15 min)\n\nZadanie 2.1 — Wyświetl duże transakcje\nNapisz konsumenta, który wypisuje tylko transakcje z amount &gt; 1000.\n\n%%file consumer_filter.py\nfrom kafka import KafkaConsumer\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nfor message in consumer:\n    print(message)\n    \n# TWÓJ KOD\n# Dla każdej wiadomości: sprawdź amount &gt; 1000, jeśli tak — wypisz ALERT\n\n\n\nZadanie 2.2 — Dodaj poziom ryzyka\nNapisz konsumenta, który dodaje pole risk_level: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - reszta → “LOW”\n\n# TWÓJ KOD — consumer_enrich.py",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html#część-3-konsument-stanowy-zliczanie-15-min",
-    "href": "labs/zaoczne_cw1.html#część-3-konsument-stanowy-zliczanie-15-min",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "Część 3: Konsument stanowy — zliczanie (15 min)",
-    "text": "Część 3: Konsument stanowy — zliczanie (15 min)\n\nZadanie 3.1 — Transakcje per sklep\nNapisz konsumenta, który liczy transakcje i sumy per sklep. Wypisz podsumowanie co 10 wiadomości.\n\n%%file consumer_count.py\nfrom kafka import KafkaConsumer\nfrom collections import Counter, defaultdict\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest',\n    group_id='count-group',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nstore_counts = Counter()\ntotal_amount = defaultdict(float)\nmsg_count = 0\n\n# TWÓJ KOD\n# Dla każdej wiadomości:\n#   1. store_counts[store] += 1\n#   2. total_amount[store] += amount\n#   3. Co 10 wiadomości: print tabela",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html#część-4-reguły-decyzyjne-20-min",
-    "href": "labs/zaoczne_cw1.html#część-4-reguły-decyzyjne-20-min",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "Część 4: Reguły decyzyjne (20 min)",
-    "text": "Część 4: Reguły decyzyjne (20 min)\n\nZadanie 4.1 — Scoring transakcji\nNapisz funkcję, która przyznaje punkty za podejrzane cechy:\n\n\n\nReguła\nWarunek\nPunkty\n\n\n\n\nR1\namount &gt; 3000\n+3\n\n\nR2\nelektronika i amount &gt; 1500\n+2\n\n\nR3\ngodzina &lt; 6 (noc)\n+2\n\n\n\nJeśli suma &gt;= 3 → PODEJRZANA.\n\ndef score_transaction(tx):\n    score = 0\n    rules = []\n    # TWÓJ KOD — zaimplementuj reguły R1, R2, R3\n    return score, rules\n\n# Test\ntest_tx = {'tx_id': 'TX999', 'amount': 4500.0, 'category': 'elektronika',\n           'timestamp': '2026-04-01T03:15:00'}\nprint(score_transaction(test_tx))  # powinno dać score &gt;= 5\n\n\n\nZadanie 4.2 — Konsument scoringowy\nPołącz scoring z konsumentem Kafki. Podejrzane transakcje wyślij do nowego tematu alerts.\nNajpierw utwórz temat:\nkafka/bin/kafka-topics.sh --create --topic alerts \\\n  --bootstrap-server broker:9092 --partitions 1 --replication-factor 1\n\n%%file scoring_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nimport json\n\nconsumer = KafkaConsumer('transactions', bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest', group_id='scoring-group',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8')))\n\nalert_producer = KafkaProducer(bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8'))\n\n# TWÓJ KOD\n# Dla każdej transakcji: scoruj, jeśli &gt;= 3: wyślij do 'alerts' i wypisz ALERT",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw1.html#praca-domowa",
-    "href": "labs/zaoczne_cw1.html#praca-domowa",
-    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
-    "section": "Praca domowa",
-    "text": "Praca domowa\n\nUruchom jednocześnie: producenta + consumer_filter + scoring_consumer.\nW osobnym terminalu sprawdź alerty: uruchom konsumenta tematu alerts.\nWypchnij kod do Git.\n\nNastępne zajęcia: Model ML + FastAPI + serwowanie predykcji.",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw2.html",
-    "href": "labs/zaoczne_cw2.html",
-    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
-    "section": "",
-    "text": "Studia zaoczne | 1,5h",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw2.html#cel",
-    "href": "labs/zaoczne_cw2.html#cel",
-    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
-    "section": "Cel",
-    "text": "Cel\n\nWytrenowanie modelu detekcji fraudów,\nSerwowanie modelu przez FastAPI,\nPodłączenie do Kafki — scoring w czasie rzeczywistym.",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw2.html#część-1-trening-modelu-25-min",
-    "href": "labs/zaoczne_cw2.html#część-1-trening-modelu-25-min",
-    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
-    "section": "Część 1: Trening modelu (25 min)",
-    "text": "Część 1: Trening modelu (25 min)\n\nZadanie 1.1 — Przygotuj dane i wytrenuj model\n\nimport pandas as pd\nimport numpy as np\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import classification_report\nimport pickle\n\nnp.random.seed(42)\n\n# === PARAMETRY — zmień tutaj ===\nN_NORMAL = 2000      # liczba normalnych transakcji\nN_FRAUD  = 100       # liczba fraudów\n# ===============================\n\n# Normalne transakcje\nnormal = pd.DataFrame({\n    'amount': np.random.lognormal(5, 1, N_NORMAL).clip(5, 5000),\n    'is_electronics': np.random.binomial(1, 0.3, N_NORMAL),\n    'tx_per_minute': np.random.poisson(3, N_NORMAL),\n    'fraud': 0\n})\n\n\n# Fraudy\nfraud = pd.DataFrame({\n    'amount': np.random.uniform(2000, 9000, N_FRAUD),\n    'is_electronics': np.random.binomial(1, 0.7, N_FRAUD),\n    'tx_per_minute': np.random.poisson(8, N_FRAUD),\n    'fraud': 1\n})\n\ndf = pd.concat([normal, fraud], ignore_index=True).sample(frac=1, random_state=42)\nprint(f\"Dataset: {len(df)} wierszy, fraud rate: {df['fraud'].mean():.1%}\")\n\n\n\nZadanie 1.2 — Podziel dane, wytrenuj, oceń\n\nfeatures = ['amount', 'is_electronics', 'tx_per_minute']\nX = df[features]\ny = df['fraud']\n\n# TWÓJ KOD\n# 1. train_test_split (80/20, stratify=y)\n# 2. RandomForestClassifier(100)\n# 3. classification_report\n# 4. pickle.dump do 'fraud_model.pkl'",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw2.html#część-2-fastapi-25-min",
-    "href": "labs/zaoczne_cw2.html#część-2-fastapi-25-min",
-    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
-    "section": "Część 2: FastAPI (25 min)",
-    "text": "Część 2: FastAPI (25 min)\n\nZadanie 2.1 — Utwórz API serwujące model\n\n%%file fraud_api.py\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\nimport pickle, numpy as np\n\napp = FastAPI(title=\"Fraud Detection API\")\nmodel = pickle.load(open('fraud_model.pkl', 'rb'))\n\nclass Transaction(BaseModel):\n    amount: float\n    is_electronics: int\n    tx_per_minute: int\n\n# TWÓJ KOD\n# Endpoint POST /score\n# Przyjmij Transaction, zwróć: {\"is_fraud\": bool, \"fraud_probability\": float}\n\nUruchom w terminalu:\nuvicorn fraud_api:app --host 0.0.0.0 --port 8001\n\n\nZadanie 2.2 — Przetestuj API\n\nimport requests\n\n# Test normalna\nr = requests.post(\"http://localhost:8001/score\",\n    json={\"amount\": 150, \"is_electronics\": 0, \"tx_per_minute\": 3})\nprint(\"Normalna:\", r.json())\n\n# TWÓJ KOD — przetestuj podejrzaną transakcję (amount=5500, is_electronics=1, tx_per_minute=12)",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw2.html#część-3-kafka-ml-25-min",
-    "href": "labs/zaoczne_cw2.html#część-3-kafka-ml-25-min",
-    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
-    "section": "Część 3: Kafka + ML (25 min)",
-    "text": "Część 3: Kafka + ML (25 min)\n\nZadanie 3.1 — Konsument z scoringiem ML\nNapisz konsumenta, który czyta z transactions, odpytuje API i wysyła alerty.\n\n%%file ml_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nfrom datetime import datetime\nimport json, requests\n\nconsumer = KafkaConsumer('transactions', bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest', group_id='ml-scoring',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8')))\n\nalert_producer = KafkaProducer(bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8'))\n\nAPI_URL = \"http://localhost:8001/score\"\n\n# TWÓJ KOD\n# Dla każdej transakcji:\n# 1. Wyciągnij cechy (amount, hour z timestamp, is_electronics, tx_per_minute=5 -lub policz)\n# 2. requests.post(API_URL, json=features)\n# 3. Jeśli is_fraud: wyślij do tematu 'alerts', wypisz ALERT\n\n\n\nZadanie 3.2 — Uruchom pipeline\nW 3 terminalach:\n\npython producer.py (z Ćw. 1)\nuvicorn fraud_api:app --host 0.0.0.0 --port 8001\npython ml_consumer.py\n\nObserwuj alerty.",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
-    ]
-  },
-  {
-    "objectID": "labs/zaoczne_cw2.html#praca-domowa",
-    "href": "labs/zaoczne_cw2.html#praca-domowa",
-    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
-    "section": "Praca domowa",
-    "text": "Praca domowa\n\nPorównaj wyniki scoringu regułowego (Ćw. 1) vs ML — który lepiej wykrywa?\nDodaj endpoint GET /health do API.\nWypchnij do Git.\n\nNastępne zajęcia: Apache Spark — przetwarzanie na dużą skalę.",
-    "crumbs": [
-      "222890-S",
-      "Laboratoria zaoczne",
-      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
     ]
   },
   {
