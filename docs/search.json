@@ -1,0 +1,1384 @@
+[
+  {
+    "objectID": "lectures/wyklad5.html",
+    "href": "lectures/wyklad5.html",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "",
+    "text": "Note Czas trwania: 1,5h\n\n\n\nCel wykładu: Poznanie Apache Spark jako silnika do rozproszonego przetwarzania danych. Wprowadzenie do Structured Streaming i integracji Spark–Kafka. Przegląd kompletnego pipeline’u real-time analytics.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#dlaczego-spark",
+    "href": "lectures/wyklad5.html#dlaczego-spark",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "1 Dlaczego Spark?",
+    "text": "1 Dlaczego Spark?\nNa poprzednich wykładach poznaliśmy Kafkę — system, który transportuje strumienie danych. Ale Kafka sama w sobie nie wykonuje złożonych analiz. Do tego potrzebujemy silnika przetwarzania — i tu wchodzi Apache Spark.\nSpark to silnik do rozproszonego przetwarzania danych, który obsługuje zarówno tryb wsadowy (batch), jak i strumieniowy (streaming). Powstał na UC Berkeley w 2009 roku jako odpowiedź na ograniczenia Hadoop MapReduce — głównie na jego powolność wynikającą z ciągłego zapisu na dysk.\n\n\n\n\n\n\n\n\nTip Przetwarzanie w pamięci\n\n\n\nDane trzymane w RAM, nie na dysku. Nawet 100x szybciej niż MapReduce.\n\n\n\n\n\n\n\n\nTip Jeden silnik, wiele trybów\n\n\n\nBatch, streaming, SQL, ML, grafy — wszystko w jednym frameworku.\n\n\n\n\n\n\n\n\n\nTip API w wielu językach\n\n\n\nPySpark, Scala, Java, R.\n\n\n\n\n\n\n\n\nTip Lazy evaluation\n\n\n\nSpark buduje plan wykonania i optymalizuje go zanim cokolwiek obliczy.\n\n\n\n\n\n\n\n\n\nflowchart TB\n    subgraph \"Apache Spark\"\n        CORE[\"Spark Core\\n(RDD, zarządzanie pamięcią)\"]\n        SQL[\"Spark SQL\\n& DataFrames\"]\n        SS[\"Structured\\nStreaming\"]\n        ML[\"MLlib\\n(Machine Learning)\"]\n        GR[\"GraphX\\n(Grafy)\"]\n    end\n    SQL --&gt; CORE\n    SS --&gt; CORE\n    ML --&gt; CORE\n    GR --&gt; CORE\n\n    style CORE fill:#FF9800,color:#fff\n    style SQL fill:#2196F3,color:#fff\n    style SS fill:#F44336,color:#fff\n    style ML fill:#4CAF50,color:#fff\n    style GR fill:#9C27B0,color:#fff\n\n\n Ekosystem Apache Spark",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#pyspark-podstawy",
+    "href": "lectures/wyklad5.html#pyspark-podstawy",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "2 PySpark — podstawy",
+    "text": "2 PySpark — podstawy\n\n2.1 SparkSession — punkt wejścia\nKażdy program PySpark zaczyna się od utworzenia SparkSession:\nfrom pyspark.sql import SparkSession\n\nspark = SparkSession.builder \\\n    .appName(\"MojaPierwszaAplikacja\") \\\n    .master(\"local[*]\") \\\n    .getOrCreate()\n\n\n\n\n\n\nlocal[*] oznacza: uruchom Sparka lokalnie, używając wszystkich dostępnych rdzeni procesora. W produkcji zamiast tego podaje się adres klastra.\n\n\n\n\n\n2.2 DataFrame API\nSpark DataFrame to odpowiednik tabeli SQL lub DataFrame z Pandas — ale rozproszony na wielu maszynach.\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import col, avg, sum, count\n\nspark = SparkSession.builder.appName(\"Demo\").master(\"local[*]\").getOrCreate()\n\n# Tworzenie DataFrame\ndane = [\n    (\"Warszawa\", \"Elektronika\", 4299.00),\n    (\"Kraków\", \"Odzież\", 189.99),\n    (\"Warszawa\", \"Żywność\", 87.50),\n    (\"Gdańsk\", \"Elektronika\", 2599.00),\n    (\"Kraków\", \"Elektronika\", 1299.00),\n    (\"Warszawa\", \"Odzież\", 349.99),\n    (\"Gdańsk\", \"Żywność\", 156.00),\n]\n\ndf = spark.createDataFrame(dane, [\"miasto\", \"kategoria\", \"kwota\"])\ndf.show()\n\n\n2.3 Transformacje i akcje\nSpark rozróżnia dwa typy operacji:\n\n Transformacje (lazy) Akcje (eager)\n\n\nDefiniują co chcesz zrobić, ale nie wykonują obliczeń. Są leniwe (lazy).\nPrzykłady: filter, groupBy, select, join.\n# Transformacje (lazy — nic się jeszcze nie liczy)\nwynik = df \\\n    .filter(col(\"kwota\") &gt; 100) \\\n    .groupBy(\"miasto\") \\\n    .agg(\n        sum(\"kwota\").alias(\"suma\"),\n        count(\"kwota\").alias(\"liczba\"),\n        avg(\"kwota\").alias(\"srednia\")\n    )\n\n\nWyzwalają faktyczne obliczenia.\nPrzykłady: show, count, collect, write.\n# Akcja (tu Spark faktycznie wykonuje obliczenia)\nwynik.show()\n\nspark.stop()\n\n\n\n\n\n\n\n\n\nTip Spark SQL — alternatywa\n\n\n\n\n\nMożesz też używać zwykłego SQL-a:\ndf.createOrReplaceTempView(\"sprzedaz\")\n\nspark.sql(\"\"\"\n    SELECT miasto,\n           SUM(kwota) as suma,\n           COUNT(*) as liczba\n    FROM sprzedaz\n    WHERE kwota &gt; 100\n    GROUP BY miasto\n    ORDER BY suma DESC\n\"\"\").show()",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#structured-streaming-strumienie-jako-tabele",
+    "href": "lectures/wyklad5.html#structured-streaming-strumienie-jako-tabele",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "3 Structured Streaming — strumienie jako tabele",
+    "text": "3 Structured Streaming — strumienie jako tabele\n\n\n\n\n\n\nImportantKluczowa koncepcja\n\n\n\nStructured Streaming traktuje strumień danych jak tabelę, do której ciągle dopisywane są nowe wiersze. Dzięki temu piszesz kod strumieniowy prawie identycznie jak batch — używasz tego samego DataFrame API.\n\n\n\n\n\n\n\nflowchart TB\n    subgraph \"Strumień wejściowy\"\n        T1[\"Batch t1\"] --&gt; TAB[\"Nieograniczona\\ntabela wejściowa\\n(nowe wiersze\\ndopisywane ciągle)\"]\n        T2[\"Batch t2\"] --&gt; TAB\n        T3[\"Batch t3\"] --&gt; TAB\n        T4[\"Batch t4...\"] --&gt; TAB\n    end\n    TAB --&gt;|\"Zapytanie\\n(query)\"| RES[\"Tabela wynikowa\\n(aktualizowana\\nz każdym triggerem)\"]\n    RES --&gt; OUT[\"Wyjście:\\nkonsola / Kafka / pliki / baza\"]\n\n    style TAB fill:#2196F3,color:#fff\n    style RES fill:#4CAF50,color:#fff\n    style OUT fill:#FF9800,color:#fff\n\n\n Structured Streaming: strumień jako nieograniczona tabela \n\n\n\n\n3.1 Tryby wyjścia (Output Modes)\n\n\n\n\n\n\n\n\nNote Append\n\n\n\nDo wyniku dopisywane są tylko nowe wiersze. Domyślny tryb.\n\n\n\n\n\n\n\n\n\nWarning Complete\n\n\n\nCała tabela wynikowa jest nadpisywana (np. po agregacji).\n\n\n\n\n\n\n\n\n\nTip Update\n\n\n\nZapisywane są tylko zmienione wiersze.\n\n\n\n\n\n\n3.2 Przykład: streaming z plików CSV\nNajprostszy przykład — Spark monitoruje katalog i przetwarza nowe pliki CSV w miarę ich pojawiania się:\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import col, window, sum\nfrom pyspark.sql.types import StructType, StringType, DoubleType, TimestampType\n\nspark = SparkSession.builder.appName(\"StreamingDemo\").master(\"local[*]\").getOrCreate()\n\n# Schemat danych\nschema = StructType() \\\n    .add(\"transaction_id\", StringType()) \\\n    .add(\"amount\", DoubleType()) \\\n    .add(\"store\", StringType()) \\\n    .add(\"timestamp\", TimestampType())\n\n# Czytanie strumienia z katalogu CSV\nstreaming_df = spark.readStream \\\n    .schema(schema) \\\n    .option(\"header\", True) \\\n    .csv(\"/data/incoming/\")\n\n# Agregacja w oknach 5-minutowych\nresult = streaming_df \\\n    .groupBy(\n        window(col(\"timestamp\"), \"5 minutes\"),\n        col(\"store\")\n    ) \\\n    .agg(sum(\"amount\").alias(\"total\"))\n\n# Zapis wyniku do konsoli\nquery = result.writeStream \\\n    .outputMode(\"complete\") \\\n    .format(\"console\") \\\n    .trigger(processingTime=\"10 seconds\") \\\n    .start()\n\n# query.awaitTermination()",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#integracja-spark-kafka",
+    "href": "lectures/wyklad5.html#integracja-spark-kafka",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "4 Integracja Spark + Kafka",
+    "text": "4 Integracja Spark + Kafka\n\n\n\n\n\n\nImportantSerce kursu\n\n\n\nKafka transportuje dane, Spark je przetwarza. To fundamentalna para w architekturze real-time analytics.\n\n\n\nCzytanie z KafkiPrzetwarzanie i zapis\n\n\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import from_json, col, window, avg, count\nfrom pyspark.sql.types import StructType, StringType, DoubleType, TimestampType\n\nspark = SparkSession.builder \\\n    .appName(\"KafkaStreaming\") \\\n    .master(\"local[*]\") \\\n    .getOrCreate()\n\n# Odczyt strumienia z Kafki\nkafka_df = spark.readStream \\\n    .format(\"kafka\") \\\n    .option(\"kafka.bootstrap.servers\", \"localhost:9092\") \\\n    .option(\"subscribe\", \"transakcje\") \\\n    .option(\"startingOffsets\", \"latest\") \\\n    .load()\n\n# Kafka zwraca dane jako bajty — trzeba je sparsować\nschema = StructType() \\\n    .add(\"id\", StringType()) \\\n    .add(\"kwota\", DoubleType()) \\\n    .add(\"sklep\", StringType()) \\\n    .add(\"czas\", TimestampType())\n\nparsed_df = kafka_df \\\n    .selectExpr(\"CAST(value AS STRING) as json\") \\\n    .select(from_json(col(\"json\"), schema).alias(\"data\")) \\\n    .select(\"data.*\")\n\n\n# Agregacja: średnia kwota i liczba transakcji\n# w oknach 5-minutowych per sklep\nwynik = parsed_df \\\n    .withWatermark(\"czas\", \"2 minutes\") \\\n    .groupBy(\n        window(col(\"czas\"), \"5 minutes\"),\n        col(\"sklep\")\n    ) \\\n    .agg(\n        avg(\"kwota\").alias(\"srednia_kwota\"),\n        count(\"*\").alias(\"liczba_transakcji\")\n    )\n\n# Zapis do konsoli (na lab: do bazy danych lub dashboardu)\nquery = wynik.writeStream \\\n    .outputMode(\"update\") \\\n    .format(\"console\") \\\n    .option(\"truncate\", False) \\\n    .trigger(processingTime=\"10 seconds\") \\\n    .start()\n\n# query.awaitTermination()\n\n\n\n\n\n\nZwróć uwagę na .withWatermark(\"czas\", \"2 minutes\") — to mechanizm watermarkingu, o którym mówiliśmy na Wykładzie 2. Spark toleruje opóźnienie zdarzeń do 2 minut i automatycznie odrzuca te, które przyszły później.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#kompletny-pipeline-podsumowanie-kursu",
+    "href": "lectures/wyklad5.html#kompletny-pipeline-podsumowanie-kursu",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "5 Kompletny pipeline — podsumowanie kursu",
+    "text": "5 Kompletny pipeline — podsumowanie kursu\nŁączmy wszystko, co poznaliśmy na wykładach:\n\n\n\n\n\nflowchart LR\n    subgraph \"Źródła danych\"\n        WEB[\"Aplikacja\\nwebowa\"]\n        PAY[\"System\\npłatności\"]\n        IOT[\"Sensory\\nIoT\"]\n    end\n    subgraph \"Transport\"\n        K[\"Apache Kafka\\n(W4)\"]\n    end\n    subgraph \"Przetwarzanie\"\n        SS[\"Spark Streaming\\n(W5)\"]\n        ML[\"FastAPI + ML\\n(W3)\"]\n    end\n    subgraph \"Wyniki\"\n        DASH[\"Dashboard\\n(near RT)\"]\n        ALERT[\"Alerty\\n(real-time)\"]\n        REP[\"Raporty\\n(batch)\"]\n    end\n\n    WEB --&gt; K\n    PAY --&gt; K\n    IOT --&gt; K\n    K --&gt; SS --&gt; DASH\n    K --&gt; ML --&gt; ALERT\n    SS --&gt; REP\n\n    style K fill:#FF9800,color:#fff\n    style SS fill:#2196F3,color:#fff\n    style ML fill:#4CAF50,color:#fff\n    style DASH fill:#E3F2FD,stroke:#2196F3\n    style ALERT fill:#FFEBEE,stroke:#F44336\n    style REP fill:#F3E5F5,stroke:#9C27B0\n\n\n Kompletny pipeline real-time analytics — podsumowanie kursu \n\n\n\n\nMapa kursu\n\n\nKomponent\nRola\nWykład\n\n\n\n\nTypy danych, OLTP/OLAP, Data Lake\nKontekst i historia\nW1\n\n\nLambda/Kappa, okna czasowe\nArchitektura\nW2\n\n\nML batch vs online, SGD, anomalie\nModele i algorytmy\nW3\n\n\nApache Kafka\nTransport danych\nW4\n\n\nApache Spark + Structured Streaming\nPrzetwarzanie\nW5",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#złożoność-algorytmów-uwaga-praktyczna",
+    "href": "lectures/wyklad5.html#złożoność-algorytmów-uwaga-praktyczna",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "6 Złożoność algorytmów — uwaga praktyczna",
+    "text": "6 Złożoność algorytmów — uwaga praktyczna\n\n\n\n\n\n\nCautionProjektując pipeline real-time, rozważ wymiar obliczeniowy\n\n\n\n\nDuże dane, proste obliczenia — np. filtrowanie logów, agregacje. Spark radzi sobie świetnie.\nMałe dane, ciężkie obliczenia — np. trenowanie modelu deep learning. Lepiej offline na GPU.\nDuże dane, ciężkie obliczenia — np. analiza wideo w czasie rzeczywistym. Wymaga specjalistycznej architektury (GPU cluster, edge computing).\n\nDla systemów real-time kluczowe jest, żeby czas przetwarzania jednego zdarzenia był krótszy niż interwał między zdarzeniami. Inaczej kolejka rośnie bez końca.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#co-dalej-laboratoria",
+    "href": "lectures/wyklad5.html#co-dalej-laboratoria",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "7 Co dalej — laboratoria",
+    "text": "7 Co dalej — laboratoria\nNa laboratoriach zbudujecie kompletny system krok po kroku:\n\nPlan laboratoriów\n\n\nLab\nTemat\n\n\n\n\n1–2\nŚrodowisko (Git, Docker, Python), analiza eksploracyjna danych\n\n\n3–4\nModel ML (scikit-learn), przygotowanie do wdrożenia\n\n\n5–6\nKafka w Dockerze — producent i konsument w Pythonie\n\n\n7–8\nPySpark + Structured Streaming + Kafka\n\n\n9–10\nKompletny pipeline + projekt grupowy",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad5.html#podsumowanie",
+    "href": "lectures/wyklad5.html#podsumowanie",
+    "title": "Wykład 5 — Apache Spark i Structured Streaming",
+    "section": "8 Podsumowanie",
+    "text": "8 Podsumowanie\nApache Spark to silnik, który zamienia surowe strumienie danych w wartość biznesową. W połączeniu z Kafką tworzy potężną platformę real-time analytics. Structured Streaming upraszcza programowanie strumieniowe — piszesz kod jak dla batch, a Spark zajmuje się resztą.\n\n\n\n\n\n\nImportant To był ostatni wykład\n\n\n\nNa laboratoriach przełożycie tę wiedzę na praktykę — od pierwszego docker compose up po kompletny system przetwarzania danych w czasie rzeczywistym.\n\n\n\n\n\n\n\n\nTip Przed Lab 1\n\n\n\nUpewnij się, że masz zainstalowanego Dockera i Gita (patrz strona Narzędzia). Sklonuj repozytorium kursu i uruchom docker compose up — jeśli działa, jesteś gotowy.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 5 — Apache Spark i Structured Streaming"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html",
+    "href": "lectures/wyklad1.html",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "",
+    "text": "NoteCzas trwania: 1,5h\n\n\n\nCel wykładu: Zrozumienie, jak ewoluowały modele przetwarzania danych — od prostych plików, przez bazy relacyjne i hurtownie danych, aż po Data Lake i przetwarzanie strumieniowe. Wprowadzenie pojęcia analizy danych w czasie rzeczywistym.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html#po-co-nam-analiza-danych-w-czasie-rzeczywistym",
+    "href": "lectures/wyklad1.html#po-co-nam-analiza-danych-w-czasie-rzeczywistym",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "1 Po co nam analiza danych w czasie rzeczywistym?",
+    "text": "1 Po co nam analiza danych w czasie rzeczywistym?\nWyobraź sobie, że prowadzisz sklep internetowy. Na koniec miesiąca generujesz raport sprzedaży — dowiadujesz się, że dwa tygodnie temu kampania reklamowa przestała działać. Straciłeś dwa tygodnie budżetu.\nA teraz wyobraź sobie, że widzisz to w ciągu minuty od momentu, gdy współczynnik konwersji spada. Reagujesz natychmiast — wyłączasz kampanię, zmieniasz kreację, ratujesz budżet.\n\n\n\n\n\n\nImportantKluczowa różnica\n\n\n\nTo jest różnica między przetwarzaniem wsadowym (batch) a analizą w czasie rzeczywistym (real-time analytics).\nAnaliza danych w czasie rzeczywistym to proces przetwarzania danych natychmiast (lub niemal natychmiast) po ich wygenerowaniu — bez czekania na zgromadzenie ich w pliku czy hurtowni.\n\n\n\n1.1 Gdzie to ma znaczenie?\n\nPrzykłady zastosowań real-time analytics\n\n\n\n\n\n\n\nBranża\nPrzykład\nCzas reakcji\n\n\n\n\n Bankowość\nBlokowanie podejrzanej transakcji kartą\nMilisekundy\n\n\n E-commerce\nPersonalizacja oferty w trakcie sesji\nSekundy\n\n\n Logistyka\nPrzekierowanie przesyłki po wykryciu opóźnienia\nMinuty\n\n\n Telekomunikacja\nWykrycie awarii sieci przed zgłoszeniem klienta\nSekundy\n\n\n Ochrona zdrowia\nAlert z monitora pacjenta na OIOM\nMilisekundy\n\n\n\nNie zawsze potrzebujesz reakcji w milisekundach. Kluczowe pytanie brzmi: jaki czas reakcji wymaga Twój problem biznesowy?",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html#ewolucja-modeli-przetwarzania-danych",
+    "href": "lectures/wyklad1.html#ewolucja-modeli-przetwarzania-danych",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "2 Ewolucja modeli przetwarzania danych",
+    "text": "2 Ewolucja modeli przetwarzania danych\n\n\n\n\n\ntimeline\n    title Od plików płaskich do streamingu\n    1960s-70s : Pliki płaskie\n              : Bazy hierarchiczne\n    1970s-80s : Model relacyjny (OLTP)\n              : SQL, ACID, CRUD\n    1990s : Hurtownie danych (OLAP)\n          : ETL, kostki, raporty\n    2000s : Big Data\n          : Hadoop, MapReduce\n    2010s : Data Lake\n          : Schema-on-read, S3/HDFS\n    2020s : Streaming + Lakehouse\n          : Kafka, Spark, Flink\n\n\n Ewolucja modeli przetwarzania danych \n\n\n\n\n2.1 Pliki płaskie — punkt wyjścia\nZanim pojawiły się bazy danych, informacje przechowywano w plikach tekstowych — CSV, TSV, plikach o stałej szerokości kolumn. Każdy program czytał plik od początku do końca, przetwarzał dane i zapisywał wynik do nowego pliku.\n\n\nPokaż kod\nimport pandas as pd\nimport numpy as np\n\nnp.random.seed(42)\ntransactions = pd.DataFrame({\n    'data': pd.date_range('2026-01-01', periods=100, freq='h'),\n    'kwota': np.random.uniform(10, 5000, 100).round(2),\n    'sklep': np.random.choice(['Warszawa', 'Kraków', 'Gdańsk'], 100)\n})\n\n# Typowa analiza wsadowa: wczytaj → przetwórz → zapisz\nmonthly = transactions.groupby('sklep')['kwota'].agg(['sum', 'mean', 'count'])\nmonthly.columns = ['suma', 'średnia', 'liczba']\nprint(monthly.round(2))\n\n\n              suma  średnia  liczba\nsklep                              \nGdańsk    76467.87  2317.21      33\nKraków    70304.46  2267.89      31\nWarszawa  88847.85  2468.00      36\n\n\nTo podejście działa dobrze dla niewielkich danych. Problem pojawia się, gdy dane rosną, wielu użytkowników chce jednocześnie z nich korzystać albo potrzebujemy spójności i bezpieczeństwa.\n\n\n2.2 Model OLTP — bazy relacyjne\nW latach 70. Edgar Codd zaproponował model relacyjny, który stał się fundamentem systemów transakcyjnych. OLTP (On-Line Transaction Processing) to model zoptymalizowany pod szybki zapis i odczyt pojedynczych rekordów.\n\n\n\n\n\n\nTipCechy OLTP\n\n\n\nOperacje CRUD, gwarancje ACID, krótkie transakcje. Stosowany w systemach ERP, CRM, bankowości, e-commerce.\n\n\n\n\nPokaż kod\nimport sqlite3\n\nconn = sqlite3.connect(':memory:')\ncursor = conn.cursor()\ncursor.execute('''\n    CREATE TABLE transakcje (\n        id INTEGER PRIMARY KEY, data TEXT, kwota REAL, sklep TEXT\n    )\n''')\ncursor.execute(\n    \"INSERT INTO transakcje (data, kwota, sklep) VALUES (?, ?, ?)\",\n    ('2026-03-12 10:30:00', 299.99, 'Warszawa')\n)\ncursor.execute(\"SELECT * FROM transakcje WHERE id = 1\")\nprint(cursor.fetchone())\nconn.close()\n\n\n(1, '2026-03-12 10:30:00', 299.99, 'Warszawa')\n\n\nOLTP świetnie obsługuje bieżące operacje. Ale pytanie „Jaka była łączna sprzedaż wg regionów w ostatnich 12 miesiącach?“ na bazie produkcyjnej może zablokować system.\n\n\n2.3 Model OLAP — hurtownie danych\nPotrzeba analityki doprowadziła do powstania OLAP (On-Line Analytical Processing) i hurtowni danych. Dane z wielu systemów OLTP ładowane są w procesie ETL (Extract–Transform–Load), gdzie można je analizować bez wpływu na systemy produkcyjne.\n\n\n\n\n\n\nTipCechy OLAP\n\n\n\nAgregacje wielowymiarowe (czas, miejsce, produkt), dane historyczne, raporty i dashboardy.\n\n\n\n\nPokaż kod\nnp.random.seed(42)\nsprzedaz = pd.DataFrame({\n    'data': pd.date_range('2025-01-01', periods=365, freq='D'),\n    'kwota': np.random.uniform(1000, 50000, 365).round(2),\n    'region': np.random.choice(['Mazowieckie', 'Małopolskie', 'Pomorskie'], 365),\n    'kategoria': np.random.choice(['Elektronika', 'Odzież', 'Żywność'], 365)\n})\nsprzedaz['kwartal'] = sprzedaz['data'].dt.to_period('Q')\npivot = sprzedaz.pivot_table(values='kwota', index='region', columns='kwartal', aggfunc='sum')\nprint(\"Sprzedaż wg regionów i kwartałów (tys. PLN):\")\nprint((pivot / 1000).round(1))\n\n\nSprzedaż wg regionów i kwartałów (tys. PLN):\nkwartal      2025Q1  2025Q2  2025Q3  2025Q4\nregion                                     \nMazowieckie   940.2   823.1  1098.7   615.1\nMałopolskie   547.4   710.7   824.7   834.7\nPomorskie     685.6   654.7   646.8   774.6\n\n\n\n\n2.4 Data Lake — wszystko w jednym miejscu\nHurtownia wymaga, by dane miały strukturę przed załadowaniem (schema-on-write). To nie radzi sobie z logami, obrazami, plikami JSON z API, danymi IoT.\nData Lake to podejście odwrotne — przechowujemy surowe dane w dowolnym formacie (schema-on-read) i nadajemy im strukturę dopiero podczas analizy.\n\nHurtownia danychData Lake\n\n\n\n\n\nCecha\nWartość\n\n\n\n\nStruktura danych\nUstrukturyzowane\n\n\nSchemat\nPrzed załadowaniem (schema-on-write)\n\n\nUżytkownicy\nAnalitycy biznesowi\n\n\nKoszt przechowywania\nWysoki\n\n\nTechnologie\nSQL Server, Oracle, Teradata\n\n\n\n\n\n\n\n\nCecha\nWartość\n\n\n\n\nStruktura danych\nDowolne (surowe)\n\n\nSchemat\nPrzy odczycie (schema-on-read)\n\n\nUżytkownicy\nData scientists, inżynierowie\n\n\nKoszt przechowywania\nNiski\n\n\nTechnologie\nHadoop HDFS, S3, Azure Data Lake",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html#dane-zawsze-powstają-jako-strumień",
+    "href": "lectures/wyklad1.html#dane-zawsze-powstają-jako-strumień",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "3 Dane zawsze powstają jako strumień",
+    "text": "3 Dane zawsze powstają jako strumień\nWszystkie powyższe modele zakładają, że dane są w spoczynku — leżą w pliku, bazie, hurtowni. Ale w rzeczywistości dane zawsze powstają jako strumień zdarzeń — każda transakcja, każde kliknięcie, każdy odczyt sensora to zdarzenie, które pojawia się w określonym momencie czasu.\n\n\n\n\n\n\nWarningZmiana perspektywy\n\n\n\nPrzetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień zdarzeń do pliku i analizujemy go z opóźnieniem.\n\n\n\n\nPokaż kod\nimport time\nfrom datetime import datetime\n\ndef generuj_transakcje(n=5):\n    sklepy = ['Warszawa', 'Kraków', 'Gdańsk']\n    for i in range(n):\n        yield {\n            'id': f'TX{i+1:04d}',\n            'czas': datetime.now().strftime('%H:%M:%S'),\n            'kwota': round(np.random.uniform(10, 2000), 2),\n            'sklep': np.random.choice(sklepy)\n        }\n        time.sleep(0.3)\n\nsuma = 0\nfor tx in generuj_transakcje():\n    suma += tx['kwota']\n    alert = \" &lt;&lt; DUŻA TRANSAKCJA\" if tx['kwota'] &gt; 1500 else \"\"\n    print(f\"[{tx['czas']}] {tx['id']}: {tx['kwota']:&gt;8.2f} PLN ({tx['sklep']}){alert}\")\nprint(f\"\\nSuma przetworzona na bieżąco: {suma:.2f} PLN\")\n\n\n[23:16:09] TX0001:  1001.75 PLN (Kraków)\n[23:16:09] TX0002:    77.42 PLN (Warszawa)\n[23:16:10] TX0003:   731.16 PLN (Gdańsk)\n[23:16:10] TX0004:   562.40 PLN (Kraków)\n[23:16:10] TX0005:    36.06 PLN (Warszawa)\n\nSuma przetworzona na bieżąco: 2408.79 PLN\n\n\nSystemy obsługujące strumienie danych to m.in. systemy transakcyjne, hurtownie danych, systemy IoT, systemy analityki webowej, platformy reklamowe, media społecznościowe, systemy logowania.\n\nFirma to organizacja, która generuje i odpowiada na ciągły strumień zdarzeń.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html#trzy-tryby-przetwarzania-porównanie",
+    "href": "lectures/wyklad1.html#trzy-tryby-przetwarzania-porównanie",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "4 Trzy tryby przetwarzania — porównanie",
+    "text": "4 Trzy tryby przetwarzania — porównanie\n\nTabela porównawczaWykres\n\n\n\n\n\n\n\n\n\n\n\nCecha\n Batch\n Near Real-Time\n Real-Time\n\n\n\n\nOpóźnienie\nMinuty–godziny–dni\nSekundy–minuty\nMilisekundy–sekundy\n\n\nPrzykład\nRaport miesięczny\nDashboard sprzedaży (30s)\nBlokowanie karty\n\n\nKoszt\nNiski\nŚredni\nWysoki\n\n\nTechnologie\nPandas, Spark (batch), SQL\nKafka + Spark Streaming\nApache Flink, custom\n\n\n\n\n\n\n\nPokaż kod\nimport matplotlib.pyplot as plt\nimport numpy as np\n\nmodes = ['Batch', 'Near\\nReal-Time', 'Real-Time']\nlatency = [3600, 30, 0.1]  # seconds\ncost = [1, 3, 8]  # relative\n\nfig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))\n\ncolors = ['#2196F3', '#FF9800', '#F44336']\n\nax1.barh(modes, latency, color=colors, edgecolor='white')\nax1.set_xscale('log')\nax1.set_xlabel('Opóźnienie (sekundy, skala log)')\nax1.set_title('Opóźnienie')\nfor i, v in enumerate(latency):\n    label = f\"{v}s\" if v &gt;= 1 else f\"{int(v*1000)}ms\"\n    ax1.text(v * 1.5, i, label, va='center', fontweight='bold')\n\nax2.barh(modes, cost, color=colors, edgecolor='white')\nax2.set_xlabel('Koszt relatywny')\nax2.set_title('Koszt infrastruktury')\nfor i, v in enumerate(cost):\n    ax2.text(v + 0.2, i, f'{v}x', va='center', fontweight='bold')\n\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: Porównanie trybów przetwarzania: opóźnienie vs koszt\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTipZłota zasada\n\n\n\nNie zawsze potrzebujesz pełnego real-time. W wielu przypadkach near real-time jest wystarczające i znacznie tańsze.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html#typy-danych-krótki-przegląd",
+    "href": "lectures/wyklad1.html#typy-danych-krótki-przegląd",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "5 Typy danych — krótki przegląd",
+    "text": "5 Typy danych — krótki przegląd\n\nUstrukturyzowanePółustrukturyzowaneNieustrukturyzowaneStrumieniowe\n\n\nTabele SQL, pliki CSV z ustaloną strukturą kolumn. Fundament systemów transakcyjnych.\n\n\nJSON, XML. Elastyczny schemat, dominują w API i systemach NoSQL.\n\n\nPokaż kod\nimport json\n\nzamowienie = {\n    \"id\": \"ORD-2026-0042\",\n    \"klient\": {\"imie\": \"Anna\", \"miasto\": \"Warszawa\"},\n    \"produkty\": [\n        {\"nazwa\": \"Laptop\", \"cena\": 4299.00},\n        {\"nazwa\": \"Myszka\", \"cena\": 89.99}\n    ],\n    \"status\": \"wysłane\"\n}\nprint(json.dumps(zamowienie, indent=2, ensure_ascii=False))\n\n\n{\n  \"id\": \"ORD-2026-0042\",\n  \"klient\": {\n    \"imie\": \"Anna\",\n    \"miasto\": \"Warszawa\"\n  },\n  \"produkty\": [\n    {\n      \"nazwa\": \"Laptop\",\n      \"cena\": 4299.0\n    },\n    {\n      \"nazwa\": \"Myszka\",\n      \"cena\": 89.99\n    }\n  ],\n  \"status\": \"wysłane\"\n}\n\n\n\n\nTekst (e-maile, opinie), obrazy, dźwięk, wideo. Wymagają NLP, computer vision, deep learning.\n\n\nZdarzenia generowane w sposób ciągły. To z nimi będziemy pracować przez resztę kursu.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html#big-data-pięć-wymiarów-5v",
+    "href": "lectures/wyklad1.html#big-data-pięć-wymiarów-5v",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "Big Data — pięć wymiarów (5V)",
+    "text": "Big Data — pięć wymiarów (5V)\n\n\n\nVolume — rozmiar (terabajty, petabajty)\nVelocity — tempo napływu danych\nVariety — różnorodność formatów i źródeł\n\n\n\nVeracity — wiarygodność i jakość danych\nValue — wartość biznesowa ukryta w danych\n\n\n\n\n\n\n\n\n\nCautionHurtownia ≠ Big Data\n\n\n\nHurtownia danych nie jest systemem Big Data. Hurtownia przechowuje dane ustrukturyzowane i służy do raportowania (100% accuracy). System Big Data obsługuje dane o dowolnej strukturze i toleruje pewien poziom niedokładności.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad1.html#podsumowanie",
+    "href": "lectures/wyklad1.html#podsumowanie",
+    "title": "Wykład 1 — Od plików płaskich do Data Lake",
+    "section": "6 Podsumowanie",
+    "text": "6 Podsumowanie\nNa tym wykładzie prześledziliśmy ewolucję od plików płaskich, przez OLTP, OLAP i Data Lake, aż po przetwarzanie strumieniowe. Każdy model odpowiada na inne potrzeby biznesowe — i żaden nie zastępuje poprzedniego. W praktyce firmy używają ich równolegle.\n\n\n\n\n\n\nNote Na następnym wykładzie\n\n\n\nArchitektury łączące batch i streaming — Lambda i Kappa — oraz kluczowe pojęcia: czas zdarzenia, czas przetwarzania, okna czasowe.\n\n\n\n\n\n\n\n\nTip Do przemyślenia\n\n\n\nW jakim trybie Twoja firma (lub firma, w której chciałbyś pracować) przetwarza dane? Czy istnieją procesy, które skorzystałyby na przejściu do trybu strumieniowego?",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 1 — Od plików płaskich do Data Lake"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad2.html",
+    "href": "lectures/wyklad2.html",
+    "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
+    "section": "",
+    "text": "NoteCzas trwania: 1,5h\n\n\n\nCel wykładu: Zrozumienie różnic między przetwarzaniem wsadowym a strumieniowym, poznanie architektur Lambda i Kappa, oraz kluczowych pojęć: czas zdarzenia, czas przetwarzania, okna czasowe.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad2.html#batch-vs-stream-dwa-podejścia-do-tych-samych-danych",
+    "href": "lectures/wyklad2.html#batch-vs-stream-dwa-podejścia-do-tych-samych-danych",
+    "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
+    "section": "1 Batch vs Stream — dwa podejścia do tych samych danych",
+    "text": "1 Batch vs Stream — dwa podejścia do tych samych danych\nNa poprzednim wykładzie ustaliliśmy, że dane zawsze powstają jako strumień zdarzeń. Przetwarzanie wsadowe to tylko uproszczenie — zbieramy strumień do pliku i analizujemy z opóźnieniem.\nPorównajmy oba podejścia na tym samym problemie biznesowym: monitorowanie transakcji w sklepie internetowym.\n\n Podejście wsadowe (batch) Podejście strumieniowe (stream)\n\n\n\n\nPokaż kod\nimport pandas as pd\nimport numpy as np\nfrom datetime import datetime, timedelta\n\nnp.random.seed(42)\n\n# Dane zebrane z całego dnia — analizowane następnego ranka\ntransakcje = pd.DataFrame({\n    'czas': [datetime(2026, 3, 12, h, m)\n             for h in range(9, 18)\n             for m in np.random.choice(range(60), 20)],\n    'kwota': np.random.uniform(20, 3000, 180).round(2),\n    'klient_id': np.random.randint(1000, 9999, 180)\n})\n\n# Raport dzienny — widzimy go NASTĘPNEGO DNIA\nraport = transakcje.groupby(transakcje['czas'].dt.hour).agg(\n    liczba=('kwota', 'count'),\n    suma=('kwota', 'sum'),\n    srednia=('kwota', 'mean')\n).round(2)\n\nprint(\"Raport dzienny (generowany następnego ranka):\")\nprint(raport.head())\n\n\nRaport dzienny (generowany następnego ranka):\n      liczba      suma  srednia\nczas                           \n9         20  30174.87  1508.74\n10        20  23969.05  1198.45\n11        20  27346.70  1367.34\n12        20  33457.91  1672.90\n13        20  36552.13  1827.61\n\n\n\n\n\n\nPokaż kod\nimport time\n\n# Symulacja: każda transakcja analizowana w momencie pojawienia się\nokno_5min = []\nalert_prog = 5000  # alert jeśli suma w oknie 5min &gt; 5000 PLN\n\nfor i in range(10):\n    tx = {\n        'czas': datetime.now().strftime('%H:%M:%S'),\n        'kwota': round(np.random.uniform(20, 3000), 2),\n        'klient': np.random.randint(1000, 9999)\n    }\n    okno_5min.append(tx['kwota'])\n    suma_okno = sum(okno_5min)\n\n    status = \"\"\n    if suma_okno &gt; alert_prog:\n        status = \" &lt;&lt; ALERT: wysoka aktywność!\"\n        okno_5min = []  # reset okna\n\n    print(f\"[{tx['czas']}] Klient {tx['klient']}: {tx['kwota']:&gt;8.2f} PLN | Suma okna: {suma_okno:&gt;9.2f}{status}\")\n    time.sleep(0.2)\n\n\n[23:15:59] Klient 2191:  1289.75 PLN | Suma okna:   1289.75\n[23:16:00] Klient 7938:   236.83 PLN | Suma okna:   1526.58\n[23:16:00] Klient 2540:  2124.60 PLN | Suma okna:   3651.18\n[23:16:00] Klient 6541:  1549.71 PLN | Suma okna:   5200.89 &lt;&lt; ALERT: wysoka aktywność!\n[23:16:00] Klient 2365:  2960.19 PLN | Suma okna:   2960.19\n[23:16:00] Klient 9702:  2442.14 PLN | Suma okna:   5402.33 &lt;&lt; ALERT: wysoka aktywność!\n[23:16:01] Klient 2324:  2724.93 PLN | Suma okna:   2724.93\n[23:16:01] Klient 4141:  2265.07 PLN | Suma okna:   4990.00\n[23:16:01] Klient 2810:  2130.38 PLN | Suma okna:   7120.38 &lt;&lt; ALERT: wysoka aktywność!\n[23:16:01] Klient 6301:  2335.90 PLN | Suma okna:   2335.90\n\n\n\n\n\n\n\n\n\n\n\nImportantFundamentalna różnica\n\n\n\nW trybie batch dowiadujemy się o problemie następnego dnia. W trybie stream — natychmiast.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad2.html#architektura-lambda",
+    "href": "lectures/wyklad2.html#architektura-lambda",
+    "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
+    "section": "2 Architektura Lambda",
+    "text": "2 Architektura Lambda\nW praktyce firmy potrzebują obu podejść jednocześnie. Architektura Lambda, zaproponowana przez Nathana Marza, łączy przetwarzanie wsadowe i strumieniowe w jednym systemie.\n\n2.1 Trzy warstwy Lambdy\n\n\n\n\n\n\n\n\nNote Warstwa wsadowa\n\n\n\nBatch Layer — przetwarza kompletny zbiór danych w regularnych interwałach. Daje dokładne wyniki, ale z opóźnieniem.\nNarzędzia: Spark (batch), Hadoop\n\n\n\n\n\n\n\n\n\nWarning Warstwa szybka\n\n\n\nSpeed Layer — przetwarza dane strumieniowe w czasie rzeczywistym. Daje przybliżone wyniki, ale natychmiast.\nNarzędzia: Spark Streaming, Kafka Streams\n\n\n\n\n\n\n\n\n\nTip Warstwa serwująca\n\n\n\nServing Layer — łączy wyniki z obu warstw i udostępnia je użytkownikom końcowym.\nNarzędzia: bazy danych, API, dashboardy\n\n\n\n\n\n\n\n\n\nflowchart TD\n    SRC[\"Źródło danych\\n(strumień zdarzeń)\"] --&gt; BATCH[\"Warstwa wsadowa\\n(Batch Layer)\\nKompletne dane\\nDuże opóźnienie\"]\n    SRC --&gt; SPEED[\"Warstwa szybka\\n(Speed Layer)\\nNajnowsze dane\\nNiska latencja\"]\n    BATCH --&gt; SERVE[\"Warstwa serwująca\\n(Serving Layer)\\nDashboard / API\"]\n    SPEED --&gt; SERVE\n\n    style BATCH fill:#2196F3,color:#fff\n    style SPEED fill:#F44336,color:#fff\n    style SERVE fill:#4CAF50,color:#fff\n\n\n Architektura Lambda \n\n\n\n\n\n\n\n\n\nTip Przykład biznesowy: Bank analizujący transakcje kartowe\n\n\n\n\n\n\nWarstwa wsadowa: co noc przelicza historyczne wzorce zachowań klientów, trenuje modele fraud detection.\nWarstwa szybka: w czasie rzeczywistym porównuje każdą transakcję z wzorcami i blokuje podejrzane operacje.\nWarstwa serwująca: dashboard dla analityków + API dla aplikacji mobilnej.\n\n\n\n\n\n\n2.2 Zalety i wady Lambdy\nZaleta: kompletność — batch layer koryguje błędy speed layer.\n\n\n\n\n\n\nCautionGłówna wada Lambdy\n\n\n\nUtrzymujesz dwie oddzielne ścieżki przetwarzania — dwa kody, dwa zestawy testów, dwa środowiska. To jest kosztowne i podatne na błędy.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad2.html#architektura-kappa",
+    "href": "lectures/wyklad2.html#architektura-kappa",
+    "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
+    "section": "3 Architektura Kappa",
+    "text": "3 Architektura Kappa\nJay Kreps (twórca Apache Kafka) zaproponował uproszczenie: a co, gdyby potrzebna była tylko warstwa strumieniowa?\nArchitektura Kappa to Lambda bez warstwy wsadowej. Cały przepływ danych opiera się na strumieniu zdarzeń. Jeśli trzeba przeliczyć dane historyczne — odtwarzamy strumień od początku (replay).\n\n\n\n\n\nflowchart TD\n    SRC[\"Źródło danych\\n(strumień zdarzeń)\"] --&gt; STREAM[\"Warstwa strumieniowa\\n(Stream Layer)\\nJeden kod, jeden pipeline\"]\n    STREAM --&gt; SERVE[\"Warstwa serwująca\\nDashboard / API\"]\n    STREAM -.-&gt;|replay| SRC\n\n    style STREAM fill:#FF9800,color:#fff\n    style SERVE fill:#4CAF50,color:#fff\n\n\n Architektura Kappa — uproszczenie Lambdy \n\n\n\n\n3.1 Lambda vs Kappa — kiedy co stosować?\n\nLambda vs Kappa\n\n\n\n\n\n\n\nCecha\n Lambda\n Kappa\n\n\n\n\nZłożoność\nWysoka (dwie ścieżki)\nNiska (jedna ścieżka)\n\n\nDokładność\nBatch koryguje stream\nZależna od jakości streamingu\n\n\nHistoryczne przeliczanie\nNaturalne (batch)\nReplay strumienia\n\n\nKiedy stosować\nGdy batch i stream mają różną logikę\nGdy jedna logika wystarcza\n\n\nPrzykład\nBank (nocne retrenowanie + RT scoring)\nE-commerce (personalizacja)",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad2.html#czas-w-przetwarzaniu-strumieniowym",
+    "href": "lectures/wyklad2.html#czas-w-przetwarzaniu-strumieniowym",
+    "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
+    "section": "4 Czas w przetwarzaniu strumieniowym",
+    "text": "4 Czas w przetwarzaniu strumieniowym\nW przetwarzaniu wsadowym czas nie jest problemem — analizujemy dane historyczne, kiedy chcemy. W przetwarzaniu strumieniowym czas staje się kluczowym wymiarem analizy.\n\n4.1 Dwa rodzaje czasu\n\n\n\n\n\n\n\n\nNote Czas zdarzenia (event time)\n\n\n\nMoment, w którym zdarzenie faktycznie nastąpiło.\nNp. klient kliknął „Kup” o 14:23:45.\n\n\n\n\n\n\n\n\n\nWarning Czas przetwarzania (processing time)\n\n\n\nMoment, w którym system odebrał i przetworzył zdarzenie.\nNp. system Kafki odebrał zdarzenie o 14:23:47.\n\n\n\n\nW idealnym świecie oba czasy byłyby identyczne. W praktyce zawsze istnieje opóźnienie (latency) — spowodowane siecią, buforowaniem, awarią urządzeń.\n\n\nPokaż kod\n# Symulacja: zdarzenia docierają z losowym opóźnieniem\nimport random\n\nzdarzenia = []\nfor i in range(8):\n    event_time = datetime(2026, 3, 12, 14, 23, i * 2)  # co 2 sekundy\n    delay = random.uniform(0.1, 5.0)  # opóźnienie 0.1–5s\n    processing_time = event_time + timedelta(seconds=delay)\n    zdarzenia.append({\n        'event_time': event_time.strftime('%H:%M:%S'),\n        'processing_time': processing_time.strftime('%H:%M:%S.') + f'{int(delay*100):02d}',\n        'opóźnienie': f'{delay:.1f}s'\n    })\n\ndf = pd.DataFrame(zdarzenia)\nprint(df.to_string(index=False))\n\n\nevent_time processing_time opóźnienie\n  14:23:00    14:23:02.214       2.1s\n  14:23:02    14:23:03.100       1.0s\n  14:23:04    14:23:07.317       3.2s\n  14:23:06    14:23:07.184       1.8s\n  14:23:08     14:23:08.71       0.7s\n  14:23:10     14:23:10.44       0.4s\n  14:23:12     14:23:12.97       1.0s\n  14:23:14    14:23:17.363       3.6s\n\n\n\n\nPokaż kod\nimport matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\n\nnp.random.seed(42)\nn = 20\nevt = np.sort(np.random.uniform(0, 60, n))\ndelays = np.random.exponential(3, n)\nproc = evt + delays\nwatermark = 5\n\nfig, ax = plt.subplots(figsize=(9, 6))\nax.plot([0, 70], [0, 70], 'k--', alpha=0.3, label='Idealne (opóźnienie=0)')\nax.plot([0, 70], [watermark, 70+watermark], 'b--', alpha=0.3, label=f'Watermark ({watermark}s)')\n\nfor i in range(n):\n    in_wm = proc[i] &lt;= evt[i] + watermark + 1\n    color = '#4CAF50' if in_wm else '#F44336'\n    ax.scatter(evt[i], proc[i], c=color, s=50, zorder=5, edgecolors='white')\n    ax.plot([evt[i], evt[i]], [evt[i], proc[i]], color=color, alpha=0.2, linewidth=1)\n\ngp = mpatches.Patch(color='#4CAF50', label='W oknie watermarku')\nrp = mpatches.Patch(color='#F44336', label='Za późno (odrzucone)')\nax.legend(handles=[gp, rp, ax.lines[0], ax.lines[1]], loc='upper left')\nax.set_xlabel('Event time (sekundy)')\nax.set_ylabel('Processing time (sekundy)')\nax.set_title('Opóźnienia i watermarking')\nax.set_xlim(-2, 70)\nax.set_ylim(-2, 75)\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: Czas zdarzenia vs czas przetwarzania — opóźnienia w systemach strumieniowych\n\n\n\n\n\n\n\n\n\n\n\nTip Analogia: GPS w tunelu\n\n\n\n\n\nWyobraź sobie śledzenie samochodu przez GPS. Pojazd wjeżdża w tunel — przez 30 sekund nie ma sygnału. Po wyjściu z tunelu urządzenie wysyła naraz 30 odczytów. System musi wiedzieć, że te zdarzenia dotyczą przeszłości, a nie teraźniejszości.\n\n\n\nOpóźnione zdarzenia możemy obsłużyć na dwa sposoby:\n\nIgnorowanie — odrzucamy zdarzenia, które przyszły zbyt późno (ryzyko utraty danych).\nWatermarking — definiujemy „znacznik wodny” — maksymalne dopuszczalne opóźnienie. Zdarzenia, które mieszczą się w oknie watermarku, są uwzględniane. Reszta odrzucana.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad2.html#okna-czasowe",
+    "href": "lectures/wyklad2.html#okna-czasowe",
+    "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
+    "section": "5 Okna czasowe",
+    "text": "5 Okna czasowe\nW przetwarzaniu strumieniowym nie możemy analizować „wszystkich danych” — strumień jest nieskończony. Zamiast tego grupujemy zdarzenia w okna czasowe o skończonej długości.\n\nRozłączne (Tumbling)Przesuwne (Sliding)Skokowe (Hopping)Sesyjne (Session)\n\n\nStała długość, brak nakładania. Każde zdarzenie należy do dokładnie jednego okna.\nPrzykład: suma transakcji co 5 minut.\n\n\nPokaż kod\n# Symulacja okna rozłącznego (tumbling) 5-minutowego\nnp.random.seed(42)\n\nzdarzenia = pd.DataFrame({\n    'czas': pd.date_range('2026-03-12 14:00', periods=30, freq='30s'),\n    'kwota': np.random.uniform(10, 500, 30).round(2)\n})\n\n# Tumbling window: grupowanie co 5 minut\nzdarzenia['okno'] = zdarzenia['czas'].dt.floor('5min')\nwynik = zdarzenia.groupby('okno')['kwota'].agg(['sum', 'count']).round(2)\nwynik.columns = ['suma', 'liczba']\nprint(\"Okno rozłączne (5 min):\")\nprint(wynik)\n\n\nOkno rozłączne (5 min):\n                        suma  liczba\nokno                                \n2026-03-12 14:00:00  2648.68      10\n2026-03-12 14:05:00  2036.82      10\n2026-03-12 14:10:00  2061.89      10\n\n\n\n\nStała długość, ale okno przesuwa się o zadany interwał — zdarzenia mogą należeć do wielu okien.\nPrzykład: średnia z ostatnich 10 minut, aktualizowana co 2 minuty. Przydatne do wykrywania trendów.\n\n\nPodobne do sliding, ale z możliwością nakładania się okien o określony krok. Stosowane do wygładzania danych.\n\n\nDynamiczna długość — okno trwa tak długo, jak długo przychodzą zdarzenia. Zamyka się po określonym czasie braku aktywności (gap).\nPrzykład: sesja użytkownika na stronie internetowej. Sesja trwa, dopóki użytkownik klika. Kończy się po 15 minutach braku aktywności.\n\n\n\n\n5.1 Porównanie okien\n\nTypy okien czasowych\n\n\n\n\n\n\n\n\nTyp okna\nDługość\nNakładanie\nZastosowanie\n\n\n\n\nRozłączne (Tumbling)\nStała\n\nRaporty okresowe\n\n\nPrzesuwne (Sliding)\nStała\n\nWykrywanie trendów\n\n\nSkokowe (Hopping)\nStała\nCzęściowe\nWygładzanie danych\n\n\nSesyjne (Session)\nDynamiczna\n\nAnaliza sesji użytkowników\n\n\n\n\n\nPokaż kod\nimport matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\n\nfig, axes = plt.subplots(3, 1, figsize=(10, 7), sharex=True)\n\nevents_x = [1, 2.5, 3, 4.5, 5.5, 7, 8, 9, 11, 12, 14]\n\n# Tumbling\nax = axes[0]\nax.set_title('Okno rozłączne (Tumbling)', fontweight='bold')\nfor start in range(0, 15, 5):\n    rect = mpatches.FancyBboxPatch((start, 0.2), 4.9, 0.6, boxstyle=\"round,pad=0.1\",\n        facecolor='#2196F3', alpha=0.3, edgecolor='#2196F3')\n    ax.add_patch(rect)\nax.scatter(events_x, [0.5]*len(events_x), c='black', s=30, zorder=5)\nax.set_ylim(0, 1.2)\nax.set_yticks([])\n\n# Sliding\nax = axes[1]\nax.set_title('Okno przesuwne (Sliding: 5 min, krok 2 min)', fontweight='bold')\ncolors = ['#F44336', '#FF9800', '#4CAF50', '#2196F3', '#9C27B0', '#795548', '#607D8B']\nfor i, start in enumerate(range(0, 12, 2)):\n    y_offset = 0.15 + (i % 3) * 0.25\n    rect = mpatches.FancyBboxPatch((start, y_offset), 4.9, 0.2, boxstyle=\"round,pad=0.05\",\n        facecolor=colors[i % len(colors)], alpha=0.3, edgecolor=colors[i % len(colors)])\n    ax.add_patch(rect)\nax.scatter(events_x, [0.5]*len(events_x), c='black', s=30, zorder=5)\nax.set_ylim(0, 1.2)\nax.set_yticks([])\n\n# Session\nax = axes[2]\nax.set_title('Okno sesyjne (Session: gap=2 min)', fontweight='bold')\nsession_events = [[1, 2.5, 3], [7, 8, 9], [14]]\nsess_colors = ['#4CAF50', '#FF9800', '#9C27B0']\nfor j, (sess, col) in enumerate(zip(session_events, sess_colors)):\n    start = min(sess) - 0.3\n    end = max(sess) + 0.3\n    rect = mpatches.FancyBboxPatch((start, 0.2), end-start, 0.6, boxstyle=\"round,pad=0.1\",\n        facecolor=col, alpha=0.3, edgecolor=col)\n    ax.add_patch(rect)\nax.scatter(events_x, [0.5]*len(events_x), c='black', s=30, zorder=5)\nax.set_ylim(0, 1.2)\nax.set_yticks([])\nax.set_xlabel('Czas (minuty)')\nax.set_xlim(-0.5, 16)\n\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigure 2: Typy okien czasowych — wizualizacja\n\n\n\n\n\n\n\nPokaż kod\n# Porównanie: tumbling vs sliding window na tych samych danych\nprint(\"=== Tumbling (5 min) ===\")\ntumbling = zdarzenia.groupby(zdarzenia['czas'].dt.floor('5min'))['kwota'].sum().round(2)\nprint(tumbling)\n\nprint(\"\\n=== Sliding (okno 5 min, krok 1 min) ===\")\nfor start_min in range(0, 15, 1):\n    start = pd.Timestamp('2026-03-12 14:00') + pd.Timedelta(minutes=start_min)\n    end = start + pd.Timedelta(minutes=5)\n    mask = (zdarzenia['czas'] &gt;= start) & (zdarzenia['czas'] &lt; end)\n    suma = zdarzenia.loc[mask, 'kwota'].sum()\n    if suma &gt; 0:\n        print(f\"  [{start.strftime('%H:%M')}–{end.strftime('%H:%M')}) suma = {suma:.2f}\")\n\n\n=== Tumbling (5 min) ===\nczas\n2026-03-12 14:00:00    2648.68\n2026-03-12 14:05:00    2036.82\n2026-03-12 14:10:00    2061.89\nName: kwota, dtype: float64\n\n=== Sliding (okno 5 min, krok 1 min) ===\n  [14:00–14:05) suma = 2648.68\n  [14:01–14:06) suma = 2484.66\n  [14:02–14:07) suma = 2344.59\n  [14:03–14:08) suma = 2370.66\n  [14:04–14:09) suma = 2323.98\n  [14:05–14:10) suma = 2036.82\n  [14:06–14:11) suma = 1919.63\n  [14:07–14:12) suma = 1730.35\n  [14:08–14:13) suma = 2159.60\n  [14:09–14:14) suma = 2103.20\n  [14:10–14:15) suma = 2061.89\n  [14:11–14:16) suma = 1673.73\n  [14:12–14:17) suma = 1331.06\n  [14:13–14:18) suma = 702.85\n  [14:14–14:19) suma = 333.04",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad2.html#podsumowanie",
+    "href": "lectures/wyklad2.html#podsumowanie",
+    "title": "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa",
+    "section": "6 Podsumowanie",
+    "text": "6 Podsumowanie\nNa tym wykładzie poznaliśmy dwie kluczowe architektury (Lambda i Kappa) oraz fundamentalne pojęcia przetwarzania strumieniowego: czas zdarzenia, czas przetwarzania, watermarking i okna czasowe. To pojęcia, które będą towarzyszyć nam na laboratoriach podczas pracy z Apache Kafka i Spark Structured Streaming.\n\n\n\n\n\n\nNote Na następnym wykładzie\n\n\n\nUczenie maszynowe w trybie wsadowym i przyrostowym (online learning), Stochastic Gradient Descent, detekcja anomalii.\n\n\n\n\n\n\n\n\nTip Do przemyślenia\n\n\n\nTwój klient chce dashboard sprzedaży aktualizowany co 30 sekund. Jaką architekturę (Lambda/Kappa) byś zaproponował? Jaki typ okna czasowego zastosowałbyś?",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 2 — Batch vs Stream. Architektury Lambda i Kappa"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Informacje ogólne",
+    "section": "",
+    "text": "Kod: 222890-D\nSemestr letni 2025/2026, SGH Szkoła Główna Handlowa w Warszawie\nSzczegółowy opis znajdziesz w sylabusie. Znajdziesz w nim opis wszystkich wykładów i ćwiczeń oraz proponowaną literaturę.\nInne książki zamieszczone zostały w zakładce książki.",
+    "crumbs": [
+      "222890-S",
+      "Informacje ogólne"
+    ]
+  },
+  {
+    "objectID": "index.html#analiza-danych-w-czasie-rzeczywistym",
+    "href": "index.html#analiza-danych-w-czasie-rzeczywistym",
+    "title": "Informacje ogólne",
+    "section": "",
+    "text": "Kod: 222890-D\nSemestr letni 2025/2026, SGH Szkoła Główna Handlowa w Warszawie\nSzczegółowy opis znajdziesz w sylabusie. Znajdziesz w nim opis wszystkich wykładów i ćwiczeń oraz proponowaną literaturę.\nInne książki zamieszczone zostały w zakładce książki.",
+    "crumbs": [
+      "222890-S",
+      "Informacje ogólne"
+    ]
+  },
+  {
+    "objectID": "index.html#kalendarz",
+    "href": "index.html#kalendarz",
+    "title": "Informacje ogólne",
+    "section": "Kalendarz",
+    "text": "Kalendarz\n\nWykład\nWykład jest realizowany w trybie hybrydowym. Jest on NIEOBOWIĄZKOWY i odbywa się w Auli I bud. G.\n\n23.02.2026 Wykład 1 — 9:50–11:30\n02.03.2026 Wykład 2 — 9:50–11:30\n09.03.2026 Wykład 3 — 9:50–11:30\n\n16.03.2026 Wykład 4 — 9:50–11:30\n\n\n23.03.2026 Wykład 5 — 9:50–11:30\n\n\n\n\nLaboratoria\n\n\n30.03.2026 Lab1 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n\n\n31.03.2026 Lab1 — B-12 11:40–13:20, 13:30–15:10\n\n\n13.04.2026 Lab2 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n\n\n14.04.2026 Lab2 — B-12 11:40–13:20, 13:30–15:10\n\n20.04.2026 Lab3 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n21.04.2026 Lab3 — B-12 11:40–13:20, 13:30–15:10\n27.04.2026 Lab4 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n28.04.2026 Lab4 — B-12 11:40–13:20, 13:30–15:10\n04.05.2026 Lab5 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n05.05.2026 Lab5 — B-12 11:40–13:20, 13:30–15:10\n11.05.2026 Lab6 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n12.05.2026 Lab6 — B-12 11:40–13:20, 13:30–15:10\n18.05.2026 Lab7 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n19.05.2026 Lab7 — B-12 11:40–13:20, 13:30–15:10\n25.05.2026 Lab8 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n26.05.2026 Lab8 — B-12 11:40–13:20, 13:30–15:10\n01.06.2026 Lab9 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10 (Zastępstwo)\n02.06.2026 Lab9 — B-12 11:40–13:20, 13:30–15:10 (Zastępstwo)\n08.06.2026 Lab10 — G-108 8:00–9:40, 9:50–11:30, 11:40–13:20, 13:30–15:10\n09.06.2026 Lab10 — B-12 11:40–13:20, 13:30–15:10\n\n\n\nZaliczenie\nPodczas laboratoriów będą zadawane prace domowe, które należy przesyłać za pośrednictwem MS Teams. Każdy brak pracy domowej obniża końcową ocenę o 0,5 stopnia.\n\nProjekt\nProjekty należy realizować w grupach maksymalnie 5-osobowych.\nWymagania projektu:\n\nProjekt powinien rozwiązywać realny problem biznesowy, który można opracować przy użyciu danych przetwarzanych w trybie online (nie wyklucza to użycia przetwarzania wsadowego, np. do generowania modelu).\nDane powinny być przesyłane do Apache Kafka, skąd będą poddawane dalszemu przetwarzaniu i analizie.\nMożna używać dowolnego języka programowania w każdym komponencie projektu.\nMożna wykorzystać narzędzia BI.\nŹródłem danych może być dowolne API, sztucznie generowane dane, IoT itp.",
+    "crumbs": [
+      "222890-S",
+      "Informacje ogólne"
+    ]
+  },
+  {
+    "objectID": "index.html#technologie",
+    "href": "index.html#technologie",
+    "title": "Informacje ogólne",
+    "section": "Technologie",
+    "text": "Technologie\nUczestnicząc w zajęciach, musisz opanować i przynajmniej w podstawowym zakresie posługiwać się następującymi technologiami:\n\nGit\nPython, Jupyter Notebook, JupyterLab, Google Colab\nDocker i Docker Compose\nApache Spark, Apache Kafka",
+    "crumbs": [
+      "222890-S",
+      "Informacje ogólne"
+    ]
+  },
+  {
+    "objectID": "sylabus.html",
+    "href": "sylabus.html",
+    "title": "Sylabus",
+    "section": "",
+    "text": "Nazwa przedmiotu: Analiza danych w czasie rzeczywistym\nJednostka: Szkoła Główna Handlowa w Warszawie\nKod przedmiotu: 222890-D, 222890-S\nPunkty ECTS: 3\nJęzyk prowadzenia: polski\nPoziom przedmiotu: średniozaawansowany\nProwadzący: Sebastian Zając, sebastian.zajac@sgh.waw.pl\nStrona kursu: https://sebkaz-teaching.github.io/RTA2026/"
+  },
+  {
+    "objectID": "sylabus.html#cel-przedmiotu",
+    "href": "sylabus.html#cel-przedmiotu",
+    "title": "Sylabus",
+    "section": "Cel przedmiotu",
+    "text": "Cel przedmiotu\nWspółczesny biznes opiera się na podejmowaniu decyzji opartych na danych. Coraz większa ilość informacji, rosnące wymagania rynku oraz potrzeba natychmiastowej reakcji sprawiają, że analiza danych w czasie rzeczywistym staje się kluczowym elementem nowoczesnych procesów biznesowych.\nNa zajęciach studenci zapoznają się z metodami i technologiami umożliwiającymi przetwarzanie danych w czasie rzeczywistym. Szczególną uwagę poświęcimy zastosowaniu uczenia maszynowego (machine learning), sztucznej inteligencji (artificial intelligence) oraz głębokich sieci neuronowych (deep learning) w analizie danych. Zrozumienie tych metod pozwala nie tylko lepiej interpretować zjawiska biznesowe, ale także podejmować szybkie i trafne decyzje.\nW ramach kursu omówimy zarówno dane ustrukturyzowane, jak i nieustrukturyzowane (obrazy, dźwięk, strumienie danych). Studenci poznają architektury przetwarzania danych, takie jak Lambda i Kappa, wykorzystywane w systemach Data Lake, a także wyzwania związane z modelowaniem danych w czasie rzeczywistym na dużą skalę.\nKurs obejmuje część teoretyczną oraz praktyczne laboratoria, podczas których studenci będą pracować z rzeczywistymi danymi w środowiskach takich jak JupyterLab, PyTorch, Apache Spark i Apache Kafka. Dzięki temu studenci nie tylko zdobędą wiedzę na temat metod analitycznych, ale także nauczą się korzystać z najnowszych technologii stosowanych w analizie danych w czasie rzeczywistym."
+  },
+  {
+    "objectID": "sylabus.html#program-przedmiotu",
+    "href": "sylabus.html#program-przedmiotu",
+    "title": "Sylabus",
+    "section": "Program przedmiotu",
+    "text": "Program przedmiotu\nWykłady (część teoretyczna):\n\nOd plików płaskich do Data Lake. Modele przetwarzania danych w erze Big Data. Mity i fakty przetwarzania danych w czasie rzeczywistym.\nPrzetwarzanie wsadowe (batch) a strumieniowe (stream). Architektura Lambda i Kappa. Systemy NRT (near real-time).\nUczenie maszynowe w trybie wsadowym (offline) i przyrostowym (online). Stochastic Gradient Descent. Problemy online learning.\nApache Kafka — architektura rozproszonego systemu komunikacji. Producent, konsument, tematy, partycje, grupy konsumentów.\nApache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę. Integracja Spark–Kafka.\n\nLaboratoria (część praktyczna):\n\nŚrodowisko pracy: Git, Docker, Docker Compose, Python. Konfiguracja środowiska do przetwarzania danych.\nPrzetwarzanie danych w Pythonie (Pandas, NumPy). Analiza eksploracyjna danych (EDA) w trybie wsadowym.\nModele uczenia maszynowego (scikit-learn): regresja, klasyfikacja, ewaluacja modeli. Przygotowanie modelu do wdrożenia.\nApache Kafka w praktyce — producent i konsument w Pythonie (confluent-kafka). Przesyłanie i odbieranie danych w czasie rzeczywistym.\nWprowadzenie do PySpark — DataFrame API, transformacje, akcje. Praca z danymi ustrukturyzowanymi i nieustrukturyzowanymi.\nSpark Structured Streaming + Kafka — budowa pipeline’u przetwarzania danych strumieniowych.\nMikroserwisy z FastAPI — deployment modelu ML jako usługi REST. Konteneryzacja z Dockerem.\nBudowa kompletnego pipeline’u: źródło danych → Kafka → Spark Streaming → model ML → dashboard/raportowanie.\nProjekt grupowy — praca nad realnym problemem biznesowym z użyciem poznanych technologii (cz. 1).\nProjekt grupowy — finalizacja, prezentacje i zaliczenie (cz. 2).\n\n\n\n\n\n\n\nNote\n\n\n\nPowyższy program może ulec drobnym modyfikacjom w trakcie semestru."
+  },
+  {
+    "objectID": "sylabus.html#efekty-kształcenia",
+    "href": "sylabus.html#efekty-kształcenia",
+    "title": "Sylabus",
+    "section": "Efekty kształcenia",
+    "text": "Efekty kształcenia\n\n1. Wiedza\n\nZna historię i filozofię modeli przetwarzania danych.\n\nPowiązania: K2A_W01, K2A_W03, O2_W01, O2_W02, O2_W04, O2_W07\nWeryfikacja: test\n\nZna typy danych ustrukturyzowanych i nieustrukturyzowanych.\n\nPowiązania: K2A_W02, K2A_W04, O2_W04, O2_W07\nWeryfikacja: projekt\n\nZna możliwości i obszary zastosowania przetwarzania danych w czasie rzeczywistym.\n\nPowiązania: K2A_W01, K2A_W02, O2_W01, O2_W04, O2_W08\nWeryfikacja: test\n\nZna teoretyczne aspekty architektury Lambda i Kappa.\n\nPowiązania: K2A_W03, K2A_W05, O2_W04, O2_W06, O2_W08\nWeryfikacja: test\n\nUmie wybrać architekturę IT dla danego problemu biznesowego.\n\nPowiązania: K2A_W02, K2A_W03, O2_W01, O2_W04, O2_W06, O2_W08\nWeryfikacja: projekt\n\nRozumie potrzeby biznesowe podejmowania decyzji w bardzo krótkim czasie.\n\nPowiązania: K2A_W01, K2A_W05, O2_W01, O2_W04, O2_W06, O2_W08\nWeryfikacja: projekt\n\n\n\n\n2. Umiejętności\n\nRozróżnia typy danych ustrukturyzowanych i nieustrukturyzowanych.\n\nPowiązania: K2A_U02, K2A_U07, K2A_U10, O2_U02\nWeryfikacja: test\n\nUmie przygotować, przetwarzać oraz przechowywać dane generowane w czasie rzeczywistym.\n\nPowiązania: K2A_U03, K2A_U05, K2A_U09, O2_U02, O2_U04\nWeryfikacja: projekt\n\nRozumie ograniczenia wynikające z czasu przetwarzania przez urządzenia i systemy informatyczne.\n\nPowiązania: K2A_U01, K2A_U07, K2A_U11, O2_U02\nWeryfikacja: projekt\n\nUmie zastosować i skonstruować system do przetwarzania w czasie rzeczywistym.\n\nPowiązania: K2A_U05, K2A_U10, O2_U05, O2_U06, O2_U07\nWeryfikacja: projekt\n\nUmie przygotować raportowanie dla systemu przetwarzania w czasie rzeczywistym.\n\nPowiązania: K2A_U02, K2A_U08, K2A_U10, O2_U06, O2_U07\nWeryfikacja: projekt\n\n\n\n\n3. Kompetencje\n\nFormułuje problem analityczny wraz z jego informatycznym rozwiązaniem.\n\nPowiązania: K2A_K01, K2A_K03, O2_K02, O2_K06, O2_K07\nWeryfikacja: projekt, prezentacja\n\nSamodzielnie uzupełnia wiedzę teoretyczną i praktyczną w zakresie programowania, modelowania i nowych technologii informatycznych.\n\nPowiązania: K2A_K02, K2A_K04, O2_K01, O2_K02, O2_K05, O2_K06\nWeryfikacja: projekt"
+  },
+  {
+    "objectID": "sylabus.html#realizacja-przedmiotu",
+    "href": "sylabus.html#realizacja-przedmiotu",
+    "title": "Sylabus",
+    "section": "Realizacja przedmiotu",
+    "text": "Realizacja przedmiotu\n\n\n\nSkładnik\nWaga\n\n\n\n\nTest z wykładów\n20%\n\n\nZadania domowe\n40%\n\n\nProjekt grupowy\n40%"
+  },
+  {
+    "objectID": "sylabus.html#literatura",
+    "href": "sylabus.html#literatura",
+    "title": "Sylabus",
+    "section": "Literatura",
+    "text": "Literatura\n\nZając S. (red.), Modelowanie dla biznesu. Analityka w czasie rzeczywistym — narzędzia informatyczne i biznesowe, SGH, Warszawa 2022.\nFrątczak E. (red.), Modelowanie dla biznesu: Regresja logistyczna, Regresja Poissona, Survival Data Mining, CRM, Credit Scoring, SGH, Warszawa 2019.\nBellemare A., Mikrousługi oparte na zdarzeniach. Wykorzystanie danych w organizacji na dużą skalę, O’Reilly 2021.\nShapira G., Palino T., Sivaram R., Petty K., Kafka: The Definitive Guide. Real-time data and stream processing at scale, O’Reilly 2022.\nLakshmanan V., Robinson S., Munn M., Wzorce projektowe uczenia maszynowego, O’Reilly 2021.\nGift N., Deza A., Practical MLOps: Operationalizing Machine Learning Models, O’Reilly 2022.\nAkidau T., Chernyak S., Lax R., Streaming Systems: The What, Where, When, and How of Large-Scale Data Processing, O’Reilly 2018.\nGéron A., Uczenie maszynowe z użyciem Scikit-Learn i TensorFlow. Wydanie II, Helion.\nHastie T., Tibshirani R., Friedman J., The Elements of Statistical Learning, Springer 2017.\nKoul A., Ganju S., Kasam M., Practical Deep Learning for Cloud, Mobile & Edge, O’Reilly 2019."
+  },
+  {
+    "objectID": "labs/zaoczne_cw2.html",
+    "href": "labs/zaoczne_cw2.html",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "",
+    "text": "Studia zaoczne | 1,5h",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw2.html#cel",
+    "href": "labs/zaoczne_cw2.html#cel",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Cel",
+    "text": "Cel\n\nWytrenowanie modelu detekcji fraudów,\nSerwowanie modelu przez FastAPI,\nPodłączenie do Kafki — scoring w czasie rzeczywistym.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw2.html#część-1-trening-modelu-25-min",
+    "href": "labs/zaoczne_cw2.html#część-1-trening-modelu-25-min",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Część 1: Trening modelu (25 min)",
+    "text": "Część 1: Trening modelu (25 min)\n\nZadanie 1.1 — Przygotuj dane i wytrenuj model\n\nimport pandas as pd\nimport numpy as np\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import classification_report\nimport pickle\n\nnp.random.seed(42)\n\n# === PARAMETRY — zmień tutaj ===\nN_NORMAL = 2000      # liczba normalnych transakcji\nN_FRAUD  = 100       # liczba fraudów\n# ===============================\n\n# Normalne transakcje\nnormal = pd.DataFrame({\n    'amount': np.random.lognormal(5, 1, N_NORMAL).clip(5, 5000),\n    'is_electronics': np.random.binomial(1, 0.3, N_NORMAL),\n    'tx_per_minute': np.random.poisson(3, N_NORMAL),\n    'fraud': 0\n})\n\n\n# Fraudy\nfraud = pd.DataFrame({\n    'amount': np.random.uniform(2000, 9000, N_FRAUD),\n    'is_electronics': np.random.binomial(1, 0.7, N_FRAUD),\n    'tx_per_minute': np.random.poisson(8, N_FRAUD),\n    'fraud': 1\n})\n\ndf = pd.concat([normal, fraud], ignore_index=True).sample(frac=1, random_state=42)\nprint(f\"Dataset: {len(df)} wierszy, fraud rate: {df['fraud'].mean():.1%}\")\n\n\n\nZadanie 1.2 — Podziel dane, wytrenuj, oceń\n\nfeatures = ['amount', 'is_electronics', 'tx_per_minute']\nX = df[features]\ny = df['fraud']\n\n# TWÓJ KOD\n# 1. train_test_split (80/20, stratify=y)\n# 2. RandomForestClassifier(100)\n# 3. classification_report\n# 4. pickle.dump do 'fraud_model.pkl'",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw2.html#część-2-fastapi-25-min",
+    "href": "labs/zaoczne_cw2.html#część-2-fastapi-25-min",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Część 2: FastAPI (25 min)",
+    "text": "Część 2: FastAPI (25 min)\n\nZadanie 2.1 — Utwórz API serwujące model\n\n%%file fraud_api.py\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\nimport pickle, numpy as np\n\napp = FastAPI(title=\"Fraud Detection API\")\nmodel = pickle.load(open('fraud_model.pkl', 'rb'))\n\nclass Transaction(BaseModel):\n    amount: float\n    is_electronics: int\n    tx_per_minute: int\n\n# TWÓJ KOD\n# Endpoint POST /score\n# Przyjmij Transaction, zwróć: {\"is_fraud\": bool, \"fraud_probability\": float}\n\nUruchom w terminalu:\nuvicorn fraud_api:app --host 0.0.0.0 --port 8001\n\n\nZadanie 2.2 — Przetestuj API\n\nimport requests\n\n# Test normalna\nr = requests.post(\"http://localhost:8001/score\",\n    json={\"amount\": 150, \"is_electronics\": 0, \"tx_per_minute\": 3})\nprint(\"Normalna:\", r.json())\n\n# TWÓJ KOD — przetestuj podejrzaną transakcję (amount=5500, is_electronics=1, tx_per_minute=12)",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw2.html#część-3-kafka-ml-25-min",
+    "href": "labs/zaoczne_cw2.html#część-3-kafka-ml-25-min",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Część 3: Kafka + ML (25 min)",
+    "text": "Część 3: Kafka + ML (25 min)\n\nZadanie 3.1 — Konsument z scoringiem ML\nNapisz konsumenta, który czyta z transactions, odpytuje API i wysyła alerty.\n\n%%file ml_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nfrom datetime import datetime\nimport json, requests\n\nconsumer = KafkaConsumer('transactions', bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest', group_id='ml-scoring',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8')))\n\nalert_producer = KafkaProducer(bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8'))\n\nAPI_URL = \"http://localhost:8001/score\"\n\n# TWÓJ KOD\n# Dla każdej transakcji:\n# 1. Wyciągnij cechy (amount, hour z timestamp, is_electronics, tx_per_minute=5 -lub policz)\n# 2. requests.post(API_URL, json=features)\n# 3. Jeśli is_fraud: wyślij do tematu 'alerts', wypisz ALERT\n\n\n\nZadanie 3.2 — Uruchom pipeline\nW 3 terminalach:\n\npython producer.py (z Ćw. 1)\nuvicorn fraud_api:app --host 0.0.0.0 --port 8001\npython ml_consumer.py\n\nObserwuj alerty.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw2.html#praca-domowa",
+    "href": "labs/zaoczne_cw2.html#praca-domowa",
+    "title": "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nPorównaj wyniki scoringu regułowego (Ćw. 1) vs ML — który lepiej wykrywa?\nDodaj endpoint GET /health do API.\nWypchnij do Git.\n\nNastępne zajęcia: Apache Spark — przetwarzanie na dużą skalę.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 2: Model ML, FastAPI i serwowanie predykcji"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html",
+    "href": "labs/zaoczne_cw1.html",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "",
+    "text": "Studia zaoczne | 1,5h",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#cel",
+    "href": "labs/zaoczne_cw1.html#cel",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Cel",
+    "text": "Cel\n\nUruchomienie Kafki, utworzenie tematu,\nNapisanie producenta i konsumenta w Pythonie,\nFiltrowanie (stateless) i zliczanie (stateful) zdarzeń,\nProste reguły decyzyjne na strumieniu.\n\nCase biznesowy: Budujesz system monitoringu transakcji e-commerce. Ten case będzie rozwijany na kolejnych zajęciach.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#przygotowanie",
+    "href": "labs/zaoczne_cw1.html#przygotowanie",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Przygotowanie",
+    "text": "Przygotowanie\nUpewnij się, że środowisko działa:\ncd jupyterlab-project \ndocker compose up\nOtwórz JupyterLab: http://localhost:8999\nW terminalu JupyterLab utwórz temat:\nkafka-topics.sh --create --topic transactions \\\n  --bootstrap-server broker:9092",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-1-producent-20-min",
+    "href": "labs/zaoczne_cw1.html#część-1-producent-20-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 1: Producent (20 min)",
+    "text": "Część 1: Producent (20 min)\nPoniżej gotowy producent — przeanalizuj kod, uruchom w terminalu (python producer.py).\n\n%%file producer.py\nfrom kafka import KafkaProducer\nimport json, random, time\nfrom datetime import datetime\n\nproducer = KafkaProducer(\n    bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8')\n)\n\nsklepy = ['Warszawa', 'Kraków', 'Gdańsk', 'Wrocław']\nkategorie = ['elektronika', 'odzież', 'żywność', 'książki']\n\ndef generate_transaction():\n    return {\n        'tx_id': f'TX{random.randint(1000,9999)}',\n        'user_id': f'u{random.randint(1,20):02d}',\n        'amount': round(random.uniform(5.0, 5000.0), 2),\n        'store': random.choice(sklepy),\n        'category': random.choice(kategorie),\n        'timestamp': datetime.now().isoformat(),\n    }\n\nfor i in range(1000):\n    tx = generate_transaction()\n    producer.send('transactions', value=tx)\n    print(f\"[{i+1}] {tx['tx_id']} | {tx['amount']:.2f} PLN | {tx['store']}\")\n    time.sleep(0.5)\n\nproducer.flush()\nproducer.close()\n\nWriting producer.py\n\n\n\nZadanie 1.1 — Zmodyfikuj producenta\nZmień producenta tak, by 5% transakcji było podejrzanych: - kwota &gt; 3000 PLN - kategoria = ‘elektronika’ - godzina nocna (dodaj pole hour z losową wartością 0–5)\n\n# TWÓJ KOD — zmodyfikowany generate_transaction()\n# Podpowiedź: if random.random() &lt; 0.05: ... else: ...",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-2-konsument-bezstanowy-filtrowanie-15-min",
+    "href": "labs/zaoczne_cw1.html#część-2-konsument-bezstanowy-filtrowanie-15-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 2: Konsument bezstanowy — filtrowanie (15 min)",
+    "text": "Część 2: Konsument bezstanowy — filtrowanie (15 min)\n\nZadanie 2.1 — Wyświetl duże transakcje\nNapisz konsumenta, który wypisuje tylko transakcje z amount &gt; 1000.\n\n%%file consumer_filter.py\nfrom kafka import KafkaConsumer\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nfor message in consumer:\n    print(message)\n    \n# TWÓJ KOD\n# Dla każdej wiadomości: sprawdź amount &gt; 1000, jeśli tak — wypisz ALERT\n\n\n\nZadanie 2.2 — Dodaj poziom ryzyka\nNapisz konsumenta, który dodaje pole risk_level: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - reszta → “LOW”\n\n# TWÓJ KOD — consumer_enrich.py",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-3-konsument-stanowy-zliczanie-15-min",
+    "href": "labs/zaoczne_cw1.html#część-3-konsument-stanowy-zliczanie-15-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 3: Konsument stanowy — zliczanie (15 min)",
+    "text": "Część 3: Konsument stanowy — zliczanie (15 min)\n\nZadanie 3.1 — Transakcje per sklep\nNapisz konsumenta, który liczy transakcje i sumy per sklep. Wypisz podsumowanie co 10 wiadomości.\n\n%%file consumer_count.py\nfrom kafka import KafkaConsumer\nfrom collections import Counter, defaultdict\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest',\n    group_id='count-group',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nstore_counts = Counter()\ntotal_amount = defaultdict(float)\nmsg_count = 0\n\n# TWÓJ KOD\n# Dla każdej wiadomości:\n#   1. store_counts[store] += 1\n#   2. total_amount[store] += amount\n#   3. Co 10 wiadomości: print tabela",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#część-4-reguły-decyzyjne-20-min",
+    "href": "labs/zaoczne_cw1.html#część-4-reguły-decyzyjne-20-min",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Część 4: Reguły decyzyjne (20 min)",
+    "text": "Część 4: Reguły decyzyjne (20 min)\n\nZadanie 4.1 — Scoring transakcji\nNapisz funkcję, która przyznaje punkty za podejrzane cechy:\n\n\n\nReguła\nWarunek\nPunkty\n\n\n\n\nR1\namount &gt; 3000\n+3\n\n\nR2\nelektronika i amount &gt; 1500\n+2\n\n\nR3\ngodzina &lt; 6 (noc)\n+2\n\n\n\nJeśli suma &gt;= 3 → PODEJRZANA.\n\ndef score_transaction(tx):\n    score = 0\n    rules = []\n    # TWÓJ KOD — zaimplementuj reguły R1, R2, R3\n    return score, rules\n\n# Test\ntest_tx = {'tx_id': 'TX999', 'amount': 4500.0, 'category': 'elektronika',\n           'timestamp': '2026-04-01T03:15:00'}\nprint(score_transaction(test_tx))  # powinno dać score &gt;= 5\n\n\n\nZadanie 4.2 — Konsument scoringowy\nPołącz scoring z konsumentem Kafki. Podejrzane transakcje wyślij do nowego tematu alerts.\nNajpierw utwórz temat:\nkafka/bin/kafka-topics.sh --create --topic alerts \\\n  --bootstrap-server broker:9092 --partitions 1 --replication-factor 1\n\n%%file scoring_consumer.py\nfrom kafka import KafkaConsumer, KafkaProducer\nimport json\n\nconsumer = KafkaConsumer('transactions', bootstrap_servers='broker:9092',\n    auto_offset_reset='earliest', group_id='scoring-group',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8')))\n\nalert_producer = KafkaProducer(bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8'))\n\n# TWÓJ KOD\n# Dla każdej transakcji: scoruj, jeśli &gt;= 3: wyślij do 'alerts' i wypisz ALERT",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/zaoczne_cw1.html#praca-domowa",
+    "href": "labs/zaoczne_cw1.html#praca-domowa",
+    "title": "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nUruchom jednocześnie: producenta + consumer_filter + scoring_consumer.\nW osobnym terminalu sprawdź alerty: uruchom konsumenta tematu alerts.\nWypchnij kod do Git.\n\nNastępne zajęcia: Model ML + FastAPI + serwowanie predykcji.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria zaoczne",
+      "Ćwiczenia 1: Apache Kafka — producent, konsument, reguły decyzyjne"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html",
+    "href": "labs/pl_lab2.html",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "",
+    "text": "W Lab 1 napisałeś konsumenta, który zlicza transakcje per sklep. Działa — ale wyobraź sobie, że:\n\nChcesz wiedzieć ile transakcji było w każdej godzinie z osobna (nie łącznie od początku)\nMasz nie 50, ale 10 milionów transakcji dziennie\nKonsument padł — tracisz stan (liczniki), musisz zaczynać od zera\n\nDo takich zadań używamy Apache Spark — silnika obliczeniowego, który: - przetwarza dane równolegle (na wielu rdzeniach/maszynach) - ma wbudowane okna czasowe (window) - działa zarówno na plikach (batch) jak i na żywym strumieniu (streaming)",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#dlaczego-spark",
+    "href": "labs/pl_lab2.html#dlaczego-spark",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "",
+    "text": "W Lab 1 napisałeś konsumenta, który zlicza transakcje per sklep. Działa — ale wyobraź sobie, że:\n\nChcesz wiedzieć ile transakcji było w każdej godzinie z osobna (nie łącznie od początku)\nMasz nie 50, ale 10 milionów transakcji dziennie\nKonsument padł — tracisz stan (liczniki), musisz zaczynać od zera\n\nDo takich zadań używamy Apache Spark — silnika obliczeniowego, który: - przetwarza dane równolegle (na wielu rdzeniach/maszynach) - ma wbudowane okna czasowe (window) - działa zarówno na plikach (batch) jak i na żywym strumieniu (streaming)",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#plan",
+    "href": "labs/pl_lab2.html#plan",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Plan",
+    "text": "Plan\n\nWczytaj 10 000 transakcji z pliku\nPodstawowe agregacje — znajomy groupBy\nOkna tumbling — zliczanie per godzina / per 30 minut\nOkna sliding — nakładające się przedziały\nZapowiedź: te same zapytania na żywym strumieniu z Kafki",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#część-1-wczytaj-dane",
+    "href": "labs/pl_lab2.html#część-1-wczytaj-dane",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Część 1: Wczytaj dane",
+    "text": "Część 1: Wczytaj dane\n\nSparkSession — brama do Sparka\nZanim cokolwiek zrobimy, tworzymy SparkSession. To jest odpowiednik połączenia z bazą danych — jeden obiekt na całą sesję.\n\nfrom pyspark.sql import SparkSession\n\nspark = (\n    SparkSession.builder\n    .appName(\"Lab2-Transactions\")\n    .getOrCreate()\n)\nspark.sparkContext.setLogLevel(\"WARN\")\nprint(f\"Spark {spark.version} — gotowy\")\n\n\n\nWczytaj plik JSON\nDane są w pliku data/transactions_10k.jsonl — 10 000 transakcji e-commerce z godzin 08:00–11:00. Każda linia to jeden rekord JSON, ten sam format co zdarzenia z Kafki w Lab 1.\n\ndf = spark.read.json(\"data/transactions_10k.jsonl\")\n\nprint(f\"Liczba rekordów: {df.count()}\")\ndf.printSchema()\n\n\ndf.show(10, truncate=False)\n\n\n\nKonwersja kolumny timestamp\nSpark wczytał timestamp jako string (tekst). Żeby móc robić okna czasowe, musimy zamienić go na typ TimestampType.\nTo jak zmiana formatu komórki w Excelu z “tekst” na “data”.\n\nfrom pyspark.sql.functions import to_timestamp, col\n\ndf = df.withColumn(\"timestamp\", to_timestamp(col(\"timestamp\"), \"yyyy-MM-dd HH:mm:ss\"))\n\ndf.printSchema()  # timestamp powinien być teraz 'timestamp (nullable = true)'",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#część-2-podstawowe-agregacje",
+    "href": "labs/pl_lab2.html#część-2-podstawowe-agregacje",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Część 2: Podstawowe agregacje",
+    "text": "Część 2: Podstawowe agregacje\nZanim przejdziemy do okien, przypomnij sobie groupBy — działa dokładnie jak w SQL (GROUP BY) i Pandas.\n\nZadanie 2.1 — Liczba transakcji i suma przychodów per sklep\n\nfrom pyspark.sql.functions import count, sum as _sum, avg, round as _round\n\nstore_summary = (\n    df.groupBy(\"store\")\n    .agg(\n        count(\"tx_id\").alias(\"liczba_tx\"),\n        _round(_sum(\"amount\"), 2).alias(\"suma_PLN\"),\n        _round(avg(\"amount\"), 2).alias(\"srednia_PLN\"),\n    )\n    .orderBy(\"store\")\n)\nstore_summary.show()\n\n\n\nZadanie 2.2 - Statystyki per kategoria\nPolicz sumę, minimum i maksimum kwoty dla każdej kategorii.\n\nfrom pyspark.sql.functions import min as _min, max as _max\n\n# TWÓJ KOD\n# df.groupBy(\"category\").agg(...).orderBy(\"category\").show()",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#część-3-okna-tumbling",
+    "href": "labs/pl_lab2.html#część-3-okna-tumbling",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Część 3: Okna tumbling",
+    "text": "Część 3: Okna tumbling\n\nCo to jest okno?\nDotychczasowe groupBy(\"store\") liczyło wszystkie rekordy razem — bez znaczenia kiedy transakcja była.\nOkno (window) dzieli oś czasu na przedziały i grupuje dane osobno w każdym.\nOkno tumbling (przeskakujące) — przedziały bez nakładania się:\nKażda transakcja trafia dokładnie do jednego okna.\n\n\nZadanie 3.1 — Liczba transakcji per godzina (tumbling 1h)\n\nfrom pyspark.sql.functions import window\n\nhourly = (\n    df.groupBy(window(\"timestamp\", \"1 hour\"))    # okno 1-godzinne\n    .agg(\n        count(\"tx_id\").alias(\"liczba_tx\"),\n        _round(_sum(\"amount\"), 2).alias(\"suma_PLN\"),\n    )\n    .orderBy(\"window\")\n)\nhourly.show(truncate=False)\n\nKolumna window to struct z polami start i end. Możemy je wyciągnąć żeby ładniej wyświetlić:\n\n(\n    hourly\n    .select(\n        col(\"window.start\").alias(\"od\"),\n        col(\"window.end\").alias(\"do\"),\n        \"liczba_tx\",\n        \"suma_PLN\",\n    )\n    .show(truncate=False)\n)\n\n\n\nZadanie 3.2 Okna 30-minutowe per sklep\nPolicz transakcje i sumę per sklep w każdym 30-minutowym oknie. Posortuj po oknie, a w ramach okna po sklepie.\n\n# TWÓJ KOD\n# df.groupBy(window(\"timestamp\", \"30 minutes\"), \"store\").agg(...).orderBy(...).show()\n\n\n\nZadanie 3.3 — W której godzinie sklep “Kraków” miał najwyższy przychód?\nFiltruj najpierw po sklepie, potem zrób okno godzinne, posortuj malejąco po sumie.\n\nfrom pyspark.sql.functions import desc\n\n# TWÓJ KOD",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#część-4-okna-sliding",
+    "href": "labs/pl_lab2.html#część-4-okna-sliding",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Część 4: Okna sliding",
+    "text": "Część 4: Okna sliding\nOkno sliding (przesuwne) — przedziały nakładają się:\nDwa parametry: windowDuration (szerokość okna) i slideDuration (co ile przesuwa się).\nUwaga: jedna transakcja może trafić do wielu okien — to normalne.\n\nZadanie 4.1 — Okno 1h, krok 30 minut\n\nsliding = (\n    df.groupBy(window(\"timestamp\", \"1 hour\", \"30 minutes\"))  # szerokość 1h, krok 30min\n    .agg(\n        count(\"tx_id\").alias(\"liczba_tx\"),\n        _round(_sum(\"amount\"), 2).alias(\"suma_PLN\"),\n    )\n    .select(\n        col(\"window.start\").alias(\"od\"),\n        col(\"window.end\").alias(\"do\"),\n        \"liczba_tx\",\n        \"suma_PLN\",\n    )\n    .orderBy(\"od\")\n)\nsliding.show(truncate=False)\n\n\n\nZadanie 4.2 — Porównaj tumbling vs sliding\nPolicz łączną liczbę wierszy wynikowych w obu podejściach. Dlaczego sliding daje więcej wierszy?\n\ntumbling_rows = (\n    df.groupBy(window(\"timestamp\", \"1 hour\"))\n    .agg(count(\"tx_id\"))\n    .count()\n)\nsliding_rows = (\n    df.groupBy(window(\"timestamp\", \"1 hour\", \"30 minutes\"))\n    .agg(count(\"tx_id\"))\n    .count()\n)\nprint(f\"Tumbling (1h):          {tumbling_rows} okien\")\nprint(f\"Sliding  (1h / 30min):  {sliding_rows} okien\")\n\n# Odpowiedz w komentarzu: dlaczego sliding ma więcej wierszy?\n# TWOJA ODPOWIEDŹ:",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#część-5-pytania-kontrolne",
+    "href": "labs/pl_lab2.html#część-5-pytania-kontrolne",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Część 5: Pytania kontrolne",
+    "text": "Część 5: Pytania kontrolne\n\n# Odpowiedz na pytania w komentarzach:\n\n# 1. Ile transakcji jest w oknie 09:00–10:00?\n#    Sprawdź w wyniku zadania 3.1.\n#    ODPOWIEDŹ:\n\n# 2. Jaka jest różnica między groupBy(\"store\") a groupBy(window(...), \"store\")?\n#    ODPOWIEDŹ:\n\n# 3. W oknie sliding 1h/30min — ile okien zawiera transakcje z godziny 09:30?\n#    Wskazówka: narysuj oś czasu.\n#    ODPOWIEDŹ:",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#zapowiedź-lab-3",
+    "href": "labs/pl_lab2.html#zapowiedź-lab-3",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Zapowiedź Lab 3",
+    "text": "Zapowiedź Lab 3\nWłaśnie robiłeś okna na pliku (dane historyczne, batch).\nNa następnych zajęciach ten sam kod zadziała na żywym strumieniu z Kafki — zmiana to dosłownie jedna linia:\n# Batch (dziś):\ndf = spark.read.json(\"data/transactions_10k.jsonl\")\n\n# Streaming (Lab 3):\ndf = spark.readStream.format(\"kafka\").option(...).load()\nAgregacje z window() pozostają bez zmian.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab2.html#praca-domowa",
+    "href": "labs/pl_lab2.html#praca-domowa",
+    "title": "Lab 2: Apache Spark — analiza danych transakcyjnych",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nZnajdź godzinę, w której sklep Gdańsk miał najniższą średnią kwotę transakcji.\nPolicz ile transakcji per kategoria było w oknie 09:00–09:30.\nZrób okno 15-minutowe i sprawdź w której ćwierćgodzinie był szczyt transakcji (łącznie dla wszystkich sklepów).\n\nNastępne zajęcia: Ten sam window() na strumieniu z Kafki — watermark i obsługa spóźnionych zdarzeń.\n\nspark.stop()",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 2: Apache Spark — analiza danych transakcyjnych"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html",
+    "href": "labs/pl_lab1.html",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "",
+    "text": "Pierwsze praktyczne doświadczenie z Apache Kafka:\n\nWysyłanie zdarzeń transakcyjnych do Kafki (producent),\nFiltrowanie zdarzeń w czasie rzeczywistym (konsument bezstanowy),\nZliczanie i agregacja zdarzeń na bieżąco (konsument stanowy).\n\nCase biznesowy: Pracujesz w firmie e-commerce. Twoim zadaniem jest zbudowanie systemu monitoringu transakcji, który przetwarza zdarzenia zakupowe w czasie rzeczywistym.\nTen case będzie rozwijać się przez kolejnych 9 labów aż do kompletnej platformy.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#cel",
+    "href": "labs/pl_lab1.html#cel",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "",
+    "text": "Pierwsze praktyczne doświadczenie z Apache Kafka:\n\nWysyłanie zdarzeń transakcyjnych do Kafki (producent),\nFiltrowanie zdarzeń w czasie rzeczywistym (konsument bezstanowy),\nZliczanie i agregacja zdarzeń na bieżąco (konsument stanowy).\n\nCase biznesowy: Pracujesz w firmie e-commerce. Twoim zadaniem jest zbudowanie systemu monitoringu transakcji, który przetwarza zdarzenia zakupowe w czasie rzeczywistym.\nTen case będzie rozwijać się przez kolejnych 9 labów aż do kompletnej platformy.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#przygotowanie",
+    "href": "labs/pl_lab1.html#przygotowanie",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Przygotowanie",
+    "text": "Przygotowanie\nUpewnij się, że środowisko działa:\ncd jupyterlab-project\ndocker compose up\nOtwórz JupyterLab: http://localhost:8999\nCały kod poniżej uruchamiamy w JupyterLab w środowisku Docker.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-1-utwórz-temat-kafka",
+    "href": "labs/pl_lab1.html#część-1-utwórz-temat-kafka",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 1: Utwórz temat Kafka",
+    "text": "Część 1: Utwórz temat Kafka\nW terminalu JupyterLab (File &gt; New &gt; Terminal):\nkafka-topics.sh --create \\\n  --topic transactions \\\n  --bootstrap-server broker:9092\n\nkafka-topics.sh --list --bootstrap-server broker:9092\n\n# Wklej wynik komendy --list:\n# TWÓJ WYNIK",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-2-producent-generowanie-transakcji",
+    "href": "labs/pl_lab1.html#część-2-producent-generowanie-transakcji",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 2: Producent — generowanie transakcji",
+    "text": "Część 2: Producent — generowanie transakcji\n\nZadanie 2.1 — Napisz producenta transakcji\nUtwórz plik producer.py, który wysyła symulowane transakcje e-commerce do tematu transactions.\nKażda transakcja to JSON z polami: - tx_id (np. “TX0001”) - user_id (losowy z “u01” do “u20”) - amount (losowy float 5.0–5000.0) - store (losowy z: “Warszawa”, “Kraków”, “Gdańsk”, “Wrocław”) - category (losowy z: “elektronika”, “odzież”, “żywność”, “książki”) - timestamp (aktualny czas ISO)\nWysyłaj jedną transakcję na sekundę.\n\n%%file producer.py\nfrom kafka import KafkaProducer\nimport json, random, time\nfrom datetime import datetime\n\nproducer = KafkaProducer(\n    bootstrap_servers='broker:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8')\n)\n\ndef generate_transaction():\n    # TWÓJ KOD\n    # Zwróć słownik z polami: tx_id, user_id, amount, store, category, timestamp\n    pass\n\n# TWÓJ KOD\n# Pętla: generuj transakcję, wyślij do tematu 'transactions', wypisz, sleep 1s\n\nUruchom producenta w terminalu JupyterLab:\npython producer.py\nPozostaw działającego i przejdź do następnego zadania.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-3-konsument-bezstanowy-filtrowanie",
+    "href": "labs/pl_lab1.html#część-3-konsument-bezstanowy-filtrowanie",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 3: Konsument bezstanowy — filtrowanie",
+    "text": "Część 3: Konsument bezstanowy — filtrowanie\nPrzetwarzanie bezstanowe = każde zdarzenie przetwarzane niezależnie, bez pamięci o poprzednich.\n\nZadanie 3.1 — Filtruj duże transakcje\nNapisz konsumenta, który czyta z transactions i wyświetla tylko transakcje z amount &gt; 3000.\n\n%%file consumer_filter.py\nfrom kafka import KafkaConsumer\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nprint(\"Nasłuchuję na duże transakcje (amount &gt; 3000)...\")\n\nfor message in consumer:\n    print(message)\n    \n# TWÓJ KOD\n# Dla każdej wiadomości: sprawdź czy amount &gt; 3000, jeśli tak — wypisz ALERT\n# Format: ALERT: TX0042 | 2345.67 PLN | Warszawa | elektronika\n\n\n\nZadanie 3.2 — Transformacja i wzbogacenie\nNapisz konsumenta, który do słownika eventu dodaje pole risk_level: - amount &gt; 3000 → “HIGH” - amount &gt; 1000 → “MEDIUM” - pozostałe → “LOW”\n\n%%file consumer_enrich.py\nfrom kafka import KafkaConsumer\nimport json\n\n# TWÓJ KOD\n# Czytaj z 'transactions' (użyj INNEGO group_id!)\n# Dodaj pole risk_level na podstawie amount\n# Wypisz wzbogaconą transakcję",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-4-konsument-stanowy-agregacja",
+    "href": "labs/pl_lab1.html#część-4-konsument-stanowy-agregacja",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 4: Konsument stanowy — agregacja",
+    "text": "Część 4: Konsument stanowy — agregacja\nPrzetwarzanie stanowe = utrzymujemy stan (liczniki, sumy) pomiędzy zdarzeniami.\n\nZadanie 4.1 — Zliczanie transakcji per sklep\nNapisz konsumenta, który prowadzi bieżące zliczanie transakcji per sklep i wypisuje podsumowanie co 10 wiadomości. Obiekt Counter() przeczytaj Counter.\n\n%%file consumer_count.py\nfrom kafka import KafkaConsumer\nfrom collections import Counter\nimport json\n\nconsumer = KafkaConsumer(\n    'transactions',\n    bootstrap_servers='broker:9092',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nstore_counts = Counter()\ntotal_amount = {}\nmsg_count = 0\n\n# TWÓJ KOD\n# Dla każdej wiadomości:\n#   1. Zwiększ store_counts[store]\n#   2. Dodaj amount do total_amount[store]\n#   3. Co 10 wiadomości wypisz tabelę:\n#      Sklep | Liczba | Suma | Średnia\n\n\n\nZadanie 4.2 — Statystyki per kategoria\nNapisz konsumenta, który śledzi per kategoria: - liczbę transakcji - łączny przychód - min i max kwotę\nWypisuj co 10 wiadomości.\n\n%%file consumer_stats.py\nfrom kafka import KafkaConsumer\nfrom collections import defaultdict\nimport json\n\n# TWÓJ KOD",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#część-5-wielu-konsumentów",
+    "href": "labs/pl_lab1.html#część-5-wielu-konsumentów",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Część 5: Wielu konsumentów",
+    "text": "Część 5: Wielu konsumentów\n\nZadanie 5.1 — Uruchom wszystko razem\nOtwórz 3 terminale w JupyterLab: 1. python producer.py 2. python consumer_filter.py 3. python consumer_count.py\n\n\nZadanie 5.2 — Pytania\n\nCo się stanie, jeśli uruchomisz consumer_filter.py po zakończeniu producenta?\nCo się stanie, jeśli dwóch konsumentów ma TĘ SAMĄ group_id?\nJaka jest różnica między przetwarzaniem bezstanowym a stanowym?\n\n\n\n# TWOJE ODPOWIEDZI",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab1.html#praca-domowa",
+    "href": "labs/pl_lab1.html#praca-domowa",
+    "title": "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nNapisz konsumenta wykrywającego anomalie prędkości: alert jeśli ten sam user_id wykona więcej niż 3 transakcje w ciągu 60 sekund.\nWypchnij kod do repozytorium Git.\n\nNastępne zajęcia: Przetwarzamy ten sam strumień Kafki w Apache Spark.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 1: Kafka w Pythonie — producent, konsument, ETL w czasie rzeczywistym"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab3.html",
+    "href": "labs/pl_lab3.html",
+    "title": "Lab 3: Spark Structured Streaming — okna na żywym strumieniu",
+    "section": "",
+    "text": "from pyspark.sql import SparkSession\nspark = SparkSession.builder.appName(\"okienka\").getOrCreate()\nspark\nczujnik_temperatury = ((12.5, \"2019-01-02 12:00:00\"),\n(17.6, \"2019-01-02 12:00:20\"),\n(14.6,  \"2019-01-02 12:00:30\"),\n(22.9,  \"2019-01-02 12:01:15\"),\n(17.4,  \"2019-01-02 12:01:30\"),\n(25.8,  \"2019-01-02 12:03:25\"),\n(27.1,  \"2019-01-02 12:02:40\"),\n)\nfrom pyspark.sql.functions import to_timestamp\nfrom pyspark.sql.types import StructType, StructField, StringType, DoubleType\n\nschema = StructType([\n    StructField(\"temperatura\", DoubleType(), True),\n    StructField(\"czas\", StringType(), True),\n])\ndf = (spark.createDataFrame(czujnik_temperatury, schema=schema)\n      .withColumn(\"czas\", to_timestamp(\"czas\")))\n\ndf.printSchema()\ndf.show(3)\ndf.createOrReplaceTempView(\"df\")\nspark.sql(\"select czas, temperatura from df where temperatura &gt; 21\").show(5)\n# Thumbling window\n\nimport pyspark.sql.functions as F\n\ndf2 = df.groupBy(F.window(\"czas\",\"30 seconds\")).count()\ndf2.show(truncate=False)\ndf2.printSchema()\nspark.stop()",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 3: Spark Structured Streaming — okna na żywym strumieniu"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab3.html#symulator",
+    "href": "labs/pl_lab3.html#symulator",
+    "title": "Lab 3: Spark Structured Streaming — okna na żywym strumieniu",
+    "section": "symulator",
+    "text": "symulator\nUstawmy generowane dane tak by działo się coś ciekawego\n\nfrom pyspark.sql import SparkSession\nspark = SparkSession.builder.appName(\"StreamingDemo\").getOrCreate()\nspark.sparkContext.setLogLevel(\"WARN\")\n\ndef process_batch(df, batch_id, tstop=5):\n    print(f\"Batch ID: {batch_id}\")\n    df.show(truncate=False)\n    if batch_id == tstop:\n        df.stop()\n\nfrom pyspark.sql.functions import col, expr\n\ndf = (spark.readStream\n      .format(\"rate\")\n      .option(\"rowsPerSecond\", 1)\n      .load()\n)\n\nstream = (df.withColumn(\"czas\", col(\"timestamp\"))\n        .withColumn(\"temperatura\", expr(\"20 + rand() * 10\"))\n        .select(\"czas\", \"temperatura\")\n       )\n\nquery = (stream.writeStream \n    .format(\"console\") \n    .outputMode(\"append\")\n    .foreachBatch(process_batch)\n    .option(\"truncate\", False) \n    .start()\n)",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 3: Spark Structured Streaming — okna na żywym strumieniu"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab3.html#źródło-plikowe-json",
+    "href": "labs/pl_lab3.html#źródło-plikowe-json",
+    "title": "Lab 3: Spark Structured Streaming — okna na żywym strumieniu",
+    "section": "🔹 Źródło plikowe (JSON)",
+    "text": "🔹 Źródło plikowe (JSON)\n\n✅ Generator danych:\n\n%%file generator.py\n# generator.py\nimport json, os, random, time\nfrom datetime import datetime, timedelta\n\noutput_dir = \"data/stream\"\nos.makedirs(output_dir, exist_ok=True)\n\nsklepy = ['Warszawa', 'Kraków', 'Gdańsk', 'Wrocław']\nkategorie = ['elektronika', 'odzież', 'żywność', 'książki']\n\ndef generate_transaction():\n    return {\n        'tx_id': f'TX{random.randint(1000,9999)}',\n        'user_id': f'u{random.randint(1,20):02d}',\n        'amount': round(random.uniform(5.0, 5000.0), 2),\n        'store': random.choice(sklepy),\n        'category': random.choice(kategorie),\n        'timestamp': datetime.now().isoformat(),\n    }\n\n# Simulate file-based streaming\nwhile True:\n    batch = [generate_transaction() for _ in range(2)]\n    filename = f\"{output_dir}/events_{int(time.time())}.json\"\n    with open(filename, \"w\") as f:\n        for e in batch:\n            f.write(json.dumps(e) + \"\\n\")\n    print(f\"Wrote: {filename}\")\n    time.sleep(5)\n\n\nfrom pyspark.sql.types import StructType, StructField, StringType, DoubleType\nfrom pyspark.sql.functions import from_json, to_timestamp\nfrom pyspark.sql import SparkSession\n\nspark = SparkSession.builder.appName(\"jsonDemo\").getOrCreate()\nspark.sparkContext.setLogLevel(\"WARN\")\n\ntx_schema = StructType([\n    StructField(\"tx_id\",     StringType()),\n    StructField(\"user_id\",   StringType()),\n    StructField(\"amount\",    DoubleType()),\n    StructField(\"store\",     StringType()),\n    StructField(\"category\",  StringType()),\n    StructField(\"timestamp\", StringType()),\n])\n\nbatch_counter = {\"count\": 0}\n\ndef process_batch(df, batch_id, tstop=5):\n    batch_counter[\"count\"] += 1\n    print(f\"Batch ID: {batch_id}\")\n    df.show(truncate=False)\n    if batch_id == tstop:\n        df.stop()\n    \n\n\nstream = (spark.readStream\n          .schema(tx_schema)\n          .json(\"data/stream\"))\n\nquery = (stream.writeStream\n         .format(\"console\")\n         .foreachBatch(process_batch)\n         .start())",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 3: Spark Structured Streaming — okna na żywym strumieniu"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab5.html",
+    "href": "labs/pl_lab5.html",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "",
+    "text": "Wyobraź sobie restaurację. Ty (klient) nie wchodzisz do kuchni i nie gotujesz sam — zamawiasz przez kelnera. Kelner przyjmuje zamówienie, zanosi do kuchni, wraca z odpowiedzią.\nAPI (Application Programming Interface) działa tak samo: - Ty wysyłasz zapytanie (request) — np. “oceń tę transakcję” - API przetwarza je (wywołuje model, sprawdza reguły) - Wraca z odpowiedzią (response) — np. {\"fraud\": true, \"score\": 0.92}\nDzięki temu model ML może działać jako osobna usługa, którą wywołuje konsument Kafki, aplikacja mobilna, dashboard — cokolwiek."
+  },
+  {
+    "objectID": "labs/pl_lab5.html#co-to-jest-api",
+    "href": "labs/pl_lab5.html#co-to-jest-api",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "",
+    "text": "Wyobraź sobie restaurację. Ty (klient) nie wchodzisz do kuchni i nie gotujesz sam — zamawiasz przez kelnera. Kelner przyjmuje zamówienie, zanosi do kuchni, wraca z odpowiedzią.\nAPI (Application Programming Interface) działa tak samo: - Ty wysyłasz zapytanie (request) — np. “oceń tę transakcję” - API przetwarza je (wywołuje model, sprawdza reguły) - Wraca z odpowiedzią (response) — np. {\"fraud\": true, \"score\": 0.92}\nDzięki temu model ML może działać jako osobna usługa, którą wywołuje konsument Kafki, aplikacja mobilna, dashboard — cokolwiek."
+  },
+  {
+    "objectID": "labs/pl_lab5.html#co-to-jest-rest-i-http",
+    "href": "labs/pl_lab5.html#co-to-jest-rest-i-http",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Co to jest REST i HTTP?",
+    "text": "Co to jest REST i HTTP?\nHTTP to protokół komunikacji — ten sam, którego używa przeglądarka. Każde zapytanie ma: - metodę: GET (pobierz dane) lub POST (wyślij dane do przetworzenia) - adres URL: np. http://localhost:5000/score - opcjonalnie ciało (body): dane JSON\nREST to styl projektowania API — każdy zasób ma swój URL, metody HTTP mają określone znaczenie."
+  },
+  {
+    "objectID": "labs/pl_lab5.html#gdzie-to-pasuje-w-naszym-projekcie",
+    "href": "labs/pl_lab5.html#gdzie-to-pasuje-w-naszym-projekcie",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Gdzie to pasuje w naszym projekcie?",
+    "text": "Gdzie to pasuje w naszym projekcie?\nLab 1: Kafka producer → konsument Python\nLab 3: konsument → Spark Streaming → alerty\nLab 4: Flask API ← (tu jesteśmy — budujemy usługę scoringową)\nLab 6: konsument Kafki → wywołuje Flask API → alerty"
+  },
+  {
+    "objectID": "labs/pl_lab5.html#plan",
+    "href": "labs/pl_lab5.html#plan",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Plan",
+    "text": "Plan\n\nPierwsze API — Hello World\nParametry i ścieżki URL\nEndpoint POST — przyjmowanie JSON\nScoring transakcji — reguły biznesowe przez API"
+  },
+  {
+    "objectID": "labs/pl_lab5.html#część-1-pierwsze-api",
+    "href": "labs/pl_lab5.html#część-1-pierwsze-api",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Część 1: Pierwsze API",
+    "text": "Część 1: Pierwsze API\nFlask to minimalny framework webowy dla Pythona — kilka linii kodu i masz działający serwer.\nUżywamy %%file żeby zapisać kod do pliku, a potem uruchamiamy serwer w tle (żeby notebook nadal działał).\n\n%%file app.py\nfrom flask import Flask\n\napp = Flask(__name__)\n\n@app.route(\"/\")                      # adres URL: http://localhost:5000/\ndef home():\n    return \"Witaj w systemie monitoringu transakcji!\"\n\nif __name__ == \"__main__\":\n    app.run(host=\"0.0.0.0\", port=5000)\n\n\nimport subprocess, time, requests\n\nserver = subprocess.Popen([\"python\", \"app.py\"])\ntime.sleep(2)   # daj serwerowi chwilę na start\n\nresponse = requests.get(\"http://localhost:5000/\")\nprint(f\"Status: {response.status_code}\")\nprint(f\"Treść: {response.text}\")\n\nStatus 200 oznacza sukces. Inne kody które zobaczysz:\n\n\n\nKod\nZnaczenie\n\n\n\n\n200\nOK — zapytanie obsłużone poprawnie\n\n\n400\nBad Request — złe dane wejściowe\n\n\n404\nNot Found — taki adres URL nie istnieje\n\n\n500\nInternal Server Error — błąd w kodzie serwera"
+  },
+  {
+    "objectID": "labs/pl_lab5.html#część-2-parametry-i-ścieżki-url",
+    "href": "labs/pl_lab5.html#część-2-parametry-i-ścieżki-url",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Część 2: Parametry i ścieżki URL",
+    "text": "Część 2: Parametry i ścieżki URL\nAPI może przyjmować dane na dwa sposoby: - parametry query: ?name=Anna — w adresie URL po znaku ? - parametry ścieżki: /transaction/TX001 — część URL\n\nZadanie 2.1 — Endpoint z parametrem query\n\nserver.kill()   # zatrzymaj poprzedni serwer\n\n\n%%file app.py\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\n\n@app.route(\"/\")\ndef home():\n    return \"Witaj w systemie monitoringu transakcji!\"\n\n@app.route(\"/hello\")                  # GET /hello?name=Anna\ndef hello():\n    name = request.args.get(\"name\", \"nieznajomy\")   # odczytaj parametr query\n    return f\"Cześć, {name}!\"\n\n@app.route(\"/transaction/&lt;tx_id&gt;\")    # GET /transaction/TX0042\ndef get_transaction(tx_id):\n    return jsonify({\"tx_id\": tx_id, \"status\": \"znaleziono\"})\n\nif __name__ == \"__main__\":\n    app.run(host=\"0.0.0.0\", port=5000)\n\n\nserver = subprocess.Popen([\"python\", \"app.py\"])\ntime.sleep(2)\n\n# Parametr query\nr1 = requests.get(\"http://localhost:5000/hello\")\nr2 = requests.get(\"http://localhost:5000/hello?name=Anna\")\nprint(r1.text)   # Cześć, nieznajomy!\nprint(r2.text)   # Cześć, Anna!\n\n# Parametr ścieżki\nr3 = requests.get(\"http://localhost:5000/transaction/TX0042\")\nprint(r3.json())\n\n\n\nZadanie 2.2 — Dodaj endpoint /status\nDodaj endpoint GET /status który zwraca JSON: {\"service\": \"monitoring\", \"version\": \"1.0\", \"status\": \"ok\"}.\n\nserver.kill()\n\n# TWÓJ KOD — dopisz endpoint do app.py i przetestuj\n# %%file app.py ..."
+  },
+  {
+    "objectID": "labs/pl_lab5.html#część-3-endpoint-post-przyjmowanie-json",
+    "href": "labs/pl_lab5.html#część-3-endpoint-post-przyjmowanie-json",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Część 3: Endpoint POST — przyjmowanie JSON",
+    "text": "Część 3: Endpoint POST — przyjmowanie JSON\nDo tej pory używaliśmy GET — zapytania bez danych. Scoring transakcji wymaga przesłania danych do serwera — tu używamy POST z ciałem JSON.\nAnalogia: GET to pytanie “jaka jest cena?”, POST to “kup mi to za tę cenę, oto dane karty”.\n\n%%file app.py\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\n\n@app.route(\"/echo\", methods=[\"POST\"])  # akceptuj tylko POST\ndef echo():\n    data = request.get_json()           # odczytaj ciało JSON\n    return jsonify({\n        \"otrzymalem\": data,\n        \"liczba_pol\": len(data),\n    })\n\nif __name__ == \"__main__\":\n    app.run(host=\"0.0.0.0\", port=5000)\n\n\nserver = subprocess.Popen([\"python\", \"app.py\"])\ntime.sleep(2)\n\ntransakcja = {\n    \"tx_id\": \"TX0042\",\n    \"amount\": 4500.0,\n    \"store\": \"Warszawa\",\n    \"category\": \"elektronika\",\n}\n\nr = requests.post(\"http://localhost:5000/echo\", json=transakcja)\nprint(r.json())\n\n\nZadanie 3.1 — Przetestuj błędne zapytanie\nSpróbuj wywołać /echo metodą GET zamiast POST. Co zwraca serwer? Jaki kod statusu?\n\nr_bad = requests.get(\"http://localhost:5000/echo\")\nprint(f\"Status: {r_bad.status_code}\")\n\n# Odpowiedz w komentarzu: co oznacza ten kod błędu?\n# ODPOWIEDŹ:"
+  },
+  {
+    "objectID": "labs/pl_lab5.html#część-4-scoring-transakcji-przez-api",
+    "href": "labs/pl_lab5.html#część-4-scoring-transakcji-przez-api",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Część 4: Scoring transakcji przez API",
+    "text": "Część 4: Scoring transakcji przez API\nTeraz łączymy Flask z logiką biznesową. Endpoint /score przyjmuje transakcję i zwraca ocenę ryzyka.\nNa razie używamy reguł (nie ML) — model dołączymy w Lab 5.\n\nZadanie 4.1 — Funkcja scoringowa\n\nserver.kill()\n\ndef score_transaction(tx: dict) -&gt; dict:\n    \"\"\"\n    Ocenia ryzyko transakcji na podstawie reguł biznesowych.\n    Zwraca dict z polami: score (0-8), risk_level, triggered_rules.\n    \"\"\"\n    score = 0\n    rules = []\n\n    if tx.get(\"amount\", 0) &gt; 3000:\n        score += 3; rules.append(\"R1: kwota &gt; 3000\")\n\n    if tx.get(\"category\") == \"elektronika\" and tx.get(\"amount\", 0) &gt; 1500:\n        score += 2; rules.append(\"R2: elektronika &gt; 1500\")\n\n    # TWÓJ KOD — dodaj regułę R3: godzina &lt; 6 (użyj pola 'hour' jeśli jest w tx)\n\n    if score &gt;= 5:\n        risk_level = \"CRITICAL\"\n    elif score &gt;= 3:\n        risk_level = \"HIGH\"\n    elif score &gt;= 1:\n        risk_level = \"MEDIUM\"\n    else:\n        risk_level = \"LOW\"\n\n    return {\"score\": score, \"risk_level\": risk_level, \"triggered_rules\": rules}\n\n# Szybki test bez serwera\ntest_tx = {\"tx_id\": \"TX001\", \"amount\": 4500.0, \"category\": \"elektronika\", \"hour\": 3}\nprint(score_transaction(test_tx))\n\n\n\nZadanie 4.2 — Endpoint /score\n\n%%file app.py\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\n\ndef score_transaction(tx):\n    score = 0\n    rules = []\n    if tx.get(\"amount\", 0) &gt; 3000:\n        score += 3; rules.append(\"R1: kwota &gt; 3000\")\n    if tx.get(\"category\") == \"elektronika\" and tx.get(\"amount\", 0) &gt; 1500:\n        score += 2; rules.append(\"R2: elektronika &gt; 1500\")\n    if tx.get(\"hour\", 12) &lt; 6:\n        score += 2; rules.append(\"R3: nocna godzina\")\n    risk_level = \"CRITICAL\" if score &gt;= 5 else \"HIGH\" if score &gt;= 3 else \"MEDIUM\" if score &gt;= 1 else \"LOW\"\n    return {\"score\": score, \"risk_level\": risk_level, \"triggered_rules\": rules}\n\n@app.route(\"/score\", methods=[\"POST\"])\ndef score():\n    tx = request.get_json()\n    if not tx or \"amount\" not in tx:\n        return jsonify({\"error\": \"Brak pola 'amount'\"}), 400\n    result = score_transaction(tx)\n    result[\"tx_id\"] = tx.get(\"tx_id\", \"unknown\")\n    return jsonify(result)\n\n@app.route(\"/health\")\ndef health():\n    return jsonify({\"status\": \"ok\", \"version\": \"1.0-rules\"})\n\nif __name__ == \"__main__\":\n    app.run(host=\"0.0.0.0\", port=5000)\n\n\nserver = subprocess.Popen([\"python\", \"app.py\"])\ntime.sleep(2)\n\ncases = [\n    {\"tx_id\": \"TX001\", \"amount\": 50.0,   \"category\": \"żywność\",    \"hour\": 14},\n    {\"tx_id\": \"TX002\", \"amount\": 1800.0,  \"category\": \"elektronika\", \"hour\": 10},\n    {\"tx_id\": \"TX003\", \"amount\": 4500.0,  \"category\": \"elektronika\", \"hour\": 3},\n]\n\nfor tx in cases:\n    r = requests.post(\"http://localhost:5000/score\", json=tx)\n    res = r.json()\n    print(f\"{tx['tx_id']}  {tx['amount']:&gt;7.0f} PLN  → {res['risk_level']:8s} (score={res['score']})  {res['triggered_rules']}\")\n\n\n\nZadanie 4.3 — Przetestuj obsługę błędów\nWyślij zapytanie bez pola amount. Sprawdź kod statusu i treść odpowiedzi.\n\n# TWÓJ KOD\n# r = requests.post(\"http://localhost:5000/score\", json={\"tx_id\": \"TX000\"})\n# print(r.status_code, r.json())\n\n\n\nZadanie 4.4 — Pytania kontrolne\n\n# 1. Jaka jest różnica między GET a POST?\n#    ODPOWIEDŹ:\n\n# 2. Dlaczego używamy jsonify() zamiast return {\"key\": \"value\"}?\n#    Wskazówka: spróbuj oba i porównaj nagłówki odpowiedzi.\n#    ODPOWIEDŹ:\n\n# 3. Co się stanie jeśli dwie osoby wywołają /score w tym samym czasie?\n#    ODPOWIEDŹ:\n\n\nserver.kill()\nprint(\"Serwer zatrzymany.\")"
+  },
+  {
+    "objectID": "labs/pl_lab5.html#praca-domowa",
+    "href": "labs/pl_lab5.html#praca-domowa",
+    "title": "Lab 4: Flask — serwowanie modelu przez REST API",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nDodaj endpoint GET /stats który zwraca: ile zapytań obsłużył serwer, ile z nich było HIGH/CRITICAL.\n(Wskazówka: użyj globalnego słownika jako licznika — counters = {\"total\": 0, \"high\": 0})\nDodaj walidację: jeśli amount jest ujemne — zwróć błąd 400.\nWywołaj /score z 10 transakcjami pętlą i wypisz tabelę wyników.\n\nNastępne zajęcia: zamieniamy reguły na prawdziwy model ML — trenujemy RandomForest i ładujemy go do Flask."
+  },
+  {
+    "objectID": "labs/pl_lab4.html",
+    "href": "labs/pl_lab4.html",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "",
+    "text": "W Lab 3 strumieniowałeś z rate (generator wbudowany) i z pliku JSON.\nDziś to samo — ale źródłem jest Kafka. Zmiana to dosłownie jedna linia:\n# Lab 3 — rate:\ndf = spark.readStream.format(\"rate\").option(\"rowsPerSecond\", 1).load()\n\n# Lab 3 — plik:\ndf = spark.readStream.schema(tx_schema).json(\"data/stream\")\n\n# Lab 4 — Kafka:\ndf = spark.readStream.format(\"kafka\").option(\"subscribe\", \"transactions\").load()\nRóżnica: Kafka zwraca dane jako surowe bajty — trzeba je zdekodować.\nOkna i watermarki z Lab 3 działają bez zmian.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#most-z-lab-3",
+    "href": "labs/pl_lab4.html#most-z-lab-3",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "",
+    "text": "W Lab 3 strumieniowałeś z rate (generator wbudowany) i z pliku JSON.\nDziś to samo — ale źródłem jest Kafka. Zmiana to dosłownie jedna linia:\n# Lab 3 — rate:\ndf = spark.readStream.format(\"rate\").option(\"rowsPerSecond\", 1).load()\n\n# Lab 3 — plik:\ndf = spark.readStream.schema(tx_schema).json(\"data/stream\")\n\n# Lab 4 — Kafka:\ndf = spark.readStream.format(\"kafka\").option(\"subscribe\", \"transactions\").load()\nRóżnica: Kafka zwraca dane jako surowe bajty — trzeba je zdekodować.\nOkna i watermarki z Lab 3 działają bez zmian.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#plan",
+    "href": "labs/pl_lab4.html#plan",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Plan",
+    "text": "Plan\n\nUruchom producenta\nPodłącz Sparka do Kafki (spark-submit vs notebook)\nObejrzyj co naprawdę przychodzi z Kafki — surowy schemat\nKrok po kroku: bajty → string → JSON → tabela\nOkna tumbling + watermark\nZapis alertów do tematu alerts",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#część-0-przygotowanie",
+    "href": "labs/pl_lab4.html#część-0-przygotowanie",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Część 0: Przygotowanie",
+    "text": "Część 0: Przygotowanie\nW terminalu JupyterLab:\n~/kafka/bin/kafka-topics.sh --create --topic transactions \\\n  --bootstrap-server broker:9092\n~/kafka/bin/kafka-topics.sh --create --topic alerts \\\n  --bootstrap-server broker:9092\n\n# Uruchom producenta z Lab 1\npython producer.py\nZostaw producenta działającego przez cały lab.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#część-1-podłączenie-sparka-do-kafki",
+    "href": "labs/pl_lab4.html#część-1-podłączenie-sparka-do-kafki",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Część 1: Podłączenie Sparka do Kafki",
+    "text": "Część 1: Podłączenie Sparka do Kafki\n\nDlaczego potrzebujemy dodatkowej paczki?\nSpark nie ma wbudowanej obsługi Kafki — trzeba dołączyć connector jako zewnętrzną zależność Maven.\nNazwa paczki różni się zależnie od wersji Sparka i Scali:\n\n\n\n\n\n\n\nŚrodowisko\nPaczka\n\n\n\n\nSpark 4.0 (Scala 2.13)\norg.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0-preview2\n\n\nSpark 3.5 (Scala 2.12)\norg.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0\n\n\n\nMożemy ją przekazać na dwa sposoby:\n\n\nSposób A — spark-submit (skrypt .py poza notebookiem)\n# Spark 4.0\nspark-submit \\\n  --packages org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0-preview2 \\\n  moj_skrypt.py\n\n# Spark 3.5\nspark-submit \\\n  --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 \\\n  moj_skrypt.py\nSpark pobierze paczkę z Maven Central (raz, potem cache lokalny).\nPrzy pierwszym uruchomieniu pojawi się dużo logów — to normalne.\n\n\nSposób B — z notebooka przez os.environ\nUstawiamy zmienną środowiskową przed pierwszym importem PySpark.\nPoniższy kod automatycznie wykrywa wersję i dobiera właściwą paczkę.\n\nimport os\nimport pyspark\n\n# Autodetekcja wersji Sparka → właściwy connector\nspark_version = pyspark.__version__\nprint(f\"Wykryta wersja PySpark: {spark_version}\")\n\nif spark_version.startswith(\"4\"):\n    KAFKA_PACKAGE = \"org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0-preview2\"\nelse:\n    # Spark 3.x\n    KAFKA_PACKAGE = \"org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0\"\n\nprint(f\"Użyty connector:        {KAFKA_PACKAGE}\")\n\n# Musi być ustawione PRZED SparkSession.builder\nos.environ['PYSPARK_SUBMIT_ARGS'] = f'--packages {KAFKA_PACKAGE} pyspark-shell'\n\nWykryta wersja PySpark: 4.0.0.dev2\nUżyty connector:        org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0-preview2\n\n\n\nfrom pyspark.sql import SparkSession\n\nspark = (\n    SparkSession.builder\n    .appName(\"Lab4-Kafka\")\n    .config(\"spark.jars.packages\", KAFKA_PACKAGE)\n    .getOrCreate()\n)\nspark.sparkContext.setLogLevel(\"WARN\")\nprint(f\"Spark {spark.version} — gotowy\")",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#część-2-co-naprawdę-przychodzi-z-kafki",
+    "href": "labs/pl_lab4.html#część-2-co-naprawdę-przychodzi-z-kafki",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Część 2: Co naprawdę przychodzi z Kafki?",
+    "text": "Część 2: Co naprawdę przychodzi z Kafki?\nOdczytajmy strumień i zobaczmy jego surowy schemat — zanim cokolwiek przetworzymy.\n\nkafka_raw = (\n    spark.readStream\n    .format(\"kafka\")\n    .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n    .option(\"subscribe\", \"transactions\")\n    .load()\n)\n\nkafka_raw.printSchema()\n\n\nWynik printSchema() — co oznacza każda kolumna?\nroot\n |-- key:           binary   ← klucz wiadomości (opcjonalny, u nas null)\n |-- value:         binary   ← TREŚĆ wiadomości — tu jest nasz JSON (jako bajty)\n |-- topic:         string   ← nazwa tematu (\"transactions\")\n |-- partition:     integer  ← numer partycji (0, 1 lub 2 — mamy 3 partycje)\n |-- offset:        long     ← pozycja w partycji (0, 1, 2, … rośnie monotonicznie)\n |-- timestamp:     timestamp← kiedy Kafka przyjęła wiadomość\n |-- timestampType: integer  ← 0 = CreateTime, 1 = LogAppendTime\nKluczowa obserwacja: kolumna value to binary — Kafka przechowuje bajty i nic nie wie o formacie.\nWszystkie inne kolumny to metadane Kafki, nie dane biznesowe.\nZobaczmy jak wygląda surowa wiadomość przed jakimkolwiek parsowaniem:\n\n%%file kafka_raw.py\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import col\n# spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0-preview2\n\nspark = (\n    SparkSession.builder\n    .appName(\"Lab4-Kafka\")\n    .getOrCreate()\n)\n\nspark.sparkContext.setLogLevel(\"WARN\")\n\nkafka_raw = (\n    spark.readStream\n    .format(\"kafka\")\n    .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n    .option(\"subscribe\", \"transactions\")\n    .load()\n)\n\nq = (\n    kafka_raw.writeStream\n    .format(\"console\") \n    .outputMode(\"append\") \n    .option(\"truncate\", False)\n    .start()\n)\n\nq.awaitTermination()",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#część-3-krok-po-kroku-bajty-tabela",
+    "href": "labs/pl_lab4.html#część-3-krok-po-kroku-bajty-tabela",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Część 3: Krok po kroku — bajty → tabela",
+    "text": "Część 3: Krok po kroku — bajty → tabela\nMamy trzy etapy dekodowania:\nvalue (binary)                          \n  → cast(\"string\")                      → \"{\\\"tx_id\\\": \\\"TX1234\\\", \\\"amount\\\": 312.32, ...}\"\n  → from_json(col, schema)              → struct&lt;tx_id: string, amount: double, ...&gt;\n  → select(\"tx.*\")                      → tx_id | user_id | amount | store | ...\n\nKrok 1 — value jako string\nSprawdzamy czy bajty poprawnie dekodują się do tekstu JSON:\n\n%%file kafka_text.py\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import col\n# spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.13:4.0.0-preview2\n\nspark = (\n    SparkSession.builder\n    .appName(\"Lab4-Kafka\")\n    .getOrCreate()\n)\n\nspark.sparkContext.setLogLevel(\"WARN\")\n\nkafka_raw = (\n    spark.readStream\n    .format(\"kafka\")\n    .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n    .option(\"subscribe\", \"transactions\")\n    .load()\n)\n\ndf = kafka_raw.select(\n    col(\"value\").cast(\"string\")\n)\n\nq = (\n    df.writeStream\n    .format(\"console\") \n    .outputMode(\"append\") \n    .option(\"truncate\", False)\n    .start()\n)\n\nq.awaitTermination()\n\n\n\nKrok 2 — from_json(): string → struct\nfrom_json() parsuje tekst JSON na kolumnę typu struct — używając schematu który podajemy.\nSchemat musi zgadzać się z polami z producenta — nieznanego pola Spark zignoruje, brakującego doda jako null.\n\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.types import StructType, StructField, StringType, DoubleType\nfrom pyspark.sql.functions import from_json, col\n\nspark = (\n    SparkSession.builder\n    .appName(\"Lab4-Kafka\")\n    .config(\"spark.jars.packages\", KAFKA_PACKAGE)\n    .getOrCreate()\n)\nspark.sparkContext.setLogLevel(\"WARN\")\n\ndef process_batch(df, batch_id, tstop=5):\n    print(f\"Batch ID: {batch_id}\")\n    df.show(truncate=False)\n    if batch_id == tstop:\n        df.stop()\n\nkafka_raw = (\n    spark.readStream\n    .format(\"kafka\")\n    .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n    .option(\"subscribe\", \"transactions\")\n    .load()\n)\n\n\ntx_schema = StructType([\n    StructField(\"tx_id\",     StringType()),\n    StructField(\"user_id\",   StringType()),\n    StructField(\"amount\",    DoubleType()),\n    StructField(\"store\",     StringType()),\n    StructField(\"category\",  StringType()),\n    StructField(\"timestamp\", StringType()),\n])\n\n# Krok 2: string → struct (jedna kolumna 'tx' zawierająca wszystkie pola)\nstep2 = kafka_raw.select(\n    from_json(col(\"value\").cast(\"string\"), tx_schema).alias(\"tx\")\n)\n\nquery = (step2.writeStream \n    .format(\"console\") \n    .outputMode(\"append\")\n    .foreachBatch(process_batch)\n    .option(\"truncate\", False) \n    .start()\n)\n\nBatch ID: 0\n+---+\n|tx |\n+---+\n+---+\n\nBatch ID: 1\n+------------------------------------------------------------------------+\n|tx                                                                      |\n+------------------------------------------------------------------------+\n|{TX8530, u10, 344.96, Warszawa, elektronika, 2026-04-26T22:57:52.652119}|\n+------------------------------------------------------------------------+\n\nBatch ID: 2\n+------------------------------------------------------------------+\n|tx                                                                |\n+------------------------------------------------------------------+\n|{TX1014, u05, 602.91, Wrocław, odzież, 2026-04-26T22:57:53.652892}|\n+------------------------------------------------------------------+\n\nBatch ID: 3\n+---------------------------------------------------------------------+\n|tx                                                                   |\n+---------------------------------------------------------------------+\n|{TX7591, u14, 4656.58, Warszawa, książki, 2026-04-26T22:57:54.653632}|\n+---------------------------------------------------------------------+\n\nBatch ID: 4\n+--------------------------------------------------------------------+\n|tx                                                                  |\n+--------------------------------------------------------------------+\n|{TX6785, u20, 3628.64, Warszawa, odzież, 2026-04-26T22:57:55.654831}|\n+--------------------------------------------------------------------+\n\nBatch ID: 5\n+--------------------------------------------------------------------+\n|tx                                                                  |\n+--------------------------------------------------------------------+\n|{TX8307, u07, 4900.89, Wrocław, książki, 2026-04-26T22:57:56.657993}|\n+--------------------------------------------------------------------+\n\n\n\n\n\nKrok 3 — select(\"tx.*\"): struct → płaskie kolumny\nselect(\"tx.*\") odpakowuje struct — każde pole staje się osobną kolumną.\nDodajemy jeszcze konwersję timestamp z tekstu na typ TimestampType (potrzebne do okien).\n\nfrom pyspark.sql.functions import to_timestamp\n\n# Krok 3: struct → płaskie kolumny + konwersja timestamp\ndf = (\n    kafka_raw\n    .select(from_json(col(\"value\").cast(\"string\"), tx_schema).alias(\"tx\"))\n    .select(\"tx.*\")                                         # struct → kolumny\n    .withColumn(\"timestamp\", to_timestamp(\"timestamp\"))\n)\n\nprint(\"Finalny schemat:\")\ndf.printSchema()\n\nFinalny schemat:\nroot\n |-- tx_id: string (nullable = true)\n |-- user_id: string (nullable = true)\n |-- amount: double (nullable = true)\n |-- store: string (nullable = true)\n |-- category: string (nullable = true)\n |-- timestamp: timestamp (nullable = true)",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#część-4-okna-tumbling-watermark",
+    "href": "labs/pl_lab4.html#część-4-okna-tumbling-watermark",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Część 4: Okna tumbling + watermark",
+    "text": "Część 4: Okna tumbling + watermark\nOd tego momentu kod jest identyczny jak w Lab 2 (batch) i Lab 3 (rate source).\nŹródło się zmieniło — logika okien nie.\n\nWatermark — obsługa spóźnionych zdarzeń\nWatermark mówi Sparkowi: „poczekam maksymalnie X czasu na spóźnione dane, potem zamykam okno”.\n\n\n\n\n\n\n\n\nMode\nKiedy emituje\nKiedy użyć\n\n\n\n\nappend\ndopiero gdy okno jest zamknięte\nprodukcja, zapis do Kafki/bazy\n\n\ncomplete\npo każdym batchu — całą tabelę\ndebugowanie\n\n\n\n\n\nZadanie 4.1 — Okna 1-minutowe per sklep\n\nfrom pyspark.sql.functions import window, count, sum as _sum, round as _round\n\nwindowed = (\n    df\n    .withWatermark(\"timestamp\", \"3 seconds\")\n    .groupBy(window(\"timestamp\", \"20 seconds\"), \"store\")\n    .agg(\n        count(\"tx_id\").alias(\"liczba_tx\"),\n        _round(_sum(\"amount\"), 2).alias(\"suma_PLN\"),\n    )\n)\n\n\n\n\nZadanie 4.2 — Okna per kategoria, tryb complete\nPogrupuj po kategorii zamiast sklepu i użyj outputMode(\"complete\").\nObserwuj różnicę: wyniki pojawiają się po każdym batchu, nie dopiero po zamknięciu okna.\n\n# TWÓJ KOD\n# windowed_cat = df.withWatermark(...).groupBy(window(...), \"category\").agg(...)\n# outputMode(\"complete\")",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#część-5-zapis-alertów-do-kafki",
+    "href": "labs/pl_lab4.html#część-5-zapis-alertów-do-kafki",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Część 5: Zapis alertów do Kafki",
+    "text": "Część 5: Zapis alertów do Kafki\nTransakcje &gt; 3000 PLN wysyłamy do tematu alerts.\nKafka oczekuje kolumny value jako string/bajty — używamy to_json() żeby zamienić struct z powrotem na JSON.\n\nfrom pyspark.sql.functions import to_json, struct, lit\n\nalerts = (\n    df\n    .filter(col(\"amount\") &gt; 3000)\n    .select(\n        to_json(\n            struct(\n                \"tx_id\", \"user_id\", \"amount\", \"store\", \"category\",\n                col(\"timestamp\").cast(\"string\"),\n                lit(\"HIGH\").alias(\"alert_level\"),\n            )\n        ).alias(\"value\")    # Kafka wymaga kolumny 'value'\n    )\n)\n\nalert_query = (\n    alerts.writeStream\n    .format(\"kafka\")\n    .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n    .option(\"topic\", \"alerts\")\n    .outputMode(\"append\")\n    .start()\n)\nprint(\"Strumień alertów uruchomiony. Zatrzymaj ręcznie: alert_query.stop()\")\n\n\nZadanie 5.1 — Sprawdź temat alerts w terminalu\nkafka/bin/kafka-console-consumer.sh \\\n  --bootstrap-server broker:9092 \\\n  --topic alerts \\\n  --from-beginning\nPowinieneś widzieć rekordy JSON z polem alert_level: HIGH.\n\n\nZadanie 5.2 — Pytania kontrolne\n\n# 1. Dlaczego w trybie 'append' pierwsze wyniki pojawiają się z opóźnieniem?\n#    ODPOWIEDŹ:\n\n# 2. Co się stanie jeśli ustawisz watermark na \"0 seconds\"?\n#    ODPOWIEDŹ:\n\n# 3. Jaka jest różnica między window() w Lab 2 (batch) a window() tutaj (streaming)?\n#    ODPOWIEDŹ:\n\n# 4. Dlaczego do zapisu do Kafki używamy to_json(), a nie po prostu select(\"value\")?\n#    ODPOWIEDŹ:\n\n\nalert_query.stop()\nspark.stop()",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#praca-domowa",
+    "href": "labs/pl_lab4.html#praca-domowa",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Praca domowa",
+    "text": "Praca domowa\n\nZrób okno sliding 2 minuty / krok 1 minuta na strumieniu z Kafki per sklep.\nDodaj do alertów pole ratio = amount / 400.0 (przybliżona średnia z Lab 2).\nCo się dzieje z wynikami gdy zatrzymasz producenta i odczekasz 2 minuty? Dlaczego?\n\nNastępne zajęcia: Reguły decyzyjne i scoring na strumieniu.",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab4.html#wersje-kodów-do-wyświetlania-ramek-w-notatniku",
+    "href": "labs/pl_lab4.html#wersje-kodów-do-wyświetlania-ramek-w-notatniku",
+    "title": "Lab 4: Spark Structured Streaming + Kafka",
+    "section": "Wersje kodów do wyświetlania ramek w notatniku",
+    "text": "Wersje kodów do wyświetlania ramek w notatniku\n\ndef process_batch(df, batch_id, tstop=5):\n    print(f\"Batch ID: {batch_id}\")\n    df.show(truncate=False)\n    if batch_id == tstop:\n        df.stop()\n\nkafka_raw = (\n    spark.readStream\n    .format(\"kafka\")\n    .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n    .option(\"subscribe\", \"transactions\")\n    .load()\n)\n\nquery = (kafka_raw.writeStream \n    .format(\"console\") \n    .outputMode(\"append\")\n    .foreachBatch(process_batch)\n    .option(\"truncate\", False) \n    .start()\n)\n\n\n2. bity na napis\n\nfrom pyspark.sql import SparkSession\nfrom pyspark.sql.functions import col\n\n## KAFKA_PACKAGE znajdziesz w pierwszej komorce notatnika \nspark = (\n    SparkSession.builder\n    .appName(\"Lab4-Kafka\")\n    .config(\"spark.jars.packages\", KAFKA_PACKAGE)\n    .getOrCreate()\n)\nspark.sparkContext.setLogLevel(\"WARN\")\n\ndef process_batch(df, batch_id, tstop=5):\n    print(f\"Batch ID: {batch_id}\")\n    df.show(truncate=False)\n    if batch_id == tstop:\n        df.stop()\n\nkafka_raw = (\n    spark.readStream\n    .format(\"kafka\")\n    .option(\"kafka.bootstrap.servers\", \"broker:9092\")\n    .option(\"subscribe\", \"transactions\")\n    .load()\n)\n\ndf = kafka_raw.select(\n    col(\"timestamp\").alias(\"time\"), \n    col(\"value\").cast(\"string\")\n)\nquery = (df.writeStream \n    .format(\"console\") \n    .outputMode(\"append\")\n    .foreachBatch(process_batch)\n    .option(\"truncate\", False) \n    .start()\n)",
+    "crumbs": [
+      "222890-S",
+      "Laboratoria dzienne",
+      "Lab 4: Spark Structured Streaming + Kafka"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab0_prework.html",
+    "href": "labs/pl_lab0_prework.html",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "",
+    "text": "Te zadania należy wykonać przed pierwszymi zajęciami laboratoryjnymi.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab0_prework.html#gdzie-co-uruchamiam",
+    "href": "labs/pl_lab0_prework.html#gdzie-co-uruchamiam",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Gdzie co uruchamiam?",
+    "text": "Gdzie co uruchamiam?\nNa kursie będziesz pracować w trzech różnych miejscach:\n\n\n\n\n\n\n\n\nGdzie\nCo\nJak otworzyć\n\n\n\n\nTerminal systemowy\nKomendy Git, Docker, uruchamianie plików .py\nmacOS: Terminal. Windows: PowerShell. Linux: dowolny terminal.\n\n\nJupyterLab\nNotatniki (.ipynb), eksploracja danych\nPrzeglądarka: localhost:8888 po uruchomieniu środowiska\n\n\nEdytor tekstu / IDE\nPliki .py (serwery API, producenci, konsumenci)\nVS Code lub dowolny edytor\n\n\n\nGdy zadanie mówi „w terminalu” — chodzi o terminal systemowy (nie terminal JupyterLab). Gdy mówi „w JupyterLab” — otwórz nowy notatnik lub użyj terminala JupyterLab. Gdy mówi „utwórz plik” — napisz go w edytorze lub użyj %%file nazwa.py w JupyterLab.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab0_prework.html#część-1-python",
+    "href": "labs/pl_lab0_prework.html#część-1-python",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 1: Python",
+    "text": "Część 1: Python\n\nZadanie 1.1 — Sprawdź wersję Pythona\nW terminalu systemowym:\npython3 --version\npip --version\nPotrzebujesz Python 3.10+.\n\n\nZadanie 1.2 — Utwórz środowisko wirtualne\npython3 -m venv rta_env\nsource rta_env/bin/activate   # Linux/macOS\npip install --upgrade pip\npip install jupyterlab pandas numpy matplotlib scikit-learn requests\n\n\nZadanie 1.3 — Uruchom JupyterLab\njupyter lab\nOtworzy się w przeglądarce pod localhost:8888. Utwórz nowy notatnik i uruchom:\n\nimport pandas as pd\nimport numpy as np\nimport sklearn\n\nprint(f\"pandas:  {pd.__version__}\")\nprint(f\"numpy:   {np.__version__}\")\nprint(f\"sklearn: {sklearn.__version__}\")\nprint(\"\\nWszystko działa!\")",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab0_prework.html#część-2-git",
+    "href": "labs/pl_lab0_prework.html#część-2-git",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 2: Git",
+    "text": "Część 2: Git\n\nZadanie 2.1 — Konfiguracja\ngit --version\ngit config --global user.name \"Twoje Imię\"\ngit config --global user.email \"twoj@email.com\"\n\n\nZadanie 2.2 — Utwórz konto na GitHub\nJeśli nie masz: github.com\n\n\nZadanie 2.3 — Utwórz repozytorium kursu\n\nNa GitHubie kliknij „New repository”\nNazwa: RTA_&lt;twoje_inicjaly&gt;\nZaznacz „Add a README file”\nSklonuj:\n\ngit clone https://github.com/&lt;login&gt;/RTA_&lt;inicjaly&gt;.git\ncd RTA_&lt;inicjaly&gt;\necho \"# Analiza danych w czasie rzeczywistym\" &gt; README.md\ngit add . && git commit -m \"Pierwszy commit\" && git push origin main",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab0_prework.html#część-3-docker",
+    "href": "labs/pl_lab0_prework.html#część-3-docker",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 3: Docker",
+    "text": "Część 3: Docker\n\nZadanie 3.1 — Instalacja\nPobierz Docker Desktop: docker.com\n\n\nZadanie 3.2 — Weryfikacja\ndocker --version\ndocker compose version\ndocker run hello-world",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab0_prework.html#część-4-środowisko-kursu",
+    "href": "labs/pl_lab0_prework.html#część-4-środowisko-kursu",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Część 4: Środowisko kursu",
+    "text": "Część 4: Środowisko kursu\n\nZadanie 4.1 — Sklonuj infrastrukturę\ngit clone -b 2026Redis https://github.com/sebkaz/jupyterlab-project.git\ncd jupyterlab-project\n\n\nZadanie 4.2 — Uruchom środowisko\ndocker compose up -d\ndocker compose ps\nPoczekaj 1–2 minuty. Otwórz przeglądarkę: http://localhost:8999\nHasło: root\n\n\nZadanie 4.3 — Sprawdź Kafkę\nW terminalu JupyterLab (File &gt; New &gt; Terminal):\nkafka/bin/kafka-topics.sh --list --bootstrap-server broker:9092\n\n\nZadanie 4.4 — Zatrzymaj środowisko\ndocker compose down",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+    ]
+  },
+  {
+    "objectID": "labs/pl_lab0_prework.html#checklist",
+    "href": "labs/pl_lab0_prework.html#checklist",
+    "title": "Zadania przedlaboratoryjne: Przygotowanie środowiska",
+    "section": "Checklist",
+    "text": "Checklist\n\nPython 3.10+ z pandas, numpy, sklearn\nKonto GitHub z repozytorium kursu\nDocker Compose działa, JupyterLab pod localhost:8888\nKafka odpowiada w terminalu JupyterLab\n\nWyślij link do repozytorium przez MS Teams.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Zadania przedlaboratoryjne: Przygotowanie środowiska"
+    ]
+  },
+  {
+    "objectID": "ksiazki.html",
+    "href": "ksiazki.html",
+    "title": "Książki i materiały",
+    "section": "",
+    "text": "Pozycje bezpośrednio związane z tematyką kursu.\n\n\n\nG. Shapira, T. Palino, R. Sivaram, K. Petty — Kafka: The Definitive Guide. Real-time data and stream processing at scale, O’Reilly 2022. Dostęp online\nG. Maas, F. Garillot — Stream Processing with Apache Spark, O’Reilly 2019. Zobacz opis\nF. Hueske, V. Kalavri — Stream Processing with Apache Flink, O’Reilly 2019. Zobacz opis\nA. Bellemare — Mikrousługi oparte na zdarzeniach. Wykorzystanie danych w organizacji na dużą skalę, O’Reilly 2021. Zobacz opis\nT. Akidau, S. Chernyak, R. Lax — Streaming Systems: The What, Where, When, and How of Large-Scale Data Processing, O’Reilly 2018.\n\n\n\n\n\nJ. S. Damji, B. Wenig, T. Das, D. Lee — Spark. Błyskawiczna analiza danych, Helion. Zobacz opis\nB. Chambers, M. Zaharia — Spark: The Definitive Guide. Big Data Processing Made Simple, O’Reilly. Zobacz opis\nSpark. Zaawansowana analiza danych, Helion. Zobacz opis\nJ. Quddus — Machine Learning with Apache Spark Quick Start Guide, Packt. Zobacz opis\n\n\n\n\n\nN. Gift, A. Deza — Practical MLOps: Operationalizing Machine Learning Models, O’Reilly 2022.\nV. Lakshmanan, S. Robinson, M. Munn — Wzorce projektowe uczenia maszynowego, O’Reilly 2021."
+  },
+  {
+    "objectID": "ksiazki.html#literatura-podstawowa",
+    "href": "ksiazki.html#literatura-podstawowa",
+    "title": "Książki i materiały",
+    "section": "",
+    "text": "Pozycje bezpośrednio związane z tematyką kursu.\n\n\n\nG. Shapira, T. Palino, R. Sivaram, K. Petty — Kafka: The Definitive Guide. Real-time data and stream processing at scale, O’Reilly 2022. Dostęp online\nG. Maas, F. Garillot — Stream Processing with Apache Spark, O’Reilly 2019. Zobacz opis\nF. Hueske, V. Kalavri — Stream Processing with Apache Flink, O’Reilly 2019. Zobacz opis\nA. Bellemare — Mikrousługi oparte na zdarzeniach. Wykorzystanie danych w organizacji na dużą skalę, O’Reilly 2021. Zobacz opis\nT. Akidau, S. Chernyak, R. Lax — Streaming Systems: The What, Where, When, and How of Large-Scale Data Processing, O’Reilly 2018.\n\n\n\n\n\nJ. S. Damji, B. Wenig, T. Das, D. Lee — Spark. Błyskawiczna analiza danych, Helion. Zobacz opis\nB. Chambers, M. Zaharia — Spark: The Definitive Guide. Big Data Processing Made Simple, O’Reilly. Zobacz opis\nSpark. Zaawansowana analiza danych, Helion. Zobacz opis\nJ. Quddus — Machine Learning with Apache Spark Quick Start Guide, Packt. Zobacz opis\n\n\n\n\n\nN. Gift, A. Deza — Practical MLOps: Operationalizing Machine Learning Models, O’Reilly 2022.\nV. Lakshmanan, S. Robinson, M. Munn — Wzorce projektowe uczenia maszynowego, O’Reilly 2021."
+  },
+  {
+    "objectID": "ksiazki.html#literatura-uzupełniająca",
+    "href": "ksiazki.html#literatura-uzupełniająca",
+    "title": "Książki i materiały",
+    "section": "Literatura uzupełniająca",
+    "text": "Literatura uzupełniająca\n\nUczenie maszynowe w Pythonie\n\nA. Géron — Uczenie maszynowe z użyciem Scikit-Learn i TensorFlow. Wydanie II, Helion. Zobacz opis\nW. McKinney — Python w analizie danych. Wydanie II, Helion. Zobacz opis\nJ. Grus — Data science od podstaw. Analiza danych w Pythonie. Wydanie II, Helion. Zobacz opis\nS. Raschka — Python. Uczenie maszynowe. Wydanie II, Helion. Zobacz opis\nT. Hastie, R. Tibshirani, J. Friedman — The Elements of Statistical Learning, Springer 2017. Dostęp online\n\n\n\nDeep Learning\n\nF. Chollet — Deep Learning. Praca z językiem Python i biblioteką Keras, Helion. Zobacz opis\nJ. Howard, S. Gugger — Deep learning dla programistów. Budowanie aplikacji AI za pomocą fastai i PyTorch, Helion. Zobacz opis\nA. Koul, S. Ganju, M. Kasam — Practical Deep Learning for Cloud, Mobile & Edge, O’Reilly 2019.\n\n\n\nDocker i narzędzia\n\nJ. Krochmalski — Docker. Projektowanie i wdrażanie aplikacji, Helion. Zobacz opis\nP. Bell, B. Beer — GitHub. Przyjazny przewodnik, Helion. Zobacz opis\n\n\n\nProgramowanie w Pythonie\n\nC. Althoff — Programista Samouk, Helion. Zobacz opis\nA. Sweigart — Automatyzacja nudnych zadań z Pythonem, Helion. Zobacz opis\n\n\n\nQuantum Computing\n\nA. Jacquier, O. Kondratyev — Quantum Machine Learning and Optimisation in Finance. On the Road to Quantum Advantage."
+  },
+  {
+    "objectID": "ksiazki.html#przydatne-strony-www",
+    "href": "ksiazki.html#przydatne-strony-www",
+    "title": "Książki i materiały",
+    "section": "Przydatne strony WWW",
+    "text": "Przydatne strony WWW\n\nOprogramowanie\n\nGitHub\nGit — dokumentacja (po polsku)\nPython\nPyPI — repozytorium bibliotek\nDocker\nApache Kafka\nApache Spark\n\n\n\nBiblioteki Pythonowe\n\nNumPy\nPandas\nScikit-learn\nMatplotlib\nJupyterLab\nTensorFlow\nKeras\nBeautiful Soup\n\n\n\nEdytor\n\nVisual Studio Code\n\n\n\nZbiory danych\n\nKaggle Datasets\nGoogle Dataset Search\nUCI Machine Learning Repository\nReddit r/datasets\nPublic APIs\nKDnuggets\n\n\n\nKursy i materiały\n\nKurs ML — Andrew Ng (YouTube)\nPython Programming for Data Science — T. Beuzen\nChris Albon — Data Science & AI Notes"
+  },
+  {
+    "objectID": "info.html",
+    "href": "info.html",
+    "title": "Narzędzia",
+    "section": "",
+    "text": "W terminalu wpisz:\npython\nJeśli komenda nie została odnaleziona, spróbuj:\npython3\nZwróć uwagę, aby Twoja wersja nie była niższa niż 3.10. Aby wyjść z powłoki Pythona, użyj funkcji exit():\nPython 3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)] on darwin\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\n&gt;&gt;&gt; exit()\n\n\npython3 -m venv &lt;nazwa_srodowiska&gt;\n\n# Linux / macOS\nsource &lt;nazwa_srodowiska&gt;/bin/activate\n\n# Windows\n# &lt;nazwa_srodowiska&gt;\\Scripts\\activate\n\n(venv)$\nSzybka instalacja podstawowych bibliotek i JupyterLab:\npip install --no-cache --upgrade pip setuptools\npip install jupyterlab numpy pandas matplotlib scipy\n\n# jeśli masz plik requirements.txt\npip install -r requirements.txt\n\n# uruchom JupyterLab\njupyter lab\nW przeglądarce internetowej wpisz: localhost:8888\nPo ponownym uruchomieniu komputera przejdź do katalogu, w którym utworzyłeś środowisko, aktywuj je i uruchom JupyterLab:\nsource &lt;nazwa_srodowiska&gt;/bin/activate\njupyter lab\n\n\n\nKurs podstaw Pythona — Tomas Beuzen — polecam.\nUtwórz konto na Kaggle, przejdź do zakładki Courses i przerób cały moduł Pythona. Zawiera on:\n\nwyrażenia i zmienne\nfunkcje\nwarunki i flow programu\nlisty\npętle\nstringi i słowniki\ndodawanie i używanie zewnętrznych bibliotek"
+  },
+  {
+    "objectID": "info.html#python",
+    "href": "info.html#python",
+    "title": "Narzędzia",
+    "section": "",
+    "text": "W terminalu wpisz:\npython\nJeśli komenda nie została odnaleziona, spróbuj:\npython3\nZwróć uwagę, aby Twoja wersja nie była niższa niż 3.10. Aby wyjść z powłoki Pythona, użyj funkcji exit():\nPython 3.13.2 (main, Feb  4 2025, 14:51:09) [Clang 16.0.0 (clang-1600.0.26.6)] on darwin\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\n&gt;&gt;&gt; exit()\n\n\npython3 -m venv &lt;nazwa_srodowiska&gt;\n\n# Linux / macOS\nsource &lt;nazwa_srodowiska&gt;/bin/activate\n\n# Windows\n# &lt;nazwa_srodowiska&gt;\\Scripts\\activate\n\n(venv)$\nSzybka instalacja podstawowych bibliotek i JupyterLab:\npip install --no-cache --upgrade pip setuptools\npip install jupyterlab numpy pandas matplotlib scipy\n\n# jeśli masz plik requirements.txt\npip install -r requirements.txt\n\n# uruchom JupyterLab\njupyter lab\nW przeglądarce internetowej wpisz: localhost:8888\nPo ponownym uruchomieniu komputera przejdź do katalogu, w którym utworzyłeś środowisko, aktywuj je i uruchom JupyterLab:\nsource &lt;nazwa_srodowiska&gt;/bin/activate\njupyter lab\n\n\n\nKurs podstaw Pythona — Tomas Beuzen — polecam.\nUtwórz konto na Kaggle, przejdź do zakładki Courses i przerób cały moduł Pythona. Zawiera on:\n\nwyrażenia i zmienne\nfunkcje\nwarunki i flow programu\nlisty\npętle\nstringi i słowniki\ndodawanie i używanie zewnętrznych bibliotek"
+  },
+  {
+    "objectID": "info.html#git",
+    "href": "info.html#git",
+    "title": "Narzędzia",
+    "section": "Git",
+    "text": "Git\nTekst na podstawie strony jak korzystać z serwisu GitHub.\nPracując nad projektem (samodzielnie lub w zespole), często potrzebujesz sprawdzić, jakie zmiany, kiedy i przez kogo zostały wprowadzone. Do tego służy system kontroli wersji — Git.\nGit możesz pobrać i zainstalować na dowolnym systemie operacyjnym. Najczęściej jednak korzysta się z serwisów hostujących repozytoria Git. Jednym z najbardziej rozpoznawanych jest GitHub, dzięki któremu możesz korzystać z systemu Git bezpośrednio z poziomu przeglądarki.\nW darmowej wersji serwisu GitHub możesz przechowywać pliki zarówno w publicznych, jak i prywatnych repozytoriach.\ngit --version\n\nStruktura GitHuba\nNa najwyższym poziomie znajdują się konta indywidualne (np. github.com/sebkaz) bądź organizacje. Użytkownicy mogą tworzyć repozytoria publiczne (public) lub prywatne (private).\nJeden plik w repozytorium nie powinien przekraczać 100 MB.\nRepo (skrót od repozytorium) tworzymy za pomocą przycisku Create a new repository. Każde repo powinno mieć swoją unikalną nazwę.\n\n\nGałęzie (branches)\nGłówna gałąź repozytorium domyślnie nosi nazwę main (dawniej master).\n\n\nNajważniejsze polecenia\nŚciąganie repozytorium z sieci:\ngit clone https://adres_repo.git\n\nMożesz też pobrać repozytorium z GitHuba jako plik ZIP.\n\nTworzenie repozytorium dla lokalnego katalogu:\n# tworzenie nowego katalogu\nmkdir datamining\n# przejście do katalogu\ncd datamining\n# inicjalizacja repozytorium\ngit init\n# dodajmy plik\necho \"Info\" &gt;&gt; README.md\nPołączenie lokalnego repozytorium z kontem na GitHubie:\ngit remote add origin https://github.com/&lt;twojGit&gt;/nazwa.git\nObsługa w 3 krokach:\n# sprawdź zmiany\ngit status\n# 1. dodaj wszystkie zmiany\ngit add .\n# 2. zapisz bieżący stan wraz z opisem\ngit commit -m \"opis zmian\"\n# 3. wyślij na serwer\ngit push origin main\nWarto obejrzeć kurs Git na YouTube.\nCiekawe i proste wprowadzenie można znaleźć tutaj."
+  },
+  {
+    "objectID": "info.html#docker",
+    "href": "info.html#docker",
+    "title": "Narzędzia",
+    "section": "Docker",
+    "text": "Docker\nW celu pobrania Dockera przejdź do oficjalnej strony.\nJeśli wszystko zainstalowało się prawidłowo, wykonaj następujące polecenia:\n\nSprawdź zainstalowaną wersję:\n\ndocker --version\n\nŚciągnij i uruchom obraz testowy:\n\ndocker run hello-world\n\nPrzegląd ściągniętych obrazów:\n\ndocker images\n\nPrzegląd uruchomionych kontenerów:\n\ndocker ps\ndocker ps -a\n\nZatrzymanie uruchomionego kontenera:\n\ndocker stop &lt;CONTAINER_ID&gt;\n\nUsunięcie kontenera:\n\ndocker rm -f &lt;CONTAINER_ID&gt;\n\nDocker Compose\nDocker Compose pozwala definiować i uruchamiać wielokontenerowe środowiska za pomocą jednego pliku docker-compose.yml. Na zajęciach będziemy go używać do stawiania środowisk z Kafką, Sparkiem i innymi usługami.\nSprawdź, czy masz zainstalowany Docker Compose:\ndocker compose version\nPrzykładowy plik docker-compose.yml:\nservices:\n  zookeeper:\n    image: confluentinc/cp-zookeeper:7.6.0\n    environment:\n      ZOOKEEPER_CLIENT_PORT: 2181\n\n  kafka:\n    image: confluentinc/cp-kafka:7.6.0\n    depends_on:\n      - zookeeper\n    ports:\n      - \"9092:9092\"\n    environment:\n      KAFKA_BROKER_ID: 1\n      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181\n      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092\n      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1\nUruchomienie i zatrzymanie:\n# uruchom wszystkie usługi w tle\ndocker compose up -d\n# sprawdź działające kontenery\ndocker compose ps\n# zatrzymaj i usuń kontenery\ndocker compose down"
+  },
+  {
+    "objectID": "info.html#kafka",
+    "href": "info.html#kafka",
+    "title": "Narzędzia",
+    "section": "Apache Kafka",
+    "text": "Apache Kafka\nApache Kafka to rozproszona platforma do strumieniowego przetwarzania danych. Umożliwia publikowanie, subskrybowanie i przetwarzanie strumieni rekordów w czasie rzeczywistym.\nNa zajęciach będziemy uruchamiać Kafkę za pomocą Docker Compose (patrz wyżej).\nPodstawowe pojęcia:\n\nProducent (Producer) — wysyła dane (wiadomości) do Kafki.\nKonsument (Consumer) — odczytuje dane z Kafki.\nTemat (Topic) — kategoria, do której trafiają wiadomości.\nPartycja (Partition) — podział tematu umożliwiający równoległe przetwarzanie.\nBroker — serwer Kafki przechowujący dane.\n\nSzybki test Kafki z Dockera:\n# utwórz temat\ndocker compose exec kafka kafka-topics --create \\\n  --topic test --bootstrap-server localhost:9092 \\\n  --partitions 1 --replication-factor 1\n\n# wyślij wiadomość (producent)\ndocker compose exec kafka kafka-console-producer \\\n  --topic test --bootstrap-server localhost:9092\n\n# odczytaj wiadomości (konsument) — w nowym terminalu\ndocker compose exec kafka kafka-console-consumer \\\n  --topic test --bootstrap-server localhost:9092 --from-beginning\nBiblioteka Pythonowa: pip install confluent-kafka\nWięcej informacji: Apache Kafka — dokumentacja"
+  },
+  {
+    "objectID": "info.html#spark",
+    "href": "info.html#spark",
+    "title": "Narzędzia",
+    "section": "Apache Spark",
+    "text": "Apache Spark\nApache Spark to silnik do rozproszonego przetwarzania danych, obsługujący zarówno tryb wsadowy (batch), jak i strumieniowy (streaming). Na zajęciach będziemy korzystać z PySpark — interfejsu Pythonowego do Sparka.\nInstalacja PySpark:\npip install pyspark\nSzybki test:\nfrom pyspark.sql import SparkSession\n\nspark = SparkSession.builder \\\n    .appName(\"Test\") \\\n    .master(\"local[*]\") \\\n    .getOrCreate()\n\ndf = spark.createDataFrame(\n    [(1, \"Anna\", 28), (2, \"Jan\", 35), (3, \"Ewa\", 22)],\n    [\"id\", \"imie\", \"wiek\"]\n)\n\ndf.show()\nspark.stop()\nNa dalszych zajęciach będziemy korzystać ze Structured Streaming — modułu Sparka do przetwarzania danych strumieniowych, w tym integracji z Apache Kafka.\nWięcej informacji: Apache Spark — dokumentacja"
+  },
+  {
+    "objectID": "indexS.html",
+    "href": "indexS.html",
+    "title": "Informacje ogólne",
+    "section": "",
+    "text": "Kod: 222890-S\nSemestr letni 2025/2026, SGH Szkoła Główna Handlowa w Warszawie\nSzczegółowy opis znajdziesz w sylabusie. Znajdziesz w nim opis wszystkich wykładów i ćwiczeń oraz proponowaną literaturę.\nInne książki zamieszczone zostały w zakładce książki."
+  },
+  {
+    "objectID": "indexS.html#analiza-danych-w-czasie-rzeczywistym",
+    "href": "indexS.html#analiza-danych-w-czasie-rzeczywistym",
+    "title": "Informacje ogólne",
+    "section": "",
+    "text": "Kod: 222890-S\nSemestr letni 2025/2026, SGH Szkoła Główna Handlowa w Warszawie\nSzczegółowy opis znajdziesz w sylabusie. Znajdziesz w nim opis wszystkich wykładów i ćwiczeń oraz proponowaną literaturę.\nInne książki zamieszczone zostały w zakładce książki."
+  },
+  {
+    "objectID": "indexS.html#kalendarz",
+    "href": "indexS.html#kalendarz",
+    "title": "Informacje ogólne",
+    "section": "Kalendarz",
+    "text": "Kalendarz\n\nWykład\nWykład jest realizowany w trybie stacjonarnym. Jest on NIEOBOWIĄZKOWY i odbywa się w Auli I bud. G.\n\n28.02.2026 Wykład 1 — 8:00–9:40\n\n14.03.2026 Wykład 2 — 8:00–9:40\n\n\n\n\nLaboratoria\n\n\n28.03.2026 Lab1 — DS1-16 11:40–13:20, 13:30–15:10, 15:20–17:00, 17:10–18:50 (Dni Otwarte SGH)\n\n\n29.03.2026 Lab1 — G-116 9:50–11:30, 11:40–13:20, 13:30–15:10, 15:20–17:00\n\n18.04.2026 Lab2 — DS1-16 11:40–13:20, 13:30–15:10, 15:20–17:00, 17:10–18:50\n19.04.2026 Lab2 — G-116 9:50–11:30, 11:40–13:20, 13:30–15:10, 15:20–17:00\n09.05.2026 Lab3 — DS1-16 11:40–13:20, 13:30–15:10, 15:20–17:00, 17:10–18:50\n10.05.2026 Lab3 — G-116 9:50–11:30, 11:40–13:20, 13:30–15:10, 15:20–17:00\n30.05.2026 Lab4 — DS1-16 11:40–13:20, 13:30–15:10, 15:20–17:00, 17:10–18:50 (Zastępstwo)\n31.05.2026 Lab4 — G-116 9:50–11:30, 11:40–13:20, 13:30–15:10, 15:20–17:00 (Zastępstwo)\n13.06.2026 Lab5 — DS1-16 11:40–13:20, 13:30–15:10, 15:20–17:00, 17:10–18:50\n14.06.2026 Lab5 — G-116 9:50–11:30, 11:40–13:20, 13:30–15:10, 15:20–17:00\n\n\n\nZaliczenie\nWykłady zakończą się testem (na pierwszych zajęciach laboratoryjnych) — 20 pytań. Aby zaliczyć test, należy zdobyć więcej niż 13 punktów — jest to warunek konieczny do zaliczenia przedmiotu.\nPodczas laboratoriów będą zadawane prace domowe, które należy przesyłać za pośrednictwem MS Teams. Każdy brak pracy domowej obniża końcową ocenę o 0,5 stopnia.\n\nProjekt\nProjekty należy realizować w grupach maksymalnie 5-osobowych.\nWymagania projektu:\n\nProjekt powinien rozwiązywać realny problem biznesowy, który można opracować przy użyciu danych przetwarzanych w trybie online (nie wyklucza to użycia przetwarzania wsadowego, np. do generowania modelu).\nDane powinny być przesyłane do Apache Kafka, skąd będą poddawane dalszemu przetwarzaniu i analizie.\nMożna używać dowolnego języka programowania w każdym komponencie projektu.\nMożna wykorzystać narzędzia BI.\nŹródłem danych może być dowolne API, sztucznie generowane dane, IoT itp."
+  },
+  {
+    "objectID": "indexS.html#technologie",
+    "href": "indexS.html#technologie",
+    "title": "Informacje ogólne",
+    "section": "Technologie",
+    "text": "Technologie\nUczestnicząc w zajęciach, musisz opanować i przynajmniej w podstawowym zakresie posługiwać się następującymi technologiami:\n\nGit\nPython, Jupyter Notebook, Google Colab\nDocker i Docker Compose\nApache Spark, Apache Kafka"
+  },
+  {
+    "objectID": "lectures/wyklad3.html",
+    "href": "lectures/wyklad3.html",
+    "title": "Wykład 3 — Uczenie maszynowe: batch vs online",
+    "section": "",
+    "text": "Note Czas trwania: 1,5h\n\n\n\nCel wykładu: Zrozumienie różnic między uczeniem wsadowym (offline) a przyrostowym (online), algorytmu SGD, problemu concept drift, detekcji anomalii oraz wyjaśnialności modeli.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 3 — Uczenie maszynowe: batch vs online"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad3.html#dwa-tryby-uczenia-maszynowego",
+    "href": "lectures/wyklad3.html#dwa-tryby-uczenia-maszynowego",
+    "title": "Wykład 3 — Uczenie maszynowe: batch vs online",
+    "section": "1 Dwa tryby uczenia maszynowego",
+    "text": "1 Dwa tryby uczenia maszynowego\nNa poprzednich wykładach mówiliśmy o przetwarzaniu wsadowym i strumieniowym. Ten sam podział dotyczy uczenia maszynowego.\n\n Batch (offline) Online (przyrostowe)\n\n\nModel jest trenowany na całym zbiorze danych historycznych. Po wytrenowaniu jest wdrażany do produkcji, gdzie dokonuje predykcji na nowych danych. Gdy pojawiają się nowe dane — model jest retrenowany od zera.\n\n\nPokaż kod\nimport numpy as np\nimport pandas as pd\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score\n\nnp.random.seed(42)\n\n# Symulacja: klasyfikacja transakcji (0 = legalna, 1 = podejrzana)\nn = 1000\nX = np.column_stack([\n    np.random.uniform(10, 5000, n),       # kwota\n    np.random.uniform(0, 23, n),           # godzina\n    np.random.randint(1, 50, n)            # liczba transakcji w miesiącu\n])\ny = ((X[:, 0] &gt; 3000) & (X[:, 1] &gt; 22) | (X[:, 0] &gt; 4000)).astype(int)\n\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)\n\n# Batch learning: trenujesz raz na całym zbiorze\nmodel = LogisticRegression()\nmodel.fit(X_train, y_train)\nprint(f\"Batch accuracy: {accuracy_score(y_test, model.predict(X_test)):.3f}\")\n\n\nBatch accuracy: 0.940\n\n\n\n\n\n\n\n\nCautionOgraniczenia batch learning\n\n\n\n\nRetrenowanie na dużych zbiorach jest kosztowne\nModel nie uczy się z nowych danych między retrenowaniami\nJeśli wzorce się zmienią (np. nowy typ oszustwa), model będzie nieaktualny\n\n\n\n\n\nModel uczy się na bieżąco — każda nowa obserwacja (lub mały batch) aktualizuje parametry modelu. Nie trzeba retrenować od zera.\n\n\nPokaż kod\nfrom sklearn.linear_model import SGDClassifier\nfrom sklearn.preprocessing import StandardScaler\n\nscaler = StandardScaler()\nX_scaled = scaler.fit_transform(X)\nX_train_s, X_test_s, y_train_s, y_test_s = train_test_split(X_scaled, y, test_size=0.2)\n\n# Online learning: model uczy się na kolejnych mini-batchach\nmodel_online = SGDClassifier(loss='log_loss', random_state=42)\n\nbatch_size = 50\naccuracies = []\n\nfor i in range(0, len(X_train_s), batch_size):\n    X_batch = X_train_s[i:i+batch_size]\n    y_batch = y_train_s[i:i+batch_size]\n\n    model_online.partial_fit(X_batch, y_batch, classes=[0, 1])\n\n    acc = accuracy_score(y_test_s, model_online.predict(X_test_s))\n    accuracies.append(acc)\n\nprint(f\"Online accuracy po {len(accuracies)} mini-batchach: {accuracies[-1]:.3f}\")\nprint(f\"Progresja accuracy: {[f'{a:.2f}' for a in accuracies[:5]]} ... {[f'{a:.2f}' for a in accuracies[-3:]]}\")\n\n\nOnline accuracy po 16 mini-batchach: 0.920\nProgresja accuracy: ['0.85', '0.92', '0.92', '0.96', '0.94'] ... ['0.88', '0.92', '0.92']\n\n\n\n\n\n\n1.1 Porównanie\n\nBatch vs Online learning\n\n\n\n\n\n\n\nCecha\n Batch (offline)\n Online (przyrostowe)\n\n\n\n\nDane treningowe\nCały zbiór naraz\nPorcjami (mini-batch)\n\n\nAktualizacja modelu\nRetrenowanie od zera\nInkrementalna\n\n\nKoszt retrenowania\nWysoki\nNiski\n\n\nAdaptacja do zmian\nWolna\nSzybka\n\n\nStabilność\nWysoka\nRyzyko „zapominania”\n\n\nTypowe algorytmy\nRandomForest, XGBoost\nSGD, Perceptron, online k-means",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 3 — Uczenie maszynowe: batch vs online"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad3.html#stochastic-gradient-descent-sgd",
+    "href": "lectures/wyklad3.html#stochastic-gradient-descent-sgd",
+    "title": "Wykład 3 — Uczenie maszynowe: batch vs online",
+    "section": "2 Stochastic Gradient Descent (SGD)",
+    "text": "2 Stochastic Gradient Descent (SGD)\nSGD to fundament uczenia online. W klasycznym spadku gradientowym obliczamy gradient na całym zbiorze danych. W SGD — na jednej obserwacji (lub małym batchu).\n\n\n\n\n\n\nTip Intuicja: szukanie drogi w górach\n\n\n\n\n\nWyobraź sobie, że szukasz najniższego punktu w górach we mgle:\n\nGradient Descent — obliczasz nachylenie terenu na podstawie mapy całych gór.\nSGD — patrzysz tylko pod nogi i robisz krok w kierunku, który wygląda na najbardziej stromy w dół.\n\nKażdy krok SGD jest mniej precyzyjny, ale robisz ich dużo więcej i dużo szybciej.\n\n\n\n\n2.1 Matematycznie\nGradient Descent (batch): \\[\\theta_{t+1} = \\theta_t - \\eta \\cdot \\frac{1}{N} \\sum_{i=1}^{N} \\nabla L_i(\\theta_t)\\]\nStochastic Gradient Descent: \\[\\theta_{t+1} = \\theta_t - \\eta \\cdot \\nabla L_i(\\theta_t)\\]\ngdzie \\(\\eta\\) to learning rate, a \\(i\\) to losowo wybrana obserwacja.\nMini-batch SGD — kompromis: obliczamy gradient na małej próbce (np. 32–256 obserwacji): \\[\\theta_{t+1} = \\theta_t - \\eta \\cdot \\frac{1}{|B|} \\sum_{i \\in B} \\nabla L_i(\\theta_t)\\]\n\n\nPokaż kod\nimport matplotlib.pyplot as plt\n\n# Wizualizacja: SGD vs Batch GD na prostym problemie regresji\nnp.random.seed(42)\nX_reg = np.random.uniform(0, 10, 100)\ny_reg = 2.5 * X_reg + 3 + np.random.normal(0, 2, 100)\n\n# Batch GD\ntheta_batch = [0.0, 0.0]  # [slope, intercept]\nlr = 0.001\nbatch_path = [tuple(theta_batch)]\n\nfor _ in range(50):\n    pred = theta_batch[0] * X_reg + theta_batch[1]\n    error = pred - y_reg\n    theta_batch[0] -= lr * (2/len(X_reg)) * np.dot(error, X_reg)\n    theta_batch[1] -= lr * (2/len(X_reg)) * np.sum(error)\n    batch_path.append(tuple(theta_batch))\n\n# SGD\ntheta_sgd = [0.0, 0.0]\nsgd_path = [tuple(theta_sgd)]\n\nfor _ in range(50):\n    i = np.random.randint(len(X_reg))\n    pred_i = theta_sgd[0] * X_reg[i] + theta_sgd[1]\n    error_i = pred_i - y_reg[i]\n    theta_sgd[0] -= lr * 2 * error_i * X_reg[i]\n    theta_sgd[1] -= lr * 2 * error_i\n    sgd_path.append(tuple(theta_sgd))\n\nfig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))\n\nbatch_slopes = [p[0] for p in batch_path]\nsgd_slopes = [p[0] for p in sgd_path]\n\nax1.plot(batch_slopes, label='Batch GD', linewidth=2)\nax1.plot(sgd_slopes, label='SGD', linewidth=1, alpha=0.7)\nax1.axhline(y=2.5, color='red', linestyle='--', label='Prawdziwa wartość')\nax1.set_xlabel('Iteracja')\nax1.set_ylabel('Estymacja slope')\nax1.set_title('Zbieżność parametru')\nax1.legend()\n\nax2.scatter(X_reg, y_reg, alpha=0.5, s=15)\nax2.plot([0, 10], [theta_batch[1], theta_batch[0]*10 + theta_batch[1]], label='Batch GD', linewidth=2)\nax2.plot([0, 10], [theta_sgd[1], theta_sgd[0]*10 + theta_sgd[1]], label='SGD', linewidth=2)\nax2.set_title('Wynik dopasowania')\nax2.legend()\n\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: SGD vs Batch GD — zbieżność i wynik dopasowania\n\n\n\n\n\n\n\n\n\n\n\nSGD jest „zaszumiony” — ale właśnie to jest jego siła w uczeniu online: każda nowa obserwacja natychmiast wpływa na model.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 3 — Uczenie maszynowe: batch vs online"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad3.html#concept-drift-gdy-świat-się-zmienia",
+    "href": "lectures/wyklad3.html#concept-drift-gdy-świat-się-zmienia",
+    "title": "Wykład 3 — Uczenie maszynowe: batch vs online",
+    "section": "3 Concept drift — gdy świat się zmienia",
+    "text": "3 Concept drift — gdy świat się zmienia\n\n\n\n\n\n\nWarningKluczowe wyzwanie\n\n\n\nRozkład danych zmienia się w czasie (concept drift). Model wytrenowany na danych z zeszłego roku może być bezużyteczny dzisiaj.\n\n\n\n3.1 Typy driftu\n\n\n\n\n\n\n\n\nImportant Nagły (sudden)\n\n\n\nNp. pandemia zmienia wzorce zakupowe z dnia na dzień.\n\n\n\n\n\n\n\n\n\nNote Stopniowy (gradual)\n\n\n\nNp. preferencje klientów zmieniają się powoli przez miesiące.\n\n\n\n\n\n\n\n\n\nTip Cykliczny (recurring)\n\n\n\nNp. sezonowość sprzedaży.\n\n\n\n\n\n\nPokaż kod\n# Symulacja concept drift: nagła zmiana wzorca\nnp.random.seed(42)\n\n# Faza 1: normalne transakcje (kwota &lt; 1000 = OK)\nX_faza1 = np.random.uniform(10, 2000, 500).reshape(-1, 1)\ny_faza1 = (X_faza1.ravel() &gt; 1000).astype(int)\n\n# Faza 2: po zmianie — próg podejrzaności spada do 500\nX_faza2 = np.random.uniform(10, 2000, 500).reshape(-1, 1)\ny_faza2 = (X_faza2.ravel() &gt; 500).astype(int)\n\nfrom sklearn.preprocessing import StandardScaler\nscaler = StandardScaler()\n\n# Model batch — trenowany na fazie 1\nmodel_batch = LogisticRegression()\nmodel_batch.fit(scaler.fit_transform(X_faza1), y_faza1)\nacc_batch_f2 = accuracy_score(y_faza2, model_batch.predict(scaler.transform(X_faza2)))\n\n# Model online — adaptuje się\nmodel_sgd = SGDClassifier(loss='log_loss')\nmodel_sgd.fit(scaler.transform(X_faza1), y_faza1)\n\n# Trenowanie online na fazie 2\nfor i in range(0, len(X_faza2), 10):\n    X_b = scaler.transform(X_faza2[i:i+10])\n    y_b = y_faza2[i:i+10]\n    model_sgd.partial_fit(X_b, y_b)\n\nacc_online_f2 = accuracy_score(y_faza2, model_sgd.predict(scaler.transform(X_faza2)))\n\nprint(f\"Po concept drift:\")\nprint(f\"  Batch model accuracy:  {acc_batch_f2:.3f}\")\nprint(f\"  Online model accuracy: {acc_online_f2:.3f}\")\n\n\nPo concept drift:\n  Batch model accuracy:  0.760\n  Online model accuracy: 0.972\n\n\n\n\nPokaż kod\n# Symulacja rolling accuracy\nfrom collections import deque\n\nnp.random.seed(42)\nX_all = np.vstack([X_faza1, X_faza2])\ny_all = np.concatenate([y_faza1, y_faza2])\nX_all_s = scaler.fit_transform(X_all)\n\nonline = SGDClassifier(loss='log_loss')\nbatch = LogisticRegression()\nbatch.fit(X_all_s[:500], y_all[:500])\n\nwindow = deque(maxlen=50)\nonline_acc, batch_acc = [], []\n\nfor i in range(len(X_all)):\n    x_i = X_all_s[i:i+1]\n    y_i = y_all[i:i+1]\n\n    if i == 0:\n        online.partial_fit(x_i, y_i, classes=[0, 1])\n    else:\n        pred_o = online.predict(x_i)[0]\n        pred_b = batch.predict(x_i)[0]\n        window.append((pred_o == y_i[0], pred_b == y_i[0]))\n        online.partial_fit(x_i, y_i)\n\n    if len(window) &gt; 10:\n        online_acc.append(np.mean([w[0] for w in window]))\n        batch_acc.append(np.mean([w[1] for w in window]))\n\nfig, ax = plt.subplots(figsize=(10, 4))\nax.plot(online_acc, label='Online (SGD)', color='#4CAF50', linewidth=2)\nax.plot(batch_acc, label='Batch (Logistic Regression)', color='#F44336', linewidth=2)\nax.axvline(x=490, color='gray', linestyle='--', alpha=0.5, label='Concept drift')\nax.fill_betweenx([0, 1], 0, 490, alpha=0.05, color='blue')\nax.fill_betweenx([0, 1], 490, len(online_acc), alpha=0.05, color='red')\nax.text(250, 0.55, 'Faza 1\\n(stary wzorzec)', ha='center', fontsize=10, alpha=0.5)\nax.text(700, 0.55, 'Faza 2\\n(nowy wzorzec)', ha='center', fontsize=10, alpha=0.5)\nax.set_xlabel('Obserwacja')\nax.set_ylabel('Krocząca dokładność (50 obs.)')\nax.set_title('Concept drift: model batch zamiera, online adaptuje się')\nax.set_ylim(0.5, 1.05)\nax.legend()\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nFigure 2: Concept drift: model batch vs online — dokładność w czasie",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 3 — Uczenie maszynowe: batch vs online"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad3.html#detekcja-anomalii",
+    "href": "lectures/wyklad3.html#detekcja-anomalii",
+    "title": "Wykład 3 — Uczenie maszynowe: batch vs online",
+    "section": "4 Detekcja anomalii",
+    "text": "4 Detekcja anomalii\n\n\n\n\n\n\nDetekcja anomalii to jedno z najważniejszych zastosowań analizy danych w czasie rzeczywistym. Anomalia (wartość odstająca, outlier) to obserwacja znacznie oddalona od reszty danych.\n\n\n\n\nMetoda IQRIsolation ForestW strumieniu\n\n\nDla pojedynczej zmiennej możemy użyć rozstępu międzykwartylowego:\n\\[x_{\\text{out}} &lt; Q_1 - 1.5 \\times IQR \\quad \\text{lub} \\quad x_{\\text{out}} &gt; Q_3 + 1.5 \\times IQR\\]\n\n\nPokaż kod\nwynagrodzenia = [40, 42, 45, 47, 50, 55, 60, 70, 90, 150]\n\nQ1 = np.percentile(wynagrodzenia, 25)\nQ3 = np.percentile(wynagrodzenia, 75)\nIQR = Q3 - Q1\n\ngranica_dolna = Q1 - 1.5 * IQR\ngranica_gorna = Q3 + 1.5 * IQR\n\noutliers = [x for x in wynagrodzenia if x &lt; granica_dolna or x &gt; granica_gorna]\nprint(f\"Q1={Q1}, Q3={Q3}, IQR={IQR}\")\nprint(f\"Granice: [{granica_dolna:.1f}, {granica_gorna:.1f}]\")\nprint(f\"Anomalie: {outliers}\")\n\nfig, ax = plt.subplots(figsize=(8, 2.5))\nbp = ax.boxplot(wynagrodzenia, vert=False, patch_artist=True,\n                boxprops=dict(facecolor='#E3F2FD', edgecolor='#2196F3'),\n                medianprops=dict(color='#F44336', linewidth=2),\n                flierprops=dict(marker='o', markerfacecolor='#F44336', markersize=10))\nax.set_xlabel('Wynagrodzenie (tys. PLN)')\nax.set_title('Wykres pudełkowy — detekcja anomalii metodą IQR')\nax.axvspan(granica_dolna, granica_gorna, alpha=0.1, color='green', label='Zakres normalny')\nplt.tight_layout()\nplt.show()\n\n\nQ1=45.5, Q3=67.5, IQR=22.0\nGranice: [12.5, 100.5]\nAnomalie: [150]\n\n\n\n\n\n\n\n\n\n\n\nAlgorytm bazujący na drzewach decyzyjnych (Liu et al., 2008). Kluczowa intuicja: anomalie są łatwiejsze do odizolowania — losowe podziały szybciej oddzielają je od reszty danych.\n\n\nPokaż kod\nfrom sklearn.ensemble import IsolationForest\n\n# Symulacja: transakcje bankowe (kwota, częstotliwość tygodniowa)\ndane = np.array([\n    [100, 5], [120, 6], [130, 5], [110, 4], [125, 5],\n    [115, 5], [140, 7], [135, 6], [145, 5], [105, 4],\n    [5000, 1],  # anomalia: duża kwota, rzadko\n    [50, 30],   # anomalia: mała kwota, bardzo często\n])\n\nclf = IsolationForest(contamination=0.15, random_state=42)\npredykcje = clf.fit_predict(dane)\n\ndf = pd.DataFrame(dane, columns=[\"Kwota\", \"Transakcje/tydzień\"])\ndf[\"Status\"] = [\"Anomalia\" if p == -1 else \"OK\" for p in predykcje]\nprint(df.to_string(index=False))\n\ncolors = ['#F44336' if s == 'Anomalia' else '#2196F3' for s in df['Status']]\nfig, ax = plt.subplots(figsize=(8, 5))\nax.scatter(df['Kwota'], df['Transakcje/tydzień'], c=colors, s=80, edgecolors='white', zorder=5)\nfor _, row in df[df['Status'] == 'Anomalia'].iterrows():\n    ax.annotate('ANOMALIA', (row['Kwota'], row['Transakcje/tydzień']),\n                textcoords=\"offset points\", xytext=(10, 5), fontsize=9, color='#F44336', fontweight='bold')\nax.set_xlabel('Kwota transakcji')\nax.set_ylabel('Transakcje / tydzień')\nax.set_title('Isolation Forest — detekcja anomalii')\nimport matplotlib.patches as mpatches\nax.legend(handles=[mpatches.Patch(color='#2196F3', label='OK'),\n                    mpatches.Patch(color='#F44336', label='Anomalia')])\nplt.tight_layout()\nplt.show()\n\n\n Kwota  Transakcje/tydzień   Status\n   100                   5       OK\n   120                   6       OK\n   130                   5       OK\n   110                   4       OK\n   125                   5       OK\n   115                   5       OK\n   140                   7       OK\n   135                   6       OK\n   145                   5       OK\n   105                   4       OK\n  5000                   1 Anomalia\n    50                  30 Anomalia\n\n\n\n\n\n\n\n\n\n\n\nW kontekście real-time nie możemy przeanalizować całego zbioru danych — musimy wykrywać anomalie na bieżąco, w oknie czasowym. Na laboratoriach zbudujemy taki system z Kafką i Sparkiem.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 3 — Uczenie maszynowe: batch vs online"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad3.html#wyjaśnialność-algorytmów",
+    "href": "lectures/wyklad3.html#wyjaśnialność-algorytmów",
+    "title": "Wykład 3 — Uczenie maszynowe: batch vs online",
+    "section": "5 Wyjaśnialność algorytmów",
+    "text": "5 Wyjaśnialność algorytmów\n\n\n\n\n\n\nImportantRegulacje wymagają transparentności\n\n\n\nW branżach regulowanych (bankowość, ubezpieczenia, medycyna) nie wystarczy powiedzieć „model odrzucił wniosek kredytowy”. Trzeba wyjaśnić dlaczego. Regulacje takie jak AI Act i RODO wymagają transparentności decyzji algorytmicznych.\n\n\n\n5.1 LIME (Local Interpretable Model-Agnostic Explanations)\nLIME wyjaśnia pojedyncze predykcje dowolnego modelu. Działa tak: wprowadza drobne zmiany w danych wejściowych i obserwuje, jak zmienia się wynik. Na tej podstawie buduje prosty, interpretowalny model lokalny (np. regresję liniową), który przybliża zachowanie oryginalnego modelu w otoczeniu danej obserwacji.\n\n\nPokaż kod\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.datasets import load_iris\n\niris = load_iris()\nX_iris, y_iris = iris.data, iris.target\nX_tr, X_te, y_tr, y_te = train_test_split(X_iris, y_iris, test_size=0.2, random_state=42)\n\nrf = RandomForestClassifier(n_estimators=100, random_state=42)\nrf.fit(X_tr, y_tr)\n\n# Feature importance — prostsza alternatywa dla LIME\nimportances = pd.Series(rf.feature_importances_, index=iris.feature_names)\nprint(\"Ważność cech (Random Forest):\")\nprint(importances.sort_values(ascending=False).round(3))\nprint(f\"\\nNa lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.\")\n\n\nWażność cech (Random Forest):\npetal length (cm)    0.440\npetal width (cm)     0.422\nsepal length (cm)    0.108\nsepal width (cm)     0.030\ndtype: float64\n\nNa lab zainstalujemy bibliotekę LIME i zbadamy lokalne wyjaśnienia.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 3 — Uczenie maszynowe: batch vs online"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad3.html#podsumowanie",
+    "href": "lectures/wyklad3.html#podsumowanie",
+    "title": "Wykład 3 — Uczenie maszynowe: batch vs online",
+    "section": "6 Podsumowanie",
+    "text": "6 Podsumowanie\nUczenie wsadowe i przyrostowe to dwa komplementarne podejścia. W praktyce często łączy się je: model bazowy trenowany w trybie batch jest stopniowo aktualizowany w trybie online. SGD umożliwia uczenie na strumieniu danych, ale wymaga uwagi na concept drift i stabilność.\nDetekcja anomalii i wyjaśnialność modeli to kluczowe zastosowania ML w real-time analytics — na laboratoriach przełożymy je na praktyczne systemy z Kafką i Sparkiem.\n\n\n\n\n\n\nNote Na następnym wykładzie\n\n\n\nApache Kafka — architektura, producenci, konsumenci, tematy, partycje.\n\n\n\n\n\n\n\n\nTip Do przemyślenia\n\n\n\nTwój bank trenuje model fraud detection raz w miesiącu (batch). Jakie ryzyko biznesowe niesie takie podejście? Co by się zmieniło, gdyby model uczył się online?",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 3 — Uczenie maszynowe: batch vs online"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html",
+    "href": "lectures/wyklad4.html",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "",
+    "text": "Note Czas trwania: 1,5h\n\n\n\nCel wykładu: Poznanie architektury Apache Kafka — brokerów, tematów, partycji, producentów, konsumentów i grup konsumentów. Zrozumienie, dlaczego Kafka jest fundamentem nowoczesnych systemów real-time.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#od-monolitu-do-mikroserwisów-kontekst",
+    "href": "lectures/wyklad4.html#od-monolitu-do-mikroserwisów-kontekst",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "1 Od monolitu do mikroserwisów — kontekst",
+    "text": "1 Od monolitu do mikroserwisów — kontekst\nZanim przejdziemy do Kafki, krótki kontekst. Tradycyjna aplikacja to monolit — jeden duży program, który robi wszystko: obsługuje użytkowników, przetwarza dane, generuje raporty. Łatwy na start, ale trudny do skalowania i modyfikowania.\nMikroserwisy to podejście, w którym aplikację dzielimy na małe, niezależne usługi — każda odpowiedzialna za jedno zadanie. Usługa „płatności” nie zna szczegółów usługi „rekomendacji”. Komunikują się przez API lub kolejki wiadomości.\n\n\n\n\n\n\nCautionProblem N×N\n\n\n\nGdy masz 20 mikroserwisów, które muszą wymieniać dane, tworzysz siatkę połączeń punkt-punkt. Każdy nowy serwis wymaga integracji z wieloma innymi. To nie skaluje się.\nRozwiązanie: centralny broker wiadomości — jedno miejsce, przez które przepływają wszystkie dane. I tu wchodzi Apache Kafka.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#co-to-jest-apache-kafka",
+    "href": "lectures/wyklad4.html#co-to-jest-apache-kafka",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "2 Co to jest Apache Kafka?",
+    "text": "2 Co to jest Apache Kafka?\nKafka to rozproszona platforma strumieniowa stworzona w LinkedIn (2011), obecnie rozwijana jako projekt Apache. Nie jest „kolejnym systemem kolejkowym” — to coś więcej.\n\n\n\n\n\n\n\n\nTip Rozproszona\n\n\n\nDziała na wielu serwerach (brokerach) jako klaster.\n\n\n\n\n\n\n\n\nTip Trwała\n\n\n\nWiadomości zapisywane na dysku, nie znikają po odczytaniu.\n\n\n\n\n\n\n\n\n\nTip Szybka\n\n\n\nObsługuje miliony wiadomości na sekundę.\n\n\n\n\n\n\n\n\nTip Skalowalna\n\n\n\nDodajesz brokerów i partycji w miarę wzrostu danych.\n\n\n\n\n\n\n\n\n\n\nImportantKafka to nie kolejka!\n\n\n\nW klasycznym systemie kolejkowym (np. RabbitMQ) wiadomość jest usuwana po przetworzeniu. Kafka tego nie robi — wiadomości są przechowywane na dysku przez konfigurowalny czas (domyślnie 7 dni). Dzięki temu:\n\nwielu konsumentów może odczytać te same dane,\nkonsument może wrócić do wcześniejszych wiadomości (replay),\nawaria konsumenta nie powoduje utraty danych.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#architektura-kafki",
+    "href": "lectures/wyklad4.html#architektura-kafki",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "3 Architektura Kafki",
+    "text": "3 Architektura Kafki\n\n3.1 Wzorzec Publish/Subscribe\nKafka implementuje wzorzec pub/sub (publikuj/subskrybuj). Nadawca (producent) nie wysyła wiadomości bezpośrednio do odbiorcy — publikuje ją do tematu. Odbiorcy (konsumenci) subskrybują tematy, które ich interesują.\n\n\n\n\n\nflowchart LR\n    PA[\"Producent A\"] --&gt; T[\"Temat:\\nzamówienia\"]\n    PB[\"Producent B\"] --&gt; T\n    PC[\"Producent C\"] --&gt; T\n    T --&gt; CX[\"Konsument X\\n(Grupa 1)\"]\n    T --&gt; CY[\"Konsument Y\\n(Grupa 1)\"]\n    T --&gt; CZ[\"Konsument Z\\n(Grupa 2)\"]\n\n    style T fill:#FF9800,color:#fff\n    style PA fill:#2196F3,color:#fff\n    style PB fill:#2196F3,color:#fff\n    style PC fill:#2196F3,color:#fff\n    style CX fill:#4CAF50,color:#fff\n    style CY fill:#4CAF50,color:#fff\n    style CZ fill:#9C27B0,color:#fff\n\n\n Wzorzec Publish/Subscribe w Kafce \n\n\n\n\n\n3.2 Tematy i partycje\n\n Tematy (Topics) Partycje (Partitions) Brokerzy (Brokers)\n\n\nTemat to logiczny kanał danych — jak folder, do którego trafiają wiadomości określonego typu. Np. transakcje, zamowienia, logi-serwera, odczyty-sensorow.\n\n\nKażdy temat jest podzielony na jedną lub więcej partycji. Partycja to uporządkowana, niezmienna sekwencja wiadomości — każda wiadomość otrzymuje unikalny numer (offset).\nPartycje służą dwóm celom:\n\nSkalowalność — dane jednego tematu mogą być rozproszone na wielu brokerach.\nRównoległość — wielu konsumentów może czytać różne partycje jednocześnie.\n\n\n\nBroker to pojedynczy serwer Kafki. Klaster Kafki składa się z wielu brokerów. Każdy broker przechowuje część partycji.\nAby zapewnić niezawodność, Kafka replikuje partycje na wielu brokerach. Współczynnik replikacji (np. 3) oznacza, że każda partycja ma 3 kopie na różnych serwerach. Jeśli jeden broker padnie — dane nie giną.\n\n\n\n\n\n\n\n\nflowchart LR\n    subgraph \"Temat: transakcje\"\n        direction TB\n        P0[\"Partycja 0\\noffset: 0,1,2,3...\"]\n        P1[\"Partycja 1\\noffset: 0,1,2,3...\"]\n        P2[\"Partycja 2\\noffset: 0,1,2,3...\"]\n    end\n    P0 -.-&gt; B1[\"Broker 1\"]\n    P1 -.-&gt; B2[\"Broker 2\"]\n    P2 -.-&gt; B3[\"Broker 3\"]\n\n    style P0 fill:#E3F2FD,stroke:#2196F3\n    style P1 fill:#E3F2FD,stroke:#2196F3\n    style P2 fill:#E3F2FD,stroke:#2196F3\n    style B1 fill:#FFF3E0,stroke:#FF9800\n    style B2 fill:#FFF3E0,stroke:#FF9800\n    style B3 fill:#FFF3E0,stroke:#FF9800\n\n\n Temat z partycjami rozproszonymi na brokerach",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#producenci-producers",
+    "href": "lectures/wyklad4.html#producenci-producers",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "4 Producenci (Producers)",
+    "text": "4 Producenci (Producers)\nProducent to aplikacja, która wysyła wiadomości do Kafki. Producent wskazuje temat, a Kafka przypisuje wiadomość do partycji:\n\ndomyślnie: round-robin (kolejno do każdej partycji),\nz kluczem: Kafka oblicza hash klucza i na tej podstawie wybiera partycję — wiadomości z tym samym kluczem zawsze trafiają do tej samej partycji.\n\n\nBez kluczaZ kluczem\n\n\nfrom kafka import KafkaProducer\nimport json\nfrom datetime import datetime\n\nproducer = KafkaProducer(\n    bootstrap_servers='localhost:9092',\n    value_serializer=lambda v: json.dumps(v).encode('utf-8')\n)\n\n# Wysyłanie transakcji do tematu \"transakcje\"\ntransakcja = {\n    'id': 'TX0042',\n    'kwota': 1250.00,\n    'klient': 'K-1001',\n    'czas': datetime.now().isoformat(),\n    'sklep': 'Warszawa'\n}\n\nproducer.send('transakcje', value=transakcja)\nproducer.flush()\nprint(f\"Wysłano: {transakcja}\")\n\n\nJeśli chcemy, żeby wszystkie transakcje tego samego klienta trafiały do jednej partycji (np. w celu analizy sesji):\n# Klucz = ID klienta → ten sam klient zawsze w tej samej partycji\nproducer.send(\n    'transakcje',\n    key=b'K-1001',       # klucz partycjonowania\n    value=transakcja\n)\n\n\n\n\n\n\nTipKiedy używać klucza?\n\n\n\nUżywaj klucza, gdy potrzebujesz gwarancji kolejności dla danej encji (np. wszystkie transakcje klienta K-1001 w kolejności) lub gdy dalsze przetwarzanie wymaga zgrupowania po kluczu.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#konsumenci-consumers",
+    "href": "lectures/wyklad4.html#konsumenci-consumers",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "5 Konsumenci (Consumers)",
+    "text": "5 Konsumenci (Consumers)\nKonsument to aplikacja, która odczytuje wiadomości z tematu. Konsument śledzi swój offset — wie, którą wiadomość ostatnio przetworzył. Po awarii wznawia od tego miejsca.\nfrom kafka import KafkaConsumer\nimport json\n\nconsumer = KafkaConsumer(\n    'transakcje',\n    bootstrap_servers='localhost:9092',\n    auto_offset_reset='earliest',\n    value_deserializer=lambda x: json.loads(x.decode('utf-8'))\n)\n\nfor message in consumer:\n    tx = message.value\n    if tx['kwota'] &gt; 1000:\n        print(f\"Duża transakcja: {tx['id']} = {tx['kwota']} PLN ({tx['sklep']})\")\n\n5.1 Grupy konsumentów (Consumer Groups)\nGdy jeden konsument nie nadąża z przetwarzaniem — dodajesz kolejnych. Konsumenci w tej samej grupie dzielą między siebie partycje.\n\n\n\n\n\n\nNoteZasady grup konsumentów\n\n\n\n\nKafka automatycznie przypisuje partycje do konsumentów w grupie.\nKażdą partycję czyta dokładnie jeden konsument z grupy.\nJeśli konsument padnie — jego partycje przejmuje inny.\nIdeał: liczba konsumentów w grupie = liczba partycji.\nJeśli konsumentów jest więcej niż partycji — nadmiarowi będą bezczynni.\n\n\n\n  Temat: transakcje (3 partycje)\n  Grupa konsumentów: \"fraud-detection\"\n\n  Partycja 0 ──→ Konsument A\n  Partycja 1 ──→ Konsument B\n  Partycja 2 ──→ Konsument C\n\n\n\n\n\n\nTipWiele grup = niezależny odczyt\n\n\n\nRóżne grupy konsumentów mogą czytać te same dane niezależnie. Np. grupa fraud-detection analizuje transakcje pod kątem oszustw, a grupa reporting buduje raporty — obie czytają temat transakcje, ale mają osobne offsety.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#mikroserwis-z-modelem-ml-fastapi",
+    "href": "lectures/wyklad4.html#mikroserwis-z-modelem-ml-fastapi",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "6 Mikroserwis z modelem ML — FastAPI",
+    "text": "6 Mikroserwis z modelem ML — FastAPI\nW praktyce konsument Kafki często przekazuje dane do modelu ML serwowanego przez API. FastAPI to lekki framework Pythonowy idealny do tego celu.\nfrom fastapi import FastAPI\nimport numpy as np\nimport pickle\n\napp = FastAPI()\n\n# Wczytanie wytrenowanego modelu\n# with open(\"model.pkl\", \"rb\") as f:\n#     model = pickle.load(f)\n\n@app.get(\"/predict/\")\ndef predict_price(area: float, bedrooms: int, age: int):\n    \"\"\"Prognoza ceny nieruchomości.\"\"\"\n    features = np.array([[area, bedrooms, age]])\n    # price = model.predict(features)[0]\n    price = area * 8500 + bedrooms * 50000 - age * 2000  # uproszczony model\n    return {\"estimated_price\": round(price, 2)}\n\n# Uruchomienie: uvicorn main:app --reload\n# Zapytanie: http://localhost:8000/predict/?area=75&bedrooms=3&age=10\n\n\n\n\n\n\nTip Request i Response — jak działa API?\n\n\n\n\n\nZapytanie (Request):\n\nURL: http://localhost:8000/predict/?area=75&bedrooms=3&age=10\nMetoda HTTP: GET lub POST\nNagłówki: Content-Type, Authorization\nCiało (body): dane w formacie JSON\n\nOdpowiedź (Response):\n\nStatus HTTP: 200 OK, 400 Bad Request, 500 Internal Server Error\nCiało: wynik w formacie JSON\n\n{\"estimated_price\": 787500.0}",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#kafka-ml-kompletny-obraz",
+    "href": "lectures/wyklad4.html#kafka-ml-kompletny-obraz",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "7 Kafka + ML — kompletny obraz",
+    "text": "7 Kafka + ML — kompletny obraz\nŁącząc elementy z ostatnich wykładów, oto schemat typowego systemu real-time analytics:\n\n\n\n\n\nflowchart LR\n    subgraph Źródła\n        WEB[\"Aplikacja webowa\"]\n        IOT[\"Sensory IoT\"]\n        PAY[\"System płatności\"]\n    end\n    subgraph Kafka\n        T[\"Temat:\\nevents\"]\n    end\n    subgraph Przetwarzanie\n        SP[\"Spark Streaming\"]\n        API[\"FastAPI + ML\"]\n        DB[\"Zapis do bazy\"]\n    end\n    subgraph Wyniki\n        DASH[\"Dashboard\"]\n        ALERT[\"Alerty\"]\n        REP[\"Raporty\"]\n    end\n\n    WEB --&gt; T\n    IOT --&gt; T\n    PAY --&gt; T\n    T --&gt; SP --&gt; DASH\n    T --&gt; API --&gt; ALERT\n    T --&gt; DB --&gt; REP\n\n    style T fill:#FF9800,color:#fff\n    style SP fill:#2196F3,color:#fff\n    style API fill:#4CAF50,color:#fff\n    style DB fill:#9C27B0,color:#fff\n\n\n Typowy system real-time analytics z Kafką \n\n\n\n\n\n\n\n\n\nProducenci (aplikacje, sensory, systemy) wysyłają zdarzenia do Kafki. Konsumenci (Spark, FastAPI, systemy raportowe) odczytują je i przetwarzają — każdy na swój sposób, niezależnie od pozostałych.",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  },
+  {
+    "objectID": "lectures/wyklad4.html#podsumowanie",
+    "href": "lectures/wyklad4.html#podsumowanie",
+    "title": "Wykład 4 — Apache Kafka",
+    "section": "8 Podsumowanie",
+    "text": "8 Podsumowanie\nKafka to centralny element architektury strumieniowej. Jej siła tkwi w trwałości danych (wiadomości nie znikają), skalowalności (partycje, replikacja) i elastyczności (wielu niezależnych konsumentów). Na laboratoriach sami uruchomicie klaster Kafki w Dockerze i napiszecie producentów i konsumentów w Pythonie.\n\n\n\n\n\n\nNote Na następnym wykładzie\n\n\n\nApache Spark i Structured Streaming — przetwarzanie danych strumieniowych na dużą skalę, integracja z Kafką.\n\n\n\n\n\n\n\n\nTip Do przemyślenia\n\n\n\nProjektujesz system monitorowania cen konkurencji dla sieci sklepów. Jakie tematy Kafki byś utworzył? Ile partycji? Jakie grupy konsumentów?",
+    "crumbs": [
+      "222890-S",
+      "Wykłady",
+      "Wykład 4 — Apache Kafka"
+    ]
+  }
+]
