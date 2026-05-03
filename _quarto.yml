@@ -24,7 +24,7 @@ website:
         - href: labs/pl_lab2.ipynb
         - href: labs/pl_lab3.ipynb
         - href: labs/pl_lab4.ipynb
-      #   - href: labs/lab5.ipynb
+        - href: labs/pl_lab5.ipynb
       #   - href: labs/lab6.ipynb
       #   - href: labs/lab7.ipynb
       #   - href: labs/lab8.ipynb
