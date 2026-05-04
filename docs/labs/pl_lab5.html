@@ -330,19 +330,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="co-to-jest-api" class="level2">
 <h2 class="anchored" data-anchor-id="co-to-jest-api">Co to jest API?</h2>
 <p>Wyobraź sobie restaurację. Ty (klient) nie wchodzisz do kuchni i nie gotujesz sam — zamawiasz przez <strong>kelnera</strong>. Kelner przyjmuje zamówienie, zanosi do kuchni, wraca z odpowiedzią.</p>
-<p><strong>API (Application Programming Interface)</strong> działa tak samo: - Ty wysyłasz <strong>zapytanie</strong> (request) — np. “oceń tę transakcję” - API przetwarza je (wywołuje model, sprawdza reguły) - Wraca z <strong>odpowiedzią</strong> (response) — np. <code>{"fraud": true, "score": 0.92}</code></p>
+<p><strong>API (Application Programming Interface)</strong> działa tak samo:</p>
+<ul>
+<li>Ty wysyłasz <strong>zapytanie</strong> (request) — np. “oceń tę transakcję”</li>
+<li>API przetwarza je (wywołuje model, sprawdza reguły)</li>
+<li>Wraca z <strong>odpowiedzią</strong> (response) — np. <code>{"fraud": true, "score": 0.92}</code></li>
+</ul>
 <p>Dzięki temu model ML może działać jako <strong>osobna usługa</strong>, którą wywołuje konsument Kafki, aplikacja mobilna, dashboard — cokolwiek.</p>
 </section>
 <section id="co-to-jest-rest-i-http" class="level2">
 <h2 class="anchored" data-anchor-id="co-to-jest-rest-i-http">Co to jest REST i HTTP?</h2>
-<p><strong>HTTP</strong> to protokół komunikacji — ten sam, którego używa przeglądarka. Każde zapytanie ma: - <strong>metodę</strong>: <code>GET</code> (pobierz dane) lub <code>POST</code> (wyślij dane do przetworzenia) - <strong>adres URL</strong>: np. <code>http://localhost:5000/score</code> - opcjonalnie <strong>ciało</strong> (body): dane JSON</p>
+<p><strong>HTTP</strong> to protokół komunikacji — ten sam, którego używa przeglądarka. Każde zapytanie ma:</p>
+<ul>
+<li><strong>metodę</strong>: <code>GET</code> (pobierz dane) lub <code>POST</code> (wyślij dane do przetworzenia)</li>
+<li><strong>adres URL</strong>: np. <code>http://localhost:5000/score</code></li>
+<li>opcjonalnie <strong>ciało</strong> (body): dane JSON</li>
+</ul>
 <p><strong>REST</strong> to styl projektowania API — każdy zasób ma swój URL, metody HTTP mają określone znaczenie.</p>
 </section>
 <section id="gdzie-to-pasuje-w-naszym-projekcie" class="level2">
 <h2 class="anchored" data-anchor-id="gdzie-to-pasuje-w-naszym-projekcie">Gdzie to pasuje w naszym projekcie?</h2>
 <pre><code>Lab 1: Kafka producer → konsument Python
+Lab 2: Spark DataFrame
+Lab 3: Spark Streaming
 Lab 3: konsument → Spark Streaming → alerty
-Lab 4: Flask API ← (tu jesteśmy — budujemy usługę scoringową)
+Lab 5: Flask API ← (tu jesteśmy — budujemy usługę scoringową)
 Lab 6: konsument Kafki → wywołuje Flask API → alerty</code></pre>
 </section>
 <section id="plan" class="level2">
@@ -515,7 +527,7 @@ Lab 6: konsument Kafki → wywołuje Flask API → alerty</code></pre>
 <section id="część-4-scoring-transakcji-przez-api" class="level2">
 <h2 class="anchored" data-anchor-id="część-4-scoring-transakcji-przez-api">Część 4: Scoring transakcji przez API</h2>
 <p>Teraz łączymy Flask z logiką biznesową. Endpoint <code>/score</code> przyjmuje transakcję i zwraca ocenę ryzyka.</p>
-<p>Na razie używamy <strong>reguł</strong> (nie ML) — model dołączymy w Lab 5.</p>
+<p>Na razie używamy <strong>reguł</strong> (nie ML) — model dołączymy w Lab 6.</p>
 <section id="zadanie-4.1-funkcja-scoringowa" class="level3">
 <h3 class="anchored" data-anchor-id="zadanie-4.1-funkcja-scoringowa">Zadanie 4.1 — Funkcja scoringowa</h3>
 <div id="scoring-fn" class="cell">
