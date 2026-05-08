@@ -34,6 +34,7 @@ website:
         contents:
         - href: labs/zaoczne_cw1.ipynb
         - href: labs/zaoczne_cw2.ipynb
+        - href: labs/zaoczne_cw3.ipynb
 
 
   navbar:
